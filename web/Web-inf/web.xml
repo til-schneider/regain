@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+    "http://java.sun.com/dtd/web-app_2_2.dtd">
+
+<web-app>
+
+<!-- Das Verzeichnis des Index 'main' -->
+<context-param>
+  <param-name>indexDir.main</param-name>
+  <param-value>c:\Temp\searchindex</param-value>
+</context-param>
+
+<!--
+ | Die Regex des Index 'main', zu der eine URL passen muss, damit sie in einem
+ | neuen Fenster geöffnet wird.
+ +-->
+<context-param>
+  <param-name>openInNewWindowRegex.main</param-name>
+  <param-value>.(pdf|rtf|doc|xls|ppt)$</param-value>
+</context-param>
+
+<!-- Das Verzeichnis des Index 'big' -->
+<context-param>
+  <param-name>indexDir.big</param-name>
+  <param-value>c:\Temp\searchindex3</param-value>
+</context-param>
+
+<!-- Die Defaultliste der Felder, in denen gesucht werden soll -->
+<context-param>
+  <param-name>searchFieldList</param-name>
+  <param-value>content title headlines</param-value>
+</context-param>
+
+</web-app>

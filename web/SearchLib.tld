@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE taglib
+        PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"
+	"http://java.sun.com/dtd/web-jsptaglibrary_1_1.dtd">
+
+<taglib>
+  <tlibversion>1.0</tlibversion>
+  <jspversion>1.1</jspversion>
+  <shortname>TagLib for searching in a Lucene index</shortname>
+
+  <tag>
+    <name>input_query</name>
+    <tagclass>net.sf.regain.search.taglib.input.QueryTag</tagclass>
+    <bodycontent>empty</bodycontent>
+  </tag>
+
+  <tag>
+    <name>input_maxresults</name>
+    <tagclass>net.sf.regain.search.taglib.input.MaxResultsTag</tagclass>
+    <bodycontent>empty</bodycontent>
+  </tag>
+
+  <tag>
+    <name>stats_from</name>
+    <tagclass>net.sf.regain.search.taglib.stats.FromTag</tagclass>
+    <bodycontent>empty</bodycontent>
+  </tag>
+
+  <tag>
+    <name>stats_to</name>
+    <tagclass>net.sf.regain.search.taglib.stats.ToTag</tagclass>
+    <bodycontent>empty</bodycontent>
+  </tag>
+
+  <tag>
+    <name>stats_total</name>
+    <tagclass>net.sf.regain.search.taglib.stats.TotalTag</tagclass>
+    <bodycontent>empty</bodycontent>
+  </tag>
+
+  <tag>
+    <name>stats_searchtime</name>
+    <tagclass>net.sf.regain.search.taglib.stats.SearchTimeTag</tagclass>
+    <bodycontent>empty</bodycontent>
+  </tag>
+
+  <tag>
+    <name>navigation</name>
+    <tagclass>net.sf.regain.search.taglib.NavigationTag</tagclass>
+    <bodycontent>empty</bodycontent>
+
+    <attribute>
+      <name>msgBack</name>
+      <required>true</required>
+    </attribute>
+    <attribute>
+      <name>msgForward</name>
+      <required>true</required>
+    </attribute>
+    <attribute>
+      <name>targetPage</name>
+      <required>false</required>
+    </attribute>
+    <attribute>
+      <name>class</name>
+      <required>false</required>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>list</name>
+    <tagclass>net.sf.regain.search.taglib.ListTag</tagclass>
+    <bodycontent>jsp</bodycontent>
+
+    <attribute>
+      <name>msgNoResults</name>
+      <required>true</required>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>hit_link</name>
+    <tagclass>net.sf.regain.search.taglib.hit.LinkTag</tagclass>
+    <bodycontent>empty</bodycontent>
+
+    <attribute>
+      <name>class</name>
+      <required>false</required>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>hit_path</name>
+    <tagclass>net.sf.regain.search.taglib.hit.PathTag</tagclass>
+    <bodycontent>empty</bodycontent>
+
+    <attribute>
+      <name>class</name>
+      <required>false</required>
+    </attribute>
+    <attribute>
+      <name>createLinks</name>
+      <required>false</required>
+    </attribute>
+    <attribute>
+      <name>before</name>
+      <required>false</required>
+    </attribute>
+    <attribute>
+      <name>after</name>
+      <required>false</required>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>hit_score</name>
+    <tagclass>net.sf.regain.search.taglib.hit.ScoreTag</tagclass>
+    <bodycontent>empty</bodycontent>
+  </tag>
+
+  <tag>
+    <name>hit_size</name>
+    <tagclass>net.sf.regain.search.taglib.hit.SizeTag</tagclass>
+    <bodycontent>empty</bodycontent>
+  </tag>
+
+  <tag>
+    <name>hit_url</name>
+    <tagclass>net.sf.regain.search.taglib.hit.UrlTag</tagclass>
+    <bodycontent>empty</bodycontent>
+  </tag>
+
+  <tag>
+    <name>hit_summary</name>
+    <tagclass>net.sf.regain.search.taglib.hit.SummaryTag</tagclass>
+    <bodycontent>empty</bodycontent>
+  </tag>
+
+</taglib>
