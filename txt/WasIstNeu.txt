@@ -1,0 +1,78 @@
+* Crawler: Bugfix: Der PoiMsExcelPraeparator kam nicht mit allen Zahlen- und
+  Datumsformaten klar.
+* Crawler: Das Fehler-Log im Index ist nun ausführlicher (Mit Stacktrace).
+* Crawler: Die Praeparatoren sind nun in eigene Jars gekapselt. Dadurch ist im
+  regain.jar nur das, was regain selbst braucht und die Praeparatoren lassen
+  sich leichter austauschen. Ausserdem koennen nun andere Entwickler auch
+  Praeparatoren anbieten, die sehr einfach eingebunden werden koennen.
+  Die Konfiguration der Praeparatoren steckt weiterhin in der
+  CrawlerConfiguration.xml, allerdings muessen dort nicht mehr alle
+  Praeparatoren angegeben werden. Die Praeparatoren werden in der Reihenfolge
+  abgearbeitet, in der sie konfiguriert sind, die nicht konfigurierten
+  Praeparatoren in unbestimmter Reihenfolge danach.
+* Desktopsuche: Die Desktopsuche lauft nun auch unter Linux.
+* Suche: Bugfix: Dateien, deren URL ein doppelter Slash enthielt
+  (Z.B. bei Netzlaufwerken: //fileserver/bla/blubb) konnten nicht geladen werden.
+* Desktopsuche: Bugfix: Bei den Suchergebnissen wurden Umlaute falsch
+  dargestellt.
+* Desktopsuche: In der Statusseite kann nun eine laufende Indexierung angehalten
+  und eine Indexierung manuell gestartet werden.
+* Crawler: Bugfix: Der HtmlPraeparator kam nicht mit allen Dateien klar.
+
+
+Version 1.1 Beta 2 am 12.03.05
+------------------------------
+
+* Crawler: Der Crawler erstellt nun regelmaeßig sog. Breakpoints. Dabei wird
+  der aktuellen Stand der Suchindex in ein gesondertes Verzeichnis kopiert.
+  Falls die Indexierung abgebrochen wurde (Z.B. weil der Rechner
+  heruntergefahren wurde), wird beim nächsten mal auf dem letzten Breakpoint
+  aufgesetzt.
+* Desktopsuche: Die Statusseite zeigt nun auch die Zeitmessungsergebnisse.
+
+
+Version 1.1 Beta 1 am 10.03.05 
+------------------------------
+
+* Desktopsuche: regain bietet nun neben der Server-Suche auch eine Desktop-Suche.
+  Die Desktop-Suche bietet viele Eigenschaften, die die Bedienung kinderleicht
+  machen:
+    - Ein Installer fuer Windows.
+    - Integration in die Taskleiste unter Linux und Windows.
+    - Konfiguration ueber den Browser
+    - Status-Anzeige ueber den Browser
+* Crawler: Es gibt nun einen Praeparator für OpenOffice- und StarOffice-Dokumente.
+* Gesamt: Aktualisierung auf die neusten Versionen der genutzten Projekte.
+* Crawler: Praeparatoren sind nun ueber die CrawlerConfiguration.xml
+  konfigurierbar.
+* Suche: Die Suche wird nun ueber die SearchConfiguration.xml
+  konfiguriert, nicht mehr ueber die web.xml. Dort steht nun nur noch der Pfad
+  zur SearchConfiguration.xml.
+* Suche: In der Suche kann nun URL-Rewriting eingesetzt werden. Dadurch
+  koennen Dokumente von file://c:/www‑data/intranet/docs indiziert und im
+  Browser als http://intranet.murfman.de/docs angezeigt werden.
+* Crawler: Zusatzfelder: Der Index kann durch Zusatzfelder erweitert werden, die
+  aus der URL eines Dokuments generiert werden.
+  Beispiel: Angenommen Sie haben ein Verzeichnis mit einem Unterverzeichnis fuer
+  jedes Projekt. Dann koennten Sie daraus ein Feld mit dem Projektnamen
+  generieren. Dadurch bekommen Sie bei der Suche nach "Angebot project:otto23"
+  nur Treffer aus diesem Verzeichnis.
+* Suche: Expertensuche: Die Werte, die fuer ein Feld im Index stehen,
+  koennen nun als ComboBox auf einer Suchseite angeboten werden. Vor allem in
+  Verbindung mit Zusatzfeldern ist das sehr praktisch.
+* Suche: Weil manche Browser aus Sicherheitsgruenden keine file-Links
+  verfolgen, die auf http-Seiten stehen, sind nun alle Dokumente, die sich im
+  Index befinden auch über HTTP erreichbar. Selbstverständlich sind sie bei der
+  Desktopsuche nur vom lokalen Rechner aus abrufbar.
+* Crawler: Der JacobMsWordPraeparator beruecksichtigt nun Formatvorlagen.
+  Dadurch koennen Ueberschriften extrahiert werden, die dann bei der Suche
+  staerker gewichtet werden.
+* Crawler: Die JacobMsOfficePraeparatoren koennen nun die Beschreibungsfelder
+  von MS Office-Dokumenten extrahieren (Titel, Autor, usw.)
+
+
+Version 1.0 am 10.06.04
+-----------------------
+
+* Erste Version
+

@@ -1,35 +1,36 @@
 /*
  * regain - A file search engine providing plenty of formats
  * Copyright (C) 2004  Til Schneider
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Contact: Til Schneider, info@murfman.de
- * 
+ *
  * CVS information:
  *  $RCSfile: SearchContext.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/SearchContext.java,v $
- *     $Date: 2004/07/28 20:26:05 $
+ *     $Date: 2005/02/26 14:51:09 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.5 $
  */
 package net.sf.regain.search;
 
 import java.io.IOException;
 
 import net.sf.regain.RegainException;
+import net.sf.regain.search.config.IndexConfig;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.*;
@@ -39,16 +40,18 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
 
-
 /**
  * Contains the search context for one query. Using this context you have access of
  * all hits the search had.
  *
- * @see SearchToolkit#getSearchContextFromPageContext(javax.servlet.jsp.PageContext)
- * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
+ * @see SearchToolkit#getSearchContext(net.sf.regain.util.sharedtag.PageRequest)
+ * @author Til Schneider, www.murfman.de
  */
 public class SearchContext {
 
+  /** The configuration for the index. */
+  private IndexConfig mIndexConfig;
+  
   /** The Query text. */
   private String mQueryText;
 
@@ -57,7 +60,7 @@ public class SearchContext {
 
   /** The time the search took. */
   private int mSearchTime;
-  
+
   /**
    * Der Reguläre Ausdruck, zu dem eine URL passen muss, damit sie in einem
    * neuen Fenster geöffnet wird.
@@ -69,28 +72,24 @@ public class SearchContext {
   /**
    * Creates a new instance of SearchContext.
    *
-   * @param indexDir The directory where the lucene search index is located.
-   * @param openInNewWindowRegex Der Reguläre Ausdruck, zu dem eine URL passen
-   *        muss, damit sie in einem neuen Fenster geöffnet wird.
-   * @param searchFieldArr The names of the fields that should be searched by
-   *        default.
+   * @param indexConfig The configuration for the index.
    * @param queryText The query text to search for.
    *
    * @throws RegainException If searching failed.
    */
-  public SearchContext(String indexDir, String openInNewWindowRegex,
-    String[] searchFieldArr, String queryText)
+  public SearchContext(IndexConfig indexConfig, String queryText)
     throws RegainException
   {
     long startTime = System.currentTimeMillis();
 
     // AND als Default-Operation setzen
     // ChangeableQueryParser.setDefaultOperator(ChangeableQueryParser.AND_OPERATOR);
-    
+
+    mIndexConfig = indexConfig;
     mQueryText = queryText;
-    
+
     if (queryText != null) {
-      IndexSearcherManager manager = IndexSearcherManager.getInstance(indexDir);
+      IndexSearcherManager manager = IndexSearcherManager.getInstance(indexConfig.getDirectory());
 
       // Get the Analyzer
       Analyzer analyzer = manager.getAnalyzer();
@@ -98,14 +97,15 @@ public class SearchContext {
       BooleanQuery query;
       try {
         query = new BooleanQuery();
-        
+
+        String[] searchFieldArr = indexConfig.getSearchFieldList();
         for (int i = 0; i < searchFieldArr.length; i++) {
           QueryParser parser = new QueryParser(searchFieldArr[i], analyzer);
           parser.setOperator(QueryParser.DEFAULT_OPERATOR_AND);
           Query fieldQuery = parser.parse(queryText);
-          
+
           query.add(fieldQuery, false, false);
-          
+
           /*
           if (i == 0) {
             System.out.println("Query: '" + queryText + "' -> '"
@@ -127,6 +127,7 @@ public class SearchContext {
 
     mSearchTime = (int)(System.currentTimeMillis() - startTime);
 
+    String openInNewWindowRegex = indexConfig.getOpenInNewWindowRegex();
     if (openInNewWindowRegex != null) {
       try {
         mOpenInNewWindowRegex = new RE(openInNewWindowRegex);
@@ -137,11 +138,21 @@ public class SearchContext {
       }
     }
   }
+  
+  
+  /**
+   * Gets the name of the index.
+   * 
+   * @return The name of the index.
+   */
+  public String getIndexName() {
+    return mIndexConfig.getName();
+  }
 
 
   /**
    * Gets the query text of the search.
-   * 
+   *
    * @return The query text.
    */
   public String getQueryText() {
@@ -158,7 +169,7 @@ public class SearchContext {
     if (mHits == null) {
       return 0;
     }
-    
+
     return mHits.length();
   }
 
@@ -214,7 +225,7 @@ public class SearchContext {
 
   /**
    * Gibt zurück, ob die URL in einem neuen Fenster geöffnet werden soll.
-   * 
+   *
    * @param url Die zu prüfende URL
    * @return Ob die URL in einem neuen Fenster geöffnet werden soll.
    */
@@ -228,6 +239,36 @@ public class SearchContext {
         return false;
       }
     }
+  }
+  
+  
+  /**
+   * Rewrites the given URL according to the rewrite rules specified in the
+   * index config.
+   * 
+   * @param url The URL to rewrite (comes from the index).
+   * @return The rewritten URL (shown to the user).
+   */
+  public String rewriteUrl(String url) {
+    if (url == null) {
+      return null;
+    }
+    
+    // Get the rules
+    String[][] rewriteRules = mIndexConfig.getRewriteRules();
+    if (rewriteRules != null) {
+      for (int i = 0; i < rewriteRules.length; i++) {
+        String[] rule = rewriteRules[i];
+        String prefix = rule[0];
+        if (url.startsWith(prefix)) {
+          String replacement = rule[1];
+          return replacement + url.substring(prefix.length());
+        }
+      }
+    }
+    
+    // The URL does not match any rewrite rule -> Don't change it
+    return url;
   }
 
 }

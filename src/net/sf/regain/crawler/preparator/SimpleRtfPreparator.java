@@ -1,38 +1,39 @@
 /*
  * regain - A file search engine providing plenty of formats
  * Copyright (C) 2004  Til Schneider
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Contact: Til Schneider, info@murfman.de
- * 
+ *
  * CVS information:
  *  $RCSfile: SimpleRtfPreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/SimpleRtfPreparator.java,v $
- *     $Date: 2004/07/28 20:26:04 $
+ *     $Date: 2005/03/14 15:03:38 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.4 $
  */
 package net.sf.regain.crawler.preparator;
 
-import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
+import net.sf.regain.crawler.document.AbstractPreparator;
 import net.sf.regain.crawler.document.RawDocument;
 import net.sf.regain.crawler.preparator.rtf.RtfFilterReader;
 
@@ -43,9 +44,17 @@ import net.sf.regain.crawler.preparator.rtf.RtfFilterReader;
  * <p>
  * Dabei werden die Rohdaten des Dokuments von Formatierungsinformation befreit.
  *
- * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
+ * @author Til Schneider, www.murfman.de
  */
 public class SimpleRtfPreparator extends AbstractPreparator {
+
+  /**
+   * Creates a new instance of SimpleRtfPreparator.
+   */
+  public SimpleRtfPreparator() {
+    super("rtf");
+  }
+
 
   /**
    * Präpariert ein Dokument für die Indizierung.
@@ -55,18 +64,18 @@ public class SimpleRtfPreparator extends AbstractPreparator {
    * @throws RegainException Wenn die Präparation fehl schlug.
    */
   public void prepare(RawDocument rawDocument) throws RegainException {
-    ByteArrayInputStream stream = null;
+    InputStream stream = null;
     try {
-      stream = new ByteArrayInputStream(rawDocument.getContent());
-      RtfFilterReader reader = new RtfFilterReader(new InputStreamReader(stream)); 
+      stream = rawDocument.getContentAsStream();
+      RtfFilterReader reader = new RtfFilterReader(new InputStreamReader(stream));
       StringWriter writer = new StringWriter();
-      
+
       RegainToolkit.pipe(reader, writer);
-      
+
       stream.close();
       reader.close();
       writer.close();
-      
+
       String cleanedContent = writer.toString();
       setCleanedContent(cleanedContent);
     }

@@ -1,29 +1,29 @@
 /*
  * regain - A file search engine providing plenty of formats
  * Copyright (C) 2004  Til Schneider
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Contact: Til Schneider, info@murfman.de
- * 
+ *
  * CVS information:
  *  $RCSfile: Profiler.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/Profiler.java,v $
- *     $Date: 2004/07/28 20:26:04 $
+ *     $Date: 2005/03/16 13:57:54 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.9 $
  */
 package net.sf.regain.crawler;
 
@@ -33,22 +33,21 @@ import java.util.Iterator;
 
 import net.sf.regain.RegainToolkit;
 
-import org.apache.log4j.Category;
-
+import org.apache.log4j.Logger;
 
 /**
- * Misst die Zeit und den Datendurchsatz für einen Verarbeitungsschritt.
- * 
- * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
+ * Misst die Zeit und den Datendurchsatz fï¿½r einen Verarbeitungsschritt.
+ *
+ * @author Til Schneider, www.murfman.de
  */
 public class Profiler {
-  
-  /** Die Kategorie, die zum Loggen genutzt werden soll. */
-  private static Category mCat = Category.getInstance(Profiler.class);
-  
+
+  /** The logger for this class */
+  private static Logger mLog = Logger.getLogger(Profiler.class);
+
   /** Eine Liste mit allen erzeugten Profilern. */
   private static ArrayList mProfilerList;
-  
+
   /** Der Name. */
   private String mName;
   /** Der Einheit, die gemessen wird. */
@@ -63,16 +62,16 @@ public class Profiler {
   private int mAbortedMeasureCount;
   /**
    * Die Zeit, zu der die laufende Messung begonnen hat. Ist -1, wenn keine
-   * Messung läuft.
+   * Messung lï¿½uft.
    */
   private long mMeasureStart = -1;
-  
-  
-  
+
+
+
   /**
    * Erzeugt eine neue Profiler-Instanz und registriert sie bei der
    * Profiler-Liste.
-   * 
+   *
    * @param name Der Name des Verarbeitungsschrittes, der mit diesem Profiler
    *        gemessen werden sollen.
    * @param unit Die Bezeichnung der Dinge, die der Verarbeitungsschritt
@@ -81,54 +80,80 @@ public class Profiler {
   public Profiler(String name, String unit) {
     mName = name;
     mUnit = unit;
-    
+
     registerProfiler(this);
   }
-
+  
+  
+  /**
+   * Gets the number of measures.
+   * 
+   * @return The number of measures.
+   */
+  public int getMeasureCount() {
+    return mMeasureCount;
+  }
+  
+  
+  /**
+   * Gets the number of aborted measures.
+   * 
+   * @return The number of aborted measures.
+   */
+  public int getAbortedMeasureCount() {
+    return mAbortedMeasureCount;
+  }
+  
+  
+  /**
+   * Clears the registered profilers.
+   */
+  public static synchronized void clearRegisteredProfilers() {
+    mProfilerList = null;
+  }
 
 
   /**
    * Registriert einen Profiler.
-   * 
+   *
    * @param profiler Der zu registrierende Profiler.
    */
   private static synchronized void registerProfiler(Profiler profiler) {
     if (mProfilerList == null) {
       mProfilerList = new ArrayList();
     }
-    
+
     mProfilerList.add(profiler);
   }
-  
-  
+
 
   /**
    * Startet eine Messung.
-   */  
+   */
   public void startMeasuring() {
     if (mMeasureStart != -1) {
-      mCat.warn("A profiler measuring for " + mName + " was started, although "
+      mLog.warn("A profiler measuring for " + mName + " was started, although "
         + "there is currently a measuring running!");
     }
     mMeasureStart = System.currentTimeMillis();
   }
-  
-  
+
+
 
   /**
    * Stoppt eine Messung.
-   * 
+   *
    * @param bytes Die Anzahl der verarbeiteten Bytes.
-   */  
+   */
   public void stopMeasuring(long bytes) {
     if (mMeasureStart == -1) {
-      mCat.warn("A profiler measuring for " + mName + " was stopped, although "
+      mLog.warn("A profiler measuring for " + mName + " was stopped, although "
         + "there was currently no measuring running!");
     } else {
       mTotalTime += System.currentTimeMillis() - mMeasureStart;
       mTotalBytes += bytes;
       mMeasureCount++;
-      
+
       mMeasureStart = -1;
     }
   }
@@ -138,75 +163,86 @@ public class Profiler {
   /**
    * Bricht eine Messung ab. Eine Messung wird dann abgebrochen, wenn der
    * Verarbeitungsschritt nicht korrekt verlaufen ist, z.B. weil eine
-   * Exception geworfen wurde. 
+   * Exception geworfen wurde.
    */
   public void abortMeasuring() {
     if (mMeasureStart == -1) {
-      mCat.warn("A profiler measuring for " + mName + " was aborted, although "
+      mLog.warn("A profiler measuring for " + mName + " was aborted, although "
         + "there was currently no measuring running!");
     } else {
       mMeasureStart = -1;
       mAbortedMeasureCount++;
     }
   }
-  
-  
-  
+
+
+
   /**
-   * Gibt das Resultat der Messungen als String zurück.
-   * 
+   * Gibt das Resultat der Messungen als String zurï¿½ck.
+   *
    * @return Das Resultat der Messungen
    */
   public String toString() {
-    if (mMeasureStart != -1) {
-      mCat.warn("The profiler result for " + mName + " was requested, although "
-        + "there is currently a measuring running!");
-    }
-
+    // Get a current snap shot
+    long totalTime = mTotalTime;
+    long totalBytes = mTotalBytes;
+    int measureCount = mMeasureCount;
+    int abortedMeasureCount = mAbortedMeasureCount;
+    
+    // Calculate the results
     long averageTime = 0;
     long averageBytes = 0;
-    if (mMeasureCount > 0) {
-      averageTime = mTotalTime / mMeasureCount;
-      averageBytes = mTotalBytes / mMeasureCount;
-    }
-    
-    long dataRatePerSec = 0;
-    double secs = mTotalTime / 1000.0;
-    if (secs > 0) {
-      dataRatePerSec = (long) (mTotalBytes / secs); 
+    if (measureCount > 0) {
+      averageTime = totalTime / measureCount;
+      averageBytes = totalBytes / measureCount;
     }
 
-    // Berechnen, wie groß die Labels sein müssen
+    long dataRatePerSec = 0;
+    double secs = totalTime / 1000.0;
+    if (secs > 0) {
+      dataRatePerSec = (long) (totalBytes / secs);
+    }
+    
+    long countsPerMinute = 0;
+    if (totalTime > 0) {
+      countsPerMinute = measureCount * (60 * 1000) / totalTime;
+    }
+
+    // Berechnen, wie groï¿½ die Labels sein mï¿½ssen
     int maxStaticLabelLength = 12;                   // "Average time"
     int maxDynamicLabelLength = 10 + mUnit.length(); // "Completed " + mUnit
     int minLabelLength = Math.max(maxStaticLabelLength, maxDynamicLabelLength);
-    
+
     // Systemspeziefischen Zeilenumbruch holen
     String lineSeparator = RegainToolkit.getLineSeparator();
 
-    // Statistik ausgeben    
-    StringBuffer buffer = new StringBuffer(mName + ":" + lineSeparator);
-    if (mAbortedMeasureCount > 0) {
+    // Statistik ausgeben
+    StringBuffer buffer = new StringBuffer(mName + ":");
+    NumberFormat numberFormat = NumberFormat.getInstance();
+    if (abortedMeasureCount > 0) {
+      buffer.append(lineSeparator);
+
       appendLabel(buffer, "Aborted " + mUnit, minLabelLength);
-      buffer.append(mAbortedMeasureCount + " " + mUnit + " (");
-      
+      buffer.append(numberFormat.format(abortedMeasureCount) + " " + mUnit + " (");
+
       // Ausgeben, wieviel % der Messungen fehl schlugen
-      int total = mAbortedMeasureCount + mMeasureCount;
-      double errorPercent = (double) mAbortedMeasureCount / (double) total;
+      int total = abortedMeasureCount + measureCount;
+      double errorPercent = (double) abortedMeasureCount / (double) total;
       buffer.append(RegainToolkit.toPercentString(errorPercent));
 
-      buffer.append(")" + lineSeparator);
+      buffer.append(")");
     }
-    if (mMeasureCount > 0) {
-      NumberFormat format = NumberFormat.getInstance();
+    if (measureCount > 0) {
+      buffer.append(lineSeparator);
+
       appendLabel(buffer, "Completed " + mUnit, minLabelLength);
-      buffer.append(format.format(mMeasureCount) + " " + mUnit + lineSeparator);
+      buffer.append(numberFormat.format(measureCount) + " " + mUnit + lineSeparator);
 
       appendLabel(buffer, "Total time", minLabelLength);
-      buffer.append(toTimeString(mTotalTime) + lineSeparator);
+      buffer.append(toTimeString(totalTime) + lineSeparator);
 
       appendLabel(buffer, "Total data", minLabelLength);
-      buffer.append(RegainToolkit.bytesToString(mTotalBytes) + lineSeparator);
+      buffer.append(RegainToolkit.bytesToString(totalBytes) + lineSeparator);
 
       appendLabel(buffer, "Average time", minLabelLength);
       buffer.append(toTimeString(averageTime) + lineSeparator);
@@ -215,22 +251,25 @@ public class Profiler {
       buffer.append(RegainToolkit.bytesToString(averageBytes) + lineSeparator);
 
       appendLabel(buffer, "Data rate", minLabelLength);
-      buffer.append(RegainToolkit.bytesToString(dataRatePerSec) + "/sec");
+      buffer.append(RegainToolkit.bytesToString(dataRatePerSec) + "/sec" + lineSeparator);
+
+      appendLabel(buffer, "Output", minLabelLength);
+      buffer.append(numberFormat.format(countsPerMinute) + " " + mUnit + "/min");
     }
-    
+
     return buffer.toString();
   }
 
 
   /**
-   * Fügt bei einem StringBuffer eine Beschriftung hinzu. Dabei werden so viele
-   * Leerzeichen angehängt, dass alle Beschriftungen auf selber Höhe enden. 
-   * 
-   * @param buffer Der StringBuffer bei dem die Beschriftung hinzugefügt werden
+   * Fï¿½gt bei einem StringBuffer eine Beschriftung hinzu. Dabei werden so viele
+   * Leerzeichen angehï¿½ngt, dass alle Beschriftungen auf selber Hï¿½he enden.
+   *
+   * @param buffer Der StringBuffer bei dem die Beschriftung hinzugefï¿½gt werden
    *        soll.
-   * @param label Die Beschriftung, die hinzugefügt werden soll.
-   * @param minLabelLength Die minimale Länge der Beschriftung. (Der Rest wird
-   *        mit Leerzeichen aufgefüllt).
+   * @param label Die Beschriftung, die hinzugefï¿½gt werden soll.
+   * @param minLabelLength Die minimale Lï¿½nge der Beschriftung. (Der Rest wird
+   *        mit Leerzeichen aufgefï¿½llt).
    */
   private void appendLabel(StringBuffer buffer, String label,
     int minLabelLength)
@@ -238,17 +277,17 @@ public class Profiler {
     buffer.append("  ");
     buffer.append(label);
     buffer.append(": ");
-    
+
     int spaceCount = minLabelLength - label.length();
     for (int i = 0; i < spaceCount; i++) {
       buffer.append(' ');
     }
   }
-  
-  
+
+
   /**
-   * Gibt einen für den Menschen gut lesbaren String für eine Zeit zurück.
-   * 
+   * Gibt einen fï¿½r den Menschen gut lesbaren String fï¿½r eine Zeit zurï¿½ck.
+   *
    * @param time Die Zeit in Millisekunden
    * @return Die Zeit als String
    */
@@ -260,57 +299,65 @@ public class Profiler {
     long mins = time % 60;
     time /= 60;
     long hours = time;
-    
-    if ((hours != 0) || (mins != 0)) {
+
+    if (hours != 0) {
       return hours + ":"
         + ((mins > 9) ? "" : "0") + mins + ":"
         + ((secs > 9) ? "" : "0") + secs + " h";
+    }
+    else if (mins != 0) {
+      return mins + ":"
+        + ((secs > 9) ? "" : "0") + secs + " min";
     }
     else if (secs != 0) {
       NumberFormat format = NumberFormat.getInstance();
       format.setMinimumFractionDigits(2);
       format.setMaximumFractionDigits(2);
-      
-      String asString = format.format((double) secs + ((double) millis) / 1000.0);
-      
+
+      String asString = format.format(secs + millis / 1000.0);
+
       return asString + " sec";
     }
     else {
       return millis + " millis";
     }
   }
-  
-  
+
+
 
   /**
-   * Gibt zurück, ob dieser Profiler genutzt wurde. Das ist der Fall, wenn
-   * mindestens eine Messung durchgeführt wurde.
-   * 
+   * Gibt zurï¿½ck, ob dieser Profiler genutzt wurde. Das ist der Fall, wenn
+   * mindestens eine Messung durchgefï¿½hrt wurde.
+   *
    * @return Ob dieser Profiler genutzt wurde.
-   */  
+   */
   public boolean wasUsed() {
     return (mMeasureCount > 0) || (mAbortedMeasureCount > 0);
   }
-  
-  
+
+
 
   /**
-   * Gibt die Resultate sämtlicher genutzter Profiler zurück.
-   * 
-   * @return Die Resultate sämtlicher genutzter Profiler.
-   */  
+   * Gibt die Resultate sï¿½mtlicher genutzter Profiler zurï¿½ck.
+   *
+   * @return Die Resultate sï¿½mtlicher genutzter Profiler.
+   */
   public static String getProfilerResults() {
-    StringBuffer buffer = new StringBuffer();
+    if (mProfilerList == null) {
+      return "";
+    }
     
+    StringBuffer buffer = new StringBuffer();
+
     for (Iterator iter = mProfilerList.iterator(); iter.hasNext();) {
       Profiler profiler = (Profiler) iter.next();
-      
+
       if (profiler.wasUsed()) {
         buffer.append(profiler);
         buffer.append(RegainToolkit.getLineSeparator());
       }
     }
-    
+
     return buffer.toString();
   }
 

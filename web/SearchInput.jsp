@@ -1,23 +1,36 @@
-<%@page contentType="text/html"%>
+<%@page contentType="text/html" errorPage="errorpage.jsp"%>
 
 <html>
 <head>
-  <title>Suchanfrage</title>
+  <title>regain - <search:msg key="search"/></title>
+  <script src="regain.js" type="text/javascript"></script>
+  <link href="regain.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
+  <table class="top"><tr>
+    <td><img src="img/logo_regain.gif" width="201" height="66"></td>
+  </tr></table>
 
-  <form name="search" action="SearchOutput.jsp" method="get">
-    <input name="index" type="hidden" value="main">
-    <p>
-      <b>Suchen nach: </b>
-      <input name="query" size="44"/>
-    </p>
-    <p>
-      <input name="maxresults" size="4" value="10"/>&nbsp;Ergebnisse pro Seite&nbsp;
-      <input type="submit" value="Search"/>
-    </p>
-  </form>
+  <table class="content">
+    <tr class="headline"><td>
+      <b><search:msg key="search"/></b>
+    </td></tr>
+    <tr><td>
+
+      <form name="search" action="search.jsp" method="get">
+        <p class="searchinput">
+          <b><search:msg key="searchFor"/>: </b>
+          <input name="query" size="40"/>
+          <search:input_submit text="{msg:search}"/>
+        </p>
+      </form>
+
+      <br>
+    </td></tr>
+  </table>
+
+  <%@include file="footer.jsp" %>
 
 </body>
 </html>

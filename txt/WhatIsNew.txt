@@ -1,0 +1,70 @@
+* Crawler: Bugfix: The PoiMsExcelPreparator did not get on with all number and
+  date formats.
+* Crawler: The error log is now more detailed (with stacktraces).
+* Crawler: Preparators are now encapsulated in own jars. Thus the regain.jar
+  only contains what regain itself needs and preparators may be replaced more
+  easily. Also other developers may provide preparators that can be mounted
+  very easily.
+  The configuration of the preparators is still in the CrawlerConfiguration.xml.
+  But now not all preparators must be declared. The preparators are executed in
+  the same order as they are configured, the unconfigured preparators afterwards.
+* Desktop search: The desktop search now runs under Linux, too.
+* Search: Bugfix: Files whichs URL contains a double slash (e.g. of network
+  drives: //fileserver/bla/blubb) couldn't be loaded.
+* Desktop search: Bugfix: At the search results umlauts were presentet wrong.
+* Desktop search: On the status page a currently running index update can now be
+  paused and an index update can be started.
+* Crawler: Bugfix: The HtmlPraeparator did not get on with all files.
+
+
+Version 1.1 Beta 2 on 2005-03-12
+--------------------------------
+
+* Crawler: The crawler now creates periodically so called breakpoint. When doing
+  so the current state of the search index is copied into a separate directory.
+  If the index update should be cancelled (e.g. if the computer is shut down),
+  the crawler will go on from the last breakpoint.
+* Desktop search: The status page now shows the timing results.
+
+
+Version 1.1 Beta 1 on 2005-03-10
+--------------------------------
+
+* Desktop search: reagain now provides a desktop search besides the server
+  search. The desktop searchs provides many features that makes the use as easy
+  as winking:
+    - An installer for Windows.
+    - Integration in the task bar under Linux and Windows.
+    - Configuration over the browser
+    - Status monitoring over the browser
+* Crawler: There is now a preparator for OpenOffice and StarOffice documents.
+* All: Updated to the newest versions of the used projects.
+* Crawler: Preparators are now configurable by the CrawlerConfiguration.xml.
+* Search: The Search is now configured by the SearchConfiguration.xml, not the
+  web.xml any more. There is only the path to the SearchConfiguration.xml
+  any more.
+* Search: The Search now provides URL rewriting. This way you can index
+  documents in file://c:/www‑data/intranet/docs and show the documents in the
+  browser as http://intranet.murfman.de/docs.
+* Crawler: Auxiliary fields: The index may now be extended by auxiliary fields
+  that are extracted from a document's URL.
+  Example: Assumed you have a directory with a sub directory for every project.
+  Then you can generate an auxiliary field with the project name. Doing so you
+  get only documents from that directory when searching for
+  "Offer project:otto23".
+* Search: Advanced search: All values that are in the index for one field may
+  now be provided as a combo box on the search page. Particularly together with
+  auxiliary fields this is very useful.
+* Search: Some browsers load for security reasons no file links from http pages.
+  Thus all documents that are in the index are now provided over HTTP. Of corse
+  at the desktop search these documents are only accessible from the local host.
+* Crawler: The JacobMsWordPraeparator now regards styles. Thus it is possible
+  to extract headlines that will be weight more when searching.
+* Crawler: The JacobMsOfficePraparators are now able to extract the description
+  fields (Title, author, etc.)
+
+
+Version 1.0 on 2004-06-10
+-------------------------
+
+* First version

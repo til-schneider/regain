@@ -6,31 +6,29 @@
 
 <web-app>
 
-<!-- Das Verzeichnis des Index 'main' -->
-<context-param>
-  <param-name>indexDir.main</param-name>
-  <param-value>c:\Temp\searchindex</param-value>
-</context-param>
+  <!-- The location of the configuration file -->
+  <context-param>
+    <param-name>searchConfigFile</param-name>
+    <param-value>../conf/regain/SearchConfiguration.xml</param-value>
+  </context-param>
 
-<!--
- | Die Regex des Index 'main', zu der eine URL passen muss, damit sie in einem
- | neuen Fenster geöffnet wird.
- +-->
-<context-param>
-  <param-name>openInNewWindowRegex.main</param-name>
-  <param-value>.(pdf|rtf|doc|xls|ppt)$</param-value>
-</context-param>
+  <!-- The location of the resource bundles -->
+  <context-param>
+    <param-name>webDir</param-name>
+    <param-value>../webapps/regain</param-value>
+  </context-param>
 
-<!-- Das Verzeichnis des Index 'big' -->
-<context-param>
-  <param-name>indexDir.big</param-name>
-  <param-value>c:\Temp\searchindex3</param-value>
-</context-param>
+  <!-- file servlet -->
+  <servlet>
+    <servlet-name>file</servlet-name>
+    <display-name>FileServlet</display-name>
+    <servlet-class>net.sf.regain.ui.server.FileServlet</servlet-class>
+  </servlet>
 
-<!-- Die Defaultliste der Felder, in denen gesucht werden soll -->
-<context-param>
-  <param-name>searchFieldList</param-name>
-  <param-value>content title headlines</param-value>
-</context-param>
+  <!-- Mapping for file servlet -->
+  <servlet-mapping>
+    <servlet-name>file</servlet-name>
+    <url-pattern>/file/*</url-pattern>
+  </servlet-mapping>
 
 </web-app>

@@ -1,29 +1,29 @@
 /*
  * regain - A file search engine providing plenty of formats
  * Copyright (C) 2004  Til Schneider
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Contact: Til Schneider, info@murfman.de
- * 
+ *
  * CVS information:
  *  $RCSfile: HtmlContentExtractor.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/html/HtmlContentExtractor.java,v $
- *     $Date: 2004/07/28 20:26:04 $
+ *     $Date: 2004/11/10 15:08:51 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  */
 package net.sf.regain.crawler.preparator.html;
 
@@ -40,7 +40,7 @@ import org.apache.regexp.RESyntaxException;
  * Dazu werden zwei reguläre Ausdrücke verwendet, die jeweils den Anfang und das
  * Ende des Inhalts erkennen. Alles was dazwischen liegt wird ausgeschnitten.
  *
- * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
+ * @author Til Schneider, www.murfman.de
  */
 public class HtmlContentExtractor extends AbstractExtractor {
 
@@ -49,16 +49,16 @@ public class HtmlContentExtractor extends AbstractExtractor {
    * <p>
    * Ist <code>null</code>, wenn das HTML-Dokuments nicht auf Überschriften
    * durchsucht werden soll.
-   */  
+   */
   private RE mHeadlineRE;
-  
+
   /**
    * Die Gruppe des Reguläre Ausdrucks, der eine Überschrift findet.
-   */  
+   */
   private int mHeadlineRegexGroup = -1;
-  
-  
-  
+
+
+
   /**
    * Erzeugt eine neue HtmlContentExtractor-Instanz.
    *
@@ -88,7 +88,7 @@ public class HtmlContentExtractor extends AbstractExtractor {
     throws RegainException
   {
     super(prefix, contentStartRegex, contentEndRegex);
-    
+
     try {
       if ((headlineRegex != null) && (headlineRegex.length() != 0)) {
         mHeadlineRE = new RE(headlineRegex, RE.MATCH_CASEINDEPENDENT | RE.MATCH_MULTILINE);
@@ -99,9 +99,9 @@ public class HtmlContentExtractor extends AbstractExtractor {
       throw new RegainException("Syntax error in regular expression", exc);
     }
   }
-  
-  
-  
+
+
+
   /**
    * Extrahiert den eigentlichen HTML-Inhalt aus dem gegebenen Dokument.
    *
@@ -112,48 +112,48 @@ public class HtmlContentExtractor extends AbstractExtractor {
   public String extractContent(RawDocument rawDocument) throws RegainException {
     return extractFragment(rawDocument);
   }
-  
-  
-  
+
+
+
   /**
    * Extrahiert die Überschrifen aus einem HTML-Dokuments.
    * <p>
    * Es handelt sich dabei nicht um die Überschrift des Dokuments selbst,
    * sondern lediglich um Unter-Überschriften, die in dem Dokument verwendendet
    * werden. Mit Hilfe dieser Überschriften läßt sich eine bessere Relevanz
-   * berechnen. 
-   * 
+   * berechnen.
+   *
    * @param content Der Inhalt, aus dem die Überschriften extrahiert werden
-   *        sollen. 
+   *        sollen.
    * @return Die Überschriften, die im Dokument gefunden wurden, durch \n
    *         getrennt, oder <code>null</code>, wenn keine Überschrift gefunden
-   *         wurde oder wenn gar nicht nach Überschriften gesucht werden soll. 
+   *         wurde oder wenn gar nicht nach Überschriften gesucht werden soll.
    * @see #extractContent(RawDocument)
    */
   public String extractHeadlines(String content) {
     if (mHeadlineRE == null) {
       return null;
     }
-    
+
     int offset = 0;
     StringBuffer buffer = null;
     while (mHeadlineRE.match(content, offset)) {
       String headline = mHeadlineRE.getParen(mHeadlineRegexGroup);
       headline = headline.trim();
-      
+
       // Append the headline if it is not empty
       if (headline.length() != 0) {
         if (buffer == null) {
           buffer = new StringBuffer();
         }
-        
+
         buffer.append(headline);
         buffer.append("\n");
       }
-      
+
       offset = mHeadlineRE.getParenEnd(0);
     }
-    
+
     if (buffer == null) {
       return null;
     } else {

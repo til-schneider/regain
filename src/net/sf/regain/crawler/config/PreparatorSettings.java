@@ -1,91 +1,107 @@
 /*
  * regain - A file search engine providing plenty of formats
  * Copyright (C) 2004  Til Schneider
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Contact: Til Schneider, info@murfman.de
- * 
+ *
  * CVS information:
  *  $RCSfile: PreparatorSettings.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/PreparatorSettings.java,v $
- *     $Date: 2004/07/28 20:26:03 $
+ *     $Date: 2005/03/14 15:04:15 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.4 $
  */
 package net.sf.regain.crawler.config;
 
 /**
- * Die Einstellungen für einen Präparator
- * 
+ * The settings of a preparator
+ *
  * @see net.sf.regain.crawler.document.Preparator
- * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
+ * @author Til Schneider, www.murfman.de
  */
 public class PreparatorSettings {
   
-  /**
-   * Der reguläre Ausdruck, der eine URL identifiziert, die mit dem
-   * Präparator bearbeitet werden soll.
-   */
-  private String mUrlRegex;
+  /** The default preparator package. */
+  public static final String DEFAULT_PREPARATOR_PACKAGE = "net.sf.regain.crawler.preparator";
 
+  /** Specifies whether the preparator is enabled. */
+  private boolean mIsEnabled;
+  
   /**
-   * Der Klassenname des Präparators. Die Klasse muss
-   * {@link net.sf.regain.crawler.document.Preparator Preparator}
-   * implementieren.
+   * The class name of the preparator. The class must implement
+   * {@link net.sf.regain.crawler.document.Preparator Preparator}.
    */
   private String mPreparatorClassName;
   
-  
-  
   /**
-   * Erzeugt eine neue PreparatorSettings-Instanz
-   * 
-   * @param urlRegex Der reguläre Ausdruck, der eine URL identifiziert, die mit
-   *        dem Präparator bearbeitet werden soll.
-   * @param preparatorClassName Der Klassenname des Präparators. Die Klasse muss
-   *        {@link net.sf.regain.crawler.document.Preparator Preparator}
-   *        implementieren.
+   * The configuration of the preparator.
    */
-  public PreparatorSettings(String urlRegex, String preparatorClassName) {
-    mUrlRegex = urlRegex;
-    mPreparatorClassName = preparatorClassName;
-  }
-  
-  
-  
+  private PreparatorConfig mPreparatorConfig;
+
+
   /**
-   * Gibt den reguläre Ausdruck zurück, der eine URL identifiziert, die mit
-   * dem Präparator bearbeitet werden soll.
+   * Creates a new instance of PreparatorSettings.
    * 
-   * @return Der reguläre Ausdruck, der eine URL identifiziert, die mit dem
-   *         Präparator bearbeitet werden soll.
+   * @param isEnabled Specifies whether the preparator is enabled.
+   * @param preparatorClassName The class name of the preparator. The class must
+   *        implement {@link net.sf.regain.crawler.document.Preparator Preparator}.
+   * @param preparatorConfig The configuration of the preparator.
    */
-  public String getUrlRegex() {
-    return mUrlRegex;
+  public PreparatorSettings(boolean isEnabled, String preparatorClassName,
+    PreparatorConfig preparatorConfig)
+  {
+    mIsEnabled = isEnabled;
+    mPreparatorConfig = preparatorConfig;
+    
+    if (preparatorClassName.startsWith(".")) {
+      mPreparatorClassName = DEFAULT_PREPARATOR_PACKAGE + preparatorClassName;
+    } else {
+      mPreparatorClassName = preparatorClassName;
+    }
   }
-  
-  
-  
+
+
   /**
-   * Gibt den Klassenname des Präparators zurück.
+   * Gets whether the preparator is enabled.
    * 
-   * @return Der Klassenname des Präparators.
+   * @return Whether the preparator is enabled.
+   */
+  public boolean isEnabled() {
+    return mIsEnabled;
+  }
+
+
+  /**
+   * Gets the class name of the preparator.
+   *
+   * @return The class name of the preparator.
    */
   public String getPreparatorClassName() {
     return mPreparatorClassName;
+  }
+
+  
+  /**
+   * Gets the configuration of the preparator.
+   * 
+   * @return The configuration of the preparator.
+   */
+  public PreparatorConfig getPreparatorConfig() {
+    return mPreparatorConfig;
   }
 
 }

@@ -1,46 +1,53 @@
 /*
  * regain - A file search engine providing plenty of formats
  * Copyright (C) 2004  Til Schneider
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Contact: Til Schneider, info@murfman.de
- * 
+ *
  * CVS information:
  *  $RCSfile: CrawlerToolkit.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/CrawlerToolkit.java,v $
- *     $Date: 2004/07/28 20:26:04 $
+ *     $Date: 2005/03/14 15:03:59 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.10 $
  */
 package net.sf.regain.crawler;
 
 import java.io.*;
 import java.net.*;
 
+import org.apache.log4j.Logger;
+
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
-
+import net.sf.regain.crawler.config.CrawlerConfig;
+import net.sf.regain.util.io.HtmlEntities;
 
 /**
  * Enthï¿½lt Hilfsmethoden fï¿½r den Crawler und seine Hilfsklassen.
  *
- * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
+ * @author Til Schneider, www.murfman.de
  */
 public class CrawlerToolkit {
 
+  /** The logger for this class */
+  private static Logger mLog = Logger.getLogger(CrawlerToolkit.class);
+
+  
   /**
    * Originally copied from javax.swing.JEditorPane#getStream(...).
    * <p>
@@ -116,7 +123,7 @@ public class CrawlerToolkit {
       out = new ByteArrayOutputStream();
 
       RegainToolkit.pipe(in, out);
-      
+
       out.close();
       return out.toByteArray();
     }
@@ -132,39 +139,92 @@ public class CrawlerToolkit {
       }
     }
   }
-  
-  
+
+
   /**
-   * Kopiert eine Datei.
-   * 
-   * @param from Die Quelldatei
-   * @param to Die Zieldatei
-   * @throws RegainException Wenn das Kopieren fehl schlug.
+   * Writes data to a file
+   *
+   * @param data The data
+   * @param file The file to write to
+   *
+   * @throws RegainException When writing failed
    */
-  public static void copyFile(File from, File to) throws RegainException {
-    FileInputStream in = null;
-    FileOutputStream out = null;
+  public static void writeToFile(byte[] data, File file)
+    throws RegainException
+  {
+    FileOutputStream stream = null;
     try {
-      in = new FileInputStream(from);
-      out = new FileOutputStream(to);
-      
-      RegainToolkit.pipe(in, out);
+      stream = new FileOutputStream(file);
+      stream.write(data);
+      stream.close();
     }
     catch (IOException exc) {
-      throw new RegainException("Copying file from " + from.getAbsolutePath()
-        + " to " + to.getAbsolutePath() + " failed", exc);
+      throw new RegainException("Writing file failed: " + file.getAbsolutePath(), exc);
     }
     finally {
-      if (out != null) {
-        try { out.close(); } catch (IOException exc) {}
-      }
-      if (in != null) {
-        try { in.close(); } catch (IOException exc) {}
+      if (stream != null) {
+        try { stream.close(); } catch (IOException exc) {}
       }
     }
   }
-  
-  
+
+
+  /**
+   * Schreibt einen String in eine Datei.
+   *
+   * @param text Der String.
+   * @param file Die Datei, in die geschrieben werden soll.
+   *
+   * @throws RegainException Wenn die Erstellung der Liste fehl schlug.
+   */
+  public static void writeToFile(String text, File file)
+    throws RegainException
+  {
+    writeListToFile(new String[] { text }, file);
+  }
+
+
+  /**
+   * Schreibt eine Wortliste in eine Datei.
+   *
+   * @param wordList Die Wortliste.
+   * @param file Die Datei, in die geschrieben werden soll.
+   *
+   * @throws RegainException Wenn die Erstellung der Liste fehl schlug.
+   */
+  public static void writeListToFile(String[] wordList, File file)
+    throws RegainException
+  {
+    if ((wordList == null) || (wordList.length == 0)) {
+      // Nothing to do
+      return;
+    }
+
+    FileOutputStream stream = null;
+    PrintStream printer = null;
+    try {
+      stream = new FileOutputStream(file);
+      printer = new PrintStream(stream);
+
+      for (int i = 0; i < wordList.length; i++) {
+        printer.println(wordList[i]);
+      }
+    }
+    catch (IOException exc) {
+      throw new RegainException("Writing word list to " + file.getAbsolutePath()
+        + " failed", exc);
+    }
+    finally {
+      if (printer != null) {
+        printer.close();
+      }
+      if (stream != null) {
+        try { stream.close(); } catch (IOException exc) {}
+      }
+    }
+  }
+
+
   /**
    * Lï¿½dt eine Datei vom Dateisystem und gibt den Inhalt zurï¿½ck.
    *
@@ -183,9 +243,9 @@ public class CrawlerToolkit {
     try {
       in = new FileInputStream(file);
       out = new ByteArrayOutputStream((int) file.length());
-      
+
       RegainToolkit.pipe(in, out);
-      
+
       return out.toByteArray();
     }
     catch (IOException exc) {
@@ -230,69 +290,28 @@ public class CrawlerToolkit {
           String domain = parentUrl.substring(0, firstSlashPos);
           url = domain + url;
         } else {
-          throw new IllegalArgumentException("Parent URL is not absolute: " + parentUrl);
+          // The parentUrl is a domain without a path, e.g. "http://www.murfman.de"
+          // -> Use the whole parentUrl
+          // NOTE: url start with a /
+          url = parentUrl + url;
         }
       } else {
         // This URL is really relative
         int lastSlashPos = parentUrl.lastIndexOf('/');
-        if (lastSlashPos != -1) {
+        // NOTE: http:// has 7 chars
+        if (lastSlashPos > 7) {
           String domainWidthPath = parentUrl.substring(0, lastSlashPos + 1);
           url = domainWidthPath + url;
         } else {
-          throw new IllegalArgumentException("Parent URL is not absolute: " + parentUrl);
+          // The parentUrl is a domain without a path, e.g. "http://www.murfman.de"
+          // -> Use the whole parentUrl
+          url = parentUrl + "/" + url;
         }
       }
     }
 
     return url;
   }
-
-
-
-  /**
-   * Gibt die Datei zurï¿½ck, die hinter einer URL mit dem file:// Protokoll
-   * steht.
-   *
-   * @param url Die URL, fï¿½r die die Datei zurï¿½ckgegeben werden soll.
-   * @return Die zur URL passende Datei.
-   * @throws RegainException Wenn das Protokoll der URL nicht
-   *         <code>file://</code> ist.
-   */
-  public static File urlToFile(String url) throws RegainException {
-    if (! url.startsWith("file://")) {
-      throw new RegainException("URL must have the file:// protocol to get a "
-        + "File for it");
-    }
-    
-    // Cut the file://
-    String fileName = url.substring(7);
-
-    // Replace %20 by spaces
-    fileName = RegainToolkit.replace(fileName, "%20", " ");
-    
-    return new File(fileName);
-  }
-
-  
-  
-  /**
-   * Gibt die URL einer Datei zurï¿½ck.
-   *
-   * @param file Die Datei, deren URL zurï¿½ckgegeben werden soll.
-   * @return Die URL der Datei.
-   */
-  public static String fileToUrl(File file) {
-    String fileName = file.getAbsolutePath();
-    
-    // Replace spaces by %20
-    fileName = RegainToolkit.replace(fileName, " ", "%20");
-    
-    // Replace file separators by /
-    fileName = RegainToolkit.replace(fileName, File.separator, "/");
-    
-    return "file://" + fileName;
-  }
-
 
 
   /**
@@ -310,6 +329,157 @@ public class CrawlerToolkit {
       System.out.print(activeArr[i].getName());
     }
     System.out.println();
+  }
+
+
+  /**
+   * Initialisiert die Proxy-Einstellungen.
+   *
+   * @param config Die Konfiguration, aus der die Einstellungen gelesen werden
+   *        sollen.
+   */
+  public static void initProxy(CrawlerConfig config) {
+    String httpProxyHost = config.getProxyHost();
+    String httpProxyPort = config.getProxyPort();
+    String httpProxyUser = config.getProxyUser();
+    String httpProxyPassword = config.getProxyPassword();
+
+    String msg = "";
+    if (httpProxyHost != null) {
+      System.setProperty("http.proxyHost", httpProxyHost);
+      msg += " host: " + httpProxyHost;
+    }
+    if (httpProxyPort != null) {
+      System.setProperty("http.proxyPort", httpProxyPort);
+      msg += " port: " + httpProxyPort;
+    }
+    if (httpProxyUser != null) {
+      System.setProperty("http.proxyUser", httpProxyUser);
+      msg += " user: " + httpProxyUser;
+    }
+    if (httpProxyPassword != null) {
+      System.setProperty("http.proxyPassword", httpProxyPassword);
+      msg += " password: (" + httpProxyPassword.length() + " characters)";
+    }
+
+    if (msg.length() != 0) {
+      mLog.info("Using proxy:" + msg);
+    } else {
+      mLog.info("Using no proxy");
+    }
+  }
+
+
+  /**
+   * Wandelt alle HTML-Entitäten in ihre Ensprechungen.
+   *
+   * @param text Den Text, dessen HTML-Entitäten gewandelt werden sollen.
+   *
+   * @return Der gewandelte Text.
+   */
+  public static String replaceHtmlEntities(String text) {
+    StringBuffer clean = new StringBuffer();
+
+    int offset = 0;
+    int entityStart;
+    while ((entityStart = text.indexOf('&', offset)) != -1) {
+      // Append the part since the last entity
+      String textPart = text.substring(offset, entityStart);
+      clean.append(textPart);
+
+      // Find the end of the entity
+      int entityEnd = text.indexOf(';', entityStart);
+      if (entityEnd == -1) {
+        // Syntax error: The entity doesn't end -> Forget that dirty end
+        offset = text.length();
+        break;
+      }
+
+      // Extract, decode and append the entity
+      String entity = text.substring(entityStart, entityEnd + 1);
+      String decoded;
+      try {
+        decoded = HtmlEntities.decode(entity);
+      }
+      catch (Throwable thr) {
+        // This doesn't seem to be a wellformed entity -> Leave the text as it is
+        decoded = entity;
+      }
+      clean.append(decoded);
+
+      // Get the next offset
+      offset = entityEnd + 1;
+    }
+
+    // Append the part since the last entity
+    if (offset < text.length()) {
+      clean.append(text.substring(offset, text.length()));
+    }
+
+    return clean.toString();
+  }
+
+
+  /**
+   * Säubert HTML-Text von seinen Tags und wandelt alle HTML-Entitäten in ihre
+   * Ensprechungen.
+   *
+   * @param text Der zu säubernde HTML-Text.
+   *
+   * @return Der von Tags gesäberte Text
+   */
+  public static String cleanFromHtmlTags(String text) {
+    StringBuffer clean = new StringBuffer();
+
+    int offset = 0;
+    int tagStart;
+    while ((tagStart = text.indexOf('<', offset)) != -1) {
+      // Extract the good part since the last tag
+      String goodPart = text.substring(offset, tagStart);
+
+      // Check whether the good part is wasted by cascaded tags
+      // Example: In the text "<!-- <br> --> Hello" "<!-- <br>" will be
+      //          detected as tag and "--> Hello" as good part.
+      //          We now have to scan the good part for a tag rest.
+      //          (In this example: "-->")
+      int tagRestEnd = goodPart.indexOf('>');
+      if (tagRestEnd != -1) {
+        goodPart = goodPart.substring(tagRestEnd + 1);
+      }
+
+      // Trim the good part
+      goodPart = goodPart.trim();
+
+      if (goodPart.length() > 0) {
+        // Replace all entities in the text and append the result
+        goodPart = replaceHtmlEntities(goodPart);
+        clean.append(goodPart);
+
+        // Append a space
+        clean.append(" ");
+      }
+
+      // Find the end of the tag
+      int tagEnd = text.indexOf('>', tagStart);
+      if (tagEnd == -1) {
+        // Syntax error: The tag doesn't end -> Forget that dirty end
+        offset = text.length();
+        break;
+      }
+
+      // Calculate the next offset
+      offset = tagEnd + 1;
+    }
+
+    // Extract the good part since the last tag, replace all entities and append
+    // the result
+    if (offset < text.length()) {
+      String goodPart = text.substring(offset, text.length()).trim();
+      goodPart = replaceHtmlEntities(goodPart);
+      clean.append(goodPart);
+    }
+
+    return clean.toString();
   }
   
 }

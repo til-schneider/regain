@@ -1,0 +1,100 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+table.top {
+  margin: 5px;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+
+td.searchTop {
+  padding-left: 50px;
+  vertical-align: center;
+}
+
+td.searchTop form {
+  display:inline;
+}
+
+table.content {
+  padding: 0px;
+  margin: 5px;
+  border-spacing: 0px;
+  border-collapse: collapse;
+  border-top: 2px solid #004A80;
+  border-bottom: 2px solid #004A80;
+  width: 100%;
+}
+
+table.content td {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+tr.headline td {
+  border-bottom: 2px solid #004A80;
+  background-color: #7DA7D9;
+  padding: 3px;
+  padding-left: 10px;
+}
+
+td.headlineRight {
+  text-align: right;
+}
+
+h4 {
+  color: #004A80;
+  margin-top: 25px;
+  margin-bottom: 5px;
+}
+
+.searchinput {
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.hint {
+  font-size: 12;
+}
+
+.hitDetails {
+  font-size: 12;
+}
+
+.hitInfo{
+  color: #008000;
+}
+
+.navigation {
+  text-align: center;
+}
+
+table.searchBottom {
+  margin: 5px;
+  border-spacing: 0px;
+  border-top: 2px solid #004A80;
+  border-bottom: 2px solid #004A80;
+  width: 100%;
+  text-align: center;
+  background-color: #7DA7D9;
+}
+
+table.searchBottom td {
+  padding: 30px;
+  font-weight: bold;
+}
+
+p.footerLinks {
+  text-align: center;
+  font-size: 10;
+}
+
+select.editlist {
+  width: 400px;
+}
+
+input.editlist {
+  width: 200px;
+}

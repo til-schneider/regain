@@ -1,42 +1,42 @@
 /*
  * regain - A file search engine providing plenty of formats
  * Copyright (C) 2004  Til Schneider
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Contact: Til Schneider, info@murfman.de
- * 
+ *
  * CVS information:
  *  $RCSfile: RtfFilterReader.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/rtf/RtfFilterReader.java,v $
- *     $Date: 2004/07/28 20:26:05 $
+ *     $Date: 2004/11/10 15:08:51 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  */
 package net.sf.regain.crawler.preparator.rtf;
 
 import java.io.*;
 
 /**
- * 
- * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
+ *
+ * @author Til Schneider, www.murfman.de
  */
 /**
  * List nur die reine Textinformation aus einem Reader, der rohe RTF-Daten liest.
- * 
- * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
+ *
+ * @author Til Schneider, www.murfman.de
  */
 public class RtfFilterReader extends FilterReader {
 
@@ -55,12 +55,12 @@ public class RtfFilterReader extends FilterReader {
 
   /**
    * Erzeugt eine neue RtfFilterReader-Instanz.
-   * 
+   *
    * @param in Der Reader, von dem die rohen RTF-Daten kommen.
    */
   public RtfFilterReader(Reader in) {
     super(in);
-    
+
     mDepth = 0;
     mLastCharWasInTextDepth = true;
   }
@@ -70,7 +70,7 @@ public class RtfFilterReader extends FilterReader {
    * Gibt an, ob die {@link #mark(int)}-Methode unterstützt wird.
    * <p>
    * Dieser Reader unterstützt das nicht.
-   * 
+   *
    * @return <code>false</code>
    */
   public boolean markSupported() {
@@ -80,7 +80,7 @@ public class RtfFilterReader extends FilterReader {
 
   /**
    * Liest einige Zeichen in einen Puffer.
-   * 
+   *
    * @param cbuf Der Puffer, in den die Zeichen geschrieben werden sollen.
    * @param off Der Offset im Puffer, ab dem geschrieben werden darf.
    * @param len Die max. Anzahl Zeichen, die geschrieben werden darf.
@@ -107,7 +107,7 @@ public class RtfFilterReader extends FilterReader {
 
   /**
    * Liest das nächste Zeichen.
-   * 
+   *
    * @return Das nächste Zeichen oder <code>-1</code>, wenn das Ende erreicht
    *         wurde.
    * @throws IOException Wenn vom Quell-Reader nicht gelesen werden konnte.
@@ -132,7 +132,7 @@ public class RtfFilterReader extends FilterReader {
           } else if (ch == '}') {
             mDepth--;
           }
-        } while ((mDepth != (TEXT_DEPTH - 1)) && (ch != '}') && (ch != -1));          
+        } while ((mDepth != (TEXT_DEPTH - 1)) && (ch != '}') && (ch != -1));
       }
       else if (ch == '\'') {
         StringBuffer buf = new StringBuffer(2);
@@ -164,7 +164,7 @@ public class RtfFilterReader extends FilterReader {
         } while ((ch != -1) && (ch != ' ') && (ch != '\\'));
 
         String controlWord = buf.toString();
-        
+
         int translated = translateControlWord(controlWord);
         if (translated != 0) {
           return translated;
@@ -183,7 +183,7 @@ public class RtfFilterReader extends FilterReader {
    * Wandelt ein RTF-control-word in das entsprechende char um.
    * <p>
    * Falls es keine Entsprechung gibt, wird <code>0</code> zurückgegeben.
-   * 
+   *
    * @param controlWord Das umzuwandelnde RTF-control-word
    * @return Die Entsprechung zu <code>controlWord</code> oder <code>0</code>,
    *         wenn es keine Entsprechung gibt.
@@ -205,7 +205,7 @@ public class RtfFilterReader extends FilterReader {
 
   /**
    * Gets the next char in the text depth that is no newline or carage return.
-   * 
+   *
    * @return The next char in the text depth.
    * @throws IOException When reading from the nested reader failed.
    */
@@ -225,7 +225,7 @@ public class RtfFilterReader extends FilterReader {
         } else if (ch == '}') {
           mDepth--;
         }
-        
+
         if (mLastCharWasInTextDepth && (mDepth != TEXT_DEPTH)) {
           // Return a blank every time when skipping a format group to avoid
           // two words being concatinated
@@ -243,9 +243,9 @@ public class RtfFilterReader extends FilterReader {
       while (ch == '{' || ch == '}');
     }
     while ((mDepth != TEXT_DEPTH) && (ch != -1));
-    
+
     mLastCharWasInTextDepth = true;
-    
+
     return ch;
   }
 

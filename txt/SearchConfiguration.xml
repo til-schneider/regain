@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE configuration [
+  <!ENTITY amp "&#x26;">
+  <!ENTITY lt "&#x3C;">
+]>
+
+<!--
+ | Configuration for the regain search taglib
+ | (for searching on a previously created search index)
+ +-->
+<configuration>
+
+  <!-- The search indexes -->
+  <indexList>
+    <!--
+     | All settings defined in this section are applied to all indexes unless
+     | they redefine the setting.
+     +-->
+    <defaultSettings>
+      <!--
+       | The regular expression that identifies URLs that should be opened in
+       | a new window.
+       +-->
+      <openInNewWindowRegex>.(pdf|rtf|doc|xls|ppt)$</openInNewWindowRegex>
+      
+      <!--
+       | The index fields to search by default.
+       |
+       | NOTE: The user may search in other fields also using the
+       | "field:"-operator. Read the lucene query syntax for details:
+       | http://jakarta.apache.org/lucene/docs/queryparsersyntax.html
+       +-->
+      <searchFieldList>content title headlines</searchFieldList>
+    </defaultSettings>
+    
+    <!-- The search index 'main' -->
+    <index name="main" default="true">
+      <!-- The directory where the index is located -->
+      <dir>searchindex</dir>
+    </index>
+    
+    <!-- The search index 'example' -->
+    <index name="example">
+      <!-- The directory where the index is located -->
+      <dir>c:\Temp\searchindex_example</dir>
+      
+      <rewriteRules>
+        <rule prefix="file://c:/example/www-data" replacement="http://www.mydomain.de"/>
+      </rewriteRules>
+    </index>
+  </indexList>
+
+</configuration>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE configuration [
+  <!ENTITY amp "&#x26;">
+  <!ENTITY lt "&#x3C;">
+]>
+
+<configuration>
+
+  <!-- The interval to update the search index in minutes -->
+  <interval>1440</interval>
+
+</configuration>

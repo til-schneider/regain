@@ -3,12 +3,13 @@
 <!DOCTYPE configuration [
   <!ENTITY amp "&#x26;">
   <!ENTITY lt "&#x3C;">
+  <!ENTITY minus "&#45;">
 ]>
 
-<configuration xmlns='http://xml.netbeans.org/examples/targetNS'
-  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-  xsi:schemaLocation='http://xml.netbeans.org/examples/targetNS file:SpiderConfiguration.xsd'>
-
+<!--
+ | Configuration for the regain crawler (for creating a search index)
+ +-->
+<configuration>
 
 <!-- Proxy settings -->
 <proxy>
@@ -33,47 +34,6 @@
 
 
 <!--
- | The regular expressions that find the start and end locations of the content
- | that should be indexed in HTML pages.
- |
- | When the content should be indexed from the start, specify an empty text for
- | <startRegex>
- |
- | When the content should be indexed to the end, specify an empty text for
- | <endRegex>
- +-->
-<htmlContentExtractorList>
-  <contentExtractor>
-    <prefix>http://www.testit.de/</prefix>
-    <startRegex>&lt;!-- Start content --&gt;</startRegex>
-    <!-- <endRegex></endRegex> -->
-    <headlineRegex regexGroup="1">&lt;a name=.*>(.*)&lt;/a></headlineRegex>
-  </contentExtractor>
-</htmlContentExtractorList>
-
-
-<!--
- | The ectractor that extracts the navigation path in HTML pages.
- |
- | <prefix>:        The prefix the path extractor is responsible for.
- | <startRegex>:    The regular expression that finds the start of the area
- |                  where the whole navigation path is.
- | <endRegex>:      The regular expression that finds the end of the area where
- |                  the whole navigation path is.
- | <pathNodeRegex>: The regular expression that extracts one node of the
- |                  navigation path.
- +-->
-<htmlPathExtractorList>
-  <pathExtractor>
-    <prefix>http://www.testit.de/</prefix>
-    <startRegex>&lt;!-- Pfad-Beginn  --&gt;</startRegex>
-    <endRegex>&lt;!-- Pfad-Ende --&gt;</endRegex>
-    <pathNodeRegex urlRegexGroup="1" titleRegexGroup="2">&lt;a.*href="([^"]*)">(.*)&lt;/a></pathNodeRegex>
-  </pathExtractor>
-</htmlPathExtractorList>
-
-
-<!--
  | The list of patterns a document's URL must match to, when the link text
  | should be used as title instead of the document's real title.
  +-->
@@ -85,7 +45,7 @@
 <!-- The preferences for the search index -->
 <searchIndex>
   <!-- The directory where the index should be located -->
-  <dir>c:\Temp\searchindex</dir>
+  <dir>searchindex</dir>
 
   <!-- Specifies, whether the index should be built -->
   <buildIndex>true</buildIndex>
@@ -106,7 +66,7 @@
    | Specifies, whether the analysis files should be written.
    | The analysis files help to check the quality of the index building process.
    +-->
-  <writeAnalysisFiles>true</writeAnalysisFiles>
+  <writeAnalysisFiles>false</writeAnalysisFiles>
 
   <!--
    | Gibt den maximalen Prozentsatz von gescheiterten Dokumenten an. (0..100)
@@ -117,7 +77,7 @@
    | Gescheiterte Dokumente sind Dokumente die es entweder nicht gibt (Deadlink)
    | oder die nicht ausgelesen werden konnten.
    +-->
-  <maxFailedDocuments>9.5</maxFailedDocuments>
+  <maxFailedDocuments>100</maxFailedDocuments>
 
   <!--
    | Contains all words that should not be indexed.
@@ -138,85 +98,184 @@
 </searchIndex>
 
 
+<!--
+ | Specifies which control files should be crated. These files may be used to
+ | check with a sceduling script whether the index was successfully built.
+ |
+ | <finishedWithoutFatalsFile>: The name of the control file that should be
+ | created if the index creation finished without fatal errors.
+ |
+ | <finishedWithFatalsFile>: The name of the control file that should be
+ | created if the index creation failed with a fatal error.
+ +-->
+<!--
 <controlFiles>
-  <!--
-   | Der Name der Kontrolldatei für erfolgreiche Indexerstellung.
-   |
-   | Diese Datei wird erzeugt, wenn der Index erstellt wurde, ohne dass
-   | fatale Fehler aufgetreten sind.
-   +-->
   <finishedWithoutFatalsFile>c:\Temp\control\NoFatals</finishedWithoutFatalsFile>
-
-  <!--
-   | Der Name der Kontrolldatei für fehlerhafte Indexerstellung.
-   |
-   | Diese Datei wird erzeugt, wenn der Index erstellt wurde, wobei
-   | fatale Fehler aufgetreten sind.
-   +-->
   <finishedWithFatalsFile>c:\Temp\control\WithFatals</finishedWithFatalsFile>
 </controlFiles>
+-->
 
 
+<!--
+ | The preparators in the order they should be applied. Preparators that aren't listed
+ | here will be applied after the listed ones.
+ |
+ | You can use this list...
+ |   ... to define the priority (= order) of the preparators
+ |   ... to disable preparators
+ |   ... to configure preparators
+ +-->
 <preparatorList>
   <preparator>
-    <urlPattern>\.(/|html|htm)$</urlPattern>
     <class>.HtmlPreparator</class>
+    <config>
+      <!--
+       | The regular expressions that find the start and end locations of the content
+       | that should be indexed in HTML pages.
+       |
+       | "prefix":        The prefix the content extractor is responsible for.
+       |                  You may specify more content extractors.
+       | "startRegex":    The regular expression that finds the start of the
+       |                  content. When the content should be indexed from the
+       |                  start, specify an empty text for "startRegex".
+       | "endRegex":      The regular expression that finds the end of the
+       |                  content. When the content should be indexed to the
+       |                  end, specify an empty text for "endRegex".
+       | "headlineRegex": The regular expression that finds the headline.
+       | "headlineRegex.group": The group of "headlineRegex" that extracts the
+       |                  headline.
+       +-->
+      <!--
+      <section name="contentExtractor">
+        <param name="prefix">http://www.testit.de/</param>
+        <param name="startRegex">&lt;!&minus;&minus; Start content &minus;&minus;&gt;</param>
+        <param name="endRegex"></param>
+        <param name="headlineRegex">&lt;a name=.*&gt;(.*)&lt;/a&gt;</param>
+        <param name="headlineRegex.group">1</param>
+      </section>
+      -->
+
+      <!--
+       | The ectractor that extracts the navigation path in HTML pages.
+       |
+       | "prefix":        The prefix the path extractor is responsible for.
+       | "startRegex":    The regular expression that finds the start of the area
+       |                  where the whole navigation path is.
+       | "endRegex":      The regular expression that finds the end of the area where
+       |                  the whole navigation path is.
+       | "pathNodeRegex": The regular expression that extracts one node of the
+       |                  navigation path.
+       | "pathNodeRegex.urlGroup": The group of "pathNodeRegex" that extracts
+       |                  the URL of the path node.
+       | "pathNodeRegex.titleGroup": The group of "pathNodeRegex" that extracts
+       |                  the title of the path node.
+       +-->
+      <!--
+      <section name="pathExtractor">
+        <param name="prefix">http://www.testit.de/</param>
+        <param name="startRegex">&lt;!&minus;&minus; Pfad-Beginn &minus;&minus;&gt;</param>
+        <param name="endRegex">&lt;!&minus;&minus; Pfad-Ende &minus;&minus;&gt;</param>
+        <param name="pathNodeRegex">&lt;a.*href="([^"]*)">(.*)&lt;/a></param>
+        <param name="pathNodeRegex.urlGroup">1</param>
+        <param name="pathNodeRegex.titleGroup">2</param>
+      </section>
+      -->
+    </config>
   </preparator>
+  
   <preparator>
-    <urlPattern>\.txt$</urlPattern>
-    <class>.PlainTextPreparator</class>
+    <class>.PoiMsExcelPreparator</class>
   </preparator>
-  <preparator>
-    <urlPattern>\.xml$</urlPattern>
-    <class>.XmlPreparator</class>
-  </preparator>
-  <preparator>
-    <urlPattern>\.pdf$</urlPattern>
-    <class>.PdfPreparator</class>
-  </preparator>
-  <preparator>
-    <urlPattern>\.xls$</urlPattern>
-    <!--<class>.PoiMsExcelPreparator</class>-->
+  <preparator enabled="false">
     <class>.JacobMsExcelPreparator</class>
+    <config>
+      <!--
+       | properties:
+       |   The semicolon separated list of document properties that should be
+       |   extracted.
+       |   Possible properties are:
+       |     propTitle, subject, author, keywords, comments, template,
+       |     lastAuthor, revision, timeLastPrinted, timeCreated, timeLastSaved,
+       |     totalEditTime, pages, words, characters, security, category,
+       |     manager, company, bytes, lines, paras, hyperlinkBase, charsWSpaces
+       +-->
+      <section name="main">
+        <param name="properties">author</param>
+      </section>
+    </config>
   </preparator>
+  
   <preparator>
-    <urlPattern>\.doc$</urlPattern>
-    <!--<class>.PoiMsWordPreparator</class>-->
+    <class>.PoiMsWordPreparator</class>
+  </preparator>
+  <preparator enabled="false">
     <class>.JacobMsWordPreparator</class>
+    <config>
+      <!--
+       | headlineStyles:
+       |   The semicolon separated list of Word style names (format templates)
+       |   used by headline paragraphs.
+       |
+       | properties:
+       |   The semicolon separated list of document properties that should be
+       |   extracted.
+       |   Possible properties are:
+       |     propTitle, subject, author, keywords, comments, template,
+       |     lastAuthor, revision, timeLastPrinted, timeCreated, timeLastSaved,
+       |     totalEditTime, pages, words, characters, security, category,
+       |     manager, company, bytes, lines, paras, hyperlinkBase, charsWSpaces
+       +-->
+      <section name="main">
+        <param name="headlineStyles">Überschrift 1;Überschrift 2</param>
+        <param name="properties">author</param>
+      </section>
+    </config>
   </preparator>
-  <preparator>
-    <urlPattern>\.ppt$</urlPattern>
+  
+  <preparator enabled="false">
     <class>.JacobMsPowerPointPreparator</class>
+    <config>
+      -->
+      <!--
+       | properties:
+       |   The semicolon separated list of document properties that should be
+       |   extracted.
+       |   Possible properties are:
+       |     propTitle, subject, author, keywords, comments, template,
+       |     lastAuthor, revision, timeLastPrinted, timeCreated, timeLastSaved,
+       |     totalEditTime, pages, words, characters, security, category,
+       |     manager, company, bytes, lines, paras, slides, notes, hiddenSlides,
+       |     mmClips, hyperlinkBase, charsWSpaces
+       +-->
+      <section name="main">
+        <param name="properties">author</param>
+      </section>
+    </config>    
+  </preparator>
+  
+  <preparator>
+    <class>.SimpleRtfPreparator</class>
   </preparator>
   <preparator>
-    <urlPattern>\.rtf$</urlPattern>
-    <!--<class>.SwingRtfPreparator</class>-->
-    <class>.SimpleRtfPreparator</class>
+    <class>.SwingRtfPreparator</class>
   </preparator>
 </preparatorList>
 
 
 <!-- The regular expressions that indetify URLs in HTML. -->
 <htmlParserPatternList>
-  <pattern parse="true" index="true" regexGroup="1">="([^"]*\.html)"</pattern>
-  <pattern parse="false" index="true" regexGroup="1">="([^"]*\.(pdf|xls|doc|rtf))"</pattern>
+  <pattern parse="true" index="true" regexGroup="1">="([^"]*\.(htm|html))"</pattern>
   <pattern parse="false" index="false" regexGroup="1">="([^"]*\.(js|css|jpg|gif|png))"</pattern>
+  <pattern parse="false" index="true" regexGroup="1">="([^"]*\.[^\."]{3})"</pattern>
 </htmlParserPatternList>
-
-
-<!--
- | The regular expressions that identify file names that should be processed
- | by the spider.
- +-->
-<directoryParserPatternList>
-  <pattern index="true">^.*\.(html|pdf|ppt|xls|doc|rtf)$</pattern>
-</directoryParserPatternList>
 
 
 <!-- The list of URLs where the spidering will start. -->
 <startlist>
   <!-- Directory parsing -->
-  <start parse="true" index="false">file://c:/Temp/dokumente</start>
+  <!--
+  <start parse="true" index="false">file://c:/Eigene Dateien</start>
+  -->
 
   <!-- HTML parsing -->
   <!--
@@ -227,7 +286,9 @@
 
 <!-- The blacklist containing prefixes an URL must NOT have to be processed -->
 <blacklist>
+  <!--
   <prefix>http://www.mydomain.de/some/dynamic/content/</prefix>
+  -->
 </blacklist>
 
 
@@ -236,5 +297,26 @@
   <prefix name="file">file://</prefix>
   <prefix>http://www.mydomain.de</prefix>
 </whitelist>
+
+
+<!--
+ | The index may be extended with auxiliary fields. These are fields that have
+ | been generated from the URL of an document.
+ |
+ | Example: If you have a directory with a sub directory for every project,
+ | then you may create a field with the project's name.
+ |
+ | The folling tag will create a field "project" with the value "otto23"
+ | from the URL "file://c:/projects/otto23/docs/Spez.doc":
+ |   <auxiliaryField name="project" regexGroup="1">^file://c:/projects/([^/]*)</auxiliaryField>
+ |
+ | URLs that doen't match will get no "project" field.
+ |
+ | Having done this you may search for "Offer project:otto23" and you will get
+ | only hits from this project directory.
+ +-->
+<auxiliaryFieldList>
+  <auxiliaryField name="extension" regexGroup="1">\.([^\.]*)$</auxiliaryField>
+</auxiliaryFieldList>
 
 </configuration>

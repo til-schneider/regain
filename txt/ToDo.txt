@@ -1,0 +1,192 @@
+X Urversion
+
+** Version 1.0 **
+
+X Aktualisierung auf die neusten Versionen der genutzten Projekte, sofern
+    Ergebnis dadurch nicht schlechter wird. (Aufwand: 8 Std.)
+    Updates:
+      jakarta regexp: 1.2 -> 1.3
+      jakarta log4j: 1.1.3 -> 1.2.9
+      jakarta lucene: 1.3 -> 1.4.2
+      xerces-j: ? -> 2.6.2
+      pdfBox: 0.6.4 -> 0.6.7
+      Jakarta POI: 2.0 RC 2 -> 2.5.1
+      jacob: 1.7 -> 1.8 (neue Webseite: http://sourceforge.net/projects/jacob-project/)
+    Unterschiede:
+      jacob: Laeuft jetzt auch mit Java 1.4
+      JacobMsExcelPreparator:
+        Stabilitaet: Fuehrte frueher zu Absturz der VM. Jetzt keine Probleme.
+        Geschwindigkeit: 5,00 sec fuer 27,50 kB
+        Qualitaet: Es werden nicht alle Spalten ausgelesen.
+      JacobMsPowerPointPreparator:
+        Stabilitaet: Unveraendert: Keine Probleme bekannt
+        Geschwindigkeit: Unveraendert: Fuer 820,50 kB: 7,07 sec -> 7,53 sec
+        Qualitaet: Unveraendert: Keine Probleme bekannt
+      JacobMsWordPreparator:
+        Stabilitaet: Unveraendert: Keine Probleme bekannt
+        Geschwindigkeit: Unveraendert: Fuer 3,59 MB: 36,34 sec -> 37,98 sec
+        Qualitaet: Unveraendert: Keine Probleme bekannt
+      PdfPreparator:
+        Stabilitaet: Unveraendert: Keine Probleme bekannt
+        Geschwindigkeit: Faktor 4 langsamer: Fuer 674,44 kB: 13,69 sec -> 1:06 min
+                                                   2. Test: 13,43 sec -> 1:07 min
+        Qualitaet: Besser: Es wird mehr erkannt. Probleme mit Umlauten aus Latex (M�oglichkeit)
+      PoiMsExcelPreparator:
+        Stabilitaet: Unveraendert: Keine Probleme bekannt
+        Geschwindigkeit: Unveraendert: Fuer 27,50 kB: 1,27 sec -> 1,91 sec
+        Qualitaet: Unveraendert: Keine Probleme bekannt
+      PoiMsWordPreparator:
+        Stabilitaet: Unveraendert: 2 von 5 Dokumenten brechen ab.
+        Geschwindigkeit: Unveraendert: Fuer 3,39 MB: 1,02 sec -> 1,11 sec
+        Qualitaet: Unveraendert: Vergleichbar mit JacobMsWordPreparator
+X Word-Preparator: oeffnen und Schliessen von Word loggen
+X Parameter fuer Praeparatoren: (Aufwand: 4 Std.)
+    Praeparatoren sollen in der Konfiguration parametrisierbar werden. Diese
+    Parameter sollen optional in extra Datei ausgelagert werden koennen.
+X Jacob-Praeparatoren nicht mehr als Default nutzen.
+X Suchmaske: Konfiguration in externe XML-Datei auslagern
+    (Nicht mehr in web.xml)
+X Suchmaske: URL-Rewriting: Z.B. Indizierung von file://someserver/bla/blubb/...,
+    jedoch Anzeige im Browser mit http://intranet/blubb/... (Aufwand: 4 Std.)
+X Zusatz-Index-Felder aus Dokument-URL generieren. (Aufwand: 4 Std.)
+    Z.B. bei URL "file://var/sicherung/dk100/..." Feld "system" mit Wert "dk100" indexieren.
+    Oder bei "file://blubb/projects/Otto13/..." Feld "project" mit Wert "Otto13".
+X Suchemaske: Expertensuche: (Aufwand: 4 Std.)
+    Zusaetzliche Eingabefelder fuer bestimmte Suchfelder ermoeglichen. Die Werte
+    diese Felder dann mit "field:value" an Suchstring anhaengen.
+X Pruefen: Koennen die im Index enthaltenen Werte (distinct values) der
+    Suchfelder in der erweiterten Suchmaske als Auswahlmoeglichkeit angeboten
+    werden? (fuer Expertensuche mit ComboBoxes) (Aufwand: 4 Std.)
+    Ergebnis: Es ist machbar. (Mit IndexReader.terms())
+X Handbuch aktualisieren:
+    - Neue Versionen der abhaengigen Projekte
+    - Parameter fuer Praeparatoren (contentExtractor und pathExtractor "verschoben")
+    - Suchmaske wird nun ueber XML Datei konfiguriert (wo die liegt, steht in web.xml)
+    - Config Suchmaske: URL-Rewriting
+X Word-Preparator: Beruecksichtigungen von Formatvorlagen bei der Indizierung
+    von Word-Dokumenten. (Aufwand: max. 4 Std., wenn mehr Ruecksprache)
+    Text aus Abschnitten, die bestimmte Formatvorlagen nutzen bei der Suche
+    staerker gewichten (z.B. ueberschriften). Die Namen der Formatvorlagen
+    kommen aus der Konfiguration.
+X Handbuch aktualisieren:
+    - Config Crawler: Zusatzfelder aus Pfad generieren
+    - Installations- und Konfigurationsbeschreibung der Suchmaske ueberarbeitet,
+      so dass der Umgang mit der SearchConfiguration.xml erklaert wird.
+X SharedTags: Die selben Tags fuer Taglib-Technologie und simpleweb-Technologie
+    nutzen.
+X SharedTags: JSP-Parser fuer simpleweb
+X DesktopSuche: Such-JSPs unter simpleweb zum Laufen bekommen.
+X Desktopsuche: Einstellungen
+    - Wie oft soll er aktualisiert werden
+    - Welche Verzeichnisse sollen indiziert werden sollen
+    - Welche Verzeichnisse sollen ausgelassen werden
+    - Welche Webseiten sollen indiziert werden
+X Desktopsuche: Periodisch den Crawler aufrufen und automatisch geaenderte
+    Konfiguration laden
+X Desktopsuche: Task-Icon mit Menue
+X Desktopsuche: Exe creation with jsmooth
+X Desktopsuche: Installer
+X Desktopsuche: Besseres Seiten-Design
+X Desktopsuche: Willkommensseite anzeigen, wenn keine Start-URLs definiert sind.
+X Desktopsuche: file-Treffer ueber http bereitstellen
+X Bug: Indexierung von Webseiten geht nicht
+X Desktopsuche: FileService: Mime-Types setzen
+X Desktopsuche: Status
+    - Wann wurde der Index zuletzt aktualisiert
+    - Fortschritt bei laufender Aktualisierung
+X Desktopsuche: search.jsp:
+    - Forward zu noindex.jsp, wenn kein Index vorhanden.
+    - Forward zu searchinput.jsp, wenn query nicht gesetzt.
+X Desktopsuche: Links zu den anderen Seiten im Footer-Bereich
+X aenderungen fuer die Desktopsuche in Server-Variante uebernehmen
+X Jacob-Praeparatoren: Indizierung der Office-Dokumenten-Beschreibungs-Felder.
+    Dazu Preparator-Schnittstelle erweitern um: Map getAdditionalFields()
+    Folgende Felder extrahieren: Moeglichst alles aus Eigenschaften/Zusammenfassung
+    Einstellbar, welche Felder aufgenommen werden sollen.
+X Expertensuche: Tag fuer Combobox, die distinct values eines Feldes beinhaltet.
+X Neues Feld: extension: Dateiendung indexieren.
+X Internationalisierung und Lokalisierung fuer deutsch und englisch.
+X Bug: "http://www.murfman.de" wird geparst, aber nicht indexiert.
+    (Regex fuer HTML-Praeparator falsch)
+X Desktopsuche: Status: Aktueller Index: Groesse in MB, Anzahl Dokumente.
+    Aktuelle Indexierung: Aktuelle Anzahl Indexierte Dokumente.
+X Desktopsuche: Bei Update-Installation alte Konfiguration nicht ueberschreiben.
+X Openoffice-Praeparator
+X Desktopsuche: Port einstellbar
+
+** Version 1.1 Beta 1 am 10.03.05 **
+
+X Crawler: Regelmaessig Breakpoints setzen: IndexWriter und IndexReader schliessen
+    und aktuellen Stand in gesondertes Verzeichnis kopieren. Falls Indexierung
+    abgebrochen wurde auf diesem Breakpoint aufsetzten.
+X Desktopsuche: Status: Profiler-Ergebnisse anzeigen
+
+** Version 1.1 Beta 2 am 12.03.05 **
+
+X Bug: Excel-Praeparator kommt nicht mit allen Zahlen- und Datumsformaten klar.
+X Crawler: RawDocument: InputStream anbieten. Bei file-URL Daten nicht cachen.
+X Crawler: Fehler-Log nicht am Ende erstellen, sondern sofort und mit Stacktrace.
+X Praeparatoren in eigene Jars kapseln. Alle Jars werden in ein Verzeichnis
+    gepackt und beim Start geladen. Wenn mehrere Praeparatoren viel gemeinsamen
+    Code haben, dann koennen sie zusammen in ein Jar gepackt werden.
+    So ist im regain.jar nur das, was regain selbst braucht und die
+    Praeparatoren lassen sich leichter austauschen (insbesondere verschiedene
+    Versionen der selben Implementierung). Ausserdem koennen andere auch
+    Praeparatoren anbieten, die dann sehr einfach eingebunden werden koennen.
+    Die Konfiguration der Praeparatoren steckt weiterhin in der
+    CrawlerConfiguration.xml, allerdings muessen dort nicht mehr alle
+    Praeparatoren angegeben werden. Die Praeparatoren werden in der Reihenfolge
+    abgearbeitet, in der sie konfiguriert sind. (Die nicht konfigurierten
+    Praeparatoren in unbestimmter Reihenfolge danach).
+X Desktopsuche: Task-Icon fuer Linux
+X Bug: File-Service: Datei von Netzlaufwerken (//fileserver/bla/blubb) werden
+    nicht geladen (Forbidden)
+X Bug: Desktopsuche: Suchergebnisse: Umlaute werden falsch dargestellt.
+X Desktopsuche: Einstellungen: Beim Speichern als Grundgerüst
+  	default-Config-Dateien nutzen.
+X Desktopsuche: Aktuelle Indexierung pausieren und manuelles Starten einer
+  	Indexierung.
+X Bug: HTML-Praeparator kommt nicht mit allen Dateien klar (Siehe Mail von Jochen Stiepel)
+X Changelog erstellen
+X Desktopsuche: index.php zeigen
+X Desktopsuche: Schoenere Fehlerseite (errorpage benutzen)
+
+Filiadata:
+----------
+  Zugriffsrechte beachten: Ein Benutzer kann nur die Dokumente sehen, fuer die
+    er auch Leserechte hat. (Aufwand: 2 Tage)
+    -> Brauche Input von Michael Danner
+  Multiindexsuche: (Aufwand: 4 Std.)
+    Mit der selben Suchmaske mehrere Indizes durchsuchen
+  Handbuch aktualisieren:
+    - Such-JSP: Zusaetzliche Eingabefelder fuer bestimmte Felder koennen mit
+      "field.feldName" hinzugefuegt werden.
+    - Init-Parameter von configFile nach searchConfigFile umbenannt.
+
+Prio A:
+-------
+
+  Desktopsuche: Installer auch auf Englisch
+
+Prio B:
+-------
+  Suchmaske: Breakpoints nutzen.
+  Desktopsuche: Mime-Types konfigurierbar
+  Desktopsuche: Zugriff von aussen fuer einstellbare Benutzer/Passwort-Paare
+    erlauben.
+  Suchmaske: Icons passend zu den Dateiendungen
+
+Prio C:
+-------
+  Crawler: Arbeitspeicher sparen: Dateien vom Dateisystem nicht ins
+    mFoundUrlSet oder mIgnoredUrlSet aufnehmen. Beim Dateisystem ist durch die
+    klare Baumstruktur sowieso klar, welche Dokumente schon bearbeitet wurden.
+  	(Dazu muss Start-List muss untereinander praefixfrei sein!)
+  Crawler: Arbeitspeicher sparen: Erst Dateien an mJobList anhaengen, dann
+  	Unterverzeichnisse. So wird die mJobList klein gehalten.
+  Desktopsuche: Status-Seite: Ende von Logdatei zeigen
+  Neuer MS Word-Praeparator: http://textmining.org
+  Neuer PDF-Praeparator: PJX (http://www.etymon.com/epub.html)
+  Desktopsuche: Nach Speichern der Konfiguration nur dann neu indexieren, wenn
+    sich etwas geaendert hat, das den Index veraendert.
+  Desktopsuche: JSP-Executer cachen.

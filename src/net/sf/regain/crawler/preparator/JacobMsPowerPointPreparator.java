@@ -1,33 +1,34 @@
 /*
  * regain - A file search engine providing plenty of formats
  * Copyright (C) 2004  Til Schneider
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Contact: Til Schneider, info@murfman.de
- * 
+ *
  * CVS information:
  *  $RCSfile: JacobMsPowerPointPreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/JacobMsPowerPointPreparator.java,v $
- *     $Date: 2004/07/28 20:26:04 $
+ *     $Date: 2005/03/14 15:03:34 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.5 $
  */
 package net.sf.regain.crawler.preparator;
 
 import net.sf.regain.RegainException;
+import net.sf.regain.crawler.config.PreparatorConfig;
 import net.sf.regain.crawler.document.RawDocument;
 
 import com.jacob.com.*;
@@ -43,15 +44,37 @@ import de.filiadata.lucene.spider.generated.msoffice2000.powerpoint.*;
  * Dabei werden die Rohdaten des Dokuments von Formatierungsinformation befreit,
  * es wird der Titel extrahiert.
  *
- * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
+ * @author Til Schneider, www.murfman.de
  */
-public class JacobMsPowerPointPreparator extends AbstractPreparator {
+public class JacobMsPowerPointPreparator extends AbstractJacobMsOfficePreparator {
 
   /**
    * Die PowerPoint-Applikation. Ist <code>null</code>, solange noch kein Dokument
    * bearbeitet wurde.
    */
   private Application mPowerPointApplication;
+
+
+  /**
+   * Creates a new instance of JacobMsPowerPointPreparator.
+   */
+  public JacobMsPowerPointPreparator() {
+    super(new String[] { "ppt", "pot" });
+  }
+
+
+  /**
+   * Initializes the preparator.
+   * 
+   * @param config The configuration
+   * @throws RegainException If the configuration has an error.
+   */
+  public void init(PreparatorConfig config) throws RegainException {
+    // NOTE: This method is not nessesary since it only calls the super method,
+    //       but I defined it to ensure that the super call is not forgotten
+    //       when there should be a config some day.
+    super.init(config);
+  }
 
 
   /**
@@ -120,6 +143,9 @@ public class JacobMsPowerPointPreparator extends AbstractPreparator {
         contentBuf.append('\n');
       }
 
+      // Read the document properties
+      readProperties(pres);
+      
       // Set the content
       setCleanedContent(contentBuf.toString());
 
@@ -127,8 +153,7 @@ public class JacobMsPowerPointPreparator extends AbstractPreparator {
       pres.close();
     }
     catch (ComFailException exc) {
-      throw new RegainException("Using COM failed. "
-        + "Be sure to use Java 1.3 or older!", exc);
+      throw new RegainException("Using COM failed.", exc);
     }
   }
 
@@ -171,10 +196,12 @@ public class JacobMsPowerPointPreparator extends AbstractPreparator {
 
 
   /**
-   * Gibt alle Ressourcen frei, die von diesem Präparator genutzt wurden.
+   * Frees all resources reserved by the preparator.
    * <p>
-   * Wird ganz am Ende des Crawler-Prozesses aufgerufen, nachdem alle Dokumente
-   * bearbeitet wurden.
+   * Is called at the end of the crawler process after all documents were
+   * processed.
+   * 
+   * @throws RegainException If freeing the resources failed.
    */
   public void close() throws RegainException {
     if (mPowerPointApplication != null) {
