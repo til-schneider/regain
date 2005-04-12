@@ -1,6 +1,6 @@
 X Urversion
 
-** Version 1.0 **
+** Version 1.0 am 28.07.04 **
 
 X Aktualisierung auf die neusten Versionen der genutzten Projekte, sofern
     Ergebnis dadurch nicht schlechter wird. (Aufwand: 8 Std.)
@@ -151,13 +151,20 @@ X Changelog erstellen
 X Desktopsuche: index.php zeigen
 X Desktopsuche: Schoenere Fehlerseite (errorpage benutzen)
 
+** Version 1.1 Beta 3 am 17.03.05 **
+
+X Bugfix: Nicht alle Zeitmessungen werden angezeigt.
+X Suchmaske: Version anzeigen
+X Zugriffsrechte beachten: Ein Benutzer kann nur die Dokumente sehen, fuer die
+    er auch Leserechte hat. (Aufwand: 2 Tage)
+X Taglib-Tag, das ein bestimmtes Indexfeld ausgibt.
+
 Filiadata:
 ----------
-  Zugriffsrechte beachten: Ein Benutzer kann nur die Dokumente sehen, fuer die
-    er auch Leserechte hat. (Aufwand: 2 Tage)
-    -> Brauche Input von Michael Danner
-  Multiindexsuche: (Aufwand: 4 Std.)
-    Mit der selben Suchmaske mehrere Indizes durchsuchen
+  Suche: SearchConfigFactory: Die SuchKonfiguration soll über eine Factory
+  	geladen werden. Welche Factory genutzt werden soll, wird in der web.xml
+  	festgelegt.
+  Multiindexsuche: Mit der selben Suchmaske mehrere Indizes durchsuchen
   Handbuch aktualisieren:
     - Such-JSP: Zusaetzliche Eingabefelder fuer bestimmte Felder koennen mit
       "field.feldName" hinzugefuegt werden.
@@ -165,18 +172,18 @@ Filiadata:
 
 Prio A:
 -------
-
-  Desktopsuche: Installer auch auf Englisch
-
-Prio B:
--------
+  Warum frisst Firefox die MIME-Types nicht?
+  Unter Java 1.2.2 oder zur Not 1.3 lauffaehig machen.
+  Expertensuche: Fehlermeldung wird gezeigt, wenn noch kein Index vorhanden ist.
+    Statt dessen: noindex.jsp zeigen.
+  Desktopsuche: Installer komplett auch auf Englisch
   Suchmaske: Breakpoints nutzen.
   Desktopsuche: Mime-Types konfigurierbar
+  Suchmaske: Icons passend zu den Dateiendungen
   Desktopsuche: Zugriff von aussen fuer einstellbare Benutzer/Passwort-Paare
     erlauben.
-  Suchmaske: Icons passend zu den Dateiendungen
 
-Prio C:
+Prio B:
 -------
   Crawler: Arbeitspeicher sparen: Dateien vom Dateisystem nicht ins
     mFoundUrlSet oder mIgnoredUrlSet aufnehmen. Beim Dateisystem ist durch die
@@ -185,6 +192,10 @@ Prio C:
   Crawler: Arbeitspeicher sparen: Erst Dateien an mJobList anhaengen, dann
   	Unterverzeichnisse. So wird die mJobList klein gehalten.
   Desktopsuche: Status-Seite: Ende von Logdatei zeigen
+  Sessions for simpleweb. See SimplePageRequest
+
+Prio C:
+-------
   Neuer MS Word-Praeparator: http://textmining.org
   Neuer PDF-Praeparator: PJX (http://www.etymon.com/epub.html)
   Desktopsuche: Nach Speichern der Konfiguration nur dann neu indexieren, wenn

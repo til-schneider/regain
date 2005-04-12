@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: SearchContext.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/SearchContext.java,v $
- *     $Date: 2005/02/26 14:51:09 $
+ *     $Date: 2005/04/08 10:22:15 $
  *   $Author: til132 $
- * $Revision: 1.5 $
+ * $Revision: 1.7 $
  */
 package net.sf.regain.search;
 
@@ -33,10 +33,14 @@ import net.sf.regain.RegainException;
 import net.sf.regain.search.config.IndexConfig;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.search.*;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Hits;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
 
@@ -74,16 +78,16 @@ public class SearchContext {
    *
    * @param indexConfig The configuration for the index.
    * @param queryText The query text to search for.
+   * @param groupArr The groups the searching user has reading rights for.
+   *        See {@link net.sf.regain.search.access.SearchAccessController}.
+   *        Is <code>null</code>, if no access control should be used.
    *
    * @throws RegainException If searching failed.
    */
-  public SearchContext(IndexConfig indexConfig, String queryText)
+  public SearchContext(IndexConfig indexConfig, String queryText, String[] groupArr)
     throws RegainException
   {
     long startTime = System.currentTimeMillis();
-
-    // AND als Default-Operation setzen
-    // ChangeableQueryParser.setDefaultOperator(ChangeableQueryParser.AND_OPERATOR);
 
     mIndexConfig = indexConfig;
     mQueryText = queryText;
@@ -104,20 +108,35 @@ public class SearchContext {
           parser.setOperator(QueryParser.DEFAULT_OPERATOR_AND);
           Query fieldQuery = parser.parse(queryText);
 
+          // Add as OR
           query.add(fieldQuery, false, false);
-
-          /*
-          if (i == 0) {
-            System.out.println("Query: '" + queryText + "' -> '"
-              + fieldQuery.toString(searchFieldArr[i]) + "'");
-          }
-          */
         }
       } catch (ParseException exc) {
         throw new RegainException("Error while parsing search pattern '"
           + queryText + "': " + exc.getMessage(), exc);
       }
+      
+      // Check whether access control is used
+      if (groupArr != null) {
+        // Create a query that matches any group
+        BooleanQuery groupQuery = new BooleanQuery();
+        for (int i = 0; i < groupArr.length; i++) {
+          // Add as OR
+          groupQuery.add(new TermQuery(new Term("groups", groupArr[i].trim())), false, false);
+        }
+        
+        // Create a main query that contains the group query and the search query
+        // combined with AND
+        BooleanQuery mainQuery = new BooleanQuery();
+        mainQuery.add(query, true, false);
+        mainQuery.add(groupQuery, true, false);
+        
+        // Set the main query as query to use
+        query = mainQuery;
+      }
 
+      // System.out.println("Query: '" + queryText + "' -> '" + query.toString() + "'");
+      
       try {
         mHits = manager.search(query);
       } catch (RegainException exc) {

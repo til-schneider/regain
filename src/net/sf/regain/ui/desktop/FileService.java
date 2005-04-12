@@ -1,7 +1,5 @@
 package net.sf.regain.ui.desktop;
 
-import java.io.File;
-
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.search.SearchToolkit;
 import net.sf.regain.util.sharedtag.PageRequest;
@@ -46,43 +44,22 @@ public class FileService extends BasicService {
       handle(req, resp, 403);
     }
 
-    // Extract the file name
-    String filename = context.getRequestPath(req.getURI());
-    int filePos = filename.indexOf("file/");
-    filename = RegainToolkit.urlDecode(filename.substring(filePos + 5));
+    // Create a shared wrapper
+    PageRequest request = new SimplePageRequest(req);
+    PageResponse response = new SimplePageResponse(this, req, resp, null, null);
     
-    // Restore the double slashes
-    filename = RegainToolkit.replace(filename, "\\", "/");
+    // Extract the file URL
+    String requestPath = context.getRequestPath(req.getURI());
+    String fileUrl = SearchToolkit.extractFileUrl(requestPath);
     
-    // Assemble the file URL
-    String fileUrl = RegainToolkit.fileNameToUrl(filename);
-    
-    // Check the filename
-    if (SearchToolkit.allowFileAccess(new SimplePageRequest(req), fileUrl)) {
+    // Check the file URL
+    if (SearchToolkit.allowFileAccess(request, fileUrl)) {
       // This file is allowed -> Send it
-      processFile(req, resp, RegainToolkit.urlToFile(fileUrl));
+      SearchToolkit.sendFile(request, response, RegainToolkit.urlToFile(fileUrl));
     } else {
       // This file is not allowed -> Send 403 Forbidden
       handle(req, resp, 403);
     }
-  }
-
-
-  /**
-   * Processes a file request.
-   * 
-   * @param req The request.
-   * @param resp The response.
-   * @param file The to send.
-   * @throws Exception If executing the JSP page failed.
-   */
-  private void processFile(Request req, Response resp, File file)
-    throws Exception
-  {
-    PageRequest request = new SimplePageRequest(req);
-    PageResponse response = new SimplePageResponse(this, req, resp, null, null);
-    
-    SearchToolkit.sendFile(request, response, file);
   }
 
 }

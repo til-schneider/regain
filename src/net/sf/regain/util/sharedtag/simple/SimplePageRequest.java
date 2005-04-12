@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: SimplePageRequest.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/simple/SimplePageRequest.java,v $
- *     $Date: 2005/03/07 19:32:31 $
+ *     $Date: 2005/03/31 09:57:31 $
  *   $Author: til132 $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  */
 package net.sf.regain.util.sharedtag.simple;
 
@@ -181,6 +181,31 @@ public class SimplePageRequest extends PageRequest {
     }
     
     return mPageContext.get(name);
+  }
+
+
+  /**
+   * Sets an attribute at the session.
+   * 
+   * @param name The name of the attribute to set.
+   * @param value The value of the attribute to set.
+   */
+  public void setSessionAttribute(String name, Object value) {
+    // TODO: implement
+    throw new IllegalStateException("Not yet implemented");
+  }
+
+
+  /**
+   * Gets an attribute from the session.
+   * 
+   * @param name The name of the attribute to get.
+   * @return The attribute's value or <code>null</code> if there is no such
+   *         attribute.
+   */
+  public Object getSessionAttribute(String name) {
+    // TODO: implement
+    throw new IllegalStateException("Not yet implemented");
   }
 
 

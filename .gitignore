@@ -1,4 +1,7 @@
+/.classpath
+/.project
+/build.properties
+/build/
 /jacobgen/classes/
 /nbproject/
-/build/
-/build.properties
+/test/docs/

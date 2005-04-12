@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile: FieldlistTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/input/FieldlistTag.java,v $
- *     $Date: 2005/03/09 15:46:39 $
+ *     $Date: 2005/04/11 08:15:30 $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  */
 package net.sf.regain.search.sharedlib.input;
 
@@ -54,7 +54,7 @@ public class FieldlistTag extends SharedTag {
     for (int i = 0; i < fieldValues.length; i++) {
       response.print("<option>" + fieldValues[i] + "</option>");
     }
-    response.print("</select");
+    response.print("</select>");
   }
 
 }

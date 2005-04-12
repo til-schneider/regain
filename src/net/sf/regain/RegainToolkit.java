@@ -21,13 +21,27 @@
  * CVS information:
  *  $RCSfile: RegainToolkit.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/RegainToolkit.java,v $
- *     $Date: 2005/03/16 12:30:30 $
+ *     $Date: 2005/03/30 10:30:03 $
  *   $Author: til132 $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  */
 package net.sf.regain;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.NumberFormat;
@@ -37,13 +51,14 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
 /**
- * Enthï¿½lt Hilfsmethoden, die sowohl vom Crawler als auch von der Suchmaske
+ * Enthält Hilfsmethoden, die sowohl vom Crawler als auch von der Suchmaske
  * genutzt werden.
  *
  * @author Til Schneider, www.murfman.de
@@ -71,11 +86,11 @@ public class RegainToolkit {
 
 
   /**
-   * Lï¿½scht ein Verzeichnis mit allen Unterverzeichnissen und -dateien.
+   * Löscht ein Verzeichnis mit allen Unterverzeichnissen und -dateien.
    *
-   * @param dir Das zu lï¿½schende Verzeichnis.
+   * @param dir Das zu löschende Verzeichnis.
    *
-   * @throws RegainException Wenn das Lï¿½schen fehl schlug.
+   * @throws RegainException Wenn das Löschen fehl schlug.
    */
   public static void deleteDirectory(File dir) throws RegainException {
     if (! dir.exists()) {
@@ -109,7 +124,7 @@ public class RegainToolkit {
    * Schreibt alle Daten, die der Reader liefert in den Writer.
    * <p>
    * Weder der Reader noch der Writer werden dabei geschlossen. Dies muss die
-   * aufrufende Methode ï¿½bernehmen!
+   * aufrufende Methode übernehmen!
    *
    * @param reader Der Reader, der die Daten liefert.
    * @param writer Der Writer auf den die Daten geschrieben werden sollen.
@@ -131,7 +146,7 @@ public class RegainToolkit {
    * Schreibt alle Daten, die der InputStream liefert in den OutputStream.
    * <p>
    * Weder der InputStream noch der OutputStream werden dabei geschlossen. Dies
-   * muss die aufrufende Methode ï¿½bernehmen!
+   * muss die aufrufende Methode übernehmen!
    *
    * @param in Der InputStream, der die Daten liefert.
    * @param out Der OutputStream auf den die Daten geschrieben werden sollen.
@@ -335,16 +350,16 @@ public class RegainToolkit {
    * genutzt wird. Es ist sehr wichtig, dass beide den gleichen Analyzer nutzen,
    * daher nutzen beide diese Methode.
    * <p>
-   * Momentan werden folgende Analyzer-Typen unterstï¿½tzt:
+   * Momentan werden folgende Analyzer-Typen unterstützt:
    * <ul>
-   *   <li>english: Ein Analyzer fï¿½r englisch</li>
-   *   <li>german: Ein Analyzer fï¿½r deutsch</li>
+   *   <li>english: Ein Analyzer für englisch</li>
+   *   <li>german: Ein Analyzer für deutsch</li>
    * </ul>
    *
    * @param analyzerType Der Typ des zu erstellenden Analyzers.
    * @param stopWordList Alle Worte, die nicht indiziert werden sollen.
    * @param exclusionList Alle Worte, die bei der Indizierung nicht vom Analyzer
-   *        verï¿½ndert werden sollen.
+   *        verändert werden sollen.
    * @return Der Analyzer
    * @throws RegainException Wenn die Erzeugung fehl schlug.
    */
@@ -392,7 +407,7 @@ public class RegainToolkit {
       throw new RegainException("Unkown analyzer type: '" + analyzerType + "'");
     }
 
-    analyzer = createCaseInsensitiveAnalyzer(analyzer);
+    analyzer = new WrapperAnalyzer(analyzer);
 
     if (ANALYSE_ANALYZER) {
       return createAnalysingAnalyzer(analyzer);
@@ -402,31 +417,10 @@ public class RegainToolkit {
 
 
   /**
-   * Erzeugt einen Analyzer, der ein Dokument in Kleinschreibung umwandelt,
-   * bevor es dem einem eingebetteten Analyzer ï¿½bergeben wird.
-   *
-   * @param nestedAnalyzer Der eingebettete Analyzer.
-   * @return Der Analyzer.
-   */
-  private static Analyzer createCaseInsensitiveAnalyzer(
-    final Analyzer nestedAnalyzer)
-  {
-    return new Analyzer() {
-      public TokenStream tokenStream(String fieldName, Reader reader) {
-        Reader lowercasingReader = new LowercasingReader(reader);
-
-        return nestedAnalyzer.tokenStream(fieldName, lowercasingReader);
-      }
-    };
-  }
-
-
-
-  /**
    * Erzeugt einen Analyzer, der die Aufrufe an einen eingebetteten Analyzer
    * analysiert.
    * <p>
-   * Dies ist beim Debugging hilfreich, wenn man prï¿½fen will, was ein Analyzer
+   * Dies ist beim Debugging hilfreich, wenn man prüfen will, was ein Analyzer
    * bei bestimmten Anfragen ausgibt.
    *
    * @param nestedAnalyzer The nested Analyzer that should
@@ -478,7 +472,7 @@ public class RegainToolkit {
    *
    * @param source Der zu durchsuchende String.
    * @param pattern Das zu ersetzende Muster.
-   * @param replacement Der Ersatz fï¿½r alle Vorkommnisse des Musters.
+   * @param replacement Der Ersatz für alle Vorkommnisse des Musters.
    *
    * @return Ein String in dem alle Vorkommnisse von <CODE>pattern</CODE> durch
    *         <CODE>replacement</CODE> ersetzt wurden.
@@ -508,7 +502,7 @@ public class RegainToolkit {
 
 
   /**
-   * Gibt einen Wert in Prozent mit zwei Nachkommastellen zurï¿½ck.
+   * Gibt einen Wert in Prozent mit zwei Nachkommastellen zurück.
    *
    * @param value Der Wert. (Zwischen 0 und 1)
    * @return Der Wert in Prozent.
@@ -522,8 +516,8 @@ public class RegainToolkit {
 
   
   /**
-   * Gibt einen fï¿½r den Menschen gut lesbaren String fï¿½r eine Anzahl Bytes
-   * zurï¿½ck.
+   * Gibt einen für den Menschen gut lesbaren String für eine Anzahl Bytes
+   * zurück.
    *
    * @param bytes Die Anzahl Bytes
    * @return Ein String, der sie Anzahl Bytes wiedergibt
@@ -534,8 +528,8 @@ public class RegainToolkit {
 
 
   /**
-   * Gibt einen fï¿½r den Menschen gut lesbaren String fï¿½r eine Anzahl Bytes
-   * zurï¿½ck.
+   * Gibt einen für den Menschen gut lesbaren String für eine Anzahl Bytes
+   * zurück.
    *
    * @param bytes Die Anzahl Bytes
    * @param locale The locale to use for formatting the numbers.
@@ -547,8 +541,8 @@ public class RegainToolkit {
 
 
   /**
-   * Gibt einen fï¿½r den Menschen gut lesbaren String fï¿½r eine Anzahl Bytes
-   * zurï¿½ck.
+   * Gibt einen für den Menschen gut lesbaren String für eine Anzahl Bytes
+   * zurück.
    *
    * @param bytes Die Anzahl Bytes
    * @param fractionDigits Die Anzahl der Nachkommastellen
@@ -560,8 +554,8 @@ public class RegainToolkit {
   
 
   /**
-   * Gibt einen fï¿½r den Menschen gut lesbaren String fï¿½r eine Anzahl Bytes
-   * zurï¿½ck.
+   * Gibt einen für den Menschen gut lesbaren String für eine Anzahl Bytes
+   * zurück.
    *
    * @param bytes Die Anzahl Bytes
    * @param fractionDigits Die Anzahl der Nachkommastellen
@@ -600,11 +594,11 @@ public class RegainToolkit {
 
   /**
    * Konvertiert ein Date-Objekt in einen String mit dem Format
-   * "YYYY-MM-DD HH:MM". Das ist nï¿½tig, um ein eindeutiges und vom Menschen
+   * "YYYY-MM-DD HH:MM". Das ist nötig, um ein eindeutiges und vom Menschen
    * lesbares Format zu haben.
    * <p>
    * Dieses Format ist mit Absicht nicht lokalisiert, um die Eindeutigkeit zu
-   * gewï¿½hrleisten. Die Lokalisierung muss die Suchmaske ï¿½bernehmen.
+   * gewährleisten. Die Lokalisierung muss die Suchmaske übernehmen.
    *
    * @param lastModified Das zu konvertiernende Date-Objekt
    * @return Ein String mit dem Format "YYYY-MM-DD HH:MM"
@@ -732,7 +726,7 @@ public class RegainToolkit {
 
 
   /**
-   * Gibt den systemspeziefischen Zeilenumbruch zurï¿½ck.
+   * Gibt den systemspeziefischen Zeilenumbruch zurück.
    *
    * @return Der Zeilenumbruch.
    */
@@ -742,6 +736,94 @@ public class RegainToolkit {
     }
 
     return mLineSeparator;
+  }
+
+
+  /**
+   * Loads a class and creates an instance.
+   * 
+   * @param className The name of the class to load and create an instance of.
+   * @param superClass The super class the class must extend.
+   * @param classLoader The class loader to use for loading the class. May be
+   *        <code>null</code>
+   * @return An object of the class.
+   * @throws RegainException If loading the class or creating the instance
+   *         failed or if the class is no instance of the given super class. 
+   */
+  public static Object createClassInstance(String className,
+    Class superClass, ClassLoader classLoader)
+    throws RegainException
+  {
+    // Load the class
+    Class clazz;
+    try {
+      if (classLoader == null) {
+        clazz = Class.forName(className);
+      } else {
+        clazz = classLoader.loadClass(className);
+      }
+    }
+    catch (ClassNotFoundException exc) {
+      throw new RegainException("The class '" + className
+        + "' does not exist", exc);
+    }
+
+    // Create the instance
+    Object obj;
+    try {
+      obj = clazz.newInstance();
+    }
+    catch (Exception exc) {
+      throw new RegainException("Error creating instance of class "
+        + className, exc);
+    }
+
+    // Check the instance
+    if (! superClass.isInstance(obj)) {
+      throw new RegainException("The class " + className + " does not " +
+        "implement " + superClass.getName());
+    }
+
+    return obj;
+  }
+
+
+  /**
+   * Loads a class and creates an instance.
+   * 
+   * @param className The name of the class to load and create an instance of.
+   * @param superClass The super class the class must extend.
+   * @param jarFileName The name of the jar file to load the class from.
+   *        May be <code>null</code>.
+   * @return An object of the class.
+   * @throws RegainException If loading the class or creating the instance
+   *         failed or if the class is no instance of the given super class. 
+   */
+  public static Object createClassInstance(String className, Class superClass,
+    String jarFileName)
+    throws RegainException
+  {
+    // Create a class loader for the jar file
+    ClassLoader classLoader = null;
+    if (jarFileName != null) {
+      File jarFile = new File(jarFileName);
+      if (! jarFile.exists()) {
+        throw new RegainException("Jar file does not exist: " +
+            jarFile.getAbsolutePath());
+      }
+      
+      try {
+        classLoader = new URLClassLoader(new URL[] { jarFile.toURL() }, superClass.getClassLoader());
+      }
+      catch (MalformedURLException exc) {
+        throw new RegainException("Creating class loader for " +
+            "jar file failed: " + jarFile.getAbsolutePath(),
+            exc);
+      }
+    }
+    
+    // Create the instance
+    return createClassInstance(className, superClass, classLoader);
   }
 
 
@@ -842,6 +924,49 @@ public class RegainToolkit {
   }
 
 
+  // inner class WrapperAnalyzer
+  
+  
+  /**
+   * An analyzer that changes a document in lowercase before delivering
+   * it to a nested analyzer. For the field "groups" an analyzer is used that
+   * only tokenizes the input without stemming the tokens.
+   */
+  private static class WrapperAnalyzer extends Analyzer {
+    
+    /** The analyzer to use for the "groups" field. */
+    private Analyzer mGroupsAnalyzer;
+    /** The nested analyzer. */
+    private Analyzer mNestedAnalyzer;
+    
+    
+    /**
+     * Creates a new instance of WrapperAnalyzer.
+     * 
+     * @param nestedAnalyzer The nested analyzer.
+     */
+    public WrapperAnalyzer(Analyzer nestedAnalyzer) {
+      mGroupsAnalyzer = new SimpleAnalyzer();
+      mNestedAnalyzer = nestedAnalyzer;
+    }
+    
+    
+    /**
+     * Creates a TokenStream which tokenizes all the text in the provided
+     * Reader.
+     */
+    public TokenStream tokenStream(String fieldName, Reader reader) {
+      if (fieldName.equals("groups")) {
+        return mGroupsAnalyzer.tokenStream(fieldName, reader);
+      } else {
+        Reader lowercasingReader = new LowercasingReader(reader);
+        return mNestedAnalyzer.tokenStream(fieldName, lowercasingReader);
+      }
+    }
+    
+  } // inner class WrapperAnalyzer
+
+
   // inner class LowercasingReader
 
 
@@ -868,7 +993,7 @@ public class RegainToolkit {
 
 
     /**
-     * Schlieï¿½t den eingebetteten Reader.
+     * Schließt den eingebetteten Reader.
      *
      * @throws IOException Wenn der eingebettete Reader nicht geschlossen werden
      *         konnte.
@@ -885,8 +1010,8 @@ public class RegainToolkit {
      *        sollen
      * @param off Der Offset im Puffer, ab dem geschreiben werden soll.
      * @param len Die max. Anzahl von Zeichen, die geschrieben werden soll.
-     * @return Die Anzahl von Zeichen, die tatsï¿½chlich geschrieben wurde, bzw.
-     *         <code>-1</code>, wenn keine Daten mehr verfï¿½gbar sind.
+     * @return Die Anzahl von Zeichen, die tatsächlich geschrieben wurde, bzw.
+     *         <code>-1</code>, wenn keine Daten mehr verfügbar sind.
      * @throws IOException Wenn nicht vom eingebetteten Reader gelesen werden
      *         konnte.
      */

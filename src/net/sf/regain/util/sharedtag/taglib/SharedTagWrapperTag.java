@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: SharedTagWrapperTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/taglib/SharedTagWrapperTag.java,v $
- *     $Date: 2005/03/09 15:41:23 $
+ *     $Date: 2005/03/30 10:30:01 $
  *   $Author: til132 $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  */
 package net.sf.regain.util.sharedtag.taglib;
 
@@ -186,6 +186,12 @@ public abstract class SharedTagWrapperTag
     if (request == null) {
       request = new JspPageRequest(pageContext);
       pageContext.setAttribute("SharedTagPageRequest", request);
+      
+      // Add the error to the page attributes
+      Throwable error = (Throwable) pageContext.getRequest().getAttribute("javax.servlet.jsp.jspException");
+      if (error != null) {
+        request.setContextAttribute("page.exception", error);
+      }
     }
     
     return request;

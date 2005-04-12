@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: DocumentFactory.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/document/DocumentFactory.java,v $
- *     $Date: 2005/03/14 21:08:55 $
+ *     $Date: 2005/03/30 10:30:01 $
  *   $Author: til132 $
- * $Revision: 1.12 $
+ * $Revision: 1.13 $
  */
 package net.sf.regain.crawler.document;
 
@@ -34,11 +34,13 @@ import java.io.OutputStreamWriter;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.crawler.ErrorLogger;
 import net.sf.regain.crawler.Profiler;
+import net.sf.regain.crawler.access.CrawlerAccessController;
 import net.sf.regain.crawler.config.AuxiliaryField;
 import net.sf.regain.crawler.config.CrawlerConfig;
 import net.sf.regain.crawler.config.PreparatorSettings;
@@ -79,6 +81,12 @@ public class DocumentFactory {
 
   /** Die Profiler, die die Bearbeitung durch die Pr�paratoren messen. */
   private Profiler[] mPreparatorProfilerArr;
+  
+  /**
+   * The {@link CrawlerAccessController} to use for identifying the groups that
+   * are allowed to read a document. May be <code>null</code>.
+   */
+  private CrawlerAccessController mCrawlerAccessController;
 
   /**
    * Die regul�ren Ausdr�cke, auf die die URL eines Dokuments passen muss,
@@ -124,6 +132,24 @@ public class DocumentFactory {
       mPreparatorProfilerArr[i] = new Profiler("Preparator " + name, "docs");
     }
 
+    // Create the CrawlerAccessController
+    String accessClass = config.getCrawlerAccessControllerClass();
+    if (accessClass != null) {
+      String accessJar = config.getCrawlerAccessControllerJar();
+      mCrawlerAccessController = (CrawlerAccessController)
+        RegainToolkit.createClassInstance(accessClass, CrawlerAccessController.class,
+                                          accessJar);
+      
+      Properties accessControllerConfig = config.getCrawlerAccessControllerConfig();
+      if (accessControllerConfig == null) {
+        accessControllerConfig = new Properties();
+      }
+      mCrawlerAccessController.init(accessControllerConfig);
+      
+      mLog.info("Using crawler access controller: " + accessClass);
+    }
+
+    // Create the mUseLinkTextAsTitleReArr
     String[] useLinkTextAsTitleRegexArr = config.getUseLinkTextAsTitleRegexList();
     if (useLinkTextAsTitleRegexArr == null) {
       mUseLinkTextAsTitleReArr = new RE[0];
@@ -258,6 +284,23 @@ public class DocumentFactory {
           doc.add(Field.Keyword(fieldName, regex.getParen(regexGroup)));
         }
       }
+    }
+    
+    // Add the groups of the document
+    if (mCrawlerAccessController != null) {
+      String[] groupArr = mCrawlerAccessController.getDocumentGroups(rawDocument);
+      StringBuffer groupList = new StringBuffer();
+      for (int i = 0; i < groupArr.length; i++) {
+        if (i != 0) {
+          groupList.append(" ");
+        }
+        groupList.append(groupArr[i]);
+      }
+      
+      // Add the field
+      // NOTE: The field "groups" is tokenized, but not stemmed.
+      //       See: RegainToolkit.WrapperAnalyzer
+      doc.add(Field.Keyword("groups", groupList.toString()));
     }
 
     // Add the URL of the document

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: HtmlPreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/HtmlPreparator.java,v $
- *     $Date: 2005/03/16 15:52:50 $
+ *     $Date: 2005/03/30 17:23:14 $
  *   $Author: til132 $
- * $Revision: 1.8 $
+ * $Revision: 1.10 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -40,7 +40,6 @@ import net.sf.regain.crawler.preparator.html.HtmlPathExtractor;
 
 import org.apache.log4j.Logger;
 import org.apache.regexp.RE;
-import org.apache.regexp.RESyntaxException;
 
 
 /**
@@ -55,9 +54,6 @@ public class HtmlPreparator extends AbstractPreparator {
 
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(HtmlPreparator.class);
-
-  /** Ein regul�rer Ausdruck, der den Titel eines HTMl-Dokuments findet. */
-  private RE mExtractHtmlTitleRE;
 
   /**
    * Die HtmlContentExtractor, die den jeweiligen zu indizierenden Inhalt aus
@@ -76,7 +72,7 @@ public class HtmlPreparator extends AbstractPreparator {
    * Creates a new instance of HtmlPreparator.
    */
   public HtmlPreparator() {
-    super(new RE("(^http://[^/]*$)|(^http://.*/[^\\.]*$)|(\\.(/|html|htm)$)"));
+    super(new RE("(^http://[^/]*$)|(^http://.*/[^\\.]*$)|(\\.(/|html|htm)$)", RE.MATCH_CASEINDEPENDENT));
   }
 
 
@@ -115,15 +111,6 @@ public class HtmlPreparator extends AbstractPreparator {
       mPathExtractorArr[i] = new HtmlPathExtractor(prefix, pathStartRegex,
           pathEndRegex, pathNodeRegex, pathNodeUrlGroup,
           pathNodeTitleGroup);
-    }
-
-    // Create the title extractor regex.
-    try {
-      mExtractHtmlTitleRE = new RE("<title>([^<]{1,500})</title>", RE.MATCH_CASEINDEPENDENT);
-    }
-    catch (RESyntaxException exc) {
-      // Since the regular expression is hard coded this will never happen
-      throw new RegainException("Syntax error in regular expression", exc);
     }
   }
 
@@ -166,10 +153,8 @@ public class HtmlPreparator extends AbstractPreparator {
    * @throws RegainException Wenn die Pr�paration fehl schlug.
    */
   public void prepare(RawDocument rawDocument) throws RegainException {
-    String contentAsString = rawDocument.getContentAsString();
-
     // Get the title
-    String title = extractHtmlTitle(contentAsString);
+    String title = extractHtmlTitle(rawDocument.getContentAsString());
     setTitle(title);
 
     // Find the content extractor that is responsible for this document
@@ -238,11 +223,60 @@ public class HtmlPreparator extends AbstractPreparator {
    * @return Den Titel des HTML-Dokuments.
    */
   private String extractHtmlTitle(String content) {
-    if (mExtractHtmlTitleRE.match(content)) {
-      return mExtractHtmlTitleRE.getParen(1);
+    final String TITLE_START_TAG = "<title>";
+    
+    // NOTE: We don't use a regex here, beause it's far too slow and it doesn't
+    //       stop when the body begins.
+    int pos = -1;
+    int startPos = -1;
+    while((pos = content.indexOf('<', pos + 1)) != -1) {
+      // A tag starts here -> Check whether this is the title tag
+      if (isIndexOf(content, TITLE_START_TAG, pos)) {
+        // The title starts here -> Remember the start pos
+        startPos = pos + TITLE_START_TAG.length();
+        break;
+      }
+      else if (isIndexOf(content, "<body", pos)) {
+        // The body starts here -> Give up
+        break;
+      }
+    }
+    
+    // Scan until the end of the title
+    if (startPos != -1) {
+      pos = startPos - 1;
+      while((pos = content.indexOf('<', pos + 1)) != -1) {
+        if (isIndexOf(content, "</title>", pos)) {
+          // We found the title's end tag -> extract the title
+          return content.substring(startPos, pos);
+        }
+        else if (pos > startPos + 1000) {
+          // This is too long -> There won't come a end tag -> Give up
+          break;
+        }
+      }
     }
 
     return null;
+  }
+
+
+  /**
+   * Checks whether an expected substring is at a certain position. 
+   * 
+   * @param content The String to check the excepted substring.
+   * @param expected The expected substring.
+   * @param pos The position where the substring is expected.
+   * @return Whether the expected substring is really at this position.
+   */
+  private boolean isIndexOf(String content, String expected, int pos) {
+    if (content.length() < pos + expected.length()) {
+      // The expected String doesn't match here
+      return false;
+    }
+    
+    String substring = content.substring(pos, pos + expected.length());
+    return expected.equalsIgnoreCase(substring);
   }
 
 }

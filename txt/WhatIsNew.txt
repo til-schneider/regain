@@ -1,3 +1,22 @@
+
+Version 1.1 Beta 4 on 2005-04-13
+--------------------------------
+
+* Access rights management: It is now possible to integrate an access rights
+    management, that ensures that a user only sees results for documents he has
+    reading rights for.
+* Search: The search taglib has now a tag "hit_field", that writes an index
+    field value. The tag "hit_summary" was thereby removed.
+* Search: If you don't want to read the search config from an XML file or if
+    you don't want to write the location of the XML file in the web.xml, you
+    may write your own SearchConfigFactory class and create the config on your
+    own. The SearchConfigFactory class is specified in the web.xml.
+* Server search: The enclosed JSP pages did not work.
+
+
+Version 1.1 Beta 3 on 2005-03-17
+--------------------------------
+
 * Crawler: Bugfix: The PoiMsExcelPreparator did not get on with all number and
   date formats.
 * Crawler: The error log is now more detailed (with stacktraces).
@@ -35,8 +54,8 @@ Version 1.1 Beta 1 on 2005-03-10
   as winking:
     - An installer for Windows.
     - Integration in the task bar under Linux and Windows.
-    - Configuration over the browser
-    - Status monitoring over the browser
+    - Configuration over the browser.
+    - Status monitoring over the browser.
 * Crawler: There is now a preparator for OpenOffice and StarOffice documents.
 * All: Updated to the newest versions of the used projects.
 * Crawler: Preparators are now configurable by the CrawlerConfiguration.xml.
@@ -58,9 +77,9 @@ Version 1.1 Beta 1 on 2005-03-10
 * Search: Some browsers load for security reasons no file links from http pages.
   Thus all documents that are in the index are now provided over HTTP. Of corse
   at the desktop search these documents are only accessible from the local host.
-* Crawler: The JacobMsWordPraeparator now regards styles. Thus it is possible
+* Crawler: The JacobMsWordPreparator now regards styles. Thus it is possible
   to extract headlines that will be weight more when searching.
-* Crawler: The JacobMsOfficePraparators are now able to extract the description
+* Crawler: The JacobMsOfficePreparators are now able to extract the description
   fields (Title, author, etc.)
 
 

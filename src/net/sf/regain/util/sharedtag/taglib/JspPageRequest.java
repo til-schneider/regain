@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: JspPageRequest.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/taglib/JspPageRequest.java,v $
- *     $Date: 2005/03/07 19:32:34 $
+ *     $Date: 2005/03/31 09:57:32 $
  *   $Author: til132 $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  */
 package net.sf.regain.util.sharedtag.taglib;
 
@@ -151,6 +151,29 @@ public class JspPageRequest extends PageRequest {
    */
   public Object getContextAttribute(String name) {
     return mPageContext.getAttribute(name);
+  }
+
+
+  /**
+   * Sets an attribute at the session.
+   * 
+   * @param name The name of the attribute to set.
+   * @param value The value of the attribute to set.
+   */
+  public void setSessionAttribute(String name, Object value) {
+    mPageContext.getSession().setAttribute(name, value);
+  }
+
+
+  /**
+   * Gets an attribute from the session.
+   * 
+   * @param name The name of the attribute to get.
+   * @return The attribute's value or <code>null</code> if there is no such
+   *         attribute.
+   */
+  public Object getSessionAttribute(String name) {
+    return mPageContext.getSession().getAttribute(name);
   }
 
 

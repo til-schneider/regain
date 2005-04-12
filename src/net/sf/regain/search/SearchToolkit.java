@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: SearchToolkit.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/SearchToolkit.java,v $
- *     $Date: 2005/03/10 11:39:13 $
+ *     $Date: 2005/04/11 08:16:25 $
  *   $Author: til132 $
- * $Revision: 1.13 $
+ * $Revision: 1.16 $
  */
 package net.sf.regain.search;
 
@@ -36,9 +36,11 @@ import java.util.HashMap;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
+import net.sf.regain.search.access.SearchAccessController;
+import net.sf.regain.search.config.DefaultSearchConfigFactory;
 import net.sf.regain.search.config.IndexConfig;
 import net.sf.regain.search.config.SearchConfig;
-import net.sf.regain.search.config.XmlSearchConfig;
+import net.sf.regain.search.config.SearchConfigFactory;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
 
@@ -184,15 +186,52 @@ public class SearchToolkit {
       // Get the query
       String query = getSearchQuery(request);
       
+      // Get the groups the current user has reading rights for
+      String[] groupArr = null;
+      SearchAccessController accessController = indexConfig.getSearchAccessController();
+      if (accessController != null) {
+        groupArr = accessController.getUserGroups(request);
+        
+        if (groupArr == null) {
+          // NOTE: The SearchAccessController should never return null, but for
+          //       security reasons we check it. Because if the groupArr is
+          //       null, the access control is disabled.
+          groupArr = new String[0];
+        }
+      }
+      
       // Create the SearchContext and store it in the page context
-      context = new SearchContext(indexConfig, query);
+      context = new SearchContext(indexConfig, query, groupArr);
       request.setContextAttribute(SEARCH_CONTEXT_ATTR_NAME, context);
     }
 
     return context;
   }
-  
-  
+
+
+  /**
+   * Extracts the file URL from a request path.
+   * 
+   * @param requestPath The request path to extract the file URL from.
+   * @return The extracted file URL.
+   * @throws RegainException If extracting the file URL failed.
+   * 
+   * @see net.sf.regain.search.sharedlib.hit.LinkTag
+   */
+  public static String extractFileUrl(String requestPath)
+    throws RegainException
+  {
+    int filePos = requestPath.indexOf("file/");
+    String filename = RegainToolkit.urlDecode(requestPath.substring(filePos + 5));
+    
+    // Restore the double slashes
+    filename = RegainToolkit.replace(filename, "\\", "/");
+    
+    // Assemble the file URL
+    return RegainToolkit.fileNameToUrl(filename);
+  }
+
+
   /**
    * Decides whether the remote access to a file should be allowed.
    * <p>
@@ -298,7 +337,7 @@ public class SearchToolkit {
         String extension = filename.substring(lastDot + 1);
         String mimeType = (String) mMimeTypeHash.get(extension);
         if (mimeType != null) {
-          response.setHeader("Content-Type", "mimeType/" + mimeType);
+          response.setHeader("Content-Type", mimeType);
         }
       }
       
@@ -338,15 +377,17 @@ public class SearchToolkit {
     throws RegainException
   {
     if (mConfig == null) {
-      String configFileName = request.getInitParameter("searchConfigFile");
-      File configFile = new File(configFileName);
-      try {
-        mConfig = new XmlSearchConfig(configFile);
+      // Create the factory
+      String factoryClassname = request.getInitParameter("searchConfigFactoryClass");
+      String factoryJarfile   = request.getInitParameter("searchConfigFactoryJar");
+      if (factoryClassname == null) {
+        factoryClassname = DefaultSearchConfigFactory.class.getName();
       }
-      catch (RegainException exc) {
-        throw new RegainException("Loading configuration file failed: "
-            + configFile.getAbsolutePath(), exc);
-      }
+      SearchConfigFactory factory = (SearchConfigFactory)
+        RegainToolkit.createClassInstance(factoryClassname, SearchConfigFactory.class, factoryJarfile);
+      
+      // Create the config
+      mConfig = factory.createSearchConfig(request);
     }
   }
   

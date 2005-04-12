@@ -32,6 +32,25 @@
        | http://jakarta.apache.org/lucene/docs/queryparsersyntax.html
        +-->
       <searchFieldList>content title headlines</searchFieldList>
+
+      <!--
+       | The SearchAccessController to use.
+       | 
+       | This is a part of the access control system that ensures that only those
+       | documents are shown in the search results that the user is allowed to
+       | read.
+       |
+       | If you specify a SearchAccessController, don't forget to specify the
+       | CrawlerAccessController counterpart in the CrawlerConfiguration.xml!
+       +-->
+      <!--
+      <searchAccessController>
+        <class jar="myAccess.jar">mypackage.MySearchAccessController</class>
+        <config>
+          <param name="bla">blubb</param>
+        </config>
+      </searchAccessController>
+      -->
     </defaultSettings>
     
     <!-- The search index 'main' -->

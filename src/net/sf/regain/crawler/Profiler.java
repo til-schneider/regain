@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: Profiler.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/Profiler.java,v $
- *     $Date: 2005/03/16 13:57:54 $
+ *     $Date: 2005/03/17 18:23:57 $
  *   $Author: til132 $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  */
 package net.sf.regain.crawler;
 
@@ -203,9 +203,9 @@ public class Profiler {
       dataRatePerSec = (long) (totalBytes / secs);
     }
     
-    long countsPerMinute = 0;
+    double countsPerMinute = 0;
     if (totalTime > 0) {
-      countsPerMinute = measureCount * (60 * 1000) / totalTime;
+      countsPerMinute = measureCount * (60d * 1000d) / totalTime;
     }
 
     // Berechnen, wie gro� die Labels sein m�ssen
@@ -218,12 +218,13 @@ public class Profiler {
 
     // Statistik ausgeben
     StringBuffer buffer = new StringBuffer(mName + ":");
-    NumberFormat numberFormat = NumberFormat.getInstance();
+    NumberFormat integerFormat = NumberFormat.getInstance();
+    integerFormat.setMaximumFractionDigits(0);
     if (abortedMeasureCount > 0) {
       buffer.append(lineSeparator);
 
       appendLabel(buffer, "Aborted " + mUnit, minLabelLength);
-      buffer.append(numberFormat.format(abortedMeasureCount) + " " + mUnit + " (");
+      buffer.append(integerFormat.format(abortedMeasureCount) + " " + mUnit + " (");
 
       // Ausgeben, wieviel % der Messungen fehl schlugen
       int total = abortedMeasureCount + measureCount;
@@ -236,7 +237,7 @@ public class Profiler {
       buffer.append(lineSeparator);
 
       appendLabel(buffer, "Completed " + mUnit, minLabelLength);
-      buffer.append(numberFormat.format(measureCount) + " " + mUnit + lineSeparator);
+      buffer.append(integerFormat.format(measureCount) + " " + mUnit + lineSeparator);
 
       appendLabel(buffer, "Total time", minLabelLength);
       buffer.append(toTimeString(totalTime) + lineSeparator);
@@ -254,7 +255,15 @@ public class Profiler {
       buffer.append(RegainToolkit.bytesToString(dataRatePerSec) + "/sec" + lineSeparator);
 
       appendLabel(buffer, "Output", minLabelLength);
-      buffer.append(numberFormat.format(countsPerMinute) + " " + mUnit + "/min");
+      if (countsPerMinute > 10) {
+        // No decimals when the count is high
+        buffer.append(integerFormat.format(countsPerMinute) + " " + mUnit + "/min");
+      } else {
+        NumberFormat floatingFormat = NumberFormat.getInstance();
+        floatingFormat.setMinimumFractionDigits(2);
+        floatingFormat.setMaximumFractionDigits(2);
+        buffer.append(floatingFormat.format(countsPerMinute) + " " + mUnit + "/min");
+      }
     }
 
     return buffer.toString();

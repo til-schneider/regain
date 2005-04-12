@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile: FileServlet.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/server/FileServlet.java,v $
- *     $Date: 2005/03/16 12:30:30 $
+ *     $Date: 2005/03/31 09:57:32 $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  */
 package net.sf.regain.ui.server;
 
@@ -55,20 +55,13 @@ public class FileServlet extends HttpServlet {
     try {
       pageContext = factory.getPageContext(this, req, resp,
         errorPageURL, needsSession, bufferSize, autoFlush);
-      System.out.println("pageContext: " + pageContext);
     
       // Create a shared wrapper
       PageRequest request = new JspPageRequest(pageContext);
       PageResponse response = new JspPageResponse(pageContext);
       
       // Extract the file name
-      String filename = req.getRequestURI();
-      int filePos = filename.indexOf("file/");
-      filename = RegainToolkit.urlDecode(filename.substring(filePos + 5));
-      
-      // Assemble the file URL
-      String fileUrl = "file://" + RegainToolkit.replace(filename, " ", "%20");
-      System.out.println("fileUrl: " + fileUrl);
+      String fileUrl = SearchToolkit.extractFileUrl(req.getRequestURI());
       
       // Check the file
       try {

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: FormTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/config/sharedlib/FormTag.java,v $
- *     $Date: 2005/03/16 13:50:04 $
+ *     $Date: 2005/03/17 18:05:18 $
  *   $Author: til132 $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  */
 package net.sf.regain.ui.desktop.config.sharedlib;
 
@@ -282,9 +282,12 @@ public class FormTag extends SharedTag implements DesktopConstants {
     Node node;
     
     // Load the config files
-    Document desktopDoc = XmlToolkit.loadXmlDocument(DEFAULT_DESKTOP_CONFIG_FILE);
+    Document desktopDoc = XmlToolkit.loadXmlDocument(DESKTOP_CONFIG_FILE);
     Element desktopConfig = desktopDoc.getDocumentElement();
 
+    // NOTE: For the crawler configuration we use the default file, so values
+    //       that are not affected by the config form will be up-to-date when
+    //       regain was updated to a new version.
     Document crawlerDoc = XmlToolkit.loadXmlDocument(DEFAULT_CRAWLER_CONFIG_FILE);
     Element crawlerConfig = crawlerDoc.getDocumentElement();
 

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: LinkTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/hit/LinkTag.java,v $
- *     $Date: 2005/03/16 12:30:31 $
+ *     $Date: 2005/04/01 07:43:22 $
  *   $Author: til132 $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  */
 package net.sf.regain.search.sharedlib.hit;
 
@@ -67,6 +67,11 @@ public class LinkTag extends AbstractHitTag {
     String url   = search.rewriteUrl(hit.get("url"));
     String title = hit.get("title");
     boolean openInNewWindow = search.getOpenUrlInNewWindow(url);
+    
+    // Trim the title
+    if (title != null) {
+      title = title.trim();
+    }
 
     // Use the URL as title if there is no title.
     if ((title == null) || (title.length() == 0)) {

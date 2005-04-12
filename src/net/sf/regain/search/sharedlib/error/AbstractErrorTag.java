@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: AbstractErrorTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/error/AbstractErrorTag.java,v $
- *     $Date: 2005/03/16 21:52:32 $
+ *     $Date: 2005/03/30 10:30:03 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  */
 package net.sf.regain.search.sharedlib.error;
 
@@ -49,7 +49,7 @@ public abstract class AbstractErrorTag extends SharedTag {
   public final void printEndTag(PageRequest request, PageResponse response)
     throws RegainException
   {
-    Throwable error = (Throwable) request.getContextAttribute("javax.servlet.jsp.jspException");
+    Throwable error = (Throwable) request.getContextAttribute("page.exception");
     printEndTag(request, response, error);
   }
 

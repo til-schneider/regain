@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: Localizer.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/io/Localizer.java,v $
- *     $Date: 2005/03/09 15:46:25 $
+ *     $Date: 2005/03/31 07:51:50 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.4 $
  */
 package net.sf.regain.util.io;
 
@@ -75,8 +75,8 @@ public class Localizer {
       URLClassLoader loader = getClassLoader(basedir);
       mBundle = ResourceBundle.getBundle(basename, locale, loader);
     }
-    catch (Exception exc) {
-      mLog.error("ResourceBundle not found: '" + basename + "'", exc);
+    catch (Throwable thr) {
+      mLog.error("ResourceBundle not found: '" + basename + "'", thr);
     }
     
     mKeyPrefix = "";

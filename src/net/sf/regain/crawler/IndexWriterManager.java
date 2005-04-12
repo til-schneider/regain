@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: IndexWriterManager.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/IndexWriterManager.java,v $
- *     $Date: 2005/03/14 21:08:00 $
+ *     $Date: 2005/03/17 12:49:38 $
  *   $Author: til132 $
- * $Revision: 1.16 $
+ * $Revision: 1.17 $
  */
 package net.sf.regain.crawler;
 
@@ -59,9 +59,9 @@ import org.apache.lucene.search.TermQuery;
  * Kontrolliert und kapselt die Erstellung des Suchindex.
  * <p>
  * <b>Anwendung:</b><br>
- * Rufen Sie für jedes Dokument {@link #addToIndex(RawDocument, ErrorLogger)}
+ * Rufen Sie fï¿½r jedes Dokument {@link #addToIndex(RawDocument, ErrorLogger)}
  * auf. Rufen Sie am Ende {@link #close(boolean)} auf, um den Index zu
- * schließen. Danach sind keine weiteren Aufrufe von
+ * schlieï¿½en. Danach sind keine weiteren Aufrufe von
  * {@link #addToIndex(RawDocument, ErrorLogger)} erlaubt.
  *
  * @author Til Schneider, www.murfman.de
@@ -113,10 +113,10 @@ public class IndexWriterManager {
   private static final boolean WRITE_TERMS_SORTED = true;
 
   /**
-   * Workaround: Unter Windows klappt das Umbenennen unmittelbar nach Schließen
+   * Workaround: Unter Windows klappt das Umbenennen unmittelbar nach Schlieï¿½en
    * des Index nicht. Wahrscheinlich sind die Filepointer auf die gerade
-   * geschlossenen Dateien noch nicht richtig aufgeräumt, so dass ein Umbenennen
-   * des Indexverzeichnisses fehl schlägt. Das Umbenennen wird daher regelmäßig
+   * geschlossenen Dateien noch nicht richtig aufgerï¿½umt, so dass ein Umbenennen
+   * des Indexverzeichnisses fehl schlï¿½gt. Das Umbenennen wird daher regelmï¿½ï¿½ig
    * probiert, bis es entweder funktioniert oder bis der Timeout abgelaufen ist.
    */
   private static final long RENAME_TIMEOUT = 60000; // 1 min
@@ -149,15 +149,15 @@ public class IndexWriterManager {
   private IndexWriter mIndexWriter;
 
   /**
-   * Der gekapselte IndexReader. Wird zum Löschen von Dokumenten aus dem Index
-   * benötigt.
+   * Der gekapselte IndexReader. Wird zum Lï¿½schen von Dokumenten aus dem Index
+   * benï¿½tigt.
    * <p>
    * Ist <code>null</code>, wenn der Index nicht aktualisiert werden soll.
    */
   private IndexReader mIndexReader;
 
   /**
-   * Der gekapselte IndexSearcher. Wird zum Finden von Dokumenten benötigt.
+   * Der gekapselte IndexSearcher. Wird zum Finden von Dokumenten benï¿½tigt.
    * <p>
    * Ist <code>null</code>, wenn der Index nicht aktualisiert werden soll.
    */
@@ -170,7 +170,7 @@ public class IndexWriterManager {
    */
   private boolean mUpdateIndex;
 
-  /** Die DocumentFactory, die die Inhalte für die Indizierung aufbereitet. */
+  /** Die DocumentFactory, die die Inhalte fï¿½r die Indizierung aufbereitet. */
   private DocumentFactory mDocumentFactory;
 
   /**
@@ -215,15 +215,15 @@ public class IndexWriterManager {
    */
   private int mInitialDocCount;
 
-  /** Der Profiler der das Hinzufügen zum Index mißt. */
+  /** Der Profiler der das Hinzufï¿½gen zum Index miï¿½t. */
   private Profiler mAddToIndexProfiler = new Profiler("Indexed documents", "docs");
 
   /** The profiler for the breakpoint creation. */
   private Profiler mBreakpointProfiler = new Profiler("Created breakpoints", "breakpoints");
 
   /**
-   * Enthält die URL und den LastUpdated-String aller Dokumente, deren Einträge
-   * beim Abschließen des Index entfernt werden müssen.
+   * Enthï¿½lt die URL und den LastUpdated-String aller Dokumente, deren Eintrï¿½ge
+   * beim Abschlieï¿½en des Index entfernt werden mï¿½ssen.
    * <p>
    * Die URL bildet den key, der LastUpdated-String die value.
    */
@@ -332,7 +332,7 @@ public class IndexWriterManager {
 
 
   /**
-   * Gibt zurück, ob ein bestehender Index aktualisiert wird.
+   * Gibt zurï¿½ck, ob ein bestehender Index aktualisiert wird.
    * <p>
    * Anderenfalls wird ein komplett neuer Index angelegt.
    *
@@ -381,7 +381,7 @@ public class IndexWriterManager {
    * Logs an error at the error log of the index.
    * 
    * @param msg The error message.
-   * @param thr The error to log.
+   * @param thr The error to log. May be <code>null</code>.
    * @throws RegainException If writing to the error log failed.
    */
   public void logError(String msg, Throwable thr) throws RegainException {
@@ -396,9 +396,13 @@ public class IndexWriterManager {
       }
     }
     
-    mErrorLogWriter.println(msg + ":");
-    thr.printStackTrace(mErrorLogWriter);
-    mErrorLogWriter.println();
+    if (thr == null) {
+      mErrorLogWriter.println(msg);
+    } else {
+      mErrorLogWriter.println(msg + ":");
+      thr.printStackTrace(mErrorLogWriter);
+      mErrorLogWriter.println();
+    }
     mErrorLogWriter.flush();
   }
 
@@ -506,7 +510,7 @@ public class IndexWriterManager {
    *
    * @param indexDir Das Verzeichnis, in dem der Index liegt.
    * @param analyzerType Der Analyzer-Typ, den der alte Index haben muss, um
-   *        übernommen zu werden.
+   *        ï¿½bernommen zu werden.
    * @return Ob ein alter Index gefunden wurde.
    * @throws RegainException Wenn das Kopieren fehl schlug.
    */
@@ -520,7 +524,7 @@ public class IndexWriterManager {
     } else if (mNewIndexDir.exists()) {
       oldIndexDir = mNewIndexDir;
     } else {
-      // Es gibt keinen neuen Index -> Wir müssen den Index nehmen, der gerade
+      // Es gibt keinen neuen Index -> Wir mï¿½ssen den Index nehmen, der gerade
       // verwendet wird
       oldIndexDir = new File(indexDir, WORKING_INDEX_SUBDIR);
     }
@@ -530,7 +534,7 @@ public class IndexWriterManager {
       return false;
     }
 
-    // Analyzer-Typ des alten Index prüfen
+    // Analyzer-Typ des alten Index prï¿½fen
     File analyzerTypeFile = new File(oldIndexDir, "analyzerType.txt");
     String analyzerTypeOfIndex = RegainToolkit.readStringFromFile(analyzerTypeFile);
     if ((analyzerTypeOfIndex == null)
@@ -552,19 +556,19 @@ public class IndexWriterManager {
 
 
   /**
-   * Fügt ein Dokument dem Index hinzu.
+   * Fï¿½gt ein Dokument dem Index hinzu.
    * <p>
    * Anhand der URL wird der Typ des Dokuments erkannt.
    *
    * @param rawDocument Das zu indizierende Dokument.
    * @param errorLogger The error logger to use for logging errors.
    *
-   * @throws RegainException Wenn das Hinzufügen zum Index scheiterte.
+   * @throws RegainException Wenn das Hinzufï¿½gen zum Index scheiterte.
    */
   public void addToIndex(RawDocument rawDocument, ErrorLogger errorLogger)
     throws RegainException
   {
-    // Prüfen, ob es einen aktuellen Indexeintrag gibt
+    // Prï¿½fen, ob es einen aktuellen Indexeintrag gibt
     if (mUpdateIndex) {
       boolean removeOldEntry = false;
 
@@ -592,18 +596,18 @@ public class IndexWriterManager {
           + rawDocument.getUrl(), exc);
       }
 
-      // Wenn ein Dokument gefunden wurde, dann prüfen, ob Indexeintrag aktuell ist
+      // Wenn ein Dokument gefunden wurde, dann prï¿½fen, ob Indexeintrag aktuell ist
       if (doc != null) {
         Date docLastModified = rawDocument.getLastModified();
         if (docLastModified == null) {
-          // Wir können nicht feststellen, wann das Dokument zuletzt geändert
+          // Wir kï¿½nnen nicht feststellen, wann das Dokument zuletzt geï¿½ndert
           // wurde (Das ist bei http-URLs der Fall)
-          // -> Alten Eintrag löschen und Dokument neu indizieren
+          // -> Alten Eintrag lï¿½schen und Dokument neu indizieren
           mLog.info("Don't know when the document was last modified. " +
             "Creating a new index entry...");
           removeOldEntry = true;
         } else {
-          // Änderungsdatum mit dem Datum des Indexeintrages vergleichen
+          // ï¿½nderungsdatum mit dem Datum des Indexeintrages vergleichen
           String asString = doc.get("last-modified");
           if (asString != null) {
             Date indexLastModified = RegainToolkit.stringToLastModified(asString);
@@ -611,7 +615,7 @@ public class IndexWriterManager {
             long diff = docLastModified.getTime() - indexLastModified.getTime();
             if (diff > 60000L) {
               // Das Dokument ist mehr als eine Minute neuer
-              // -> Der Eintrag ist nicht aktuell -> Alten Eintrag löschen
+              // -> Der Eintrag ist nicht aktuell -> Alten Eintrag lï¿½schen
               mLog.info("Index entry is outdated. Creating a new one (" +
                   docLastModified + " > " + indexLastModified + "): " +
                   rawDocument.getUrl());
@@ -622,7 +626,7 @@ public class IndexWriterManager {
               return;
             }
           } else {
-            // Wir kennen das Änderungsdatum nicht -> Alten Eintrag löschen
+            // Wir kennen das ï¿½nderungsdatum nicht -> Alten Eintrag lï¿½schen
             mLog.info("Index entry has no last-modified field. " +
                 "Creating a new one: " + rawDocument.getUrl());
             removeOldEntry = true;
@@ -630,9 +634,9 @@ public class IndexWriterManager {
         }
       }
 
-      // Evtl. alten Eintrag löschen
+      // Evtl. alten Eintrag lï¿½schen
       if (removeOldEntry) {
-        // Eintrag nicht sofort löschen, sondern nur zum Löschen vormerken.
+        // Eintrag nicht sofort lï¿½schen, sondern nur zum Lï¿½schen vormerken.
         // Siehe markForDeletion(Document)
         markForDeletion(doc);
       }
@@ -644,9 +648,9 @@ public class IndexWriterManager {
 
 
   /**
-   * Erzeugt für ein Dokument einen neuen Indexeintrag.
+   * Erzeugt fï¿½r ein Dokument einen neuen Indexeintrag.
    *
-   * @param rawDocument Das Dokument für das der Eintrag erzeugt werden soll
+   * @param rawDocument Das Dokument fï¿½r das der Eintrag erzeugt werden soll
    * @param errorLogger The error logger to use for logging errors.
    * @throws RegainException Wenn die Erzeugung fehl schlug.
    */
@@ -694,7 +698,7 @@ public class IndexWriterManager {
   {
     if (! mUpdateIndex) {
       // Wir haben einen komplett neuen Index erstellt
-      // -> Es kann keine Einträge zu nicht vorhandenen Dokumenten geben
+      // -> Es kann keine Eintrï¿½ge zu nicht vorhandenen Dokumenten geben
       // -> Wir sind fertig
       return;
     }
@@ -725,10 +729,10 @@ public class IndexWriterManager {
         String url = doc.get("url");
         String lastModified = doc.get("last-modified");
 
-        // Prüfen, ob die URL gelöscht werden soll
+        // Prï¿½fen, ob die URL gelï¿½scht werden soll
         boolean shouldBeDeleted;
         if (url != null) {
-          // Prüfen, ob dieser Eintrag zum Löschen vorgesehen ist
+          // Prï¿½fen, ob dieser Eintrag zum Lï¿½schen vorgesehen ist
           if (isMarkedForDeletion(doc)) {
             shouldBeDeleted = true;
           }
@@ -736,11 +740,11 @@ public class IndexWriterManager {
           else if ((urlToKeepSet == null) && (prefixesToKeepArr == null)) {
             shouldBeDeleted = false;
           }
-          // Prüfen, ob dieser Eintrag zu verschonen ist
+          // Prï¿½fen, ob dieser Eintrag zu verschonen ist
           else if (urlToKeepSet.contains(url)) {
             shouldBeDeleted = false;
           }
-          // Prüfen, ob die URL zu einem zu-verschonen-Präfix passt
+          // Prï¿½fen, ob die URL zu einem zu-verschonen-Prï¿½fix passt
           else {
             shouldBeDeleted = true;
             for (int i = 0; i < prefixesToKeepArr.length; i++) {
@@ -765,7 +769,7 @@ public class IndexWriterManager {
       }
     }
 
-    // Merkliste der zu löschenden Einträge löschen
+    // Merkliste der zu lï¿½schenden Eintrï¿½ge lï¿½schen
     mUrlsToDeleteHash = null;
   }
 
@@ -785,12 +789,12 @@ public class IndexWriterManager {
   
 
   /**
-   * Merkt ein Dokument für die spätere Löschung vor.
+   * Merkt ein Dokument fï¿½r die spï¿½tere Lï¿½schung vor.
    * <p>
    * Diese Methode ist Teil eines Workaround: Ein alter Eintrag, der durch einen
-   * neuen ersetzt wird, wird nicht sofort gelöscht, sondern nur zur Löschung
+   * neuen ersetzt wird, wird nicht sofort gelï¿½scht, sondern nur zur Lï¿½schung
    * vorgemerkt. Auf diese Weise wird ein seltener Fehler umgangen, der das
-   * Schließen des IndexWriter verhindert, wenn häufig zwischen InderWriter und
+   * Schlieï¿½en des IndexWriter verhindert, wenn hï¿½ufig zwischen InderWriter und
    * IndexReader gewechselt wird.
    *
    * @param doc Das vorzumerkende Dokument.
@@ -811,10 +815,10 @@ public class IndexWriterManager {
 
 
   /**
-   * Gibt zurück, ob ein Dokument für die Löschung vorgemerkt wurde.
+   * Gibt zurï¿½ck, ob ein Dokument fï¿½r die Lï¿½schung vorgemerkt wurde.
    *
-   * @param doc Das zu prüfende Dokument.
-   * @return Ob das Dokument für die Löschung vorgemerkt wurde.
+   * @param doc Das zu prï¿½fende Dokument.
+   * @return Ob das Dokument fï¿½r die Lï¿½schung vorgemerkt wurde.
    */
   private boolean isMarkedForDeletion(Document doc) {
     String url = doc.get("url");
@@ -822,16 +826,16 @@ public class IndexWriterManager {
 
     if ((url == null) || (lastModified == null)) {
       // url und last-modified sind Mussfelder
-      // Da eines fehlt -> Dokument löschen
+      // Da eines fehlt -> Dokument lï¿½schen
       return true;
     }
 
     if (mUrlsToDeleteHash == null) {
-      // Es sind gar keine Dokumente zum Löschen vorgemerkt
+      // Es sind gar keine Dokumente zum Lï¿½schen vorgemerkt
       return false;
     }
 
-    // Prüfen, ob es einen Eintrag für diese URL gibt und ob er dem
+    // Prï¿½fen, ob es einen Eintrag fï¿½r diese URL gibt und ob er dem
     // last-modified des Dokuments entspricht
     String lastModifiedToDelete = (String) mUrlsToDeleteHash.get(url);
     return lastModified.equals(lastModifiedToDelete);
@@ -839,9 +843,9 @@ public class IndexWriterManager {
 
 
   /**
-   * Gibt die Anzahl der Einträge im Index zurück.
+   * Gibt die Anzahl der Eintrï¿½ge im Index zurï¿½ck.
    *
-   * @return Die Anzahl der Einträge im Index.
+   * @return Die Anzahl der Eintrï¿½ge im Index.
    * @throws RegainException Wenn die Anzahl nicht ermittelt werden konnte.
    */
   public int getIndexEntryCount() throws RegainException {
@@ -860,7 +864,7 @@ public class IndexWriterManager {
    * @throws RegainException If preparing the breakpoint failed.
    */
   private void prepareBreakpoint() throws RegainException {
-    // Testen, ob noch Einträge für die Löschung vorgesehen sind
+    // Testen, ob noch Eintrï¿½ge fï¿½r die Lï¿½schung vorgesehen sind
     if (mUrlsToDeleteHash != null) {
       throw new RegainException("There are still documents marked for deletion."
         + " The method removeObsoleteEntires(...) has to be called first.");
@@ -927,9 +931,9 @@ public class IndexWriterManager {
 
 
   /**
-   * Optimiert und schließt den Index
+   * Optimiert und schlieï¿½t den Index
    *
-   * @param putIntoQuarantine Gibt an, ob der Index in Quarantäne soll.
+   * @param putIntoQuarantine Gibt an, ob der Index in Quarantï¿½ne soll.
    * @throws RegainException Wenn der Index nicht geschlossen werden konnte.
    */
   public void close(boolean putIntoQuarantine) throws RegainException {
@@ -1011,7 +1015,7 @@ public class IndexWriterManager {
 
 
   /**
-   * Erzeugt eine Datei, die alle Terme (also alle erlaubten Suchtexte) enthält.
+   * Erzeugt eine Datei, die alle Terme (also alle erlaubten Suchtexte) enthï¿½lt.
    *
    * @param indexDir Das Verzeichnis, in dem der Index steht.
    * @param termFile Der Ort, wo die Datei erstellt werden soll.
@@ -1069,7 +1073,7 @@ public class IndexWriterManager {
    * <p>
    * Diese Methode braucht minimale Ressourcen.
    *
-   * @param termEnum Die Aufzählung mit allen Termen.
+   * @param termEnum Die Aufzï¿½hlung mit allen Termen.
    * @param writer Der Writer auf den geschrieben werden soll.
    *
    * @return Die Anzahl der Terme.
@@ -1093,11 +1097,11 @@ public class IndexWriterManager {
   /**
    * Schreibt die Terme vom IndexReader sortiert in den Writer.
    * <p>
-   * Um die Terme sortieren zu können, müssen sie zwischengespeichert werden. Falls
-   * es zu viele sind, könnte das schief gehen. In diesem Fall sollte man auf simples
+   * Um die Terme sortieren zu kï¿½nnen, mï¿½ssen sie zwischengespeichert werden. Falls
+   * es zu viele sind, kï¿½nnte das schief gehen. In diesem Fall sollte man auf simples
    * Schreiben umstellen.
    *
-   * @param termEnum Die Aufzählung mit allen Termen.
+   * @param termEnum Die Aufzï¿½hlung mit allen Termen.
    * @param writer Der Writer auf den geschrieben werden soll.
    *
    * @return Die Anzahl der Terme.

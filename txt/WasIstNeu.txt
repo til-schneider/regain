@@ -1,6 +1,25 @@
+
+Version 1.1 Beta 4 am 13.04.05
+------------------------------
+
+* Zugriffsrechte-Management: Es kann nun ein Rechte-Management eingebunden
+    werden, das dafür sorgt, dass ein Benutzer nur Treffer für Dokumente erhält,
+    für die er Leserechte hat.
+* Suche: Die search-Taglib hat nun ein Tag "hit_field", das ein beliebiges
+    Indexfeld ausgibt. Das Tag "hit_summary" wurde in diesem Zuge entfernt.
+* Suche: Wenn Sie die Konfiguration der Suche nicht von einer XML-Datei laden
+    wollen oder wenn Sie die Lage der XML-Datei nicht in der web.xml angeben
+    möchten, können Sie die Konfiguration nun über eine eigene Factory-Klasse
+    erzeugen. Die SearchConfigFactory-Klasse wird in der web.xml festgelegt.
+* Serversuche: Die beigelegten JSP-Seiten haben nicht funktioniert.
+
+
+Version 1.1 Beta 3 am 17.03.05
+------------------------------
+
 * Crawler: Bugfix: Der PoiMsExcelPraeparator kam nicht mit allen Zahlen- und
   Datumsformaten klar.
-* Crawler: Das Fehler-Log im Index ist nun ausfÃ¼hrlicher (Mit Stacktrace).
+* Crawler: Das Fehler-Log im Index ist nun ausfuehrlicher (Mit Stacktrace).
 * Crawler: Die Praeparatoren sind nun in eigene Jars gekapselt. Dadurch ist im
   regain.jar nur das, was regain selbst braucht und die Praeparatoren lassen
   sich leichter austauschen. Ausserdem koennen nun andere Entwickler auch
@@ -26,7 +45,7 @@ Version 1.1 Beta 2 am 12.03.05
 * Crawler: Der Crawler erstellt nun regelmaeÃŸig sog. Breakpoints. Dabei wird
   der aktuellen Stand der Suchindex in ein gesondertes Verzeichnis kopiert.
   Falls die Indexierung abgebrochen wurde (Z.B. weil der Rechner
-  heruntergefahren wurde), wird beim nÃ¤chsten mal auf dem letzten Breakpoint
+  heruntergefahren wurde), wird beim naechsten mal auf dem letzten Breakpoint
   aufgesetzt.
 * Desktopsuche: Die Statusseite zeigt nun auch die Zeitmessungsergebnisse.
 
@@ -39,9 +58,9 @@ Version 1.1 Beta 1 am 10.03.05
   machen:
     - Ein Installer fuer Windows.
     - Integration in die Taskleiste unter Linux und Windows.
-    - Konfiguration ueber den Browser
-    - Status-Anzeige ueber den Browser
-* Crawler: Es gibt nun einen Praeparator fÃ¼r OpenOffice- und StarOffice-Dokumente.
+    - Konfiguration ueber den Browser.
+    - Status-Anzeige ueber den Browser.
+* Crawler: Es gibt nun einen Praeparator fuer OpenOffice- und StarOffice-Dokumente.
 * Gesamt: Aktualisierung auf die neusten Versionen der genutzten Projekte.
 * Crawler: Praeparatoren sind nun ueber die CrawlerConfiguration.xml
   konfigurierbar.
@@ -49,20 +68,20 @@ Version 1.1 Beta 1 am 10.03.05
   konfiguriert, nicht mehr ueber die web.xml. Dort steht nun nur noch der Pfad
   zur SearchConfiguration.xml.
 * Suche: In der Suche kann nun URL-Rewriting eingesetzt werden. Dadurch
-  koennen Dokumente von file://c:/wwwâ€‘data/intranet/docs indiziert und im
+  koennen Dokumente von file://c:/www-data/intranet/docs indiziert und im
   Browser als http://intranet.murfman.de/docs angezeigt werden.
 * Crawler: Zusatzfelder: Der Index kann durch Zusatzfelder erweitert werden, die
   aus der URL eines Dokuments generiert werden.
   Beispiel: Angenommen Sie haben ein Verzeichnis mit einem Unterverzeichnis fuer
   jedes Projekt. Dann koennten Sie daraus ein Feld mit dem Projektnamen
-  generieren. Dadurch bekommen Sie bei der Suche nach "AngebotÂ project:otto23"
+  generieren. Dadurch bekommen Sie bei der Suche nach "Angebot project:otto23"
   nur Treffer aus diesem Verzeichnis.
 * Suche: Expertensuche: Die Werte, die fuer ein Feld im Index stehen,
   koennen nun als ComboBox auf einer Suchseite angeboten werden. Vor allem in
   Verbindung mit Zusatzfeldern ist das sehr praktisch.
 * Suche: Weil manche Browser aus Sicherheitsgruenden keine file-Links
   verfolgen, die auf http-Seiten stehen, sind nun alle Dokumente, die sich im
-  Index befinden auch Ã¼ber HTTP erreichbar. SelbstverstÃ¤ndlich sind sie bei der
+  Index befinden auch ueber HTTP erreichbar. Selbstverstaendlich sind sie bei der
   Desktopsuche nur vom lokalen Rechner aus abrufbar.
 * Crawler: Der JacobMsWordPraeparator beruecksichtigt nun Formatvorlagen.
   Dadurch koennen Ueberschriften extrahiert werden, die dann bei der Suche

@@ -262,6 +262,26 @@
 </preparatorList>
 
 
+<!--
+ | The CrawlerAccessController to use.
+ | 
+ | This is a part of the access control system that ensures that only those
+ | documents are shown in the search results that the user is allowed to
+ | read.
+ |
+ | If you specify a CrawlerAccessController, don't forget to specify the
+ | SearchAccessController counterpart in the SearchConfiguration.xml!
+ +-->
+<!--
+<crawlerAccessController>
+  <class jar="myAccess.jar">mypackage.MyCrawlerAccessController</class>
+  <config>
+    <param name="bla">blubb</param>
+  </config>
+</crawlerAccessController>
+-->
+
+
 <!-- The regular expressions that indetify URLs in HTML. -->
 <htmlParserPatternList>
   <pattern parse="true" index="true" regexGroup="1">="([^"]*\.(htm|html))"</pattern>

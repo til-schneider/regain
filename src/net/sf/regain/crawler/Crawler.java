@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: Crawler.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/Crawler.java,v $
- *     $Date: 2005/03/16 15:51:17 $
+ *     $Date: 2005/03/17 12:57:49 $
  *   $Author: til132 $
- * $Revision: 1.15 $
+ * $Revision: 1.17 $
  */
 package net.sf.regain.crawler;
 
@@ -118,10 +118,9 @@ public class Crawler implements ErrorLogger {
   private RE[] mHtmlParserPatternReArr;
 
   /** Der Profiler der die gesamten Crawler-Jobs mi�t. */
-  private Profiler mCrawlerJobProfiler = new Profiler("Whole crawler jobs", "jobs");
+  private Profiler mCrawlerJobProfiler;
   /** Der Profiler der das Durchsuchen von HTML-Dokumenten mi�t. */
-  private Profiler mHtmlParsingProfiler
-    = new Profiler("Parsed HTML documents", "docs");
+  private Profiler mHtmlParsingProfiler;
   
   /** The IndexWriterManager to use for adding documents to the index. */
   private IndexWriterManager mIndexWriterManager;
@@ -139,6 +138,9 @@ public class Crawler implements ErrorLogger {
    */
   public Crawler(CrawlerConfig config) throws RegainException {
     Profiler.clearRegisteredProfilers();
+    
+    mCrawlerJobProfiler = new Profiler("Whole crawler jobs", "jobs");
+    mHtmlParsingProfiler = new Profiler("Parsed HTML documents", "docs");
     
     mConfiguration = config;
 
@@ -899,7 +901,7 @@ public class Crawler implements ErrorLogger {
    * Loggs an error.
    *
    * @param msg The error message.
-   * @param thr The error
+   * @param thr The error. May be <code>null</code>.
    * @param fatal Specifies whether the error was fatal. An error is fatal if
    *        it caused that the index could not be created.
    */

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: PageResponse.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/PageResponse.java,v $
- *     $Date: 2005/03/16 12:30:24 $
+ *     $Date: 2005/03/30 10:30:03 $
  *   $Author: til132 $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  */
 package net.sf.regain.util.sharedtag;
 
@@ -88,8 +88,11 @@ public abstract class PageResponse {
    * @throws RegainException If printing failed.
    */
   public void printNoHtml(String text) throws RegainException {
-    text = RegainToolkit.replace(text, "<", "&lt;");
-    text = RegainToolkit.replace(text, ">", "&gt;");
+    if (text != null) {
+      text = RegainToolkit.replace(text, "<", "&lt;");
+      text = RegainToolkit.replace(text, ">", "&gt;");
+    }
+    
     print(text);
   }
   

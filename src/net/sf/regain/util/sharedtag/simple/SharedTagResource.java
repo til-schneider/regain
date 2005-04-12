@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: SharedTagResource.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/simple/SharedTagResource.java,v $
- *     $Date: 2005/03/16 21:52:04 $
+ *     $Date: 2005/04/02 17:29:03 $
  *   $Author: til132 $
- * $Revision: 1.7 $
+ * $Revision: 1.9 $
  */
 package net.sf.regain.util.sharedtag.simple;
 
@@ -100,7 +100,7 @@ public class SharedTagResource extends BasicResource {
     Executer executer, Throwable error)
     throws Exception
   {
-    String encoding = "UTF-8";
+    String encoding = "utf-8";
         
     // Write the page to a buffer first
     // If an exception should be thrown the user gets a clear error message
@@ -112,7 +112,7 @@ public class SharedTagResource extends BasicResource {
 
     // Add the error to the page attributes
     if (error != null) {
-      request.setContextAttribute("javax.servlet.jsp.jspException", error);
+      request.setContextAttribute("page.exception", error);
     }
     
     try {
@@ -149,7 +149,7 @@ public class SharedTagResource extends BasicResource {
     }
     
     // The page has been generated without exception -> Send it to the user
-    resp.set("Content-Type", "text/html charset=" + encoding);
+    resp.set("Content-Type", "text/html; charset=" + encoding);
     PrintStream pageStream = resp.getPrintStream();
     try {
       stream.writeTo(pageStream);

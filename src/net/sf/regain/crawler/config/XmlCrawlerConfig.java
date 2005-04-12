@@ -21,14 +21,15 @@
  * CVS information:
  *  $RCSfile: XmlCrawlerConfig.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/XmlCrawlerConfig.java,v $
- *     $Date: 2005/03/14 15:04:17 $
+ *     $Date: 2005/03/30 10:30:03 $
  *   $Author: til132 $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  */
 package net.sf.regain.crawler.config;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Properties;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.XmlToolkit;
@@ -115,6 +116,13 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   /** The list of the auxiliary fields. May be null. */
   private AuxiliaryField[] mAuxiliaryFieldArr;
 
+  /** The class name of the CrawlerAccessController to use. */
+  private String mCrawlerAccessControllerClass;
+  /** The name of jar file to load the CrawlerAccessController from. */
+  private String mCrawlerAccessControllerJar;
+  /** The configuration of the CrawlerAccessController. */
+  private Properties mCrawlerAccessControllerConfig;
+
 
   /**
    * Erzeugt eine neue XmlConfiguration-Instanz.
@@ -140,6 +148,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     readUseLinkTextAsTitleRegexList(config);
     readPreparatorSettingsList(config, xmlFile);
     readAuxiliaryFieldList(config);
+    readCrawlerAccessController(config);
   }
 
 
@@ -453,7 +462,36 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     
     return config;
   }
-  
+
+
+  /**
+   * Reads which CrawlerAccessController to use.
+   *
+   * @param config The configuration to read from.
+   * @throws RegainException If the configuration has errors.
+   */
+  private void readCrawlerAccessController(Node config)
+    throws RegainException
+  {
+    Node node = XmlToolkit.getChild(config, "crawlerAccessController");
+    if (node != null) {
+      Node classNode = XmlToolkit.getChild(node, "class", true);
+      mCrawlerAccessControllerClass = XmlToolkit.getText(classNode, true);
+      mCrawlerAccessControllerJar   = XmlToolkit.getAttribute(classNode, "jar");
+
+      Node configNode = XmlToolkit.getChild(node, "config");
+      if (configNode != null) {
+        mCrawlerAccessControllerConfig = new Properties();
+        Node[] paramNodeArr = XmlToolkit.getChildArr(configNode, "param");
+        for (int i = 0; i < paramNodeArr.length; i++) {
+          String name = XmlToolkit.getAttribute(paramNodeArr[i], "name", true);
+          String value = XmlToolkit.getText(paramNodeArr[i], true);
+          mCrawlerAccessControllerConfig.setProperty(name, value);
+        }
+      }
+    }
+  }
+
 
   /**
    * Gibt den Host-Namen des Proxy-Servers zur�ck. Wenn kein Host konfiguriert
@@ -721,6 +759,43 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    */
   public AuxiliaryField[] getAuxiliaryFieldList() {
     return mAuxiliaryFieldArr;
+  }
+
+  
+  /**
+   * Gets the class name of the
+   * {@link net.sf.regain.crawler.access.CrawlerAccessController} to use.
+   * Returns <code>null</code> if no CrawlerAccessController should be used.
+   * 
+   * @return The class name of the CrawlerAccessController. 
+   */
+  public String getCrawlerAccessControllerClass() {
+    return mCrawlerAccessControllerClass;
+  }
+
+
+  /**
+   * Gets the name of jar file to load the
+   * {@link net.sf.regain.crawler.access.CrawlerAccessController} from.
+   * Returns <code>null</code> if the CrawlerAccessController already is in the
+   * classpath.
+   * 
+   * @return The name of jar file to load the CrawlerAccessController from. 
+   */
+  public String getCrawlerAccessControllerJar() {
+    return mCrawlerAccessControllerJar;
+  }
+
+  
+  /**
+   * Gets the configuration of the
+   * {@link net.sf.regain.crawler.access.CrawlerAccessController}. May be
+   * <code>null</code>.
+   * 
+   * @return The the configuration of the CrawlerAccessController. 
+   */
+  public Properties getCrawlerAccessControllerConfig() {
+    return mCrawlerAccessControllerConfig;
   }
   
 }

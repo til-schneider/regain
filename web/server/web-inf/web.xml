@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+    "http://java.sun.com/dtd/web-app_2_2.dtd">
+
+<web-app>
+
+  <!-- The location of the configuration file -->
+  <context-param>
+    <param-name>searchConfigFile</param-name>
+    <param-value>../conf/regain/SearchConfiguration.xml</param-value>
+  </context-param>
+
+  <!--
+   | The configuration factory.
+   |
+   | If you don't want to read the search config from an XML file or if you don't
+   | want to write the location of the XML file in the web.xml, you may write your
+   | own SearchConfigFactory class and create the config on your own.
+   | Specify this class here.
+   |
+   | The parameter "searchConfigFactoryJar" is optional. If it is mising the class
+   | must be included in the .war file.
+   +-->
+  <!--
+  <context-param>
+    <param-name>searchConfigFactoryClass</param-name>
+    <param-value>mypackage.MySearchConfigFactory</param-value>
+  </context-param>
+  <context-param>
+    <param-name>searchConfigFactoryJar</param-name>
+    <param-value>path/to/theFactory.jar</param-value>
+  </context-param>
+  -->
+
+
+  <!-- The location of the resource bundles -->
+  <context-param>
+    <param-name>webDir</param-name>
+    <param-value>../webapps/regain</param-value>
+  </context-param>
+
+  <!-- file servlet -->
+  <servlet>
+    <servlet-name>file</servlet-name>
+    <display-name>FileServlet</display-name>
+    <servlet-class>net.sf.regain.ui.server.FileServlet</servlet-class>
+  </servlet>
+
+  <!-- Mapping for file servlet -->
+  <servlet-mapping>
+    <servlet-name>file</servlet-name>
+    <url-pattern>/file/*</url-pattern>
+  </servlet-mapping>
+
+</web-app>

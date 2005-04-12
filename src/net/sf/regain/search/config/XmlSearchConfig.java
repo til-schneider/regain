@@ -2,14 +2,15 @@
  * CVS information:
  *  $RCSfile: XmlSearchConfig.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/config/XmlSearchConfig.java,v $
- *     $Date: 2005/02/26 14:51:11 $
+ *     $Date: 2005/03/30 10:30:01 $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  */
 package net.sf.regain.search.config;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Properties;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.XmlToolkit;
@@ -63,34 +64,65 @@ public class XmlSearchConfig implements SearchConfig {
     mIndexHash = new HashMap();
     mDefaultIndexName = null;
     Node[] nodeArr = XmlToolkit.getChildArr(listNode, "index");
-    for (int i = 0; i < nodeArr.length; i++) {
-      String name = XmlToolkit.getAttribute(nodeArr[i], "name", true);
-      String directory = XmlToolkit.getChildText(nodeArr[i], "dir", true);
+    for (int indexIdx = 0; indexIdx < nodeArr.length; indexIdx++) {
+      Node indexNode = nodeArr[indexIdx];
+      
+      String indexName = XmlToolkit.getAttribute(indexNode, "name", true);
+      String directory = XmlToolkit.getChildText(indexNode, "dir", true);
 
-      node = XmlToolkit.getCascadedChild(nodeArr[i], defaultNode, "openInNewWindowRegex", true);
+      // Read the openInNewWindowRegex
+      node = XmlToolkit.getCascadedChild(indexNode, defaultNode, "openInNewWindowRegex", true);
       String openInNewWindowRegex = XmlToolkit.getText(node, true);
 
-      node = XmlToolkit.getCascadedChildKram(nodeArr[i], defaultNode, "searchFieldList");
+      // Read the search field list
+      node = XmlToolkit.getCascadedChild(indexNode, defaultNode, "searchFieldList");
       String[] searchFieldList = null;
       if (node != null) {
         searchFieldList = XmlToolkit.getTextAsWordList(node, true);
       }
 
-      node = XmlToolkit.getCascadedChildKram(nodeArr[i], defaultNode, "rewriteRules");
+      // Read the rewrite rules
+      node = XmlToolkit.getCascadedChild(indexNode, defaultNode, "rewriteRules");
       String[][] rewriteRules = readRewriteRules(node);
       
-      IndexConfig indexConfig = new IndexConfig(name, directory,
-          openInNewWindowRegex, searchFieldList, rewriteRules);
-      mIndexHash.put(name, indexConfig);
+      // Read the SearchAccessController
+      String searchAccessControllerClass = null;
+      String searchAccessControllerJar = null;
+      Properties searchAccessControllerConfig = null;
+      node = XmlToolkit.getCascadedChild(indexNode, defaultNode, "searchAccessController");
+      if (node != null) {
+        Node classNode = XmlToolkit.getChild(node, "class", true);
+        searchAccessControllerClass = XmlToolkit.getText(classNode, true);
+        searchAccessControllerJar   = XmlToolkit.getAttribute(classNode, "jar");
+        
+        Node configNode = XmlToolkit.getChild(node, "config");
+        if (configNode != null) {
+          searchAccessControllerConfig = new Properties();
+          Node[] paramNodeArr = XmlToolkit.getChildArr(configNode, "param");
+          for (int i = 0; i < paramNodeArr.length; i++) {
+            String name = XmlToolkit.getAttribute(paramNodeArr[i], "name", true);
+            String value = XmlToolkit.getText(paramNodeArr[i], true);
+            searchAccessControllerConfig.setProperty(name, value);
+          }
+        }
+      }
       
-      boolean isDefault = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "default", false);
+      // Create the index config
+      IndexConfig indexConfig = new IndexConfig(indexName, directory,
+          openInNewWindowRegex, searchFieldList, rewriteRules,
+          searchAccessControllerClass, searchAccessControllerJar,
+          searchAccessControllerConfig);
+      mIndexHash.put(indexName, indexConfig);
+      
+      // Check whether this index is default
+      boolean isDefault = XmlToolkit.getAttributeAsBoolean(indexNode, "default", false);
       if (isDefault) {
         if (mDefaultIndexName != null) {
-          throw new RegainException("The index '" + name + "' can't be marked " +
+          throw new RegainException("The index '" + indexName + "' can't be marked " +
               "as default index, because index '" + mDefaultIndexName
               + "' already is marked as default.");
         } else {
-          mDefaultIndexName = name;
+          mDefaultIndexName = indexName;
         }
       }
     }

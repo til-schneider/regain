@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: AbstractPreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/document/AbstractPreparator.java,v $
- *     $Date: 2005/03/14 15:03:56 $
+ *     $Date: 2005/03/17 12:51:16 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  */
 package net.sf.regain.crawler.document;
 
@@ -55,13 +55,13 @@ public abstract class AbstractPreparator implements Preparator {
   private RE mUrlRegex;
   /** Der gefundene Titel. */
   private String mTitle;
-  /** Der gesäuberte Inhalt. */
+  /** Der gesï¿½uberte Inhalt. */
   private String mCleanedContent;
   /** Die Zusammenfassung des Dokuments. */
   private String mSummary;
-  /** Die extrahierten Überschriften. Kann <code>null</code> sein */
+  /** Die extrahierten ï¿½berschriften. Kann <code>null</code> sein */
   private String mHeadlines;
-  /** Der Pfad, über den das Dokument zu erreichen ist. */
+  /** Der Pfad, ï¿½ber den das Dokument zu erreichen ist. */
   private PathElement[] mPath;
   /** The additional fields that should be indexed. */
   private HashMap mAdditionalFieldMap;
@@ -87,7 +87,7 @@ public abstract class AbstractPreparator implements Preparator {
    * @see #accepts(RawDocument)
    */
   public AbstractPreparator(String extention) {
-    this(new RE("\\." + extention + "$"));
+    this(new RE("\\." + extention + "$", RE.MATCH_CASEINDEPENDENT));
   }
 
 
@@ -126,7 +126,7 @@ public abstract class AbstractPreparator implements Preparator {
       urlRegex = buffer.toString();
     }
     
-    return new RE(urlRegex);
+    return new RE(urlRegex, RE.MATCH_CASEINDEPENDENT);
   }
 
 
@@ -172,10 +172,10 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Gibt den Titel des Dokuments zurück.
+   * Gibt den Titel des Dokuments zurï¿½ck.
    * <p>
    * Falls kein Titel extrahiert werden konnte, wird <CODE>null</CODE>
-   * zurückgegeben.
+   * zurï¿½ckgegeben.
    *
    * @return Der Titel des Dokuments.
    */
@@ -186,7 +186,7 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Setzt den Titel des Dokuments, das gerade präpariert wird.
+   * Setzt den Titel des Dokuments, das gerade prï¿½pariert wird.
    *
    * @param title Der Titel.
    */
@@ -197,9 +197,9 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Gibt den von Formatierungsinformation befreiten Inhalt des Dokuments zurück.
+   * Gibt den von Formatierungsinformation befreiten Inhalt des Dokuments zurï¿½ck.
    *
-   * @return Der gesäuberte Inhalt.
+   * @return Der gesï¿½uberte Inhalt.
    */
   public String getCleanedContent() {
     return mCleanedContent;
@@ -209,9 +209,9 @@ public abstract class AbstractPreparator implements Preparator {
 
   /**
    * Setzt von Formatierungsinformation befreiten Inhalt des Dokuments, das
-   * gerade präpariert wird.
+   * gerade prï¿½pariert wird.
    *
-   * @param cleanedContent Der gesäuberte Inhalt.
+   * @param cleanedContent Der gesï¿½uberte Inhalt.
    */
   protected void setCleanedContent(String cleanedContent) {
     mCleanedContent = cleanedContent;
@@ -220,12 +220,12 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Gibt eine Zusammenfassung für das Dokument zurück.
+   * Gibt eine Zusammenfassung fï¿½r das Dokument zurï¿½ck.
    * <p>
-   * Da eine Zusammenfassung nicht einfach möglich ist, wird <CODE>null</CODE>
-   * zurückgegeben.
+   * Da eine Zusammenfassung nicht einfach mï¿½glich ist, wird <CODE>null</CODE>
+   * zurï¿½ckgegeben.
    *
-   * @return Eine Zusammenfassung für das Dokument
+   * @return Eine Zusammenfassung fï¿½r das Dokument
    */
   public String getSummary() {
     return mSummary;
@@ -234,7 +234,7 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Setzt die Zusammenfassung des Dokuments, das gerade präpariert wird.
+   * Setzt die Zusammenfassung des Dokuments, das gerade prï¿½pariert wird.
    *
    * @param summary Die Zusammenfassung
    */
@@ -245,17 +245,17 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Gibt die Überschriften des Dokuments zurück.
+   * Gibt die ï¿½berschriften des Dokuments zurï¿½ck.
    * <p>
-   * Es handelt sich dabei nicht um die Überschrift des Dokuments selbst,
-   * sondern lediglich um Unter-Überschriften, die in dem Dokument verwendendet
-   * werden. Mit Hilfe dieser Überschriften läßt sich eine bessere Relevanz
+   * Es handelt sich dabei nicht um die ï¿½berschrift des Dokuments selbst,
+   * sondern lediglich um Unter-ï¿½berschriften, die in dem Dokument verwendendet
+   * werden. Mit Hilfe dieser ï¿½berschriften lï¿½ï¿½t sich eine bessere Relevanz
    * berechnen.
    * <p>
-   * Wenn keine Überschriften gefunden wurden, dann wird <code>null</code>
-   * zurückgegeben.
+   * Wenn keine ï¿½berschriften gefunden wurden, dann wird <code>null</code>
+   * zurï¿½ckgegeben.
    *
-   * @return Die Überschriften des Dokuments.
+   * @return Die ï¿½berschriften des Dokuments.
    */
   public String getHeadlines() {
     return mHeadlines;
@@ -264,7 +264,7 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Setzt die Überschriften, in im Dokument, das gerade präpariert wird,
+   * Setzt die ï¿½berschriften, in im Dokument, das gerade prï¿½pariert wird,
    * gefunden wurden.
    *
    * @param headlines Die Zusammenfassung
@@ -276,11 +276,11 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Gibt den Pfad zurück, über den das Dokument zu erreichen ist.
+   * Gibt den Pfad zurï¿½ck, ï¿½ber den das Dokument zu erreichen ist.
    * <p>
-   * Falls kein Pfad verfügbar ist, wird <code>null</code> zurückgegeben.
+   * Falls kein Pfad verfï¿½gbar ist, wird <code>null</code> zurï¿½ckgegeben.
    *
-   * @return Der Pfad, über den das Dokument zu erreichen ist.
+   * @return Der Pfad, ï¿½ber den das Dokument zu erreichen ist.
    */
   public PathElement[] getPath() {
     return mPath;
@@ -289,9 +289,9 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Setzt den Pfad, über den das Dokument zu erreichen ist.
+   * Setzt den Pfad, ï¿½ber den das Dokument zu erreichen ist.
    *
-   * @param path Der Pfad, über den das Dokument zu erreichen ist.
+   * @param path Der Pfad, ï¿½ber den das Dokument zu erreichen ist.
    */
   public void setPath(PathElement[] path) {
     mPath = path;
@@ -327,7 +327,7 @@ public abstract class AbstractPreparator implements Preparator {
   
 
   /**
-   * Gibt alle Ressourcen frei, die für die Informationen über das Dokument
+   * Gibt alle Ressourcen frei, die fï¿½r die Informationen ï¿½ber das Dokument
    * reserviert wurden.
    */
   public void cleanUp() {
