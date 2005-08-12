@@ -8,7 +8,7 @@
 ; Configuration
 
 ; program name
-Name "${PROG_NAME} ${VERSION}"
+Name "${PROG_NAME}"
 
 ; The file to write
 OutFile "${PUBLIC_DIR}\${PROG_NAME_FILE}_v${VERSION_FILE}_desktop_win.exe"
@@ -73,11 +73,24 @@ Var STARTMENU_FOLDER
 !insertmacro MUI_LANGUAGE "English"
 !insertmacro MUI_LANGUAGE "German"
 
+LangString SecProgName          ${LANG_ENGLISH} "${PROG_NAME} (required)"
+LangString SecProgName          ${LANG_GERMAN}  "${PROG_NAME} (erforderlich)"
+LangString SecLinkName          ${LANG_ENGLISH} "Links"
+LangString SecLinkName          ${LANG_GERMAN}  "Verknüpfungen"
+LangString SecLinkStartmenuName ${LANG_ENGLISH} "Links in the start menu"
+LangString SecLinkStartmenuName ${LANG_GERMAN}  "Verknüpfungen im Start-Menü"
+LangString LicenseTerms         ${LANG_ENGLISH} "License terms"
+LangString LicenseTerms         ${LANG_GERMAN}  "Lizenzbedingungen"
+LangString UninstallRegain      ${LANG_ENGLISH} "Uninstall ${PROG_NAME}"
+LangString UninstallRegain      ${LANG_GERMAN}  "${PROG_NAME} deinstallieren"
+LangString SecLinkAutostartName ${LANG_ENGLISH} "Link in autostart folder"
+LangString SecLinkAutostartName ${LANG_GERMAN}  "Verknüpfung im Autostart-Ordner"
+
 
 ;--------------------------------
 ;Installer Sections
 
-Section "${PROG_NAME} (erforderlich)"
+Section $(SecProgName)
   ; make the section requiered
   SectionIn RO
 
@@ -141,9 +154,9 @@ Section "${PROG_NAME} (erforderlich)"
 SectionEnd ; end the section
 
 
-SubSection /e "Verknüpfungen"
+SubSection /e $(SecLinkName)
 
-  Section "Verknüpfungen im Start-Menü"
+  Section $(SecLinkStartmenuName)
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   
       CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
@@ -151,9 +164,9 @@ SubSection /e "Verknüpfungen"
       CreateShortCut \
         "$SMPROGRAMS\$STARTMENU_FOLDER\${PROG_NAME}.lnk" \
         "$INSTDIR\regain.exe"
-  
+
       CreateShortCut \
-        "$SMPROGRAMS\$STARTMENU_FOLDER\Lizenzbedingungen.lnk" \
+        "$SMPROGRAMS\$STARTMENU_FOLDER\$(LicenseTerms).lnk" \
         "$INSTDIR\license.txt"
 
       CreateShortCut \
@@ -163,9 +176,9 @@ SubSection /e "Verknüpfungen"
       CreateShortCut \
         "$SMPROGRAMS\$STARTMENU_FOLDER\What is new.lnk" \
         "$INSTDIR\WhatIsNew.txt"
-    
+
       CreateShortCut \
-        "$SMPROGRAMS\$STARTMENU_FOLDER\${PROG_NAME} deinstallieren.lnk" \
+        "$SMPROGRAMS\$STARTMENU_FOLDER\$(UninstallRegain).lnk" \
         "$INSTDIR\uninstall.exe" \
         "" \
         "$INSTDIR\uninstall.exe" \
@@ -173,8 +186,9 @@ SubSection /e "Verknüpfungen"
   
     !insertmacro MUI_STARTMENU_WRITE_END
   SectionEnd
-  
-  Section "Verknüpfung im Autostart-Ordner"
+
+
+  Section $(SecLinkAutostartName)
     CreateShortCut \
       "$SMSTARTUP\${PROG_NAME}.lnk" \
       "$INSTDIR\regain.exe"

@@ -1,16 +1,40 @@
+Version 1.1 Beta 5 am 13.08.05
+------------------------------
+
+* Multiindex-Suche: Es können nun mehrere Suchindizes über eine Suchmaske
+  durchsucht werden. Die Suchanfragen werden dabei auf jeden Index losgelassen
+  und anschließend vereint.
+* In der Weißen und der Schwarzen Liste können jetzt auch reguläre Ausdrücke
+  angegeben werden.
+* Suchmaske: Der Ort der Ressourcen und der Konfiguration wird jetzt besser
+  erkannt, so dass regain auch dann korrekt funktioniert, wenn Tomcat als
+  Service läuft.
+* Suchmaske: Die File-zu-Http-Brücke ist nun abschaltbar.
+* Crawler: Der Crawler braucht nun beim Durchsuchen von Verzeichnissen weniger
+  Arbeitsspeicher
+* Crawler: Der Crawler nimmt nun auch fehlgeschlagene Dokumente in den Index
+  auf, so dass diese bei einem erneuten Durchlauf nicht noch einmal probiert
+  werden. Wird der Crawler jedoch mit der Option "-retryFailedDocs" aufgerufen,
+  werden alle fehlgeschlagenen erneut probiert.
+* Der Html-Präparator übernimmt nun auch die Endungen .jsp, .php, .php3, .php4
+  und .asp.
+* In der CrawlerConfiguration.xml kann nun bei einem Präparator angegeben
+  werden, welche Dokumente er präparieren soll.
+* Mehrere Bugfixes
+
 
 Version 1.1 Beta 4 am 13.04.05
 ------------------------------
 
 * Zugriffsrechte-Management: Es kann nun ein Rechte-Management eingebunden
-    werden, das dafür sorgt, dass ein Benutzer nur Treffer für Dokumente erhält,
-    für die er Leserechte hat.
+  werden, das dafuer sorgt, dass ein Benutzer nur Treffer für Dokumente erhaelt,
+  für die er Leserechte hat.
 * Suche: Die search-Taglib hat nun ein Tag "hit_field", das ein beliebiges
-    Indexfeld ausgibt. Das Tag "hit_summary" wurde in diesem Zuge entfernt.
+  Indexfeld ausgibt. Das Tag "hit_summary" wurde in diesem Zuge entfernt.
 * Suche: Wenn Sie die Konfiguration der Suche nicht von einer XML-Datei laden
-    wollen oder wenn Sie die Lage der XML-Datei nicht in der web.xml angeben
-    möchten, können Sie die Konfiguration nun über eine eigene Factory-Klasse
-    erzeugen. Die SearchConfigFactory-Klasse wird in der web.xml festgelegt.
+  wollen oder wenn Sie die Lage der XML-Datei nicht in der web.xml angeben
+  moechten, koennen Sie die Konfiguration nun ueber eine eigene Factory-Klasse
+  erzeugen. Die SearchConfigFactory-Klasse wird in der web.xml festgelegt.
 * Serversuche: Die beigelegten JSP-Seiten haben nicht funktioniert.
 
 
@@ -42,7 +66,7 @@ Version 1.1 Beta 3 am 17.03.05
 Version 1.1 Beta 2 am 12.03.05
 ------------------------------
 
-* Crawler: Der Crawler erstellt nun regelmaeÃŸig sog. Breakpoints. Dabei wird
+* Crawler: Der Crawler erstellt nun regelmaeßig sog. Breakpoints. Dabei wird
   der aktuellen Stand der Suchindex in ein gesondertes Verzeichnis kopiert.
   Falls die Indexierung abgebrochen wurde (Z.B. weil der Rechner
   heruntergefahren wurde), wird beim naechsten mal auf dem letzten Breakpoint

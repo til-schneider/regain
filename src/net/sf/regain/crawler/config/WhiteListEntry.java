@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: WhiteListEntry.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/WhiteListEntry.java,v $
- *     $Date: 2004/11/10 15:08:51 $
+ *     $Date: 2005/05/11 09:21:40 $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  */
 package net.sf.regain.crawler.config;
 
@@ -40,27 +40,25 @@ package net.sf.regain.crawler.config;
  */
 public class WhiteListEntry {
 
-  /** Der Präfix, den eine URL haben muss, um bearbeitet zu werden. */
-  private String mPrefix;
+  /** The UrlMatcher a URL must match to in order to be processed. */
+  private UrlMatcher mUrlMatcher;
 
-  /** Der Name dieses Indexeintrages. Kann <code>null</code> sein. */
+  /** The name of the white list entry. May be <code>null</code>. */
   private String mName;
 
-  /**
-   * Gibt an, ob URLs vom Crawler aktualisiert werden sollen, die zu diesem
-   * Eintrag passen.
-   */
+  /** Specifies whether the crawler should update URLs that match to this entry. */
   private boolean mShouldBeUpdated;
 
 
   /**
-   * Erzeugt eine neue Instanz.
-   *
-   * @param prefix Der Präfix, den eine URL haben muss, um bearbeitet zu werden.
-   * @param name Der Name dieses Indexeintrages. Kann <code>null</code> sein.
+   * Creates a new instance of WhiteListEntry.
+   * 
+   * @param urlMatcher The UrlMatcher a URL must match to in order to be
+   *        processed.
+   * @param name The name of the white list entry. May be <code>null</code>.
    */
-  public WhiteListEntry(String prefix, String name) {
-    mPrefix = prefix;
+  public WhiteListEntry(UrlMatcher urlMatcher, String name) {
+    mUrlMatcher = urlMatcher;
     mName = name;
 
     mShouldBeUpdated = true;
@@ -68,19 +66,19 @@ public class WhiteListEntry {
 
 
   /**
-   * Gibt den Präfix zurück, den eine URL haben muss, um bearbeitet zu werden.
+   * Gets the UrlMatcher a URL must match to in order to be processed.
    *
-   * @return Der Präfix, den eine URL haben muss, um bearbeitet zu werden.
+   * @return The UrlMatcher a URL must match to in order to be processed..
    */
-  public String getPrefix() {
-    return mPrefix;
+  public UrlMatcher getUrlMatcher() {
+    return mUrlMatcher;
   }
 
 
   /**
-   * Gibt den Namen dieses Indexeintrages zurück. Kann <code>null</code> sein.
+   * Gets the name of the white list entry. May be <code>null</code>.
    *
-   * @return Der Name. Kann <code>null</code> sein.
+   * @return The name. May be <code>null</code>.
    */
   public String getName() {
     return mName;
@@ -88,10 +86,9 @@ public class WhiteListEntry {
 
 
   /**
-   * Gibt zurück, ob URLs vom Crawler aktualisiert werden sollen, die zu
-   * diesem Eintrag passen.
+   * Gets whether the crawler should update URLs that match to this entry.
    *
-   * @return Returns Ob passende URLs vom Crawler aktualisiert werden sollen.
+   * @return Whether the crawler should update URLs that match to this entry.
    */
   public boolean shouldBeUpdated() {
     return mShouldBeUpdated;
@@ -99,10 +96,10 @@ public class WhiteListEntry {
 
 
   /**
-   * Gibt an, ob URLs vom Crawler aktualisiert werden sollen, die zu
-   * diesem Eintrag passen.
+   * Sets whether the crawler should update URLs that match to this entry.
    *
-   * @param shouldBeUpdated Sollen passende URLs vom Crawler aktualisiert werden?
+   * @param shouldBeUpdated Whether the crawler should update URLs that match to
+   *        this entry.
    */
   public void setShouldBeUpdated(boolean shouldBeUpdated) {
     mShouldBeUpdated = shouldBeUpdated;

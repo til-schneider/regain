@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile: DefaultSearchConfigFactory.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/config/DefaultSearchConfigFactory.java,v $
- *     $Date: 2005/04/11 08:16:25 $
+ *     $Date: 2005/08/10 14:00:45 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.3 $
  */
 package net.sf.regain.search.config;
 
@@ -33,7 +33,11 @@ public class DefaultSearchConfigFactory implements SearchConfigFactory {
     throws RegainException
   {
     String configFileName = request.getInitParameter("searchConfigFile");
-    File configFile = new File(configFileName);
+    if (configFileName == null) {
+      throw new RegainException("The init parameter 'searchConfigFile' was not specified.");
+    }
+
+    File configFile = new File(request.getWorkingDir(), configFileName);
     try {
       return new XmlSearchConfig(configFile);
     }

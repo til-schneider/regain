@@ -21,12 +21,16 @@
  * CVS information:
  *  $RCSfile: JspPageRequest.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/taglib/JspPageRequest.java,v $
- *     $Date: 2005/03/31 09:57:32 $
+ *     $Date: 2005/08/10 14:00:46 $
  *   $Author: til132 $
- * $Revision: 1.5 $
+ * $Revision: 1.8 $
  */
 package net.sf.regain.util.sharedtag.taglib;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.Locale;
 
@@ -45,6 +49,12 @@ public class JspPageRequest extends PageRequest {
   
   /** The JSP page context to adapt. */
   private PageContext mPageContext;
+  
+  /** The base URL where the JSP files and resources are located. */
+  private static URL mBaseUrl;
+  
+  /** The working directory of the web server. */
+  private static File mWorkingDir;
   
 
   /**
@@ -186,5 +196,55 @@ public class JspPageRequest extends PageRequest {
   public String getInitParameter(String name) {
     return mPageContext.getServletContext().getInitParameter(name);
   }
-  
+
+
+  /**
+   * Gets the base URL where the JSP files and resources are located.
+   * 
+   * @return The base URL where the JSP files and resources are located.
+   * @throws RegainException If getting the base URL failed.
+   */
+  public URL getResourceBaseUrl() throws RegainException {
+    if (mBaseUrl == null) {
+      try {
+        mBaseUrl = mPageContext.getServletContext().getResource("/");
+        System.out.println("mBaseUrl: " + mBaseUrl);
+      }
+      catch (MalformedURLException exc) {
+        throw new RegainException("Getting base URL failed", exc);
+      }
+    }
+    return mBaseUrl;
+  }
+
+
+  /**
+   * Gets the working directory of the web server.
+   * 
+   * @return The working directory of the web server.
+   * @throws RegainException If getting the working directory failed.
+   */
+  public File getWorkingDir() throws RegainException {
+    if (mWorkingDir == null) {
+      // Check whether we get a realpath
+      String realpath = mPageContext.getServletContext().getRealPath(".");
+      if (realpath != null) {
+        // Use the parent directory of the realpath
+        // E.g. "c:\tomcat\webapps\regain\." -> "c:\tomcat\webapps"
+        // NOTE: getCanonicalFile is needed to get rid of "\." is a save way
+        try {
+          mWorkingDir = new File(realpath).getCanonicalFile().getParentFile();
+        }
+        catch (IOException exc) {
+          throw new RegainException("Getting the working directory of " +
+                "the web server failed", exc);
+        }
+      } else {
+        // We got no real path -> Return the current directory
+        mWorkingDir = new File(".");
+      }
+    }
+    return mWorkingDir;
+  }
+
 }

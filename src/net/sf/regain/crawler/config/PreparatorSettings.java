@@ -21,11 +21,13 @@
  * CVS information:
  *  $RCSfile: PreparatorSettings.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/PreparatorSettings.java,v $
- *     $Date: 2005/03/14 15:04:15 $
+ *     $Date: 2005/08/13 11:33:29 $
  *   $Author: til132 $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  */
 package net.sf.regain.crawler.config;
+
+import org.apache.regexp.RE;
 
 /**
  * The settings of a preparator
@@ -48,6 +50,12 @@ public class PreparatorSettings {
   private String mPreparatorClassName;
   
   /**
+   * The regular expression a URL must match to, to be prepared by this
+   * preparator.
+   */
+  private String mUrlRegex;
+  
+  /**
    * The configuration of the preparator.
    */
   private PreparatorConfig mPreparatorConfig;
@@ -59,12 +67,16 @@ public class PreparatorSettings {
    * @param isEnabled Specifies whether the preparator is enabled.
    * @param preparatorClassName The class name of the preparator. The class must
    *        implement {@link net.sf.regain.crawler.document.Preparator Preparator}.
+   * @param urlRegex The regular expression a URL must match to, to be prepared
+   *        by this preparator. If <code>null</code> the default regex of the
+   *        preparator should be used.
    * @param preparatorConfig The configuration of the preparator.
    */
   public PreparatorSettings(boolean isEnabled, String preparatorClassName,
-    PreparatorConfig preparatorConfig)
+    String urlRegex, PreparatorConfig preparatorConfig)
   {
     mIsEnabled = isEnabled;
+    mUrlRegex = urlRegex;
     mPreparatorConfig = preparatorConfig;
     
     if (preparatorClassName.startsWith(".")) {
@@ -94,7 +106,20 @@ public class PreparatorSettings {
     return mPreparatorClassName;
   }
 
-  
+
+  /**
+   * Gets the regular expression a URL must match to, to be prepared this
+   * preparator.
+   * 
+   * @return The regular expression a URL must match to, to be prepared
+   *         by this preparator. If <code>null</code> the default regex of the
+   *         preparator should be used.
+   */
+  public String getUrlRegex() {
+    return mUrlRegex;
+  }
+
+
   /**
    * Gets the configuration of the preparator.
    * 

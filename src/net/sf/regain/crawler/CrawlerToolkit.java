@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: CrawlerToolkit.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/CrawlerToolkit.java,v $
- *     $Date: 2005/03/14 15:03:59 $
+ *     $Date: 2005/08/13 09:45:38 $
  *   $Author: til132 $
- * $Revision: 1.10 $
+ * $Revision: 1.13 $
  */
 package net.sf.regain.crawler;
 
@@ -86,20 +86,24 @@ public class CrawlerToolkit {
         // that was input to the new, redirected URL
         if (redirect) {
           String loc = conn.getHeaderField("Location");
-          if (loc.startsWith("http", 0)) {
-            url = new URL(loc);
+          if (loc == null) {
+            throw new IOException("Redirect did not provide a 'Location' header");
           } else {
-            url = new URL(url, loc);
+            if (loc.startsWith("http", 0)) {
+              url = new URL(loc);
+            } else {
+              url = new URL(url, loc);
+            }
+            return getHttpStream(url);
           }
-          return getHttpStream(url);
         }
       }
 
       return conn.getInputStream();
     }
-    catch (IOException exc) {
+    catch (Throwable thr) {
       throw HttpStreamException.createInstance("Getting HTTP connection to "
-        + url.toString() + " failed", exc, conn);
+        + url.toString() + " failed", thr, conn);
     }
   }
 
@@ -307,6 +311,38 @@ public class CrawlerToolkit {
           // -> Use the whole parentUrl
           url = parentUrl + "/" + url;
         }
+      }
+    }
+
+    // Check if url contains . in path
+    url = RegainToolkit.replace(url, "/./", "/");
+    if (url.endsWith("/.")) {
+      url = url.substring(0, url.length() - 2);
+    }
+
+    // Check if url contains .. in path
+    int updirIdx = 0;
+    while ((updirIdx = url.indexOf("/..", updirIdx)) != -1) {
+      // Check whether a / follows or whether this is the end
+      int slashAfterIdx = updirIdx + 3;
+      if ((slashAfterIdx >= url.length()) || (url.charAt(slashAfterIdx) == '/')) {
+        // We found a "/../" or an "/.." at the end
+        // -> Cut the directory before and the .. out 
+      
+        // Find previous /
+        int slashBeforeIdx = url.lastIndexOf('/', updirIdx - 1);
+
+        if (slashBeforeIdx != -1) {
+          // Cut the "/somedir/.." out
+          url = url.substring(0, slashBeforeIdx) + url.substring(slashAfterIdx);
+          updirIdx = slashBeforeIdx;
+        } else {
+          throw new IllegalArgumentException("Illegal URL: " + url
+              + ". (parent URL: " + parentUrl + ") Contains a .. with no / before");
+        }
+      } else {
+        // This is something like "a/..extension/b" -> Go on after the "/.."
+        updirIdx += 3;
       }
     }
 

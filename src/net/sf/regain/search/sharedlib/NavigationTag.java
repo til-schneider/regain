@@ -21,17 +21,17 @@
  * CVS information:
  *  $RCSfile: NavigationTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/NavigationTag.java,v $
- *     $Date: 2005/03/16 12:30:30 $
+ *     $Date: 2005/08/07 10:51:07 $
  *   $Author: til132 $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  */
 package net.sf.regain.search.sharedlib;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.search.SearchConstants;
-import net.sf.regain.search.SearchContext;
 import net.sf.regain.search.SearchToolkit;
+import net.sf.regain.search.results.SearchResults;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
 import net.sf.regain.util.sharedtag.SharedTag;
@@ -74,11 +74,11 @@ public class NavigationTag extends SharedTag implements SearchConstants {
       return;
     }
     
-    SearchContext search = SearchToolkit.getSearchContext(request);
+    SearchResults results = SearchToolkit.getSearchResults(request);
 
     int fromResult = request.getParameterAsInt(PARAM_FROM_RESULT, 0);
     int maxResults = request.getParameterAsInt(PARAM_MAX_RESULTS, SearchConstants.DEFAULT_MAX_RESULTS);
-    int totalResults = search.getHitCount();
+    int totalResults = results.getHitCount();
 
     int buttonCount = (int) Math.ceil((double) totalResults / (double) maxResults);
     int currButton = fromResult / maxResults;
@@ -103,11 +103,11 @@ public class NavigationTag extends SharedTag implements SearchConstants {
       }
     }
 
-    String indexName = request.getParameter("index");
+    String[] indexNameArr = request.getParameters("index");
     if (currButton > 0) {
       String msgBack = getParameter("msgBack", true);
       msgBack = RegainToolkit.replace(msgBack, "&quot;", "\"");
-      printLink(response, currButton - 1, query, maxResults, indexName, msgBack);
+      printLink(response, currButton - 1, query, maxResults, indexNameArr, msgBack);
     }
     for (int i = fromButton; i <= toButton; i++) {
       if (i == currButton) {
@@ -115,13 +115,13 @@ public class NavigationTag extends SharedTag implements SearchConstants {
         response.print("<b>" + (i + 1) + "</b> ");
       } else {
         String linkText = Integer.toString(i + 1);
-        printLink(response, i, query, maxResults, indexName, linkText);
+        printLink(response, i, query, maxResults, indexNameArr, linkText);
       }
     }
     if (currButton < (buttonCount -1)) {
       String msgForward = getParameter("msgForward", true);
       msgForward = RegainToolkit.replace(msgForward, "'", "\"");
-      printLink(response, currButton + 1, query, maxResults, indexName, msgForward);
+      printLink(response, currButton + 1, query, maxResults, indexNameArr, msgForward);
     }
   }
 
@@ -133,12 +133,12 @@ public class NavigationTag extends SharedTag implements SearchConstants {
    * @param button The index of the button to create the HTML for.
    * @param query The search query.
    * @param maxResults The maximum results.
-   * @param indexName The name of the search index.
+   * @param indexNameArr The names of the search indexes.
    * @param linkText The link text.
    * @throws RegainException If printing failed.
    */
   private void printLink(PageResponse response, int button, String query,
-    int maxResults, String indexName, String linkText)
+    int maxResults, String[] indexNameArr, String linkText)
     throws RegainException
   {
     String targetPage = getParameter("targetPage",  DEFAULT_TARGET_PAGE);
@@ -154,9 +154,11 @@ public class NavigationTag extends SharedTag implements SearchConstants {
     */
 
     response.print("<a href=\"" + targetPage + "?query=" + encodedQuery);
-    if (indexName != null) {
-      String encodedIndexName = RegainToolkit.urlEncode(indexName);
-      response.print("&index=" + encodedIndexName);
+    if (indexNameArr != null) {
+      for (int i = 0; i < indexNameArr.length; i++) {
+        String encodedIndexName = RegainToolkit.urlEncode(indexNameArr[i]);
+        response.print("&index=" + encodedIndexName);
+      }
     }
     if (maxResults != SearchConstants.DEFAULT_MAX_RESULTS) {
       response.print("&maxresults=" + maxResults);

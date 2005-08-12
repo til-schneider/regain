@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: CurrentindexTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/status/sharedlib/CurrentindexTag.java,v $
- *     $Date: 2005/03/10 08:50:25 $
+ *     $Date: 2005/08/07 10:51:08 $
  *   $Author: til132 $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  */
 package net.sf.regain.ui.desktop.status.sharedlib;
 
@@ -64,8 +64,14 @@ public class CurrentindexTag extends SharedTag implements DesktopConstants {
     throws RegainException
   {
     Localizer localizer = mMultiLocalizer.getLocalizer(request.getLocale());
-
-    IndexConfig config = SearchToolkit.getIndexConfig(request);
+    
+    // Get the IndexConfig
+    IndexConfig[] configArr = SearchToolkit.getIndexConfigArr(request);
+    if (configArr.length > 1) {
+      throw new RegainException("The currentindex tag can only be used for one index!");
+    }
+    IndexConfig config = configArr[0];
+    
     File currentIndexDir = new File(config.getDirectory(), "new");
     if (! currentIndexDir.exists()) {
       currentIndexDir = new File(config.getDirectory(), "index");

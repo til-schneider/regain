@@ -29,8 +29,8 @@ X Aktualisierung auf die neusten Versionen der genutzten Projekte, sofern
       PdfPreparator:
         Stabilitaet: Unveraendert: Keine Probleme bekannt
         Geschwindigkeit: Faktor 4 langsamer: Fuer 674,44 kB: 13,69 sec -> 1:06 min
-                                                   2. Test: 13,43 sec -> 1:07 min
-        Qualitaet: Besser: Es wird mehr erkannt. Probleme mit Umlauten aus Latex (Mï¿½oglichkeit)
+                                                    2. Test: 13,43 sec -> 1:07 min
+        Qualitaet: Besser: Es wird mehr erkannt. Probleme mit Umlauten aus Latex
       PoiMsExcelPreparator:
         Stabilitaet: Unveraendert: Keine Probleme bekannt
         Geschwindigkeit: Unveraendert: Fuer 27,50 kB: 1,27 sec -> 1,91 sec
@@ -142,10 +142,10 @@ X Desktopsuche: Task-Icon fuer Linux
 X Bug: File-Service: Datei von Netzlaufwerken (//fileserver/bla/blubb) werden
     nicht geladen (Forbidden)
 X Bug: Desktopsuche: Suchergebnisse: Umlaute werden falsch dargestellt.
-X Desktopsuche: Einstellungen: Beim Speichern als GrundgerÃ¼st
-  	default-Config-Dateien nutzen.
+X Desktopsuche: Einstellungen: Beim Speichern als Grundgeruest
+    default-Config-Dateien nutzen.
 X Desktopsuche: Aktuelle Indexierung pausieren und manuelles Starten einer
-  	Indexierung.
+    Indexierung.
 X Bug: HTML-Praeparator kommt nicht mit allen Dateien klar (Siehe Mail von Jochen Stiepel)
 X Changelog erstellen
 X Desktopsuche: index.php zeigen
@@ -158,13 +158,85 @@ X Suchmaske: Version anzeigen
 X Zugriffsrechte beachten: Ein Benutzer kann nur die Dokumente sehen, fuer die
     er auch Leserechte hat. (Aufwand: 2 Tage)
 X Taglib-Tag, das ein bestimmtes Indexfeld ausgibt.
+X Suche: SearchConfigFactory: Die SuchKonfiguration soll über eine Factory
+    geladen werden. Welche Factory genutzt werden soll, wird in der web.xml
+    festgelegt.
+
+** Version 1.1 Beta 4 am 13.04.05 **
+
+X Autodetektion des Ressourcenverzeichnisses
+X Bugfix: Zugriffsrechte-Management: Gruppennamen wurden auch bei
+  nicht-Whitespace-Zeichen wie "/", "-", "\" getrennt.
+X Dateizugriffs-Servlet abschaltbar.
+X Blacklist und Whitelist: Reguläre Ausdrücke zulassen.
+X Crawler: Arbeitspeicher sparen: Dateien vom Dateisystem nicht ins
+    mFoundUrlSet oder mIgnoredUrlSet aufnehmen. Beim Dateisystem ist durch die
+    klare Baumstruktur sowieso klar, welche Dokumente schon bearbeitet wurden.
+    (Dazu muss Start-List muss untereinander praefixfrei sein!)
+X Crawler: Arbeitspeicher sparen: Dateien am Anfang der mJobList einfügen,
+    Verzeichnisse am Ende. So wird die mJobList klein gehalten, weil erst
+    alle Dateien abgearbeitet werden, bevor neue Jobs hinzugefügt werden.
+X Crawler: Auch fehlerhafte Dokumente aufnehmen. Diese dann bei einem zweiten
+    Durchlauf nicht erneut versuchen. Per Aufrufparameter jedoch trotzdem neu
+    versuchen.
+X Multiindexsuche: Mit der selben Suchmaske mehrere Indizes durchsuchen.
+- Neuer MS Word-Praeparator: http://textmining.org
+    Habe ich gelassen, nachdem ich bemerkt habe, dass textmining.org für
+    Word-Versionen > 6.0 einfach POI nutzt.
+X HtmlPreparator-Regex korrigieren: Auch Endungen .jsp, .php, .php3, .php4, .asp
+    zulassen.
+X Italienische Lokalisierung Teil I. Siehe Mail von Franco Lombardo vom 30.05.05.
+X Bugfix: CrawlerToolkit.toAbsoluteUrl(...) löst . und .. nicht auf.
+    Siehe Mail von j1234 vom 30.05.05.
+X JUnit-Tests ermöglichen
+X Bugfix: System-Tray-Klasse fehlt in Linux zip
+    Siehe Forum: http://forum.murfman.de/en/viewtopic.php?t=12
+X Bugfix: NullPointer in removeObsoleteEntries(...). Z.B. wenn ein Breakpoint
+    erstellt wird. (Entstanden bei "Dateien vom Dateisystem nicht ins
+    mFoundUrlSet oder mIgnoredUrlSet aufnehmen")
+X I18N-Files mit getResource() holen, so dass Tomcat auch als Service laufen kann.
+    Das ganze sollte von Verzeichnis auf URL umgestellt werden, da nicht jede
+    Servlet-Engine ihre war-Dateien auspackt. Mit URL könnten auch Ressourcen
+    direkt aus der war-Datei geladen werden.
+X Ausgangsverzeichnis zur Suche der Konfigurationsdatei bestimmen, so dass
+    Tomcat auch als Service laufen kann.
+X Desktopsuche: Aktuelles Dokument in Status-Seite zeigen.
+X Bugfix: HTTP-Download hat volle Timeout-Zeit gewartet, wenn RuntimeException
+    geworfen wurde.
+X Bessere Fehlermeldung, wenn Redirect keinen Location-Header hat.
+X Crawler: Logging: Anstatt "Adding to index" lieber "Preparation done"
+X Bei mißglücktem Dokument: Nicht "Adding to index" loggen, sondern
+    "Created substitude document"
+X Breakpoints: Erst neuen breakpoint erstellen, dann den alten löschen.
+    Damit verhindern, dass es gar keinen breakpoint gibt, wenn regain beendet
+    wird.
+X Optional erlauben, url-patterns für Präparatoren anzugeben.
+    Siehe Forum: http://forum.murfman.de/en/viewtopic.php?t=9
+X Expertensuche: Fehlermeldung wird gezeigt, wenn noch kein Index vorhanden ist.
+    Statt dessen: noindex.jsp zeigen.
+X Desktopsuche: Installer komplett auch auf Englisch
+X Libs aktualisiert:
+    log4j: 1.2.9 (352 kB) -> 1.2.11 (352 kB)
+    lucene: 1.4.2 (323 kB) -> 1.4.3 (323 kB)
+    PDFBox: 0.6.7a (2.230 kB) -> 0.7.1 (3.213 kB)
+      Gleiche Erkennungsrate, etwas schneller
+    POI: 2.5.1 (990 kB) -> 3.0 alpha 1 (1.504 kB)
+      Word: Gleiche Erkennungsrate, langsamer
+      Excel: Gleiche Erkennungsrate, langsamer
+
+** Version 1.1 Beta 5 am 13.08.05 **
+
+X Bugfix: Im .war file hat das log4j.jar und das lucene.jar gefehlt.
+
+** Version 1.1 Beta 5a am 15.08.05 **
+
 
 Filiadata:
 ----------
-  Suche: SearchConfigFactory: Die SuchKonfiguration soll über eine Factory
-  	geladen werden. Welche Factory genutzt werden soll, wird in der web.xml
-  	festgelegt.
-  Multiindexsuche: Mit der selben Suchmaske mehrere Indizes durchsuchen
+  Was passiert bei OutOfMemoryError im Crawler?
+  Auxiliary-Field: toLowerCase-Attribut.
+
+  Ärger mit MS Office beseitigen (Jacob). Siehe Mail von Michael Danner vom 15.04.05.
   Handbuch aktualisieren:
     - Such-JSP: Zusaetzliche Eingabefelder fuer bestimmte Felder koennen mit
       "field.feldName" hinzugefuegt werden.
@@ -172,31 +244,35 @@ Filiadata:
 
 Prio A:
 -------
-  Warum frisst Firefox die MIME-Types nicht?
-  Unter Java 1.2.2 oder zur Not 1.3 lauffaehig machen.
-  Expertensuche: Fehlermeldung wird gezeigt, wenn noch kein Index vorhanden ist.
-    Statt dessen: noindex.jsp zeigen.
-  Desktopsuche: Installer komplett auch auf Englisch
+  Möglichkeit, Reguläre Ausdrücke auszuprobieren.
+  Fehlende Teile der italienischen Lokalisierung
+    Problem: Francos Mail-Adresse geht nicht :-(
+  Desktopsuche: Die letzten x Zeilen des Logs
+  Desktopsuche: Einstellungen: Verzeichnis-Selektor
+  Handbuch: Installation: Was muss man konfigurieren, damit es läuft.
   Suchmaske: Breakpoints nutzen.
-  Desktopsuche: Mime-Types konfigurierbar
+  Desktopsuche: Mime-Types konfigurierbar (apache-Format)
   Suchmaske: Icons passend zu den Dateiendungen
-  Desktopsuche: Zugriff von aussen fuer einstellbare Benutzer/Passwort-Paare
-    erlauben.
+  Neuer Powerpoint-Praeparator: POI
+  HTTP-Download: Redirects nicht einfach verfolgen, sondern neuen Job mit
+    Redirect-URL hinzufügen, so dass im Index die Redirect-URL steht.
 
 Prio B:
 -------
-  Crawler: Arbeitspeicher sparen: Dateien vom Dateisystem nicht ins
-    mFoundUrlSet oder mIgnoredUrlSet aufnehmen. Beim Dateisystem ist durch die
-    klare Baumstruktur sowieso klar, welche Dokumente schon bearbeitet wurden.
-  	(Dazu muss Start-List muss untereinander praefixfrei sein!)
-  Crawler: Arbeitspeicher sparen: Erst Dateien an mJobList anhaengen, dann
-  	Unterverzeichnisse. So wird die mJobList klein gehalten.
-  Desktopsuche: Status-Seite: Ende von Logdatei zeigen
+  Bugfix: Präparieren von Dokumenten mit Leerzeichen im Dateinamen wird bei jedem
+    Lauf erneut probiert (Erkennung des vorhandenen Eintrags funktioniert nicht)
+    Konnte ich nicht reproduzieren...
+  Desktopsuche: Zugriff von aussen fuer einstellbare Benutzer/Passwort-Paare
+    erlauben.
   Sessions for simpleweb. See SimplePageRequest
+  Unter Java 1.2.2 oder zur Not 1.3 lauffaehig machen.
 
 Prio C:
 -------
-  Neuer MS Word-Praeparator: http://textmining.org
+  Hit highlighting
+  Crawler: ZIP-Dateien durchsuchen
+  Crawler: Mailboxen durchsuchen
+  Neuer MS Word-Praeparator: OpenOffice
   Neuer PDF-Praeparator: PJX (http://www.etymon.com/epub.html)
   Desktopsuche: Nach Speichern der Konfiguration nur dann neu indexieren, wenn
     sich etwas geaendert hat, das den Index veraendert.

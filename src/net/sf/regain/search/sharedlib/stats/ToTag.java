@@ -21,16 +21,16 @@
  * CVS information:
  *  $RCSfile: ToTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/stats/ToTag.java,v $
- *     $Date: 2005/03/01 20:28:04 $
+ *     $Date: 2005/08/07 10:51:07 $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  */
 package net.sf.regain.search.sharedlib.stats;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.search.SearchConstants;
-import net.sf.regain.search.SearchContext;
 import net.sf.regain.search.SearchToolkit;
+import net.sf.regain.search.results.SearchResults;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
 import net.sf.regain.util.sharedtag.SharedTag;
@@ -52,14 +52,14 @@ public class ToTag extends SharedTag implements SearchConstants {
   public void printEndTag(PageRequest request, PageResponse response)
     throws RegainException
   {
-    SearchContext search = SearchToolkit.getSearchContext(request);
+    SearchResults results = SearchToolkit.getSearchResults(request);
 
     int fromResult = request.getParameterAsInt(PARAM_FROM_RESULT, 0);
     int maxResults = request.getParameterAsInt(PARAM_MAX_RESULTS, SearchConstants.DEFAULT_MAX_RESULTS);
 
     int toResult = fromResult + maxResults - 1;
-    if (toResult >= search.getHitCount()) {
-      toResult = search.getHitCount() - 1;
+    if (toResult >= results.getHitCount()) {
+      toResult = results.getHitCount() - 1;
     }
 
     response.print(Integer.toString(toResult + 1));

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: RegainToolkit.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/RegainToolkit.java,v $
- *     $Date: 2005/03/30 10:30:03 $
+ *     $Date: 2005/08/13 09:22:50 $
  *   $Author: til132 $
- * $Revision: 1.12 $
+ * $Revision: 1.14 $
  */
 package net.sf.regain;
 
@@ -51,9 +51,9 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
@@ -593,6 +593,50 @@ public class RegainToolkit {
 
 
   /**
+   * Gets a human readable String for a time.
+   *
+   * @param time The time in milliseconds.
+   * @return The time as String.
+   */
+  public static String toTimeString(long time) {
+    if (time == -1) {
+      // This is no time
+      return "?";
+    }
+    
+    long millis = time % 1000;
+    time /= 1000;
+    long secs = time % 60;
+    time /= 60;
+    long mins = time % 60;
+    time /= 60;
+    long hours = time;
+
+    if (hours != 0) {
+      return hours + ":"
+        + ((mins > 9) ? "" : "0") + mins + ":"
+        + ((secs > 9) ? "" : "0") + secs + " h";
+    }
+    else if (mins != 0) {
+      return mins + ":"
+        + ((secs > 9) ? "" : "0") + secs + " min";
+    }
+    else if (secs != 0) {
+      NumberFormat format = NumberFormat.getInstance();
+      format.setMinimumFractionDigits(2);
+      format.setMaximumFractionDigits(2);
+
+      String asString = format.format(secs + millis / 1000.0);
+
+      return asString + " sec";
+    }
+    else {
+      return millis + " millis";
+    }
+  }
+
+
+  /**
    * Konvertiert ein Date-Objekt in einen String mit dem Format
    * "YYYY-MM-DD HH:MM". Das ist nötig, um ein eindeutiges und vom Menschen
    * lesbares Format zu haben.
@@ -736,6 +780,52 @@ public class RegainToolkit {
     }
 
     return mLineSeparator;
+  }
+
+
+  /**
+   * Checks whether the given String contains whitespace.
+   * 
+   * @param str The String to check.
+   * @return Whether the given String contains whitespace.
+   */
+  public static boolean containsWhitespace(String str) {
+    for (int i = 0; i < str.length(); i++) {
+      if (Character.isWhitespace(str.charAt(i))) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+
+
+  /**
+   * Checks an array of group names.
+   * 
+   * @param accessController The access controller that returned the array of
+   *        group names.
+   * @param groupArr The array of group names to check.
+   * @throws RegainException If the array of group names is not valid.
+   */
+  public static void checkGroupArray(Object accessController, String[] groupArr)
+    throws RegainException
+  {
+    if (groupArr == null) {
+      // Check for null
+      throw new RegainException("Access controller " +
+          accessController.getClass().getName() + " returned illegal " +
+          "group array: null");
+    } else {
+      // Check for whitespace
+      for (int i = 0; i < groupArr.length; i++) {
+        if (RegainToolkit.containsWhitespace(groupArr[i])) {
+          throw new RegainException("Access controller " +
+              accessController.getClass().getName() + " returned illegal " +
+              "group name containing whitespace: '" + groupArr[i] + "'");
+        }
+      }
+    }
   }
 
 
@@ -946,7 +1036,7 @@ public class RegainToolkit {
      * @param nestedAnalyzer The nested analyzer.
      */
     public WrapperAnalyzer(Analyzer nestedAnalyzer) {
-      mGroupsAnalyzer = new SimpleAnalyzer();
+      mGroupsAnalyzer = new WhitespaceAnalyzer();
       mNestedAnalyzer = nestedAnalyzer;
     }
     

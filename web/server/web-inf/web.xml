@@ -34,13 +34,6 @@
   </context-param>
   -->
 
-
-  <!-- The location of the resource bundles -->
-  <context-param>
-    <param-name>webDir</param-name>
-    <param-value>../webapps/regain</param-value>
-  </context-param>
-
   <!-- file servlet -->
   <servlet>
     <servlet-name>file</servlet-name>

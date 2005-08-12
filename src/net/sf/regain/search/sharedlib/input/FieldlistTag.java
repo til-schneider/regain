@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile: FieldlistTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/input/FieldlistTag.java,v $
- *     $Date: 2005/04/11 08:15:30 $
+ *     $Date: 2005/08/07 10:51:09 $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  */
 package net.sf.regain.search.sharedlib.input;
 
@@ -44,8 +44,14 @@ public class FieldlistTag extends SharedTag {
     String fieldName = getParameter("field", true);
     String allMsg = getParameter("allMsg", true);
 
-    IndexConfig indexConfig = SearchToolkit.getIndexConfig(request);
-    IndexSearcherManager manager = IndexSearcherManager.getInstance(indexConfig.getDirectory());
+    // Get the IndexConfig
+    IndexConfig[] configArr = SearchToolkit.getIndexConfigArr(request);
+    if (configArr.length > 1) {
+      throw new RegainException("The fieldlist tag can only be used for one index!");
+    }
+    IndexConfig config = configArr[0];
+    
+    IndexSearcherManager manager = IndexSearcherManager.getInstance(config.getDirectory());
     
     String[] fieldValues = manager.getFieldValues(fieldName);
     

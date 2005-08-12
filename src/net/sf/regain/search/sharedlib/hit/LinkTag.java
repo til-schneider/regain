@@ -21,16 +21,16 @@
  * CVS information:
  *  $RCSfile: LinkTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/hit/LinkTag.java,v $
- *     $Date: 2005/04/01 07:43:22 $
+ *     $Date: 2005/08/07 10:51:09 $
  *   $Author: til132 $
- * $Revision: 1.9 $
+ * $Revision: 1.11 $
  */
 package net.sf.regain.search.sharedlib.hit;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
-import net.sf.regain.search.SearchContext;
 import net.sf.regain.search.SearchToolkit;
+import net.sf.regain.search.results.SearchResults;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
 
@@ -55,18 +55,19 @@ public class LinkTag extends AbstractHitTag {
    * @param request The page request.
    * @param response The page response.
    * @param hit The current search hit.
+   * @param hitIndex The index of the hit.
    * @throws RegainException If there was an exception.
    */
   protected void printEndTag(PageRequest request, PageResponse response,
-    Document hit)
+    Document hit, int hitIndex)
     throws RegainException
   {
-    // Get the search context
-    SearchContext search = SearchToolkit.getSearchContext(request);
+    // Get the search results
+    SearchResults results = SearchToolkit.getSearchResults(request);
 
-    String url   = search.rewriteUrl(hit.get("url"));
+    String url   = results.getHitUrl(hitIndex);
     String title = hit.get("title");
-    boolean openInNewWindow = search.getOpenUrlInNewWindow(url);
+    boolean openInNewWindow = results.getOpenHitInNewWindow(hitIndex);
     
     // Trim the title
     if (title != null) {
@@ -85,7 +86,8 @@ public class LinkTag extends AbstractHitTag {
 
     // Pass file URLs to the file servlet
     String href = url;
-    if (url.startsWith("file://")) {
+    boolean useFileToHttpBridge = results.getUseFileToHttpBridgeForHit(hitIndex);
+    if (url.startsWith("file://") && useFileToHttpBridge) {
       // URL encode the URL
       String filename = RegainToolkit.urlToFileName(url);
       String urlEncoded = RegainToolkit.urlEncode(filename);
@@ -100,10 +102,12 @@ public class LinkTag extends AbstractHitTag {
       // ...but encode double slashes
       href = RegainToolkit.replace(href, "//", "/\\");
       
-      String indexName = request.getParameter("index");
-      if (indexName != null) {
-        String encodedIndexName = RegainToolkit.urlEncode(indexName);
-        href += "?index=" + encodedIndexName;
+      String[] indexNameArr = request.getParameters("index");
+      if (indexNameArr != null) {
+        for (int i = 0; i < indexNameArr.length; i++) {
+          String encodedIndexName = RegainToolkit.urlEncode(indexNameArr[i]);
+          href += "?index=" + encodedIndexName;
+        }
       }
     }
     

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: CrawlerConfig.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/CrawlerConfig.java,v $
- *     $Date: 2005/03/30 10:30:02 $
+ *     $Date: 2005/05/11 09:21:40 $
  *   $Author: til132 $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  */
 package net.sf.regain.crawler.config;
 
@@ -187,20 +187,20 @@ public interface CrawlerConfig {
   public UrlPattern[] getHtmlParserUrlPatterns();
 
   /**
-   * Gibt die Schwarze Liste zurück.
+   * Gets the black list.
    * <p>
-   * Diese enthält Präfixe, die eine URL <I>nicht</I> haben darf, um bearbeitet
-   * zu werden.
-   *
-   * @return Die Schwarze Liste.
+   * The black list is an array of UrlMatchers, a URLs <i>must not</i> match to,
+   * in order to be processed.
+   * 
+   * @return The black list.
    */
-  public String[] getUrlPrefixBlackList();
+  public UrlMatcher[] getBlackList();
 
   /**
-   * Gibt die Weiße Liste zurück.
+   * Gets the white list.
    * <p>
-   * Diese enthält Präfixe, von denen eine URL einen haben <i>muß</i>, um
-   * bearbeitet zu werden.
+   * The black list is an array of WhiteListEntry, a URLs <i>must</i> match to,
+   * in order to be processed.
    *
    * @return Die Weiße Liste
    */

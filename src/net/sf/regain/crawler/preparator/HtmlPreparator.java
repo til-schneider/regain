@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: HtmlPreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/HtmlPreparator.java,v $
- *     $Date: 2005/03/30 17:23:14 $
+ *     $Date: 2005/08/07 14:15:40 $
  *   $Author: til132 $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -72,7 +72,7 @@ public class HtmlPreparator extends AbstractPreparator {
    * Creates a new instance of HtmlPreparator.
    */
   public HtmlPreparator() {
-    super(new RE("(^http://[^/]*$)|(^http://.*/[^\\.]*$)|(\\.(/|html|htm)$)", RE.MATCH_CASEINDEPENDENT));
+    super(new RE("(^http://[^/]*/?$)|(^http://.*/[^\\.]*$)|(\\.(/|html|htm|jsp|php\\d?|asp)$)", RE.MATCH_CASEINDEPENDENT));
   }
 
 

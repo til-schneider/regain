@@ -21,12 +21,14 @@
  * CVS information:
  *  $RCSfile: PageRequest.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/PageRequest.java,v $
- *     $Date: 2005/03/31 09:57:31 $
+ *     $Date: 2005/08/10 14:00:44 $
  *   $Author: til132 $
- * $Revision: 1.6 $
+ * $Revision: 1.9 $
  */
 package net.sf.regain.util.sharedtag;
 
+import java.io.File;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.Locale;
 
@@ -235,5 +237,22 @@ public abstract class PageRequest {
    * @return The value of the init parameter.
    */
   public abstract String getInitParameter(String name);
-  
+
+  /**
+   * Gets the base URL where the JSP files and resources are located.
+   * 
+   * @return The base URL where the JSP files and resources are located.
+   * @throws RegainException If getting the base URL failed.
+   */
+  public abstract URL getResourceBaseUrl() throws RegainException;
+
+
+  /**
+   * Gets the working directory of the web server.
+   * 
+   * @return The working directory of the web server.
+   * @throws RegainException If getting the working directory failed.
+   */
+  public abstract File getWorkingDir() throws RegainException;
+
 }

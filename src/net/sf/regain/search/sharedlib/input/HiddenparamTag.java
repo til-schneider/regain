@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: HiddenparamTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/input/HiddenparamTag.java,v $
- *     $Date: 2005/03/01 16:00:22 $
+ *     $Date: 2005/08/07 10:51:09 $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  */
 package net.sf.regain.search.sharedlib.input;
 
@@ -56,9 +56,12 @@ public class HiddenparamTag extends SharedTag {
     throws RegainException
   {
     String name = getParameter("name", true);
-    String value = request.getParameter(name);
-    if (value != null) {
-      response.print("<input name=\"" + name + "\" type=\"hidden\" value=\"" + value + "\"/>");
+    String[] valueArr = request.getParameters(name);
+    if (valueArr != null) {
+      for (int i = 0; i < valueArr.length; i++) {
+        response.print("<input name=\"" + name + "\" type=\"hidden\" value=\""
+            + valueArr[i] + "\"/>");
+      }
     }
   }
   

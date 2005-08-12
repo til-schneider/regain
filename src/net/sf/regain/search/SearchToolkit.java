@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: SearchToolkit.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/SearchToolkit.java,v $
- *     $Date: 2005/04/11 08:16:25 $
+ *     $Date: 2005/08/07 10:51:09 $
  *   $Author: til132 $
- * $Revision: 1.16 $
+ * $Revision: 1.19 $
  */
 package net.sf.regain.search;
 
@@ -41,6 +41,9 @@ import net.sf.regain.search.config.DefaultSearchConfigFactory;
 import net.sf.regain.search.config.IndexConfig;
 import net.sf.regain.search.config.SearchConfig;
 import net.sf.regain.search.config.SearchConfigFactory;
+import net.sf.regain.search.results.MultipleSearchResults;
+import net.sf.regain.search.results.SearchResults;
+import net.sf.regain.search.results.SingleSearchResults;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
 
@@ -59,11 +62,11 @@ public class SearchToolkit {
   /** The name of the page context attribute that holds the search query. */
   private static final String SEARCH_QUERY_CONTEXT_ATTR_NAME = "SearchQuery";
   
-  /** The name of the page context attribute that holds the SearchContext. */
-  private static final String SEARCH_CONTEXT_ATTR_NAME = "SearchContext";
+  /** The name of the page context attribute that holds the SearchResults. */
+  private static final String SEARCH_RESULTS_ATTR_NAME = "SearchResults";
 
-  /** The name of the page context attribute that holds the IndexConfig. */
-  private static final String INDEX_CONFIG_CONTEXT_ATTR_NAME = "IndexConfig";
+  /** The name of the page context attribute that holds the IndexConfig array. */
+  private static final String INDEX_CONFIG_CONTEXT_ARRAY_ATTR_NAME = "IndexConfigArr";
   
   /** The prefix for request parameters that contain additional field values. */
   private static final String FIELD_PREFIX = "field.";
@@ -76,45 +79,51 @@ public class SearchToolkit {
 
   
   /**
-   * Gets the IndexConfig from the PageContext.
+   * Gets the IndexConfig array from the PageContext. It contains the
+   * configurations of all indexes the search query is searching on.
    * <p>
-   * If there is no IndexConfig in the PageContext it is put in the PageContext,
-   * so the next call will find it.
+   * If there is no IndexConfig array in the PageContext it is put in the
+   * PageContext, so the next call will find it.
    * 
-   * @param request The page request where the IndexConfig will be taken
+   * @param request The page request where the IndexConfig array will be taken
    *        from or put to.
-   * @return The IndexConfig for the page the context is for.
+   * @return The IndexConfig array for the page the context is for.
    * @throws RegainException If there is no IndexConfig for the specified index.
    */
-  public static IndexConfig getIndexConfig(PageRequest request)
+  public static IndexConfig[] getIndexConfigArr(PageRequest request)
     throws RegainException
   {
-    IndexConfig config = (IndexConfig) request.getContextAttribute(INDEX_CONFIG_CONTEXT_ATTR_NAME);
-    if (config == null) {
+    IndexConfig[] configArr = (IndexConfig[]) request.getContextAttribute(INDEX_CONFIG_CONTEXT_ARRAY_ATTR_NAME);
+    if (configArr == null) {
       // Load the config (if not yet done)
       loadConfiguration(request);
 
-      // Get the name of the index
-      String indexName = request.getParameter("index");
-      if (indexName == null) {
-        indexName = mConfig.getDefaultIndexName();
-      }
-      if (indexName == null) {
-        throw new RegainException("Request parameter 'index' not specified and " +
-            "no default index configured");
+      // Get the names of the indexes
+      String[] indexNameArr = request.getParameters("index");
+      if (indexNameArr == null) {
+        String defaultIndexName = mConfig.getDefaultIndexName();
+        if (defaultIndexName == null) {
+          throw new RegainException("Request parameter 'index' not specified and " +
+              "no default index configured");
+        }
+        
+        indexNameArr = new String[] { defaultIndexName };
       }
       
-      // Get the configuration for that index
-      config = mConfig.getIndexConfig(indexName);
-      if (config == null) {
-        throw new RegainException("The configuration does not contain the index '"
-            + indexName + "'");
+      // Get the configurations for these indexes
+      configArr = new IndexConfig[indexNameArr.length];
+      for (int i = 0; i < indexNameArr.length; i++) {
+        configArr[i] = mConfig.getIndexConfig(indexNameArr[i]);
+        if (configArr[i] == null) {
+          throw new RegainException("The configuration does not contain the index '"
+              + indexNameArr[i] + "'");
+        }
       }
 
       // Store the IndexConfig in the page context
-      request.setContextAttribute(INDEX_CONFIG_CONTEXT_ATTR_NAME, config);
+      request.setContextAttribute(INDEX_CONFIG_CONTEXT_ARRAY_ATTR_NAME, configArr);
     }
-    return config;
+    return configArr;
   }
   
   
@@ -138,9 +147,9 @@ public class SearchToolkit {
       }
       
       // Append the additional fields to the query
-      Enumeration enum = request.getParameterNames();
-      while (enum.hasMoreElements()) {
-        String paramName = (String) enum.nextElement();
+      Enumeration enm = request.getParameterNames();
+      while (enm.hasMoreElements()) {
+        String paramName = (String) enm.nextElement();
         if (paramName.startsWith(FIELD_PREFIX)) {
           // This is an additional field -> Append it to the query
           String fieldName = paramName.substring(FIELD_PREFIX.length());
@@ -164,48 +173,69 @@ public class SearchToolkit {
   
 
   /**
-   * Gets the SearchContext from the PageContext.
+   * Gets the SearchResults from the PageContext.
    * <p>
-   * If there is no SearchContext in the PageContext it is created and put in the
+   * If there is no SearchResults in the PageContext it is created and put in the
    * PageContext, so the next call will find it.
    *
-   * @param request The page request where the SearchContext will be taken
+   * @param request The page request where the SearchResults will be taken
    *        from or put to.
-   * @return The SearchContext for the page the context is for.
-   * @throws RegainException If the SearchContext could not be created.
-   * @see SearchContext
+   * @return The SearchResults for the page the context is for.
+   * @throws RegainException If the SearchResults could not be created.
+   * @see SearchResults
    */
-  public static SearchContext getSearchContext(PageRequest request)
+  public static SearchResults getSearchResults(PageRequest request)
     throws RegainException
   {
-    SearchContext context = (SearchContext) request.getContextAttribute(SEARCH_CONTEXT_ATTR_NAME);
-    if (context == null) {
-      // Get the index config
-      IndexConfig indexConfig = getIndexConfig(request);
+    SearchResults results = (SearchResults) request.getContextAttribute(SEARCH_RESULTS_ATTR_NAME);
+    if (results == null) {
+      // Get the index configurations
+      IndexConfig[] indexConfigArr = getIndexConfigArr(request);
 
-      // Get the query
-      String query = getSearchQuery(request);
-      
-      // Get the groups the current user has reading rights for
-      String[] groupArr = null;
-      SearchAccessController accessController = indexConfig.getSearchAccessController();
-      if (accessController != null) {
-        groupArr = accessController.getUserGroups(request);
-        
-        if (groupArr == null) {
-          // NOTE: The SearchAccessController should never return null, but for
-          //       security reasons we check it. Because if the groupArr is
-          //       null, the access control is disabled.
-          groupArr = new String[0];
+      if (indexConfigArr.length == 1) {
+        results = createSingleSearchResults(indexConfigArr[0], request);
+      } else {
+        SingleSearchResults[] childResultsArr = new SingleSearchResults[indexConfigArr.length];
+        for (int i = 0; i < childResultsArr.length; i++) {
+          childResultsArr[i] = createSingleSearchResults(indexConfigArr[i], request);
         }
+        results = new MultipleSearchResults(childResultsArr);
       }
-      
-      // Create the SearchContext and store it in the page context
-      context = new SearchContext(indexConfig, query, groupArr);
-      request.setContextAttribute(SEARCH_CONTEXT_ATTR_NAME, context);
+
+      // Store the SearchResults in the page context
+      request.setContextAttribute(SEARCH_RESULTS_ATTR_NAME, results);
     }
 
-    return context;
+    return results;
+  }
+
+
+  /**
+   * Gets the SingleSearchResults from one index.
+   * 
+   * @param indexConfig The config of the index to search in.
+   * @param request The request that initiated the search.
+   * @return The SingleSearchResults for the index. 
+   * @throws RegainException If searching failed.
+   */
+  private static SingleSearchResults createSingleSearchResults(
+    IndexConfig indexConfig, PageRequest request)
+    throws RegainException
+  {
+    // Get the query
+    String query = getSearchQuery(request);
+
+    // Get the groups the current user has reading rights for
+    String[] groupArr = null;
+    SearchAccessController accessController = indexConfig.getSearchAccessController();
+    if (accessController != null) {
+      groupArr = accessController.getUserGroups(request);
+      
+      // Check the Group array
+      RegainToolkit.checkGroupArray(accessController, groupArr);
+    }
+
+    return new SingleSearchResults(indexConfig, query, groupArr);
   }
 
 
@@ -235,7 +265,8 @@ public class SearchToolkit {
   /**
    * Decides whether the remote access to a file should be allowed.
    * <p>
-   * The access is granted if the file is in the index.
+   * The access is granted if the file is in the index. The access is never
+   * granted for indexes that have an access controller.
    * 
    * @param request The request that holds the used index.
    * @param fileUrl The URL to file to check.
@@ -245,17 +276,29 @@ public class SearchToolkit {
   public static boolean allowFileAccess(PageRequest request, String fileUrl)
     throws RegainException
   {
-    IndexConfig config = getIndexConfig(request);
+    IndexConfig[] configArr = getIndexConfigArr(request);
     
-    IndexSearcherManager manager = IndexSearcherManager.getInstance(config.getDirectory());
+    // Check whether one of the indexes contains the file
+    for (int i = 0; i < configArr.length; i++) {
+      // NOTE: We only allow the file access if there is no access controller
+      if (configArr[i].getSearchAccessController() == null) {
+        String dir = configArr[i].getDirectory();
+        IndexSearcherManager manager = IndexSearcherManager.getInstance(dir);
+        
+        // Check whether the document is in the index
+        Term urlTerm = new Term("url", fileUrl);
+        Query query = new TermQuery(urlTerm);
+        Hits hits = manager.search(query);
+        
+        // Allow the access if we found the file in the index
+        if (hits.length() > 0) {
+          return true;
+        }
+      }
+    }
     
-    // Check whether the document is in the index
-    Term urlTerm = new Term("url", fileUrl);
-    Query query = new TermQuery(urlTerm);
-    Hits hits = manager.search(query);
-    
-    // Allow the access if we found the file in the index
-    return hits.length() > 0;
+    // We didn't find the file in the indexes -> File access is not allowed
+    return false;
   }
 
 

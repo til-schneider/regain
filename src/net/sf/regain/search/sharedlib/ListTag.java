@@ -21,16 +21,16 @@
  * CVS information:
  *  $RCSfile: ListTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/ListTag.java,v $
- *     $Date: 2005/03/01 20:28:01 $
+ *     $Date: 2005/08/07 10:51:07 $
  *   $Author: til132 $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  */
 package net.sf.regain.search.sharedlib;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.search.SearchConstants;
-import net.sf.regain.search.SearchContext;
 import net.sf.regain.search.SearchToolkit;
+import net.sf.regain.search.results.SearchResults;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
 import net.sf.regain.util.sharedtag.SharedTag;
@@ -78,12 +78,12 @@ public class ListTag extends SharedTag implements SearchConstants {
   public int printStartTag(PageRequest request, PageResponse response)
     throws RegainException
   {
-    SearchContext context = SearchToolkit.getSearchContext(request);
+    SearchResults results = SearchToolkit.getSearchResults(request);
 
     int fromResult = request.getParameterAsInt(PARAM_FROM_RESULT, 0);
     int maxResults = request.getParameterAsInt(PARAM_MAX_RESULTS, SearchConstants.DEFAULT_MAX_RESULTS);
 
-    if (context.getHitCount() == 0) {
+    if (results.getHitCount() == 0) {
       String msgNoResults = getParameter("msgNoResults");
       if (msgNoResults != null) {
         response.print(msgNoResults);
@@ -94,11 +94,11 @@ public class ListTag extends SharedTag implements SearchConstants {
       mCurrentResult = fromResult;
 
       mToResult = fromResult + maxResults - 1;
-      if (mToResult >= context.getHitCount()) {
-        mToResult = context.getHitCount() - 1;
+      if (mToResult >= results.getHitCount()) {
+        mToResult = results.getHitCount() - 1;
       }
 
-      writeHitToAttributes(mCurrentResult, context, request);
+      writeHitToAttributes(mCurrentResult, results, request);
 
       return EVAL_TAG_BODY;
     }
@@ -109,18 +109,18 @@ public class ListTag extends SharedTag implements SearchConstants {
    * Writes a hit to the page context, so it may be read by the hit tags.
    *
    * @param hitIndex The index of the hit.
-   * @param context The search context to read the hit from.
+   * @param results The SearchResults to read the hit from.
    * @param request The page request to write the hit to.
    * @throws RegainException If the hit could not be read.
    */
-  private void writeHitToAttributes(int hitIndex, SearchContext context,
+  private void writeHitToAttributes(int hitIndex, SearchResults results,
     PageRequest request)
     throws RegainException
   {
     try {
-      Document hit = context.getHitDocument(hitIndex);
+      Document hit = results.getHitDocument(hitIndex);
       request.setContextAttribute(ATTR_CURRENT_HIT, hit);
-      float score = context.getHitScore(hitIndex);
+      float score = results.getHitScore(hitIndex);
       request.setContextAttribute(ATTR_CURRENT_HIT_SCORE, new Float(score));
       request.setContextAttribute(ATTR_CURRENT_HIT_INDEX, new Integer(hitIndex));
     }
@@ -149,8 +149,8 @@ public class ListTag extends SharedTag implements SearchConstants {
     mCurrentResult++;
 
     if (mCurrentResult <= mToResult) {
-      SearchContext context = SearchToolkit.getSearchContext(request);
-      writeHitToAttributes(mCurrentResult, context, request);
+      SearchResults results = SearchToolkit.getSearchResults(request);
+      writeHitToAttributes(mCurrentResult, results, request);
 
       return EVAL_TAG_BODY;
     } else {

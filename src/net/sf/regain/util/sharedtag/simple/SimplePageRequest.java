@@ -21,22 +21,23 @@
  * CVS information:
  *  $RCSfile: SimplePageRequest.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/simple/SimplePageRequest.java,v $
- *     $Date: 2005/03/31 09:57:31 $
+ *     $Date: 2005/08/10 14:00:44 $
  *   $Author: til132 $
- * $Revision: 1.5 $
+ * $Revision: 1.8 $
  */
 package net.sf.regain.util.sharedtag.simple;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 
-import simple.http.Request;
-import simple.util.net.Parameters;
-
 import net.sf.regain.RegainException;
 import net.sf.regain.util.sharedtag.PageRequest;
+import simple.http.Request;
+import simple.util.net.Parameters;
 
 /**
  * Adapter from a simpleweb Request to a SharedTag PageRequest.
@@ -44,15 +45,21 @@ import net.sf.regain.util.sharedtag.PageRequest;
  * @author Til Schneider, www.murfman.de
  */
 public class SimplePageRequest extends PageRequest {
+
+  /** The init parameters. May be null. */
+  private static HashMap mInitParameterHash;
+  
+  /** The base URL where the JSP files and resources are located. */
+  private static URL mResourceBaseUrl;
+  
+  /** The working directory of the web server.*/
+  private static File mWorkingDir;
   
   /** The simpleweb Request to adapt. */
   private Request mRequest;
   
   /** The page context. May be null. */
   private HashMap mPageContext;
-
-  /** The init parameters. May be null. */
-  private static HashMap mInitParameterHash;
   
 
   /**
@@ -236,5 +243,45 @@ public class SimplePageRequest extends PageRequest {
     }
     mInitParameterHash.put(name, value);
   }
-  
+
+
+  /**
+   * Gets the base URL where the JSP files and resources are located.
+   * 
+   * @return The base URL where the JSP files and resources are located.
+   */
+  public URL getResourceBaseUrl() {
+    return mResourceBaseUrl;
+  }
+
+
+  /**
+   * Sets the base URL where the JSP files and resources are located.
+   * 
+   * @param baseurl The base URL where the JSP files and resources are located.
+   */
+  public static void setResourceBaseUrl(URL baseurl) {
+    mResourceBaseUrl = baseurl;
+  }
+
+
+  /**
+   * Gets the working directory of the web server.
+   * 
+   * @return The working directory of the web server.
+   */
+  public File getWorkingDir() {
+    return mWorkingDir;
+  }
+
+
+  /**
+   * Sets the working directory of the web server.
+   * 
+   * @param workingDir The working directory of the web server.
+   */
+  public static void setWorkingDir(File workingDir) {
+    mWorkingDir = workingDir;
+  }
+
 }

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: FieldTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/hit/FieldTag.java,v $
- *     $Date: 2005/03/30 11:10:44 $
+ *     $Date: 2005/08/07 10:51:09 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  */
 package net.sf.regain.search.sharedlib.hit;
 
@@ -51,10 +51,11 @@ public class FieldTag extends AbstractHitTag {
    * @param request The page request.
    * @param response The page response.
    * @param hit The current search hit.
+   * @param hitIndex The index of the hit.
    * @throws RegainException If there was an exception.
    */
   protected void printEndTag(PageRequest request, PageResponse response,
-    Document hit)
+    Document hit, int hitIndex)
     throws RegainException
   {
     String field = getParameter("field", true);

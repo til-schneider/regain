@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: IndexWriterManager.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/IndexWriterManager.java,v $
- *     $Date: 2005/03/17 12:49:38 $
+ *     $Date: 2005/08/13 10:34:27 $
  *   $Author: til132 $
- * $Revision: 1.17 $
+ * $Revision: 1.23 $
  */
 package net.sf.regain.crawler;
 
@@ -35,11 +35,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.crawler.config.CrawlerConfig;
+import net.sf.regain.crawler.config.UrlMatcher;
 import net.sf.regain.crawler.document.DocumentFactory;
 import net.sf.regain.crawler.document.RawDocument;
 
@@ -170,6 +170,11 @@ public class IndexWriterManager {
    */
   private boolean mUpdateIndex;
 
+  /**
+   * Specifies whether a document that couldn't be prepared the last time should be retried.
+   */
+  private boolean mRetryFailedDocs;
+  
   /** Die DocumentFactory, die die Inhalte f�r die Indizierung aufbereitet. */
   private DocumentFactory mDocumentFactory;
 
@@ -237,13 +242,17 @@ public class IndexWriterManager {
    * @param config Die zu verwendende Konfiguration.
    * @param updateIndex Gibt an, ob ein bereits bestehender Index aktualisiert
    *        werden soll.
+   * @param retryFailedDocs Specifies whether a document that couldn't be
+   *        prepared the last time should be retried.
    *
    * @throws RegainException Wenn der neue Index nicht vorbereitet werden konnte.
    */
-  public IndexWriterManager(CrawlerConfig config, boolean updateIndex)
+  public IndexWriterManager(CrawlerConfig config, boolean updateIndex,
+    boolean retryFailedDocs)
     throws RegainException
   {
     mUpdateIndex = updateIndex;
+    mRetryFailedDocs = retryFailedDocs;
     
     mInitialDocCount = 0;
 
@@ -253,7 +262,8 @@ public class IndexWriterManager {
       // NOTE: The index directory does not exist.
       //       We could just create it, but it's more savely to throw an
       //       exception. We don't wan't to destroy anything.
-      throw new RegainException("The index directory " + indexDir + " does not exist");
+      throw new RegainException("The index directory " + indexDir.getAbsolutePath()
+          + " does not exist");
     }
 
     mNewIndexDir        = new File(indexDir, NEW_INDEX_SUBDIR);
@@ -568,11 +578,11 @@ public class IndexWriterManager {
   public void addToIndex(RawDocument rawDocument, ErrorLogger errorLogger)
     throws RegainException
   {
-    // Pr�fen, ob es einen aktuellen Indexeintrag gibt
+    // Check whether there already is an up-to-date entry in the index
     if (mUpdateIndex) {
       boolean removeOldEntry = false;
 
-      // Alten Eintrag suchen
+      // Search the entry for this URL
       Term urlTerm = new Term("url", rawDocument.getUrl());
       Query query = new TermQuery(urlTerm);
       Document doc;
@@ -596,37 +606,59 @@ public class IndexWriterManager {
           + rawDocument.getUrl(), exc);
       }
 
-      // Wenn ein Dokument gefunden wurde, dann pr�fen, ob Indexeintrag aktuell ist
+      // If we found an entry, check whether it is up-to-date
       if (doc != null) {
+        // Get the last modification date from the document
         Date docLastModified = rawDocument.getLastModified();
+        
         if (docLastModified == null) {
-          // Wir k�nnen nicht feststellen, wann das Dokument zuletzt ge�ndert
-          // wurde (Das ist bei http-URLs der Fall)
-          // -> Alten Eintrag l�schen und Dokument neu indizieren
+          // We are not able to get the last modification date from the
+          // document (this happens with all http-URLs)
+          // -> Delete the old entry and create a new one
           mLog.info("Don't know when the document was last modified. " +
             "Creating a new index entry...");
           removeOldEntry = true;
         } else {
-          // �nderungsdatum mit dem Datum des Indexeintrages vergleichen
+          // Compare the modification date with the one from the index entry
           String asString = doc.get("last-modified");
           if (asString != null) {
             Date indexLastModified = RegainToolkit.stringToLastModified(asString);
 
             long diff = docLastModified.getTime() - indexLastModified.getTime();
             if (diff > 60000L) {
-              // Das Dokument ist mehr als eine Minute neuer
-              // -> Der Eintrag ist nicht aktuell -> Alten Eintrag l�schen
+              // The document is at least one minute newer
+              // -> The index entry is not up-to-date -> Delete the old entry
               mLog.info("Index entry is outdated. Creating a new one (" +
                   docLastModified + " > " + indexLastModified + "): " +
                   rawDocument.getUrl());
               removeOldEntry = true;
             } else {
-              // Der Indexeintrag ist aktuell -> Wir sind fertig
-              mLog.info("Index entry is already up to date: " + rawDocument.getUrl());
-              return;
+              // The index entry is up-to-date
+
+              // Check whether the preparation failed the last time
+              boolean failedLastTime = doc.get("preparation-error") != null;
+              if (failedLastTime) {
+                if (mRetryFailedDocs) {
+                  // The entry failed the last time, the user want's a retry
+                  // -> We do a retry
+                  mLog.info("Retrying preparation of: " + rawDocument.getUrl());
+                  removeOldEntry = true;
+                } else {
+                  // The entry failed the last time, the user want's no retry
+                  // -> We are done
+                  mLog.info("Ignoring " + rawDocument.getUrl() + ", because " +
+                      "preparation already failed the last time and no retry is wanted.");
+                  return;
+                }
+              } else {
+                // The entry is up-to-date and contains text -> We are done
+                mLog.info("Index entry is already up to date: " + rawDocument.getUrl());
+                return;
+              }
             }
           } else {
-            // Wir kennen das �nderungsdatum nicht -> Alten Eintrag l�schen
+            // We don't know the last modification date from the index entry
+            // -> Delete the entry
             mLog.info("Index entry has no last-modified field. " +
                 "Creating a new one: " + rawDocument.getUrl());
             removeOldEntry = true;
@@ -634,15 +666,15 @@ public class IndexWriterManager {
         }
       }
 
-      // Evtl. alten Eintrag l�schen
+      // Check whether we have to delete the old entry
       if (removeOldEntry) {
-        // Eintrag nicht sofort l�schen, sondern nur zum L�schen vormerken.
-        // Siehe markForDeletion(Document)
+        // We don't delete the entry immediately, but we remember it.
+        // See javadoc of markForDeletion(Document)
         markForDeletion(doc);
       }
     }
 
-    // Neuen Eintrag erzeugen
+    // Create a new entry
     createNewIndexEntry(rawDocument, errorLogger);
   }
 
@@ -659,13 +691,12 @@ public class IndexWriterManager {
   {
     // Dokument erzeugen
     if (mLog.isDebugEnabled()) {
-      mLog.debug("Creating document");
+      mLog.debug("Creating document: " + rawDocument.getUrl());
     }
     Document doc = mDocumentFactory.createDocument(rawDocument, errorLogger);
 
     // Dokument in den Index aufnehmen
     if (doc != null) {
-      mLog.info("Adding to index: " + rawDocument.getUrl());
       mAddToIndexProfiler.startMeasuring();
       try {
         setIndexMode(ADDING_MODE);
@@ -687,13 +718,13 @@ public class IndexWriterManager {
    * IndexWriterManager (see {@link #mUrlsToDeleteHash}) or if the don't neither
    * match an entry of the urlToKeepSet nor of the prefixesToKeepArr.
    *
-   * @param urlToKeepSet The URLs that shouldn't be deleted.
-   * @param prefixesToKeepArr URL prefixes that should be spared. 
+   * @param urlChecker The UrlChecker to use for deciding whether an index entry
+   *        should be kept in the index or not. If null only the documents in
+   *        the {@link #mUrlsToDeleteHash} will be deleted.
    * @throws RegainException If an index entry could either not be read or
    *         deleted.
    */
-  public void removeObsoleteEntries(HashSet urlToKeepSet,
-    String[] prefixesToKeepArr)
+  public void removeObsoleteEntries(UrlChecker urlChecker)
     throws RegainException
   {
     if (! mUpdateIndex) {
@@ -703,11 +734,15 @@ public class IndexWriterManager {
       return;
     }
     
-    if ((mUrlsToDeleteHash == null) && (urlToKeepSet == null)
-        && (prefixesToKeepArr == null))
-    {
+    if ((mUrlsToDeleteHash == null) && (urlChecker == null)) {
       // There is nothing to delete -> Fast return
       return;
+    }
+
+    // Get the UrlMatchers that identify URLs that should not be deleted
+    UrlMatcher[] preserveUrlMatcherArr = null;
+    if (urlChecker != null) {
+      preserveUrlMatcherArr = urlChecker.createPreserveUrlMatcherArr();
     }
 
     // Go through the index
@@ -737,18 +772,18 @@ public class IndexWriterManager {
             shouldBeDeleted = true;
           }
           // Check whether all other documents should NOT be deleted
-          else if ((urlToKeepSet == null) && (prefixesToKeepArr == null)) {
+          else if ((urlChecker == null)) {
             shouldBeDeleted = false;
           }
           // Pr�fen, ob dieser Eintrag zu verschonen ist
-          else if (urlToKeepSet.contains(url)) {
+          else if (urlChecker.shouldBeKeptInIndex(url)) {
             shouldBeDeleted = false;
           }
           // Pr�fen, ob die URL zu einem zu-verschonen-Pr�fix passt
           else {
             shouldBeDeleted = true;
-            for (int i = 0; i < prefixesToKeepArr.length; i++) {
-              if (url.startsWith(prefixesToKeepArr[i])) {
+            for (int i = 0; i < preserveUrlMatcherArr.length; i++) {
+              if (preserveUrlMatcherArr[i].matches(url)) {
                 shouldBeDeleted = false;
                 break;
               }
@@ -784,7 +819,7 @@ public class IndexWriterManager {
    *         deleted.
    */
   private void removeObsoleteEntries() throws RegainException {
-    removeObsoleteEntries(null, null);
+    removeObsoleteEntries(null);
   }
   
 
@@ -904,19 +939,23 @@ public class IndexWriterManager {
       
       // Prepare the breakpoint
       prepareBreakpoint();
-      
+
+      // Create a temp directory
+      // NOTE: We copy to a temp directory and rename it when we are finished.
+      File tempDir = new File(mBreakpointIndexDir.getAbsolutePath() + "_tmp");
+      RegainToolkit.deleteDirectory(tempDir);
+      tempDir.mkdir();
+
+      // Copy the current working index to the breakpoint directory
+      RegainToolkit.copyDirectory(mTempIndexDir, tempDir, false);
+
       // Delete the old breakpoint if it exists
       deleteOldIndex(mBreakpointIndexDir);
       
-      // Copy the current working index to the breakpoint directory
-      // NOTE: We copy to a temp directory and rename it when we are finished.
-      File copyDir = new File(mBreakpointIndexDir.getAbsolutePath() + "_tmp");
-      RegainToolkit.deleteDirectory(copyDir);
-      copyDir.mkdir();
-      RegainToolkit.copyDirectory(mTempIndexDir, copyDir, false);
-      if (! copyDir.renameTo(mBreakpointIndexDir)) {
+      // Rename the temp directory and let it become the new breakpoint
+      if (! tempDir.renameTo(mBreakpointIndexDir)) {
         throw new RegainException("Renaming temporary copy directory failed: " +
-            copyDir.getAbsolutePath());
+            tempDir.getAbsolutePath());
       }
 
       // Stop measuring

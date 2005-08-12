@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: Crawler.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/Crawler.java,v $
- *     $Date: 2005/03/17 12:57:49 $
+ *     $Date: 2005/08/13 09:22:49 $
  *   $Author: til132 $
- * $Revision: 1.17 $
+ * $Revision: 1.22 $
  */
 package net.sf.regain.crawler;
 
@@ -31,8 +31,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -62,16 +60,15 @@ import org.apache.regexp.RESyntaxException;
  */
 public class Crawler implements ErrorLogger {
 
-  /** The logger for this class */
+  /** The logger for this class. */
   private static Logger mLog = Logger.getLogger(Crawler.class);
 
-  /** Die Konfiguration mit den Einstellungen. */
+  /** The configuration with the preferences. */
   private CrawlerConfig mConfiguration;
+  
+  /** The URL checker. */
+  private UrlChecker mUrlChecker;
 
-  /** Enth�lt alle bereits gefundenen URLs, die nicht ignoriert wurden. */
-  private HashSet mFoundUrlSet;
-  /** Enth�lt alle bereits gefundenen URLs, die ignoriert wurden. */
-  private HashSet mIgnoredUrlSet;
   /** Die Liste der noch zu bearbeitenden Jobs. */
   private LinkedList mJobList;
 
@@ -86,40 +83,31 @@ public class Crawler implements ErrorLogger {
    */
   private int mFatalErrorCount;
 
+  /** The current crawler job. May be null. */
+  private CrawlerJob mCurrentJob;
+
   /**
-   * Enth�lt alle bisher gefundenen Dead-Links.
+   * Contains all found dead links.
    * <p>
-   * Es werden Object[]s gespeichert, wobei das erste Element die URL enth�lt, die
-   * nicht gefunden werden konnte und die zweite, das Dokument, in dem diese URL
-   * gefunden wurde.
+   * Contains Object[]s with two elements: The first is the URL that couldn't be
+   * found (a String), the second the URL of the document where the dead link
+   * was found (a String).
    */
   private LinkedList mDeadlinkList;
 
-  /**
-   * Enth�lt die Pr�fixe, die eine URL <i>nicht</i> haben darf, um bearbeitet zu
-   * werden.
-   */
-  private String[] mUrlPrefixBlackListArr;
-  /**
-   * Die Wei�e Liste.
-   *
-   * @see WhiteListEntry
-   */
-  private WhiteListEntry[] mWhiteListEntryArr;
-
-  /** Die UrlPattern, die der HTML-Parser nutzen soll, um URLs zu identifizieren. */
+  /** The UrlPattern the HTML-Parser should use to identify URLs. */
   private UrlPattern[] mHtmlParserUrlPatternArr;
   /**
-   * Die Regul�ren Ausdr�cke, die zu den jeweiligen UrlPattern f�r den
-   * HTML-Parser geh�ren.
+   * The regular expressions that belong to the respective UrlPattern for the
+   * HTML-Parser.
    *
    * @see #mHtmlParserUrlPatternArr
    */
   private RE[] mHtmlParserPatternReArr;
 
-  /** Der Profiler der die gesamten Crawler-Jobs mi�t. */
+  /** The profiler that measures the whole crawler jobs. */
   private Profiler mCrawlerJobProfiler;
-  /** Der Profiler der das Durchsuchen von HTML-Dokumenten mi�t. */
+  /** The profiler that measures the HTML-Parser. */
   private Profiler mHtmlParsingProfiler;
   
   /** The IndexWriterManager to use for adding documents to the index. */
@@ -130,11 +118,11 @@ public class Crawler implements ErrorLogger {
 
 
   /**
-   * Erzeugt eine neue Crawler-Instanz.
+   * Creates a new instance of Crawler.
+   * 
+   * @param config The Configuration
    *
-   * @param config Die Konfiguration
-   *
-   * @throws RegainException Wenn die regul�ren Ausdr�cke fehlerhaft sind.
+   * @throws RegainException If the regular expressions have errors.
    */
   public Crawler(CrawlerConfig config) throws RegainException {
     Profiler.clearRegisteredProfilers();
@@ -144,17 +132,12 @@ public class Crawler implements ErrorLogger {
     
     mConfiguration = config;
 
-    mFoundUrlSet = new HashSet();
-    mIgnoredUrlSet = new HashSet();
     mJobList = new LinkedList();
     mDeadlinkList = new LinkedList();
 
     mFatalErrorCount = 0;
 
     RawDocument.setHttpTimeoutSecs(config.getHttpTimeoutSecs());
-
-    mUrlPrefixBlackListArr = config.getUrlPrefixBlackList();
-    mWhiteListEntryArr = config.getWhiteList();
 
     mHtmlParserUrlPatternArr = config.getHtmlParserUrlPatterns();
     mHtmlParserPatternReArr = new RE[mHtmlParserUrlPatternArr.length];
@@ -216,6 +199,35 @@ public class Crawler implements ErrorLogger {
 
 
   /**
+   * Gets the URL of the current job. Returns null, if the crawler has currently
+   * no job.
+   * 
+   * @return The URL of the current job.
+   */
+  public String getCurrentJobUrl() {
+    // NOTE: We put the current job in a local variable to avoid it is set to
+    //       null while this method is executed.
+    CrawlerJob job = mCurrentJob;
+    if (job == null) {
+      return null;
+    } else {
+      return job.getUrl();
+    }
+  }
+
+
+  /**
+   * Get the time the crawler is already working on the current job.
+   * 
+   * @return The current working time in milli seconds. Returns -1 if the
+   *         crawler has currently no job.
+   */
+  public long getCurrentJobTime() {
+    return mCrawlerJobProfiler.getCurrentMeasuringTime();
+  }
+
+
+  /**
    * Sets whether the crawler should pause.
    *  
    * @param shouldPause Whether the crawler should pause.
@@ -261,11 +273,11 @@ public class Crawler implements ErrorLogger {
     // Change all blanks to %20, since blanks are not allowed in URLs
     url = RegainToolkit.replace(url, " ", "%20");
 
-    boolean alreadyFound = mFoundUrlSet.contains(url);
-    boolean alreadyIgnored = mIgnoredUrlSet.contains(url);
+    boolean alreadyAccepted = mUrlChecker.wasAlreadyAccepted(url);
+    boolean alreadyIgnored = mUrlChecker.wasAlreadyIgnored(url);
 
-    if ((! alreadyFound) && (! alreadyIgnored)) {
-      boolean accepted = isUrlAccepted(url);
+    if ((! alreadyAccepted) && (! alreadyIgnored)) {
+      boolean accepted = mUrlChecker.isUrlAccepted(url);
 
       // Check whether this page has to be loaded at all
       if (! mConfiguration.getLoadUnparsedUrls()) {
@@ -276,16 +288,25 @@ public class Crawler implements ErrorLogger {
       }
 
       if (accepted) {
-        mFoundUrlSet.add(url);
+        mUrlChecker.setAccepted(url);
         if (mLog.isDebugEnabled()) {
           mLog.debug("Found new URL: " + url);
         }
 
         CrawlerJob job = new CrawlerJob(url, sourceUrl, sourceLinkText,
                                       shouldBeParsed, shouldBeIndexed);
-        mJobList.add(job);
+        
+        // NOTE: This is a little trick: We put documents that aren't parsed at
+        //       the beginning of the job list and documents that are parsed at
+        //       the end. This keeps the job list small as first all documents
+        //       are processed, before new documents are added.
+        if (shouldBeParsed) {
+          mJobList.addLast(job);
+        } else {
+          mJobList.addFirst(job);
+        }
       } else {
-        mIgnoredUrlSet.add(url);
+        mUrlChecker.setIgnored(url);
         if (mLog.isDebugEnabled()) {
           mLog.debug("Ignoring URL: " + url);
         }
@@ -294,56 +315,20 @@ public class Crawler implements ErrorLogger {
   }
 
 
-
   /**
-   * Pr�ft ob die URL von der Schwarzen und Wei�en Liste akzeptiert wird.
-   * <p>
-   * Dies ist der Fall, wenn sie keinem Pr�fix aus der Schwarzen Liste und
-   * mindestens einem aus der Wei�en Liste entspricht.
+   * Executes the crawler process and prints out a statistik, the dead-link-list
+   * and the error-list at the end.
    *
-   * @param url Die zu pr�fende URL.
-   * @return Ob die URL von der Schwarzen und Wei�en Liste akzeptiert wird.
+   * @param updateIndex Specifies whether an already existing index should be
+   *        updated.
+   * @param retryFailedDocs Specifies whether a document that couldn't be
+   *        prepared the last time should be retried.
+   * @param onlyEntriesArr The names of the white list entries, that should be
+   *        updated. If <code>null</code> or empty, all entries will be updated.
    */
-  private boolean isUrlAccepted(String url) {
-    // check whether this URL matches to a white list prefix
-    boolean matchesToWhiteList = false;
-    for (int i = 0; i < mWhiteListEntryArr.length; i++) {
-      if (mWhiteListEntryArr[i].shouldBeUpdated()) {
-        String whiteListPrefix = mWhiteListEntryArr[i].getPrefix();
-        if (url.startsWith(whiteListPrefix)) {
-          matchesToWhiteList = true;
-          break;
-        }
-      }
-    }
-    if (! matchesToWhiteList) {
-      return false;
-    }
-
-    // check whether this URL matches to a black list prefix
-    for (int i = 0; i < mUrlPrefixBlackListArr.length; i++) {
-      if (url.startsWith(mUrlPrefixBlackListArr[i])) {
-        return false;
-      }
-    }
-
-    // All tests passed -> URL is accepted
-    return true;
-  }
-
-
-
-  /**
-   * F�hrt den Crawler-Proze� aus und gibt am Ende die Statistik, die
-   * Dead-Link-Liste und die Fehler-Liste aus.
-   *
-   * @param updateIndex Gibt an, ob ein bereits bestehender Index aktualisiert
-   *        werden soll.
-   * @param onlyEntriesArr Die Namen der Eintr�ge in der Wei�en Liste, die
-   *        bearbeitet werden sollen. Wenn <code>null</code> oder leer, dann
-   *        werden alle Eintr�ge bearbeitet.
-   */
-  public void run(boolean updateIndex, String[] onlyEntriesArr) {
+  public void run(boolean updateIndex, boolean retryFailedDocs,
+    String[] onlyEntriesArr)
+  {
     mLog.info("Starting crawling...");
     mShouldPause = false;
 
@@ -352,7 +337,7 @@ public class Crawler implements ErrorLogger {
     if (mConfiguration.getBuildIndex()) {
       mLog.info("Preparing the index");
       try {
-        mIndexWriterManager = new IndexWriterManager(mConfiguration, updateIndex);
+        mIndexWriterManager = new IndexWriterManager(mConfiguration, updateIndex, retryFailedDocs);
         updateIndex = mIndexWriterManager.getUpdateIndex();
       }
       catch (RegainException exc) {
@@ -361,8 +346,12 @@ public class Crawler implements ErrorLogger {
       }
     }
 
-    // Check whether some white list entries should be ignored
-    useOnlyWhiteListEntries(onlyEntriesArr, updateIndex);
+    // Get the white list and set the "should be updated"-flags
+    WhiteListEntry[] whiteList = mConfiguration.getWhiteList();
+    whiteList = useOnlyWhiteListEntries(whiteList, onlyEntriesArr, updateIndex);
+
+    // Create the UrlChecker
+    mUrlChecker = new UrlChecker(whiteList, mConfiguration.getBlackList());
 
     // Add the start URLs
     addStartUrls();
@@ -374,11 +363,11 @@ public class Crawler implements ErrorLogger {
     while (! mJobList.isEmpty()) {
       mCrawlerJobProfiler.startMeasuring();
 
-      CrawlerJob job = (CrawlerJob) mJobList.removeFirst();
-      String url = job.getUrl();
+      mCurrentJob = (CrawlerJob) mJobList.removeFirst();
+      String url = mCurrentJob.getUrl();
 
-      boolean shouldBeParsed = job.shouldBeParsed();
-      boolean shouldBeIndexed = job.shouldBeIndexed();
+      boolean shouldBeParsed = mCurrentJob.shouldBeParsed();
+      boolean shouldBeIndexed = mCurrentJob.shouldBeIndexed();
 
       // Check whether this is a directory
       if (url.startsWith("file://")) {
@@ -403,12 +392,12 @@ public class Crawler implements ErrorLogger {
       // Create a raw document
       RawDocument rawDocument;
       try {
-        rawDocument = new RawDocument(url, job.getSourceUrl(),
-                                      job.getSourceLinkText());
+        rawDocument = new RawDocument(url, mCurrentJob.getSourceUrl(),
+                                      mCurrentJob.getSourceLinkText());
       }
       catch (RegainException exc) {
         // Check whether the exception was caused by a dead link
-        handleDocumentLoadingException(exc, job);
+        handleDocumentLoadingException(exc, mCurrentJob);
 
         // This document does not exist -> We can't parse or index anything
         // -> continue
@@ -447,6 +436,7 @@ public class Crawler implements ErrorLogger {
 
       // Zeitmessung stoppen
       mCrawlerJobProfiler.stopMeasuring(rawDocument.getLength());
+      mCurrentJob = null;
       
       // Check whether to create a breakpoint
       if (mShouldPause || (System.currentTimeMillis() > lastBreakpointTime + 10 * 60 * 1000)) {
@@ -466,14 +456,13 @@ public class Crawler implements ErrorLogger {
         
         lastBreakpointTime = System.currentTimeMillis();
       }
-    }
+    } // while (! mJobList.isEmpty())
 
     // Nicht mehr vorhandene Dokumente aus dem Index l�schen
     if (mConfiguration.getBuildIndex()) {
       mLog.info("Removing index entries of documents that do not exist any more...");
       try {
-        String[] prefixesToKeepArr = createPrefixesToKeep();
-        mIndexWriterManager.removeObsoleteEntries(mFoundUrlSet, prefixesToKeepArr);
+        mIndexWriterManager.removeObsoleteEntries(mUrlChecker);
       }
       catch (Throwable thr) {
         logError("Removing non-existing documents from index failed", thr, true);
@@ -535,7 +524,7 @@ public class Crawler implements ErrorLogger {
     String lineSeparator = RegainToolkit.getLineSeparator();
 
     mLog.info("Statistics:" + lineSeparator
-      + "  Ignored URLs:       " + mIgnoredUrlSet.size() + lineSeparator
+      + "  Ignored URLs:       " + mUrlChecker.getIgnoredCount() + lineSeparator
       + "  Documents in index: " + entryCount + lineSeparator
       + "  Dead links:         " + mDeadlinkList.size() + lineSeparator
       + "  Errors:             " + mErrorCount + lineSeparator
@@ -568,7 +557,13 @@ public class Crawler implements ErrorLogger {
    * Adds all start URL to the job list.
    */
   private void addStartUrls() {
+    // Get the start URLs from the config
     StartUrl[] startUrlArr = mConfiguration.getStartUrls();
+    
+    // Normalize the start URLs
+    startUrlArr = mUrlChecker.normalizeStartUrls(startUrlArr);
+    
+    // Add the start URLs as jobs
     for (int i = 0; i < startUrlArr.length; i++) {
       String url = startUrlArr[i].getUrl();
       boolean shouldBeParsed = startUrlArr[i].getShouldBeParsed();
@@ -581,58 +576,34 @@ public class Crawler implements ErrorLogger {
 
 
   /**
-   * Erzeugt ein Array von URL-Pr�fixen, die von der L�schung aus dem Index
-   * verschont bleiben sollen.
-   * <p>
-   * Diese Liste entspricht den Eintr�gen der Wei�en Liste, deren
-   * <code>shouldBeUpdated</code>-Flag auf <code>false</code> gesetzt ist.
-   *
-   * @return Die URL-Pr�fixen, die nicht aus dem Index gel�scht werden sollen.
-   * @see WhiteListEntry#shouldBeUpdated()
+   * Sets the "should be updated"-flag for each entry in the white list.
+   * 
+   * @param whiteList The white list to process.
+   * @param onlyEntriesArr The names of the white list entries, that should be
+   *        updated. If <code>null</code> or empty, all entries will be updated.
+   * @param updateIndex Specifies whether an already existing index will be
+   *        updated in this crawler run.
+   * @return The processed white list.
    */
-  private String[] createPrefixesToKeep() {
-    ArrayList list = new ArrayList();
-    for (int i = 0; i < mWhiteListEntryArr.length; i++) {
-      if (! mWhiteListEntryArr[i].shouldBeUpdated()) {
-        list.add(mWhiteListEntryArr[i].getPrefix());
-      }
-    }
-
-    String[] asArr = new String[list.size()];
-    list.toArray(asArr);
-    return asArr;
-  }
-
-
-  /**
-   * Pr�ft, ob Eintr�ge der Wei�en Liste ignoriert werden sollen und �ndert
-   * die Wei�e Liste entsprechend.
-   *
-   * @param onlyEntriesArr Die Namen der Eintr�ge in der Wei�en Liste, die
-   *        bearbeitet werden sollen. Wenn <code>null</code> oder leer, dann
-   *        werden alle Eintr�ge bearbeitet.
-   * @param updateIndex Gibt an, ob ein bereits bestehender Index aktualisiert
-   *        werden soll.
-   */
-  private void useOnlyWhiteListEntries(String[] onlyEntriesArr,
-    boolean updateIndex)
+  private WhiteListEntry[] useOnlyWhiteListEntries(WhiteListEntry[] whiteList,
+    String[] onlyEntriesArr, boolean updateIndex)
   {
     // NOTE: At that moment all white list entries are set to "should be updated"
 
     if ((onlyEntriesArr != null) && (onlyEntriesArr.length != 0)) {
       if (updateIndex) {
         // First set all white list entries to "should NOT be updated".
-        for (int i = 0; i < mWhiteListEntryArr.length; i++) {
-          mWhiteListEntryArr[i].setShouldBeUpdated(false);
+        for (int i = 0; i < whiteList.length; i++) {
+          whiteList[i].setShouldBeUpdated(false);
         }
 
         // Now set those entries to "should be updated" that are in the list
         for (int i = 0; i < onlyEntriesArr.length; i++) {
           // Find the matching white list entry
           WhiteListEntry entry = null;
-          for (int j = 0; j < mWhiteListEntryArr.length; j++) {
-            if (onlyEntriesArr[i].equals(mWhiteListEntryArr[j].getName())) {
-              entry = mWhiteListEntryArr[j];
+          for (int j = 0; j < whiteList.length; j++) {
+            if (onlyEntriesArr[i].equals(whiteList[j].getName())) {
+              entry = whiteList[j];
               break;
             }
           }
@@ -647,10 +618,9 @@ public class Crawler implements ErrorLogger {
         }
 
         // Log all ignored entries
-        for (int i = 0; i < mWhiteListEntryArr.length; i++) {
-          if (! mWhiteListEntryArr[i].shouldBeUpdated()) {
-            mLog.info("Ignoring white list entry: "
-              + mWhiteListEntryArr[i].getPrefix());
+        for (int i = 0; i < whiteList.length; i++) {
+          if (! whiteList[i].shouldBeUpdated()) {
+            mLog.info("Ignoring white list entry: " + whiteList[i].getUrlMatcher());
           }
         }
       } else {
@@ -658,6 +628,8 @@ public class Crawler implements ErrorLogger {
                   "will be created");
       }
     }
+    
+    return whiteList;
   }
 
 

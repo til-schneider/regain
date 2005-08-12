@@ -25,6 +25,16 @@
       <openInNewWindowRegex>.(pdf|rtf|doc|xls|ppt)$</openInNewWindowRegex>
       
       <!--
+       | Specifies whether the file-to-http-bridge should be used for file-URLs.
+       |
+       | Mozilla browsers have a security mechanism that blocks loading file-URLs
+       | from pages loaded via http. To be able to load files from the search
+       | results, regain offers the file-to-http-bridge that provides all files that
+       | are listed in the index via http.
+       +-->
+      <useFileToHttpBridge>true</useFileToHttpBridge>
+      
+      <!--
        | The index fields to search by default.
        |
        | NOTE: The user may search in other fields also using the

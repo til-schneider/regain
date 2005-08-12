@@ -21,13 +21,15 @@
  * CVS information:
  *  $RCSfile: Main.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/Main.java,v $
- *     $Date: 2005/03/16 12:53:47 $
+ *     $Date: 2005/08/13 09:22:49 $
  *   $Author: til132 $
- * $Revision: 1.15 $
+ * $Revision: 1.19 $
  */
 package net.sf.regain.ui.desktop;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
@@ -87,8 +89,18 @@ public class Main implements DesktopConstants {
     mLog.info("Logging initialized");
 
     // Initialize the search mask
+    URL baseurl;
+    try {
+      baseurl = new File("web").toURL();
+    }
+    catch (MalformedURLException exc) {
+      exc.printStackTrace();
+      System.exit(1); // Abort
+      return;
+    }
+    SimplePageRequest.setResourceBaseUrl(baseurl);
+    SimplePageRequest.setWorkingDir(new File("."));
     SimplePageRequest.setInitParameter("searchConfigFile", "conf/SearchConfiguration.xml");
-    SimplePageRequest.setInitParameter("webDir", "web");
     ExecuterParser.registerNamespace("search", "net.sf.regain.search.sharedlib");
     ExecuterParser.registerNamespace("config", "net.sf.regain.ui.desktop.config.sharedlib");
     ExecuterParser.registerNamespace("status", "net.sf.regain.ui.desktop.status.sharedlib");

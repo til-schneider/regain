@@ -9,6 +9,8 @@
 </head>
 
 <body>
+  <search:check noIndexUrl="noindex.jsp"/>
+
   <table class="top"><tr>
     <td><img src="img/logo_regain.gif" width="201" height="66"></td>
   </tr></table>

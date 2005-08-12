@@ -21,13 +21,12 @@
  * CVS information:
  *  $RCSfile: Localizer.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/io/Localizer.java,v $
- *     $Date: 2005/03/31 07:51:50 $
+ *     $Date: 2005/08/10 06:26:21 $
  *   $Author: til132 $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  */
 package net.sf.regain.util.io;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -66,13 +65,13 @@ public class Localizer {
   /**
    * Creates a new instance of Localizer.
    *
-   * @param basedir The directory to load the resource bundle from.
+   * @param baseurl The URL to load the resource bundle from.
    * @param basename The basename of the resource bundle to load.
    * @param locale the locale to create the localizer for.
    */
-  public Localizer(File basedir, String basename, Locale locale) {
+  public Localizer(URL baseurl, String basename, Locale locale) {
     try {
-      URLClassLoader loader = getClassLoader(basedir);
+      URLClassLoader loader = getClassLoader(baseurl);
       mBundle = ResourceBundle.getBundle(basename, locale, loader);
     }
     catch (Throwable thr) {
@@ -144,21 +143,22 @@ public class Localizer {
   /**
    * Gets a class loader that loads ressources from a directory.
    * 
-   * @param basedir The directory to load the ressources from.
+   * @param baseurl The URL to load the ressources from.
    * @return The class loader
    * @throws MalformedURLException If the file could not be converted to an URL.
    */
-  private static synchronized URLClassLoader getClassLoader(File basedir)
+  private static synchronized URLClassLoader getClassLoader(URL baseurl)
     throws MalformedURLException
   {
     if (mFileClassLoaderHash == null) {
       mFileClassLoaderHash = new HashMap();
     }
     
-    URLClassLoader loader = (URLClassLoader) mFileClassLoaderHash.get(basedir);
+    String baseurlAsString = baseurl.toExternalForm();
+    URLClassLoader loader = (URLClassLoader) mFileClassLoaderHash.get(baseurlAsString);
     if (loader == null) {
-      loader = new URLClassLoader(new URL[] { basedir.toURL() });
-      mFileClassLoaderHash.put(basedir, loader);
+      loader = new URLClassLoader(new URL[] { baseurl });
+      mFileClassLoaderHash.put(baseurlAsString, loader);
     }
     
     return loader;

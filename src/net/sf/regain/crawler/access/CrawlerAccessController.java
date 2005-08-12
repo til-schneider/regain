@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: CrawlerAccessController.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/access/CrawlerAccessController.java,v $
- *     $Date: 2005/03/30 10:30:01 $
+ *     $Date: 2005/04/14 08:15:34 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  */
 package net.sf.regain.crawler.access;
 
@@ -61,6 +61,9 @@ public interface CrawlerAccessController {
 
   /**
    * Gets the names of the groups that are allowed to read the given document.
+   * <p>
+   * Note: The group array must not be <code>null</code> and the group names
+   * must not contain whitespace.
    * 
    * @param document The document to get the groups for.
    * @return The groups that are allowed to read the given document.

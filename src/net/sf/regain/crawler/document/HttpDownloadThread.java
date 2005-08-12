@@ -21,13 +21,12 @@
  * CVS information:
  *  $RCSfile: HttpDownloadThread.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/document/HttpDownloadThread.java,v $
- *     $Date: 2004/11/10 15:08:50 $
+ *     $Date: 2005/08/13 09:45:38 $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  */
 package net.sf.regain.crawler.document;
 
-import net.sf.regain.RegainException;
 import net.sf.regain.crawler.CrawlerToolkit;
 
 /**
@@ -78,8 +77,8 @@ public class HttpDownloadThread extends Thread {
     try {
       mDocContent = CrawlerToolkit.loadHttpDocument(mDocUrl);
     }
-    catch (RegainException exc) {
-      mError = exc;
+    catch (Throwable thr) {
+      mError = thr;
     }
 
     synchronized (this) {

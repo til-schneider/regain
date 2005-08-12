@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: DummyCrawlerConfig.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/DummyCrawlerConfig.java,v $
- *     $Date: 2005/03/30 10:30:03 $
+ *     $Date: 2005/08/13 11:33:29 $
  *   $Author: til132 $
- * $Revision: 1.5 $
+ * $Revision: 1.7 $
  */
 package net.sf.regain.crawler.config;
 
@@ -260,40 +260,31 @@ public class DummyCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt die Schwarze Liste zurück.
+   * Gets the black list.
    * <p>
-   * Diese enthält Präfixe, die eine URL <I>nicht</I> haben darf, um bearbeitet
-   * zu werden.
-   *
-   * @return Die Schwarze Liste.
+   * The black list is an array of UrlMatchers, a URLs <i>must not</i> match to,
+   * in order to be processed.
+   * 
+   * @return The black list.
    */
-  public String[] getUrlPrefixBlackList() {
-    return new String[] {
-      "http://www.dm-drogeriemarkt.de/CDA/Suchen/",
-      "http://www.dm-drogeriemarkt.de/CDA/content/print/"
-    };
+  public UrlMatcher[] getBlackList() {
+    return new UrlMatcher[0];
   }
 
 
-
   /**
-   * Gibt die Weiße Liste zurück.
+   * Gets the white list.
    * <p>
-   * Diese enthält Präfixe, von denen eine URL einen haben <i>muß</i>, um
-   * bearbeitet zu werden.
+   * The black list is an array of WhiteListEntry, a URLs <i>must</i> match to,
+   * in order to be processed.
    *
    * @return Die Weiße Liste
    */
   public WhiteListEntry[] getWhiteList() {
     return new WhiteListEntry[] {
-      // new WhiteListEntry("http://www.dm-drogeriemarkt.de/", "dm-main"),
-      new WhiteListEntry("http://www.dm-drogeriemarkt.de/CDA/Home/", "dm-home"),
-      new WhiteListEntry("http://www.dm-drogeriemarkt.de/CDA/images/", "dm-images"),
-      new WhiteListEntry("http://www.dm-drogeriemarkt.de/CDA/verteilerseite/0,1651,", "dm-test1"),
-      new WhiteListEntry("http://www.dm-drogeriemarkt.de/CDA/content/0,1647,0-171", "dm-test2"),
+      new WhiteListEntry(new PrefixUrlMatcher("file://"), null)
     };
   }
-
 
 
   /**
@@ -317,8 +308,8 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    */
   public PreparatorSettings[] getPreparatorSettingsList() {
     return new PreparatorSettings[] {
-      new PreparatorSettings(true, "net.sf.regain.crawler.document.HtmlPreparator", new PreparatorConfig()),
-      new PreparatorSettings(true, "net.sf.regain.crawler.document.XmlPreparator", new PreparatorConfig())
+      new PreparatorSettings(true, "net.sf.regain.crawler.document.HtmlPreparator", null, new PreparatorConfig()),
+      new PreparatorSettings(true, "net.sf.regain.crawler.document.XmlPreparator", null, new PreparatorConfig())
     };
   }
 

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: BrowserSelectorFrame.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/BrowserSelectorFrame.java,v $
- *     $Date: 2005/03/16 08:55:48 $
+ *     $Date: 2005/08/04 13:52:50 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -107,7 +107,7 @@ public class BrowserSelectorFrame implements DesktopConstants {
   /**
    * Handles a changed value. Called when yes or no was pressed.
    */
-  private void handleOptionPaneChanged() {
+  void handleOptionPaneChanged() {
     int option = ((Integer) mOptionPane.getValue()).intValue();
     
     if (option == 0) {

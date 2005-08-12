@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: Main.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/Main.java,v $
- *     $Date: 2005/02/27 14:41:27 $
+ *     $Date: 2005/08/01 11:49:48 $
  *   $Author: til132 $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  */
 package net.sf.regain.crawler;
 
@@ -65,9 +65,13 @@ public class Main {
     String logConfigFileName = LOG4J_PROP_FILE_NAME;
     String[] onlyEntriesArr = null;
     boolean updateIndex = true;
+    boolean retryFailedDocs = false;
     for (int i = 0; i < args.length; i++) {
       if (args[i].equalsIgnoreCase("-forceNewIndex")) {
         updateIndex = false;
+      }
+      else if (args[i].equalsIgnoreCase("-retryFailedDocs")) {
+        retryFailedDocs = true;
       }
       else if (args[i].equalsIgnoreCase("--help") || args[i].equalsIgnoreCase("/?")) {
         showHelp();
@@ -126,7 +130,7 @@ public class Main {
 
     // Let the crawler do its job
     if (crawler != null) {
-      crawler.run(updateIndex, onlyEntriesArr);
+      crawler.run(updateIndex, retryFailedDocs, onlyEntriesArr);
 
       // Returncode ermitteln
       int returnCode;
@@ -192,6 +196,7 @@ public class Main {
       "Allowed parameters:\n" +
       "  --help:             Shows this help page\n" +
       "  -forceNewIndex:     Forces the creation of a new search index\n" +
+      "  -retryFailedDocs:   The preparation of documents that failed last time is retried" +
       "  -onlyEntries <CSV>: The white list entries to use, separated by comma (,)\n" +
       "                      (Default: all entries)" +
       "  -config <file>:     The configuration file to use\n" +

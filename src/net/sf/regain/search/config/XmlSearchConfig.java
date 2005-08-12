@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile: XmlSearchConfig.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/config/XmlSearchConfig.java,v $
- *     $Date: 2005/03/30 10:30:01 $
+ *     $Date: 2005/04/15 08:47:02 $
  *   $Author: til132 $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  */
 package net.sf.regain.search.config;
 
@@ -74,6 +74,13 @@ public class XmlSearchConfig implements SearchConfig {
       node = XmlToolkit.getCascadedChild(indexNode, defaultNode, "openInNewWindowRegex", true);
       String openInNewWindowRegex = XmlToolkit.getText(node, true);
 
+      // Read the useFileToHttpBridge
+      node = XmlToolkit.getCascadedChild(indexNode, defaultNode, "useFileToHttpBridge");
+      boolean useFileToHttpBridge = true;
+      if (node != null) {
+        useFileToHttpBridge = XmlToolkit.getTextAsBoolean(node);
+      }
+      
       // Read the search field list
       node = XmlToolkit.getCascadedChild(indexNode, defaultNode, "searchFieldList");
       String[] searchFieldList = null;
@@ -109,7 +116,7 @@ public class XmlSearchConfig implements SearchConfig {
       
       // Create the index config
       IndexConfig indexConfig = new IndexConfig(indexName, directory,
-          openInNewWindowRegex, searchFieldList, rewriteRules,
+          openInNewWindowRegex, useFileToHttpBridge, searchFieldList, rewriteRules,
           searchAccessControllerClass, searchAccessControllerJar,
           searchAccessControllerConfig);
       mIndexHash.put(indexName, indexConfig);

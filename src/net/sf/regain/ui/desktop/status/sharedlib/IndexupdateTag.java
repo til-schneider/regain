@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: IndexupdateTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/status/sharedlib/IndexupdateTag.java,v $
- *     $Date: 2005/03/10 08:50:25 $
+ *     $Date: 2005/08/13 09:22:50 $
  *   $Author: til132 $
- * $Revision: 1.5 $
+ * $Revision: 1.7 $
  */
 package net.sf.regain.ui.desktop.status.sharedlib;
 
@@ -68,11 +68,18 @@ public class IndexupdateTag extends SharedTag {
     if (crawler == null) {
       response.print(localizer.msg("noIndexUpdate", "Currently is no index update running."));
     } else {
+      // Get the IndexConfig
+      IndexConfig[] configArr = SearchToolkit.getIndexConfigArr(request);
+      if (configArr.length > 1) {
+        throw new RegainException("The indexupdate tag can only be used for one index!");
+      }
+      IndexConfig config = configArr[0];
+
       // Get the index size
-      IndexConfig config = SearchToolkit.getIndexConfig(request);
       File indexUpdateDir = new File(config.getDirectory(), "temp");
       long size = RegainToolkit.getDirectorySize(indexUpdateDir);
       String sizeAsString = RegainToolkit.bytesToString(size, request.getLocale());
+      String currentJobUrl = crawler.getCurrentJobUrl();
       
       Object[] args = new Object[] {
         new Integer(crawler.getFinishedJobCount()),
@@ -80,8 +87,13 @@ public class IndexupdateTag extends SharedTag {
         new Integer(crawler.getInitialDocCount()),
         new Integer(crawler.getAddedDocCount()),
         new Integer(crawler.getRemovedDocCount()),
+        (currentJobUrl == null) ? "?" : currentJobUrl,
+        RegainToolkit.toTimeString(crawler.getCurrentJobTime())
       };
-      response.print(localizer.msg("indexInfo", "Processed documents: {0}<br/>Size: {1}<br/>Initial document count: {2}<br/>Added document count: {3}<br/>Removed document count: {4}", args));
+      response.print(localizer.msg("indexInfo", "Processed documents: {0}<br/>" +
+            "Size: {1}<br/>Initial document count: {2}<br/>" +
+            "Added document count: {3}<br/>Removed document count: {4}<br/>" +
+            "Current job: {5} (since {6})", args));
     }
   }
   

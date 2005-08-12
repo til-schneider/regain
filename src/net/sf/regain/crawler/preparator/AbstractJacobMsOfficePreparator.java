@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: AbstractJacobMsOfficePreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/AbstractJacobMsOfficePreparator.java,v $
- *     $Date: 2005/03/14 15:03:36 $
+ *     $Date: 2005/08/13 11:33:30 $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -106,8 +106,6 @@ public abstract class AbstractJacobMsOfficePreparator extends AbstractPreparator
    * @throws RegainException If the configuration has an error.
    */
   public void init(PreparatorConfig config) throws RegainException {
-    super.readConfig(config);
-    
     Map main = config.getSectionWithName("main");
     if (main != null) {
       String properties = (String) main.get("properties");

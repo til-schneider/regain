@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: IndexUpdateManager.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/IndexUpdateManager.java,v $
- *     $Date: 2005/03/16 13:50:04 $
+ *     $Date: 2005/08/01 12:04:24 $
  *   $Author: til132 $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -196,7 +196,7 @@ public class IndexUpdateManager implements DesktopConstants {
         try {
           mLog.info("Starting index update on " + new Date());
           mCrawler = new Crawler(config);
-          mCrawler.run(true, null);
+          mCrawler.run(true, false, null);
         }
         catch (RegainException exc) {
           mLog.error("Updating the index failed", exc);

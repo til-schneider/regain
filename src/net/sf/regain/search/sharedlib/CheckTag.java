@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: CheckTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/CheckTag.java,v $
- *     $Date: 2005/03/08 08:52:08 $
+ *     $Date: 2005/08/07 10:51:07 $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  */
 package net.sf.regain.search.sharedlib;
 
@@ -60,26 +60,30 @@ public class CheckTag extends SharedTag {
   public void printEndTag(PageRequest request, PageResponse response)
     throws RegainException
   {
-    // Check whether there is a index
-    IndexConfig indexConfig = SearchToolkit.getIndexConfig(request);
-    File indexdir = new File(indexConfig.getDirectory());
-    File newFile = new File(indexdir, "new");
-    File indexFile = new File(indexdir, "index");
-    
-    if (indexdir.exists() && ! indexFile.exists() && ! newFile.exists()) {
-      // There is no index -> Forward to the noIndexUrl
-      String noIndexUrl = getParameter("noIndexUrl", true);
-      response.sendRedirect(noIndexUrl);
-      return;
+    // Check whether the indexes exist
+    IndexConfig[] indexConfigArr = SearchToolkit.getIndexConfigArr(request);
+    for (int i = 0; i < indexConfigArr.length; i++) {
+      File indexdir = new File(indexConfigArr[i].getDirectory());
+      File newFile = new File(indexdir, "new");
+      File indexFile = new File(indexdir, "index");
+      
+      if (indexdir.exists() && ! indexFile.exists() && ! newFile.exists()) {
+        // There is no index -> Forward to the noIndexUrl
+        String noIndexUrl = getParameter("noIndexUrl", true);
+        response.sendRedirect(noIndexUrl);
+        return;
+      }
     }
     
     // Check whether there is a query
     String query = SearchToolkit.getSearchQuery(request);
     if ((query == null) || (query.length() == 0)) {
       // There was no query specified -> Forward to the noQueryUrl
-      String noQueryUrl = getParameter("noQueryUrl", true);
-      response.sendRedirect(noQueryUrl);
-      return;
+      String noQueryUrl = getParameter("noQueryUrl", false);
+      if (noQueryUrl != null) {
+        response.sendRedirect(noQueryUrl);
+        return;
+      }
     }
   }
 

@@ -21,13 +21,12 @@
  * CVS information:
  *  $RCSfile: SharedTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/SharedTag.java,v $
- *     $Date: 2005/03/09 15:46:08 $
+ *     $Date: 2005/08/10 14:00:44 $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 1.6 $
  */
 package net.sf.regain.util.sharedtag;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -261,10 +260,7 @@ public abstract class SharedTag {
       
       // Init the MultiLocalizer if nessesary
       if (mMultiLocalizer == null) {
-        // Get the base dir
-        File basedir = new File(request.getInitParameter("webDir"));
-
-        mMultiLocalizer = new MultiLocalizer(basedir, "msg");
+        mMultiLocalizer = new MultiLocalizer(request.getResourceBaseUrl(), "msg");
       }
       
       // Get the localizer

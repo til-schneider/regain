@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: SearchAccessController.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/access/SearchAccessController.java,v $
- *     $Date: 2005/03/30 10:30:03 $
+ *     $Date: 2005/04/14 08:15:34 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  */
 package net.sf.regain.search.access;
 
@@ -58,6 +58,9 @@ public interface SearchAccessController {
 
   /**
    * Gets the groups the current user has reading rights for.
+   * <p>
+   * Note: The group array must not be <code>null</code> and the group names
+   * must not contain whitespace.
    * 
    * @param request The page request to use for identifying the user.
    * @return The groups of the current user.

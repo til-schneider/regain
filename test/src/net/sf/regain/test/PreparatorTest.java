@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: PreparatorTest.java,v $
  *   $Source: /cvsroot/regain/regain/test/src/net/sf/regain/test/PreparatorTest.java,v $
- *     $Date: 2005/03/14 15:04:29 $
+ *     $Date: 2005/08/13 17:15:15 $
  *   $Author: til132 $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  */
 package net.sf.regain.test;
 
@@ -36,16 +36,7 @@ import net.sf.regain.crawler.CrawlerToolkit;
 import net.sf.regain.crawler.Profiler;
 import net.sf.regain.crawler.document.AbstractPreparator;
 import net.sf.regain.crawler.document.RawDocument;
-import net.sf.regain.crawler.preparator.JacobMsExcelPreparator;
-import net.sf.regain.crawler.preparator.JacobMsPowerPointPreparator;
-import net.sf.regain.crawler.preparator.JacobMsWordPreparator;
-import net.sf.regain.crawler.preparator.PdfBoxPreparator;
-import net.sf.regain.crawler.preparator.PlainTextPreparator;
-import net.sf.regain.crawler.preparator.PoiMsExcelPreparator;
-import net.sf.regain.crawler.preparator.PoiMsWordPreparator;
-import net.sf.regain.crawler.preparator.SimpleRtfPreparator;
-import net.sf.regain.crawler.preparator.SwingRtfPreparator;
-import net.sf.regain.crawler.preparator.XmlPreparator;
+import net.sf.regain.crawler.preparator.*;
 
 /**
  * Tests all the preparators
@@ -85,7 +76,7 @@ public class PreparatorTest {
     
     mProfilerList = new ArrayList();
     
-    // testPreparator(new HtmlPreparator());
+    testPreparator(docDir, outputDir, "html", new HtmlPreparator());
     testPreparator(docDir, outputDir, "doc", new JacobMsWordPreparator());
     testPreparator(docDir, outputDir, "doc", new PoiMsWordPreparator());
     testPreparator(docDir, outputDir, "pdf", new PdfBoxPreparator());
@@ -102,6 +93,7 @@ public class PreparatorTest {
     for (int i = 0; i < mProfilerList.size(); i++) {
       System.out.println(" " + mProfilerList.get(i));
     }
+    System.out.println("Results written to: " + outputDir.getAbsolutePath());
   }
 
   
@@ -120,7 +112,7 @@ public class PreparatorTest {
     if (prepName.startsWith(REGAIN_PREP_PREFIX)) {
       prepName = prepName.substring(REGAIN_PREP_PREFIX.length());
     }
-      
+
     System.out.println("Testing preparator " + prepName + "...");
     
     Profiler profiler = new Profiler(prepName, "docs");
@@ -133,8 +125,13 @@ public class PreparatorTest {
       System.exit(1);
     }
     
-    File[] docFileArr = typeDir.listFiles();
     String sourceUrl = RegainToolkit.fileToUrl(typeDir);
+    File[] docFileArr = typeDir.listFiles();
+    if (docFileArr == null) {
+      System.out.println("No test docs for preparator " + prepName
+          + " found in " + typeDir.getAbsolutePath());
+      return;
+    }
     for (int i = 0; i < docFileArr.length; i++) {
       if (docFileArr[i].isFile()) {
         String url = RegainToolkit.fileToUrl(docFileArr[i]);

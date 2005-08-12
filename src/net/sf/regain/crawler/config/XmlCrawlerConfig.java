@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: XmlCrawlerConfig.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/XmlCrawlerConfig.java,v $
- *     $Date: 2005/03/30 10:30:03 $
+ *     $Date: 2005/08/13 11:33:29 $
  *   $Author: til132 $
- * $Revision: 1.6 $
+ * $Revision: 1.8 $
  */
 package net.sf.regain.crawler.config;
 
@@ -98,9 +98,9 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   /** Die UrlPattern, die der HTML-Parser nutzen soll, um URLs zu identifizieren. */
   private UrlPattern[] mHtmlParserUrlPatterns;
 
-  /** Die Schwarze Liste. */
-  private String[] mUrlPrefixBlackList;
-  /** Die Weiï¿½e Liste */
+  /** The black list. */
+  private UrlMatcher[] mBlackList;
+  /** The white list. */
   private WhiteListEntry[] mWhiteListEntryArr;
 
   /**
@@ -308,45 +308,59 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Liest die Schwarze Liste aus der Konfiguration.
+   * Reads the black list from the configuration.
    * <p>
-   * Dokumente, deren URL mit einem Prï¿½fix aus der Schwarzen Liste beginnen,
-   * werden nicht bearbeitet.
+   * Documents that have an URL that matches to one entry of the black list,
+   * won't be processed.
    *
-   * @param config Die Konfiguration, aus der gelesen werden soll.
-   * @throws RegainException Wenn die Konfiguration fehlerhaft ist.
+   * @param config The configuration to read from.
+   * @throws RegainException If the configuration has an error.
    */
   private void readBlackList(Node config) throws RegainException {
     Node node = XmlToolkit.getChild(config, "blacklist", true);
-    Node[] nodeArr = XmlToolkit.getChildArr(node, "prefix");
-    mUrlPrefixBlackList = new String[nodeArr.length];
-    for (int i = 0; i < nodeArr.length; i++) {
-      mUrlPrefixBlackList[i] = XmlToolkit.getText(nodeArr[i], true);
+    Node[] prefixNodeArr = XmlToolkit.getChildArr(node, "prefix");
+    Node[] regexNodeArr = XmlToolkit.getChildArr(node, "regex");
+    
+    mBlackList = new UrlMatcher[prefixNodeArr.length + regexNodeArr.length];
+    for (int i = 0; i < prefixNodeArr.length; i++) {
+      String prefix = XmlToolkit.getText(prefixNodeArr[i], true);
+      mBlackList[i] = new PrefixUrlMatcher(prefix);
+    }
+    for (int i = 0; i < regexNodeArr.length; i++) {
+      String regex = XmlToolkit.getText(regexNodeArr[i], true);
+      mBlackList[prefixNodeArr.length + i] = new RegexUrlMatcher(regex);
     }
   }
-
 
 
   /**
-   * Liest die Weiï¿½e Liste aus der Konfiguration.
+   * Reads the white list from the configuration.
    * <p>
-   * Dokumente werden nur dann bearbeitet, wenn deren URL mit einem Prï¿½fix aus
-   * der Weiï¿½en Liste beginnt.
+   * Documents will only be processed if their URL matches to one entry from the
+   * white list.
    *
-   * @param config Die Konfiguration, aus der gelesen werden soll.
-   * @throws RegainException Wenn die Konfiguration fehlerhaft ist.
+   * @param config The configuration to read from.
+   * @throws RegainException If the configuration has an error.
    */
   private void readWhiteList(Node config) throws RegainException {
     Node node = XmlToolkit.getChild(config, "whitelist", true);
-    Node[] nodeArr = XmlToolkit.getChildArr(node, "prefix");
-    mWhiteListEntryArr = new WhiteListEntry[nodeArr.length];
-    for (int i = 0; i < nodeArr.length; i++) {
-      String prefix = XmlToolkit.getText(nodeArr[i], true);
-      String name = XmlToolkit.getAttribute(nodeArr[i], "name");
-      mWhiteListEntryArr[i] = new WhiteListEntry(prefix, name);
+    Node[] prefixNodeArr = XmlToolkit.getChildArr(node, "prefix");
+    Node[] regexNodeArr = XmlToolkit.getChildArr(node, "regex");
+
+    mWhiteListEntryArr = new WhiteListEntry[prefixNodeArr.length + regexNodeArr.length];
+    for (int i = 0; i < prefixNodeArr.length; i++) {
+      String prefix = XmlToolkit.getText(prefixNodeArr[i], true);
+      UrlMatcher matcher = new PrefixUrlMatcher(prefix);
+      String name = XmlToolkit.getAttribute(prefixNodeArr[i], "name");
+      mWhiteListEntryArr[i] = new WhiteListEntry(matcher, name);
+    }
+    for (int i = 0; i < regexNodeArr.length; i++) {
+      String regex = XmlToolkit.getText(regexNodeArr[i], true);
+      UrlMatcher matcher = new RegexUrlMatcher(regex);
+      String name = XmlToolkit.getAttribute(regexNodeArr[i], "name");
+      mWhiteListEntryArr[prefixNodeArr.length + i] = new WhiteListEntry(matcher, name);
     }
   }
-
 
 
   /**
@@ -388,13 +402,19 @@ public class XmlCrawlerConfig implements CrawlerConfig {
       node = XmlToolkit.getChild(nodeArr[i], "class", true);
       String className = XmlToolkit.getText(node, true);
 
+      node = XmlToolkit.getChild(nodeArr[i], "urlPattern", false);
+      String urlRegex = null;
+      if (node != null) {
+        urlRegex = XmlToolkit.getText(node, true);
+      }
+
       node = XmlToolkit.getChild(nodeArr[i], "config");
       PreparatorConfig prepConfig = null;
       if (node != null) {
         prepConfig = readPreparatorConfig(node, xmlFile);
       }
       
-      mPreparatorSettingsArr[i] = new PreparatorSettings(enabled, className, prepConfig);
+      mPreparatorSettingsArr[i] = new PreparatorSettings(enabled, className, urlRegex, prepConfig);
     }
   }
 
@@ -702,26 +722,25 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt die Schwarze Liste zurï¿½ck.
+   * Gets the black list.
    * <p>
-   * Diese enthï¿½lt Prï¿½fixe, die eine URL <I>nicht</I> haben darf, um bearbeitet
-   * zu werden.
-   *
-   * @return Die Schwarze Liste.
+   * The black list is an array of UrlMatchers, a URLs <i>must not</i> match to,
+   * in order to be processed.
+   * 
+   * @return The black list.
    */
-  public String[] getUrlPrefixBlackList() {
-    return mUrlPrefixBlackList;
+  public UrlMatcher[] getBlackList() {
+    return mBlackList;
   }
 
 
-
   /**
-   * Gibt die Weiï¿½e Liste zurï¿½ck.
+   * Gets the white list.
    * <p>
-   * Diese enthï¿½lt Prï¿½fixe, von denen eine URL einen haben <i>muï¿½</i>, um
-   * bearbeitet zu werden.
+   * The black list is an array of WhiteListEntry, a URLs <i>must</i> match to,
+   * in order to be processed.
    *
-   * @return Die Weiï¿½e Liste
+   * @return Die Weiße Liste
    */
   public WhiteListEntry[] getWhiteList() {
     return mWhiteListEntryArr;

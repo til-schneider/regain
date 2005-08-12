@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: Profiler.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/Profiler.java,v $
- *     $Date: 2005/03/17 18:23:57 $
+ *     $Date: 2005/08/13 09:22:49 $
  *   $Author: til132 $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  */
 package net.sf.regain.crawler;
 
@@ -103,8 +103,25 @@ public class Profiler {
   public int getAbortedMeasureCount() {
     return mAbortedMeasureCount;
   }
-  
-  
+
+
+  /**
+   * Gets the current time of the measuring running now.
+   * 
+   * @return The current measuring time in milli seconds.
+   */
+  public long getCurrentMeasuringTime() {
+    // NOTE: We put the start time in a local variable to avoid it is changed
+    //       while this method is executed.
+    long startTime = mMeasureStart;
+    if (startTime == -1) {
+      return -1;
+    } else {
+      return System.currentTimeMillis() - startTime;
+    }
+  }
+
+
   /**
    * Clears the registered profilers.
    */
@@ -240,13 +257,13 @@ public class Profiler {
       buffer.append(integerFormat.format(measureCount) + " " + mUnit + lineSeparator);
 
       appendLabel(buffer, "Total time", minLabelLength);
-      buffer.append(toTimeString(totalTime) + lineSeparator);
+      buffer.append(RegainToolkit.toTimeString(totalTime) + lineSeparator);
 
       appendLabel(buffer, "Total data", minLabelLength);
       buffer.append(RegainToolkit.bytesToString(totalBytes) + lineSeparator);
 
       appendLabel(buffer, "Average time", minLabelLength);
-      buffer.append(toTimeString(averageTime) + lineSeparator);
+      buffer.append(RegainToolkit.toTimeString(averageTime) + lineSeparator);
 
       appendLabel(buffer, "Average data", minLabelLength);
       buffer.append(RegainToolkit.bytesToString(averageBytes) + lineSeparator);
@@ -292,46 +309,6 @@ public class Profiler {
       buffer.append(' ');
     }
   }
-
-
-  /**
-   * Gibt einen f�r den Menschen gut lesbaren String f�r eine Zeit zur�ck.
-   *
-   * @param time Die Zeit in Millisekunden
-   * @return Die Zeit als String
-   */
-  public String toTimeString(long time) {
-    long millis = time % 1000;
-    time /= 1000;
-    long secs = time % 60;
-    time /= 60;
-    long mins = time % 60;
-    time /= 60;
-    long hours = time;
-
-    if (hours != 0) {
-      return hours + ":"
-        + ((mins > 9) ? "" : "0") + mins + ":"
-        + ((secs > 9) ? "" : "0") + secs + " h";
-    }
-    else if (mins != 0) {
-      return mins + ":"
-        + ((secs > 9) ? "" : "0") + secs + " min";
-    }
-    else if (secs != 0) {
-      NumberFormat format = NumberFormat.getInstance();
-      format.setMinimumFractionDigits(2);
-      format.setMaximumFractionDigits(2);
-
-      String asString = format.format(secs + millis / 1000.0);
-
-      return asString + " sec";
-    }
-    else {
-      return millis + " millis";
-    }
-  }
-
 
 
   /**

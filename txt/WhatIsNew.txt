@@ -1,16 +1,38 @@
+Version 1.1 Beta 5 am 13.08.05
+------------------------------
+
+* Multi index search: It is now possible to search several search indexes over
+  one search mask. The search query is executed on every index and is merged
+  afterwards.
+* The white and the black list now allow regular expressions, too.
+* Search mask: The location of ressources and the configuration is better
+  detected now. Therefor regain works properly now, even if Tomcat is running
+  as service.
+* Search mask: The file-to-http-bridge is may be switched off now.
+* Crawler: The crawler needs less memory now when crawling directories.
+* Crawler: The crawler now adds failed documents as well to the index. Therefore
+  they are not retried the next time the crawler is running. But if the crawler
+  is executed with the option "-retryFailedDocs", all failed documents are
+  retried.
+* The HTML preparator now preparates the extensions .jsp, .php, .php3, .php4
+  and .asp as well.
+* It's now possible to specify in the CrawlerConfiguration.xml which documents
+  should be preparated with a certain preparator.
+* Several bugfixes
+
 
 Version 1.1 Beta 4 on 2005-04-13
 --------------------------------
 
 * Access rights management: It is now possible to integrate an access rights
-    management, that ensures that a user only sees results for documents he has
-    reading rights for.
+  management, that ensures that a user only sees results for documents he has
+  reading rights for.
 * Search: The search taglib has now a tag "hit_field", that writes an index
-    field value. The tag "hit_summary" was thereby removed.
+  field value. The tag "hit_summary" was thereby removed.
 * Search: If you don't want to read the search config from an XML file or if
-    you don't want to write the location of the XML file in the web.xml, you
-    may write your own SearchConfigFactory class and create the config on your
-    own. The SearchConfigFactory class is specified in the web.xml.
+  you don't want to write the location of the XML file in the web.xml, you
+  may write your own SearchConfigFactory class and create the config on your
+  own. The SearchConfigFactory class is specified in the web.xml.
 * Server search: The enclosed JSP pages did not work.
 
 

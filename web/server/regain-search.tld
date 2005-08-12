@@ -42,7 +42,7 @@
     </attribute>
     <attribute>
       <name>noQueryUrl</name>
-      <required>true</required>
+      <required>false</required>
     </attribute>
   </tag>
 

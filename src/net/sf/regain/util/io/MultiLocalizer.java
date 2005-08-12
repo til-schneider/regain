@@ -21,13 +21,13 @@
  * CVS information:
  *  $RCSfile: MultiLocalizer.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/io/MultiLocalizer.java,v $
- *     $Date: 2005/03/09 15:46:25 $
+ *     $Date: 2005/08/10 06:26:21 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  */
 package net.sf.regain.util.io;
 
-import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -59,11 +59,11 @@ public class MultiLocalizer {
   /**
    * Creates a new instance of MultiLocalizer.
    *
-   * @param basedir The directory to load the resource bundle from.
+   * @param baseurl The URL to load the resource bundle from.
    * @param basename The basename of the resource bundle to load.
    */
-  public MultiLocalizer(File basedir, String basename) {
-    mFactory = new BaseLocalizerFactory(basedir, basename);
+  public MultiLocalizer(URL baseurl, String basename) {
+    mFactory = new BaseLocalizerFactory(baseurl, basename);
     mLocalizerHash = new HashMap();
   }
   
@@ -133,19 +133,19 @@ public class MultiLocalizer {
    */
   private class BaseLocalizerFactory implements LocalizerFactory {
     
-    /** The base directory where the properties files are located. */
-    private File mBaseDir;
+    /** The base URL where the properties files are located. */
+    private URL mBaseUrl;
     /** The base name of the properties files. */
     private String mBaseName;
     
     /**
      * Creates a new instance of BaseLocalizerFactory.
      * 
-     * @param basedir The base directory where the properties files are located.
+     * @param baseurl The base URL where the properties files are located.
      * @param basename The base name of the properties files.
      */
-    public BaseLocalizerFactory(File basedir, String basename) {
-      mBaseDir = basedir;
+    public BaseLocalizerFactory(URL baseurl, String basename) {
+      mBaseUrl = baseurl;
       mBaseName = basename;
     }
 
@@ -156,7 +156,7 @@ public class MultiLocalizer {
      * @return The created localizer.
      */
     public Localizer createLocalizer(Locale locale) {
-      return new Localizer(mBaseDir, mBaseName, locale);
+      return new Localizer(mBaseUrl, mBaseName, locale);
     }
 
   } // inner class BaseLocalizerFactory
