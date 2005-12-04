@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: CrawlerConfig.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/CrawlerConfig.java,v $
- *     $Date: 2005/05/11 09:21:40 $
+ *     $Date: 2005/11/21 10:46:29 $
  *   $Author: til132 $
- * $Revision: 1.6 $
+ * $Revision: 1.8 $
  */
 package net.sf.regain.crawler.config;
 
@@ -75,6 +75,14 @@ public interface CrawlerConfig {
    * @return Den Timeout für HTTP-Downloads
    */
   public int getHttpTimeoutSecs();
+
+  /**
+   * Returns the user agent the crawler should in order to identify at the HTTP
+   * server(s). If null, the default (Java) user agent should be used.
+   * 
+   * @return the user agent to use.
+   */
+  public String getUserAgent();
 
   /**
    * Gibt zurück, ob URLs geladen werden sollen, die weder durchsucht noch
@@ -131,6 +139,14 @@ public interface CrawlerConfig {
    * @return Ob Analyse-Deteien geschrieben werden sollen.
    */
   public boolean getWriteAnalysisFiles();
+
+  /**
+   * Returns the interval between two breakpoint in minutes. If set to 0, no
+   * breakpoints will be created.
+   *
+   * @return the interval between two breakpoint in minutes.
+   */
+  public int getBreakpointInterval();
 
   /**
    * Gibt den maximalen Prozentsatz von gescheiterten Dokumenten zurück. (0..1)

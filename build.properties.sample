@@ -1,0 +1,18 @@
+# The current Version
+version.prefix=1.1beta6
+
+# Is the version a preview version (an inofficial realease)
+is-preview=true
+
+# Should be compiled with the debug flag?
+debug=true
+
+# The location of the Java API
+java-api-location=http://java.sun.com/j2se/1.4.1/docs/api
+
+# The location of the Java 1.2.2 Development Kit
+#java-1_3.dir=/usr/local/lib/jdk1.3
+java-1_3.dir=c:/Programme/jdk1.3
+
+# The directory where the tomcat server is located
+deploy-target.dir=c:/Programme/jakarta-tomcat-5.0.19/webapps

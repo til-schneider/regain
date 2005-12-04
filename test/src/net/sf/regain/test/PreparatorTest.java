@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: PreparatorTest.java,v $
  *   $Source: /cvsroot/regain/regain/test/src/net/sf/regain/test/PreparatorTest.java,v $
- *     $Date: 2005/08/13 17:15:15 $
+ *     $Date: 2005/11/21 10:19:29 $
  *   $Author: til132 $
- * $Revision: 1.8 $
+ * $Revision: 1.11 $
  */
 package net.sf.regain.test;
 
@@ -31,12 +31,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.crawler.CrawlerToolkit;
 import net.sf.regain.crawler.Profiler;
+import net.sf.regain.crawler.config.PreparatorConfig;
 import net.sf.regain.crawler.document.AbstractPreparator;
 import net.sf.regain.crawler.document.RawDocument;
 import net.sf.regain.crawler.preparator.*;
+
+import org.apache.log4j.*;
 
 /**
  * Tests all the preparators
@@ -44,12 +48,18 @@ import net.sf.regain.crawler.preparator.*;
  * @author Til Schneider, www.murfman.de
  */
 public class PreparatorTest {
-  
+
+  /** The logger for this class */
+  private static Logger mLog = Logger.getLogger(PreparatorTest.class);
+
   /** The profilers that measured the work of the preparators. */
   private static ArrayList mProfilerList;
-  
+
   /** The class prefix of the the regain preparators. */
   private static final String REGAIN_PREP_PREFIX = "net.sf.regain.crawler.preparator.";
+
+  /** Der Dateiname der Log4J-Properties-Datei. */
+  private static final String LOG4J_PROP_FILE_NAME = "log4j.properties";
 
 
   /**
@@ -62,7 +72,19 @@ public class PreparatorTest {
       System.out.println("Usage: [test document directory] [output directory]");
       System.exit(1);
     }
-    
+
+    // Initialize Logging
+    String logConfigFileName = LOG4J_PROP_FILE_NAME;
+    File logConfigFile = new File(logConfigFileName);
+    if (! logConfigFile.exists()) {
+      System.out.println("ERROR: Logging configuration file not found: "
+        + logConfigFile.getAbsolutePath());
+      return; // Abort
+    }
+
+    PropertyConfigurator.configure(logConfigFile.getAbsolutePath());
+    mLog.info("Logging initialized");
+
     File docDir, outputDir;
     try {
       docDir = new File(args[0]).getCanonicalFile();
@@ -75,25 +97,38 @@ public class PreparatorTest {
     }
     
     mProfilerList = new ArrayList();
-    
-    testPreparator(docDir, outputDir, "html", new HtmlPreparator());
-    testPreparator(docDir, outputDir, "doc", new JacobMsWordPreparator());
-    testPreparator(docDir, outputDir, "doc", new PoiMsWordPreparator());
-    testPreparator(docDir, outputDir, "pdf", new PdfBoxPreparator());
-    testPreparator(docDir, outputDir, "ppt", new JacobMsPowerPointPreparator());
-    testPreparator(docDir, outputDir, "rtf", new SimpleRtfPreparator());
-    testPreparator(docDir, outputDir, "rtf", new SwingRtfPreparator());
-    testPreparator(docDir, outputDir, "txt", new PlainTextPreparator());
-    testPreparator(docDir, outputDir, "xls", new JacobMsExcelPreparator());
-    testPreparator(docDir, outputDir, "xls", new PoiMsExcelPreparator());
-    testPreparator(docDir, outputDir, "xml", new XmlPreparator());
-    
-    System.out.println();
-    System.out.println("Summary:");
-    for (int i = 0; i < mProfilerList.size(); i++) {
-      System.out.println(" " + mProfilerList.get(i));
+
+    try {
+      IfilterPreparator ifilterPreparator = new IfilterPreparator();
+      testPreparator(docDir, outputDir, "html", ifilterPreparator);
+      testPreparator(docDir, outputDir, "doc", ifilterPreparator);
+      testPreparator(docDir, outputDir, "pdf", ifilterPreparator);
+      testPreparator(docDir, outputDir, "ppt", ifilterPreparator);
+      testPreparator(docDir, outputDir, "rtf", ifilterPreparator);
+      testPreparator(docDir, outputDir, "xls", ifilterPreparator);
+
+      testPreparator(docDir, outputDir, "html", new HtmlPreparator());
+      testPreparator(docDir, outputDir, "doc", new JacobMsWordPreparator());
+      testPreparator(docDir, outputDir, "doc", new PoiMsWordPreparator());
+      testPreparator(docDir, outputDir, "pdf", new PdfBoxPreparator());
+      testPreparator(docDir, outputDir, "ppt", new JacobMsPowerPointPreparator());
+      testPreparator(docDir, outputDir, "ppt", new PoiMsPowerPointPreparator());
+      testPreparator(docDir, outputDir, "rtf", new SimpleRtfPreparator());
+      testPreparator(docDir, outputDir, "rtf", new SwingRtfPreparator());
+      testPreparator(docDir, outputDir, "txt", new PlainTextPreparator());
+      testPreparator(docDir, outputDir, "xls", new JacobMsExcelPreparator());
+      testPreparator(docDir, outputDir, "xls", new PoiMsExcelPreparator());
+      testPreparator(docDir, outputDir, "xml", new XmlPreparator());
     }
-    System.out.println("Results written to: " + outputDir.getAbsolutePath());
+    catch (RegainException exc) {
+      mLog.error("Creating preparator failed", exc);
+    }
+    
+    mLog.info("\nSummary:");
+    for (int i = 0; i < mProfilerList.size(); i++) {
+      mLog.info(" " + mProfilerList.get(i));
+    }
+    mLog.info("Results written to: " + outputDir.getAbsolutePath());
   }
 
   
@@ -113,29 +148,38 @@ public class PreparatorTest {
       prepName = prepName.substring(REGAIN_PREP_PREFIX.length());
     }
 
-    System.out.println("Testing preparator " + prepName + "...");
+    mLog.info("Initializing preparator " + prepName + "...");
+    try {
+      prep.init(new PreparatorConfig());
+    }
+    catch (Throwable thr) {
+      mLog.error("Initializing preparator failed", thr);
+    }
     
+    mLog.info("Testing preparator " + prepName + "...");
     Profiler profiler = new Profiler(prepName, "docs");
     
     File typeDir = new File(docDir, fileType);
     File prepOutputDir = new File(outputDir, prepName);
-    if (! prepOutputDir.mkdir()) {
-      System.out.println("Could not create output dir: "
-        + prepOutputDir.getAbsolutePath());
-      System.exit(1);
+    if (! prepOutputDir.exists()) {
+      if (! prepOutputDir.mkdir()) {
+        mLog.error("Could not create output dir: "
+          + prepOutputDir.getAbsolutePath());
+        System.exit(1);
+      }
     }
     
     String sourceUrl = RegainToolkit.fileToUrl(typeDir);
     File[] docFileArr = typeDir.listFiles();
     if (docFileArr == null) {
-      System.out.println("No test docs for preparator " + prepName
+      mLog.info("No test docs for preparator " + prepName
           + " found in " + typeDir.getAbsolutePath());
       return;
     }
     for (int i = 0; i < docFileArr.length; i++) {
       if (docFileArr[i].isFile()) {
         String url = RegainToolkit.fileToUrl(docFileArr[i]);
-        System.out.println("Preparing document: " + url);
+        mLog.info("Preparing document: " + url);
         try {
           RawDocument doc = new RawDocument(url, sourceUrl, null);
 
@@ -156,19 +200,17 @@ public class PreparatorTest {
           CrawlerToolkit.writeToFile(content, outFile);
         }
         catch (Throwable thr) {
-          System.out.println("Preparing document failed: " + url);
-          thr.printStackTrace();
+          mLog.error("Preparing document failed: " + url, thr);
         }
       }
     }
     
-    System.out.println("Closing preparator " + prepName + "...");
+    mLog.info("Closing preparator " + prepName + "...");
     try {
       prep.close();
     }
     catch (Throwable thr) {
-      System.out.println("Closing preparator failed");
-      thr.printStackTrace();
+      mLog.error("Closing preparator failed", thr);
     }
     
     mProfilerList.add(profiler);

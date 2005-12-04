@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: Main.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/Main.java,v $
- *     $Date: 2005/08/01 11:49:48 $
+ *     $Date: 2005/11/21 10:46:29 $
  *   $Author: til132 $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  */
 package net.sf.regain.crawler;
 
@@ -115,9 +115,6 @@ public class Main {
       mLog.error("Loading XML Configuration failed", exc);
       return; // Abort
     }
-
-    // Proxy settings
-    CrawlerToolkit.initProxy(config);
 
     // Create crawler
     Crawler crawler = null;

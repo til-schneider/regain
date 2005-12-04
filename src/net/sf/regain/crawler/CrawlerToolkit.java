@@ -21,14 +21,16 @@
  * CVS information:
  *  $RCSfile: CrawlerToolkit.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/CrawlerToolkit.java,v $
- *     $Date: 2005/08/13 09:45:38 $
+ *     $Date: 2005/11/21 10:46:29 $
  *   $Author: til132 $
- * $Revision: 1.13 $
+ * $Revision: 1.15 $
  */
 package net.sf.regain.crawler;
 
 import java.io.*;
 import java.net.*;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
@@ -47,7 +49,89 @@ public class CrawlerToolkit {
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(CrawlerToolkit.class);
 
-  
+
+  private static String toCommand(String[] commandArr) {
+    StringBuffer buffer = new StringBuffer();
+    for (int i = 0; i < commandArr.length; i++) {
+      if (i != 0) {
+        buffer.append(" ");
+      }
+      buffer.append(commandArr[i]);
+    }
+    
+    return buffer.toString();
+  }
+
+
+  /**
+   * Executes a native command and returns its output.
+   * 
+   * @param commandArr An array containing ehe command to execute and its parameters.
+   * @return The output of the command as arrays of lines.
+   * @throws RegainException If executing failed.
+   */
+  public static String[] executeNativeCommand(String[] commandArr)
+    throws RegainException
+  {
+    InputStream in = null;
+    try {
+      long startTime = -1;
+      if (mLog.isDebugEnabled()) {
+        startTime = System.currentTimeMillis();
+      }
+      Process proc = Runtime.getRuntime().exec(commandArr);
+
+      in = proc.getInputStream();
+      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+      ArrayList list = new ArrayList();
+      String line;
+      while ((line = reader.readLine()) != null) {
+        if (mLog.isDebugEnabled()) {
+          mLog.debug("  Got line: '" + line + "'");
+        }
+        list.add(line);
+      }
+
+      int exitCode;
+      try {
+        exitCode = proc.waitFor();
+      } catch (InterruptedException exc) {
+        throw new RegainException("Waiting for termination of process failed: "
+          + commandArr[0], exc);
+      }
+
+      if (mLog.isDebugEnabled()) {
+        double duration = (double) (System.currentTimeMillis() - startTime) / 1000.0;
+
+        NumberFormat format = NumberFormat.getInstance();
+        format.setMinimumFractionDigits(2);
+        format.setMaximumFractionDigits(2);
+
+        mLog.debug("..." + toCommand(commandArr) + " finished ("
+            + format.format(duration) + " secs)");
+      }
+
+      if (exitCode != 0) {
+        throw new RegainException("Native command exited with exit code "
+            + exitCode + ": '" + toCommand(commandArr) + "'");
+      }
+
+      String[] asArr = new String[list.size()];
+      list.toArray(asArr);
+      return asArr;
+    }
+    catch (IOException exc) {
+      throw new RegainException("Executing native command failed: '"
+          + toCommand(commandArr) + "'", exc);
+    }
+    finally {
+      if (in != null) {
+        try { in.close(); } catch (IOException exc) {}
+      }
+    }
+  }
+
+
   /**
    * Originally copied from javax.swing.JEditorPane#getStream(...).
    * <p>
@@ -369,12 +453,11 @@ public class CrawlerToolkit {
 
 
   /**
-   * Initialisiert die Proxy-Einstellungen.
+   * Initializes the HTTP client
    *
-   * @param config Die Konfiguration, aus der die Einstellungen gelesen werden
-   *        sollen.
+   * @param config The configuration to read the settings from.
    */
-  public static void initProxy(CrawlerConfig config) {
+  public static void initHttpClient(CrawlerConfig config) {
     String httpProxyHost = config.getProxyHost();
     String httpProxyPort = config.getProxyPort();
     String httpProxyUser = config.getProxyUser();
@@ -402,6 +485,12 @@ public class CrawlerToolkit {
       mLog.info("Using proxy:" + msg);
     } else {
       mLog.info("Using no proxy");
+    }
+
+    String userAgent = config.getUserAgent();
+    if (userAgent != null) {
+      System.setProperty("http.agent", userAgent);
+      mLog.info("Using HTTP user agent:" + userAgent);
     }
   }
 

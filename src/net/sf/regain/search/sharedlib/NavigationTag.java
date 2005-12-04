@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: NavigationTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/NavigationTag.java,v $
- *     $Date: 2005/08/07 10:51:07 $
+ *     $Date: 2005/11/02 21:58:52 $
  *   $Author: til132 $
- * $Revision: 1.8 $
+ * $Revision: 1.10 $
  */
 package net.sf.regain.search.sharedlib;
 
@@ -68,12 +68,7 @@ public class NavigationTag extends SharedTag implements SearchConstants {
   public void printEndTag(PageRequest request, PageResponse response)
     throws RegainException
   {
-    String query = request.getParameter("query");
-    if (query == null) {
-      // Nothing to do
-      return;
-    }
-    
+    String query = SearchToolkit.getSearchQuery(request);
     SearchResults results = SearchToolkit.getSearchResults(request);
 
     int fromResult = request.getParameterAsInt(PARAM_FROM_RESULT, 0);
@@ -143,20 +138,13 @@ public class NavigationTag extends SharedTag implements SearchConstants {
   {
     String targetPage = getParameter("targetPage",  DEFAULT_TARGET_PAGE);
 
-    // F�r Java 1.2.2
-    String encodedQuery = RegainToolkit.urlEncode(query);
-
-    // Ab Java 1.3
-    /*
-    String encoding = pageContext.getResponse().getCharacterEncoding();
-    String encodedQuery = URLEncoder.encode(query, encoding);
-    String encodedIndexName = URLEncoder.encode(indexName, encoding);
-    */
+    String encoding = response.getEncoding();
+    String encodedQuery = RegainToolkit.urlEncode(query, encoding);
 
     response.print("<a href=\"" + targetPage + "?query=" + encodedQuery);
     if (indexNameArr != null) {
       for (int i = 0; i < indexNameArr.length; i++) {
-        String encodedIndexName = RegainToolkit.urlEncode(indexNameArr[i]);
+        String encodedIndexName = RegainToolkit.urlEncode(indexNameArr[i], encoding);
         response.print("&index=" + encodedIndexName);
       }
     }

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: ExecuterParser.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/simple/ExecuterParser.java,v $
- *     $Date: 2005/03/16 21:52:04 $
+ *     $Date: 2005/11/21 10:19:29 $
  *   $Author: til132 $
- * $Revision: 1.6 $
+ * $Revision: 1.7 $
  */
 package net.sf.regain.util.sharedtag.simple;
 
@@ -35,6 +35,7 @@ import net.sf.regain.RegainToolkit;
 import net.sf.regain.util.sharedtag.SharedTag;
 
 import org.apache.regexp.RE;
+import org.apache.regexp.RESyntaxException;
 
 /**
  * Parses JSP code and creates an Executer tree.
@@ -62,15 +63,20 @@ public class ExecuterParser {
   
   /**
    * Creates a new instance of ExecuterParser.
+   *
+   * @throws RegainException If creating the regexes failed.
    */
-  public ExecuterParser() {
-    // NOTE: The regex objects are not static in order to be able to use
-    //       several ExecuterParser instances in concurrent threads
-    mIncludeRegex = new RE("<%@include\\s*file=\"([^\"]*)\"\\s*%>");
-    mJspCodeRegex = new RE("<%([^%]*)%>");
-    mJspTagRegex = new RE("<([\\w/]*):(\\w*)(([^>\"]*\"[^\"]*\")*\\w*/?)>");
-    mParamRegex = new RE("(\\w+)\\s*=\\s*\"([^\"]*)\"");
-    // <%@include file="Header.jsp" %>
+  public ExecuterParser() throws RegainException {
+    try {
+      // NOTE: The regex objects are not static in order to be able to use
+      //       several ExecuterParser instances in concurrent threads
+      mIncludeRegex = new RE("<%@include\\s*file=\"([^\"]*)\"\\s*%>");
+      mJspCodeRegex = new RE("<%([^%]*)%>");
+      mJspTagRegex = new RE("<([\\w/]*):(\\w*)(([^>\"]*\"[^\"]*\")*\\w*/?)>");
+      mParamRegex = new RE("(\\w+)\\s*=\\s*\"([^\"]*)\"");
+    } catch (RESyntaxException exc) {
+      throw new RegainException("Creating the ExecuterParser regexes failed", exc);
+    }
   }
   
   

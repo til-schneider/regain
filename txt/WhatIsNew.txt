@@ -1,5 +1,21 @@
-Version 1.1 Beta 5 am 13.08.05
-------------------------------
+Version 1.1 Beta 6 on 2005-12-05
+--------------------------------
+
+* New preparator: With the PoiMsPowerPointPreparator there is now a platform
+  independant preparator for Powerpoint. (Thanks to Gerhard Olsson)
+* New preparator: The IfilterPreparator uses the I-Filter interface of
+  Microsoft to read various file formats. Unfortunately it only works on Windows.
+* Multi index search: In the SearchConfiguration.xml now several indexes may be
+  specified as default.
+* The auxiliary fields have now a better handling for case sensitivity.
+* The HTTP agent sent by the crawler to the web servers may now be configured in
+  the CrawlerConfiguration.xml. This way the crawler can identify itself as
+  Internet Explorer, for example.
+* Several bugfixes
+
+
+Version 1.1 Beta 5 on 2005-08-13
+--------------------------------
 
 * Multi index search: It is now possible to search several search indexes over
   one search mask. The search query is executed on every index and is merged

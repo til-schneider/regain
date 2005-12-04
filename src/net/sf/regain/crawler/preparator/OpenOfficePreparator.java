@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: OpenOfficePreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/OpenOfficePreparator.java,v $
- *     $Date: 2005/03/14 15:03:38 $
+ *     $Date: 2005/11/21 10:19:29 $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -48,8 +48,10 @@ public class OpenOfficePreparator extends AbstractPreparator {
 
   /**
    * Creates a new instance of OpenOfficePreparator.
+   *
+   * @throws RegainException If creating the preparator failed.
    */
-  public OpenOfficePreparator() {
+  public OpenOfficePreparator() throws RegainException {
     super(new String[] { "sds", "sdc", "sdw", "sgl", "sda", "sdd", "sdf", "sxw",
            "stw", "sxg", "sxc", "stc", "sxi", "sti", "sxd", "std", "sxm", "odt",
            "ott", "oth", "odm", "odg", "otg", "odp", "otp", "ods", "ots", "odc",

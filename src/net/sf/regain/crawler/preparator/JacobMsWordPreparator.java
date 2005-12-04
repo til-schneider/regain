@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: JacobMsWordPreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/JacobMsWordPreparator.java,v $
- *     $Date: 2005/03/14 15:03:34 $
+ *     $Date: 2005/11/21 10:19:29 $
  *   $Author: til132 $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -88,8 +88,10 @@ public class JacobMsWordPreparator extends AbstractJacobMsOfficePreparator {
 
   /**
    * Creates a new instance of JacobMsPowerPointPreparator.
+   *
+   * @throws RegainException If creating the preparator failed.
    */
-  public JacobMsWordPreparator() {
+  public JacobMsWordPreparator() throws RegainException {
     super(new String[] { "doc", "dot" });
   }
 

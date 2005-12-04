@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: DocumentFactory.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/document/DocumentFactory.java,v $
- *     $Date: 2005/08/13 10:34:26 $
+ *     $Date: 2005/11/14 08:12:55 $
  *   $Author: til132 $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  */
 package net.sf.regain.crawler.document;
 
@@ -346,12 +346,20 @@ public class DocumentFactory {
         RE regex = auxiliaryFieldArr[i].getUrlRegex();
         if (regex.match(url)) {
           String fieldName = auxiliaryFieldArr[i].getFieldName();
-          int regexGroup = auxiliaryFieldArr[i].getUrlRegexGroup();
-          
-          if (mLog.isDebugEnabled()) {
-            mLog.debug("Adding auxiliary field: " + fieldName + "=" + regex.getParen(regexGroup));
+
+          String value = auxiliaryFieldArr[i].getValue();
+          if (value == null) {
+            // We have no value set -> Extract the value from the regex
+            value = regex.getParen(auxiliaryFieldArr[i].getUrlRegexGroup());
           }
-          doc.add(Field.Keyword(fieldName, regex.getParen(regexGroup)));
+          if (auxiliaryFieldArr[i].getToLowerCase()) {
+            value = value.toLowerCase();
+          }
+
+          if (mLog.isDebugEnabled()) {
+            mLog.debug("Adding auxiliary field: " + fieldName + "=" + value);
+          }
+          doc.add(Field.Keyword(fieldName, value));
         }
       }
     }

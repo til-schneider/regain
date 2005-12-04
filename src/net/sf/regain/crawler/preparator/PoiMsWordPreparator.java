@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: PoiMsWordPreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/PoiMsWordPreparator.java,v $
- *     $Date: 2005/03/14 15:03:31 $
+ *     $Date: 2005/11/21 10:19:29 $
  *   $Author: til132 $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -51,8 +51,10 @@ public class PoiMsWordPreparator extends AbstractPreparator {
 
   /**
    * Creates a new instance of PoiMsWordPreparator.
+   *
+   * @throws RegainException If creating the preparator failed.
    */
-  public PoiMsWordPreparator() {
+  public PoiMsWordPreparator() throws RegainException {
     super(new String[] { "doc", "dot" });
   }
 

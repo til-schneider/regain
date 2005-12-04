@@ -4,6 +4,7 @@ import net.sf.regain.RegainToolkit;
 import net.sf.regain.search.SearchToolkit;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
+import net.sf.regain.util.sharedtag.simple.SharedTagResource;
 import net.sf.regain.util.sharedtag.simple.SimplePageRequest;
 import net.sf.regain.util.sharedtag.simple.SimplePageResponse;
 import simple.http.Request;
@@ -50,7 +51,7 @@ public class FileService extends BasicService {
     
     // Extract the file URL
     String requestPath = context.getRequestPath(req.getURI());
-    String fileUrl = SearchToolkit.extractFileUrl(requestPath);
+    String fileUrl = SearchToolkit.extractFileUrl(requestPath, SharedTagResource.SIMPLE_TAG_ENCODING);
     
     // Check the file URL
     if (SearchToolkit.allowFileAccess(request, fileUrl)) {

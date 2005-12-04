@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: Crawler.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/Crawler.java,v $
- *     $Date: 2005/08/13 09:22:49 $
+ *     $Date: 2005/11/21 10:46:29 $
  *   $Author: til132 $
- * $Revision: 1.22 $
+ * $Revision: 1.24 $
  */
 package net.sf.regain.crawler;
 
@@ -332,6 +332,9 @@ public class Crawler implements ErrorLogger {
     mLog.info("Starting crawling...");
     mShouldPause = false;
 
+    // Init the HTTP client
+    CrawlerToolkit.initHttpClient(mConfiguration);
+
     // Initialize the IndexWriterManager if building the index is wanted
     mIndexWriterManager = null;
     if (mConfiguration.getBuildIndex()) {
@@ -439,7 +442,10 @@ public class Crawler implements ErrorLogger {
       mCurrentJob = null;
       
       // Check whether to create a breakpoint
-      if (mShouldPause || (System.currentTimeMillis() > lastBreakpointTime + 10 * 60 * 1000)) {
+      int breakpointInterval = mConfiguration.getBreakpointInterval();
+      boolean breakpointIntervalIsOver = (breakpointInterval > 0)
+        && (System.currentTimeMillis() > lastBreakpointTime + breakpointInterval * 60 * 1000);
+      if (mShouldPause || breakpointIntervalIsOver) {
         try {
           mIndexWriterManager.createBreakpoint();
         }

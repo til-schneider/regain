@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: XmlToolkit.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/XmlToolkit.java,v $
- *     $Date: 2005/03/30 10:30:03 $
+ *     $Date: 2005/11/14 08:12:55 $
  *   $Author: til132 $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  */
 package net.sf.regain;
 
@@ -553,15 +553,14 @@ public class XmlToolkit {
 
 
   /**
-   * Gibt den Attributwert eines Knotens als <CODE>boolean</CODE> zur�ck.
-   *
-   * @param node Der Knoten, dessen Attribut zur�ckgegeben werden soll.
-   * @param attributeName Der Name des Attributs, das zur�ckgegeben werden soll.
-   *
-   * @return Den Attributwert als <CODE>boolean</CODE>.
-   * @throws RegainException Falls der Knoten kein solches Attribut hat oder
-   *         falls der Wert des Attributs weder <CODE>true</CODE> noch
-   *         <CODE>false</CODE> ist.
+   * Gets an attribute value from a node and converts it to a boolean.
+   * 
+   * @param node The node to get the attribute value from.
+   * @param attributeName The name of the attribute to get.
+   * @return The value of the attribute or <code>defaultValue</code> if there is
+   *         no such attribute.
+   * @throws RegainException If there is no such attribute or if the attribute
+   *         value is no boolean.
    */
   public static boolean getAttributeAsBoolean(Node node, String attributeName)
     throws RegainException
@@ -581,7 +580,7 @@ public class XmlToolkit {
   
   
   /**
-   * Gets an attribute value from a node and converts it to an int.
+   * Gets an attribute value from a node and converts it to a boolean.
    * 
    * @param node The node to get the attribute value from.
    * @param attributeName The name of the attribute to get.
@@ -612,14 +611,14 @@ public class XmlToolkit {
 
 
   /**
-   * Gibt den Attributwert eines Knotens als <CODE>int</CODE> zur�ck.
-   *
-   * @param node Der Knoten, dessen Attribut zur�ckgegeben werden soll.
-   * @param attributeName Der Name des Attributs, das zur�ckgegeben werden soll.
-   *
-   * @return Den Attributwert als <CODE>int</CODE>.
-   * @throws RegainException Falls der Knoten kein solches Attribut hat oder
-   *         falls der Wert des Attributs keine Zahl ist.
+   * Gets an attribute value from a node and converts it to an int.
+   * 
+   * @param node The node to get the attribute value from.
+   * @param attributeName The name of the attribute to get.
+   * @return The value of the attribute or <code>defaultValue</code> if there is
+   *         no such attribute.
+   * @throws RegainException If there is no such attribute or if the attribute
+   *         value is no int.
    */
   public static int getAttributeAsInt(Node node, String attributeName)
     throws RegainException
@@ -632,6 +631,37 @@ public class XmlToolkit {
     catch (NumberFormatException exc) {
       throw new RegainException("Attribute '" + attributeName + "' of node '"
         + node.getNodeName() + "' must be a number: '" + asString + "'");
+    }
+  }
+
+
+  /**
+   * Gets an attribute value from a node and converts it to an int.
+   * 
+   * @param node The node to get the attribute value from.
+   * @param attributeName The name of the attribute to get.
+   * @param defaultValue The default value to return if there is no such
+   *        attribute.
+   * @return The value of the attribute or <code>defaultValue</code> if there is
+   *         no such attribute.
+   * @throws RegainException If the attribute value is no int.
+   */
+  public static int getAttributeAsInt(Node node, String attributeName,
+    int defaultValue)
+    throws RegainException
+  {
+    String asString = getAttribute(node, attributeName);
+
+    if (asString == null) {
+      return defaultValue;
+    } else {
+      try {
+        return Integer.parseInt(asString);
+      }
+      catch (NumberFormatException exc) {
+        throw new RegainException("Attribute '" + attributeName + "' of node '"
+          + node.getNodeName() + "' must be a number: '" + asString + "'");
+      }
     }
   }
 

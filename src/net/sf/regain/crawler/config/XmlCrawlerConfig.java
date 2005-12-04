@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: XmlCrawlerConfig.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/XmlCrawlerConfig.java,v $
- *     $Date: 2005/08/13 11:33:29 $
+ *     $Date: 2005/11/21 10:46:29 $
  *   $Author: til132 $
- * $Revision: 1.8 $
+ * $Revision: 1.11 $
  */
 package net.sf.regain.crawler.config;
 
@@ -34,6 +34,8 @@ import java.util.Properties;
 import net.sf.regain.RegainException;
 import net.sf.regain.XmlToolkit;
 
+import org.apache.regexp.RE;
+import org.apache.regexp.RESyntaxException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -54,6 +56,8 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   private String mProxyUser;
   /** Das Passwort f�r die Anmeldung beim Proxy-Server. */
   private String mProxyPassword;
+  /** The user agent the crawler should in order to identify at the HTTP server(s). */
+  private String mUserAgent;
   /**
    * Gibt an, ob URLs geladen werden sollen, die weder durchsucht noch indiziert
    * werden.
@@ -81,6 +85,8 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
   /** Gibt an, ob Analyse-Deteien geschrieben werden sollen. */
   private boolean mWriteAnalysisFiles;
+  /** The interval between two breakpoint in minutes. */
+  private int mBreakpointInterval;
   /**
    * Der maximale Prozentsatz von gescheiterten Dokumenten (0..100), der f�r
    * die Freigabe eines Index toleriert wird.
@@ -139,6 +145,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     readProxyConfig(config);
     readLoadUnparsedUrls(config);
     readHttpTimeoutSecs(config);
+    readUserAgent(config);
     readIndexConfig(config);
     readControlFileConfig(config);
     readStartUrls(config);
@@ -176,6 +183,20 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     mHttpTimeoutSecs = XmlToolkit.getTextAsInt(node);
   }
 
+
+  /**
+   * Reads the user agent from the config.
+   *
+   * @param config The configuration to read from.
+   * @throws RegainException If the configuration has an error.
+   */
+  private void readUserAgent(Element config) throws RegainException {
+    Node node = XmlToolkit.getChild(config, "userAgent", false);
+    if (node != null) {
+      mUserAgent = XmlToolkit.getText(node);
+    }
+  }
+  
 
   /**
    * Liest die Proxy-Einstellungen aus der Konfiguration.
@@ -232,6 +253,10 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     mExclusionList = XmlToolkit.getTextAsWordList(node, false);
     node = XmlToolkit.getChild(indexNode, "writeAnalysisFiles", true);
     mWriteAnalysisFiles = XmlToolkit.getTextAsBoolean(node);
+
+    node = XmlToolkit.getChild(indexNode, "breakpointInterval");
+    mBreakpointInterval = (node == null) ? 10 : XmlToolkit.getTextAsInt(node);
+
     node = XmlToolkit.getChild(indexNode, "maxFailedDocuments", true);
     mMaxFailedDocuments = XmlToolkit.getTextAsDouble(node) / 100.0;
   }
@@ -434,12 +459,57 @@ public class XmlCrawlerConfig implements CrawlerConfig {
       mAuxiliaryFieldArr = new AuxiliaryField[nodeArr.length];
       for (int i = 0; i < nodeArr.length; i++) {
         String fieldName = XmlToolkit.getAttribute(nodeArr[i], "name", true);
-        String urlRegex = XmlToolkit.getText(nodeArr[i], true);
-        int urlRegexGroup = XmlToolkit.getAttributeAsInt(nodeArr[i], "regexGroup");
-        
-        mAuxiliaryFieldArr[i] = new AuxiliaryField(fieldName, urlRegex, urlRegexGroup);
+        RE urlRegex = readRegexChild(nodeArr[i]);
+        String value = XmlToolkit.getAttribute(nodeArr[i], "value");
+        boolean toLowerCase = XmlToolkit.getAttributeAsBoolean(nodeArr[i],
+                "toLowerCase", true);
+        int urlRegexGroup = XmlToolkit.getAttributeAsInt(nodeArr[i], "regexGroup", -1);
+        if ((value == null) && (urlRegexGroup == -1)) {
+          throw new RegainException("The node 'auxiliaryField' must have " +
+                "either the attribute 'value' or the attribute 'regexGroup'");
+        }
+
+        mAuxiliaryFieldArr[i] = new AuxiliaryField(fieldName, value,
+            toLowerCase, urlRegex, urlRegexGroup);
       }
     }
+  }
+
+
+  /**
+   * Reads the regex child node from a node. Can also read the old style, where
+   * the regex is directly in the node text.
+   * 
+   * @param node The node to read the regex node from
+   * @return The compiled regular expression
+   * @throws RegainException If there is no regular expression or if the regex
+   *         could not be compiled.
+   */
+  private RE readRegexChild(Node node) throws RegainException {
+      // Check whether the node has a regex child node
+      Node regexNode = XmlToolkit.getChild(node, "regex");
+      if (regexNode != null) {
+          boolean caseSensitive = XmlToolkit.getAttributeAsBoolean(regexNode,
+              "caseSensitive", false);
+          String regex = XmlToolkit.getText(regexNode, true);
+
+          int flags = caseSensitive ? RE.MATCH_NORMAL : RE.MATCH_CASEINDEPENDENT;
+          try {
+              return new RE(regex, flags);
+          } catch (RESyntaxException exc) {
+              throw new RegainException("Regex of node '" + node.getNodeName()
+                  + "' has a wrong syntax: '" + regex + "'", exc);
+          }
+      } else {
+          // This is the old style -> Use the text as regex
+          String regex = XmlToolkit.getText(node, true);
+          try {
+              return new RE(regex, RE.MATCH_CASEINDEPENDENT);
+          } catch (RESyntaxException exc) {
+              throw new RegainException("Regex of node '" + node.getNodeName()
+                  + "' has a wrong syntax: '" + regex + "'", exc);
+          }
+      }
   }
   
   
@@ -560,6 +630,12 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   }
 
 
+  // overridden
+  public String getUserAgent() {
+    return mUserAgent;
+  }
+
+
   /**
    * Gibt den Timeout f�r HTTP-Downloads zur�ck. Dieser Wert bestimmt die
    * maximale Zeit in Sekunden, die ein HTTP-Download insgesamt dauern darf.
@@ -648,6 +724,17 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    */
   public boolean getWriteAnalysisFiles() {
     return mWriteAnalysisFiles;
+  }
+
+
+  /**
+   * Returns the interval between two breakpoint in minutes. If set to 0, no
+   * breakpoints will be created.
+   *
+   * @return the interval between two breakpoint in minutes.
+   */
+  public int getBreakpointInterval() {
+    return mBreakpointInterval;
   }
 
 

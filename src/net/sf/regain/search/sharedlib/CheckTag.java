@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: CheckTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/CheckTag.java,v $
- *     $Date: 2005/08/07 10:51:07 $
+ *     $Date: 2005/08/15 21:50:09 $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  */
 package net.sf.regain.search.sharedlib;
 

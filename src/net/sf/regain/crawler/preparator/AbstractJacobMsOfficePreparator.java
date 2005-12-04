@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: AbstractJacobMsOfficePreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/AbstractJacobMsOfficePreparator.java,v $
- *     $Date: 2005/08/13 11:33:30 $
+ *     $Date: 2005/11/21 10:19:29 $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -60,8 +60,11 @@ public abstract class AbstractJacobMsOfficePreparator extends AbstractPreparator
    * 
    * @param extentionArr The file extensions a URL must have one to be accepted
    *        by this preparator.
+   * @throws RegainException If creating the preparator failed.
    */
-  public AbstractJacobMsOfficePreparator(String[] extentionArr) {
+  public AbstractJacobMsOfficePreparator(String[] extentionArr)
+    throws RegainException
+  {
     super(extentionArr);
     
     // NOTE: See: http://mypage.bluewin.ch/reprobst/WordFAQ/DokEigen.htm#DokEigen04

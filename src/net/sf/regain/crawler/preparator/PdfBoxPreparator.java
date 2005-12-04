@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: PdfBoxPreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/PdfBoxPreparator.java,v $
- *     $Date: 2005/03/14 15:03:38 $
+ *     $Date: 2005/11/21 10:19:29 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -55,8 +55,10 @@ public class PdfBoxPreparator extends AbstractPreparator {
 
   /**
    * Creates a new instance of PdfBoxPreparator.
+   *
+   * @throws RegainException If creating the preparator failed.
    */
-  public PdfBoxPreparator() {
+  public PdfBoxPreparator() throws RegainException {
     super("pdf");
   }
 

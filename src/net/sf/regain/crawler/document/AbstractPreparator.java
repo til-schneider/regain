@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: AbstractPreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/document/AbstractPreparator.java,v $
- *     $Date: 2005/08/13 11:33:30 $
+ *     $Date: 2005/11/21 10:20:09 $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  */
 package net.sf.regain.crawler.document;
 
@@ -34,7 +34,7 @@ import net.sf.regain.RegainException;
 import net.sf.regain.crawler.config.PreparatorConfig;
 
 import org.apache.regexp.RE;
-
+import org.apache.regexp.RESyntaxException;
 
 /**
  * Abstract implementation of a preparator.
@@ -84,10 +84,11 @@ public abstract class AbstractPreparator implements Preparator {
    * 
    * @param extention The file extension a URL must have to be accepted by
    *        this preparator.
+   * @throws RegainException If creating the preparator failed.
    * @see #accepts(RawDocument)
    */
-  public AbstractPreparator(String extention) {
-    this(new RE("\\." + extention + "$", RE.MATCH_CASEINDEPENDENT));
+  public AbstractPreparator(String extention) throws RegainException {
+    this(createExtentionRegex(extention));
   }
 
 
@@ -96,20 +97,44 @@ public abstract class AbstractPreparator implements Preparator {
    * 
    * @param extentionArr The file extensions a URL must have one to be accepted
    *        by this preparator.
+   * @throws RegainException If creating the preparator failed.
    * @see #accepts(RawDocument)
    */
-  public AbstractPreparator(String[] extentionArr) {
+  public AbstractPreparator(String[] extentionArr) throws RegainException {
     this(createExtentionRegex(extentionArr));
   }
 
+  
+  /**
+   * Creates a regex that matches a file extensions.
+   * 
+   * @param extention The file extension to create the regex for.
+   * @return The regex.
+   * @throws RegainException If the regex couldn't be created.
+   */
+  private static RE createExtentionRegex(String extention)
+    throws RegainException
+  {
+    String regex = "\\." + extention + "$";
+    try {
+      return new RE(regex, RE.MATCH_CASEINDEPENDENT);
+    } catch (RESyntaxException exc) {
+      throw new RegainException("Creating accept regex for preparator failed: "
+          + regex, exc);
+    }
+  }
+  
 
   /**
    * Creates a regex that matches a set of file extensions.
    * 
    * @param extentionArr The file extensions to create the regex for.
    * @return The regex.
+   * @throws RegainException If the regex couldn't be created.
    */
-  private static RE createExtentionRegex(String[] extentionArr) {
+  private static RE createExtentionRegex(String[] extentionArr)
+    throws RegainException
+  {
     String urlRegex;
     if (extentionArr.length == 0) {
       throw new IllegalArgumentException("extentionArr is empty");
@@ -125,8 +150,13 @@ public abstract class AbstractPreparator implements Preparator {
       buffer.append(")$");
       urlRegex = buffer.toString();
     }
-    
-    return new RE(urlRegex, RE.MATCH_CASEINDEPENDENT);
+
+    try {
+      return new RE(urlRegex, RE.MATCH_CASEINDEPENDENT);
+    } catch (RESyntaxException exc) {
+      throw new RegainException("Creating accept regex for preparator failed: "
+          + urlRegex, exc);
+    }
   }
 
 

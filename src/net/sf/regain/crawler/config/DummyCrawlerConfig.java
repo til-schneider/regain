@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: DummyCrawlerConfig.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/DummyCrawlerConfig.java,v $
- *     $Date: 2005/08/13 11:33:29 $
+ *     $Date: 2005/11/21 10:46:29 $
  *   $Author: til132 $
- * $Revision: 1.7 $
+ * $Revision: 1.9 $
  */
 package net.sf.regain.crawler.config;
 
@@ -80,6 +80,12 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    * @return Das Passwort für die Anmeldung beim Proxy-Server.
    */
   public String getProxyPassword() {
+    return null;
+  }
+
+
+  // overridden
+  public String getUserAgent() {
     return null;
   }
 
@@ -172,6 +178,17 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    */
   public boolean getWriteAnalysisFiles() {
     return true;
+  }
+
+
+  /**
+   * Returns the interval between two breakpoint in minutes. If set to 0, no
+   * breakpoints will be created.
+   *
+   * @return the interval between two breakpoint in minutes.
+   */
+  public int getBreakpointInterval() {
+    return 10;
   }
 
 

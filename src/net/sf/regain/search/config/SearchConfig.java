@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile: SearchConfig.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/config/SearchConfig.java,v $
- *     $Date: 2005/02/26 14:51:10 $
+ *     $Date: 2005/08/18 08:01:39 $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  */
 package net.sf.regain.search.config;
 
@@ -24,11 +24,11 @@ public interface SearchConfig {
   public IndexConfig getIndexConfig(String indexName);
   
   /**
-   * Gets the name of the default index.
+   * Gets the names of the default indexes.
    * 
-   * @return The name of the default index or <code>null</code> if no default
+   * @return The names of the default indexes or an empty array if no default
    *         index was specified.
    */
-  public String getDefaultIndexName();
+  public String[] getDefaultIndexNameArr();
   
 }

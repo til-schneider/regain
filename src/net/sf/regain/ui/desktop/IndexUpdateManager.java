@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: IndexUpdateManager.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/IndexUpdateManager.java,v $
- *     $Date: 2005/08/01 12:04:24 $
+ *     $Date: 2005/11/21 10:46:29 $
  *   $Author: til132 $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -188,9 +188,6 @@ public class IndexUpdateManager implements DesktopConstants {
       } else {
         // Update the index
 
-        // Proxy settings
-        CrawlerToolkit.initProxy(config);
-        
         // Create and run the crawler
         TrayIconManager.getInstance().setIndexUpdateRunning(true);
         try {

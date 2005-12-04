@@ -2,13 +2,14 @@
  * CVS information:
  *  $RCSfile: XmlSearchConfig.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/config/XmlSearchConfig.java,v $
- *     $Date: 2005/04/15 08:47:02 $
+ *     $Date: 2005/08/18 08:01:39 $
  *   $Author: til132 $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  */
 package net.sf.regain.search.config;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -28,8 +29,8 @@ public class XmlSearchConfig implements SearchConfig {
   /** All configured indexes. */
   private HashMap mIndexHash;
   
-  /** The name of the default index. */
-  private String mDefaultIndexName;
+  /** The names of the default indexes. */
+  private String[] mDefaultIndexNameArr;
 
 
   /**
@@ -62,7 +63,7 @@ public class XmlSearchConfig implements SearchConfig {
     
     // Get the index nodes
     mIndexHash = new HashMap();
-    mDefaultIndexName = null;
+    ArrayList defaultIndexNameList = new ArrayList();
     Node[] nodeArr = XmlToolkit.getChildArr(listNode, "index");
     for (int indexIdx = 0; indexIdx < nodeArr.length; indexIdx++) {
       Node indexNode = nodeArr[indexIdx];
@@ -124,15 +125,13 @@ public class XmlSearchConfig implements SearchConfig {
       // Check whether this index is default
       boolean isDefault = XmlToolkit.getAttributeAsBoolean(indexNode, "default", false);
       if (isDefault) {
-        if (mDefaultIndexName != null) {
-          throw new RegainException("The index '" + indexName + "' can't be marked " +
-              "as default index, because index '" + mDefaultIndexName
-              + "' already is marked as default.");
-        } else {
-          mDefaultIndexName = indexName;
-        }
+        defaultIndexNameList.add(indexName);
       }
     }
+
+    // Store the default indexes into an array
+    mDefaultIndexNameArr = new String[defaultIndexNameList.size()];
+    defaultIndexNameList.toArray(mDefaultIndexNameArr);
   }
   
   
@@ -177,13 +176,13 @@ public class XmlSearchConfig implements SearchConfig {
 
 
   /**
-   * Gets the name of the default index.
+   * Gets the names of the default indexes.
    * 
-   * @return The name of the default index or <code>null</code> if no default
+   * @return The names of the default indexes or an empty array if no default
    *         index was specified.
    */
-  public String getDefaultIndexName() {
-    return mDefaultIndexName;
+  public String[] getDefaultIndexNameArr() {
+    return mDefaultIndexNameArr;
   }
   
 }

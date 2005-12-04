@@ -1,3 +1,21 @@
+Version 1.1 Beta 6 am 05.12.05
+------------------------------
+
+* Neuer Präparator: Mit dem PoiMsPowerPointPreparator steht nun auch ein
+  plattformunabhängiger Präparator für Powerpoint zur Verfügung.
+  (Vielen Dank an Gerhard Olsson)
+* Neuer Präparator: Der IfilterPreparator nutzt die I-Filter-Schnittstelle von
+  Microsoft um etliche Dateiformate zu lesen. Leider läuft er nur unter Windows.
+* Multiindexsuche: In der SearchConfiguration.xml können nun auch mehrere
+  Indizes als Default angegeben werden.
+* Die Zusatzfelder (Auxiliary Fields) können nun besser mit Groß-/Kleinschreibung
+  umgehen.
+* Der vom Crawler an die Webserver gesendete HTTP-Agent ist nun in der
+  CrawlerConfiguration.xml konfigurierbar. So kann sich der Crawler
+  beispielsweise als Internet Explorer ausgeben.
+* Mehrere Bugfixes
+
+
 Version 1.1 Beta 5 am 13.08.05
 ------------------------------
 

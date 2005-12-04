@@ -29,13 +29,7 @@
       <search:msg key="error.moreInfo"/><br>
       </p>
 
-      <form name="search" action="search.jsp" method="get">
-        <search:msg key="searchFor"/>:
-        <search:input_hiddenparam name="index"/>
-        <search:input_query/>
-        <search:input_maxresults/>
-        <search:input_submit text="{msg:search}"/>
-      </form>
+      <%@include file="search_form.jsp" %>
       
       <br/>
     </td></tr>

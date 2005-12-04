@@ -21,15 +21,16 @@
  * CVS information:
  *  $RCSfile: SharedTagService.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/simple/SharedTagService.java,v $
- *     $Date: 2005/03/16 21:52:04 $
+ *     $Date: 2005/11/21 10:19:29 $
  *   $Author: til132 $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  */
 package net.sf.regain.util.sharedtag.simple;
 
 import java.io.File;
 import java.io.PrintStream;
 
+import net.sf.regain.RegainException;
 import net.sf.regain.search.SearchToolkit;
 import net.sf.regain.ui.desktop.FileService;
 import net.sf.regain.util.sharedtag.PageRequest;
@@ -61,8 +62,9 @@ public class SharedTagService extends BasicService {
    * Creates a new instance of SharedTagService.
    * 
    * @param context The context of this service.
+   * @throws RegainException if initialization failed.
    */
-  public SharedTagService(Context context) {
+  public SharedTagService(Context context) throws RegainException {
     super(context);
     
     mParser = new ExecuterParser();

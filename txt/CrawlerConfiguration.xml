@@ -22,24 +22,40 @@
 </proxy>
 
 
-<!-- Specifies, whether to load URLs that are neither parsed nor indexed -->
-<loadUnparsedUrls>false</loadUnparsedUrls>
-
-
 <!--
- | Der Timeout für HTTP-Downloads. Dieser Wert bestimmt die maximale Zeit
- | in Sekunden, die ein HTTP-Download insgesamt dauern darf.
+ | The user agent the crawler should use for identifying at the HTTP server(s).
  +-->
-<httpTimeout>180</httpTimeout>
+<userAgent>Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)</userAgent>
 
 
-<!--
- | The list of patterns a document's URL must match to, when the link text
- | should be used as title instead of the document's real title.
- +-->
-<useLinkTextAsTitleList>
-  <urlPattern>^http://.*\.(pdf|xls|doc|rtf)$</urlPattern>
-</useLinkTextAsTitleList>
+<!-- The list of URLs where the spidering will start. -->
+<startlist>
+  <!-- Directory parsing -->
+  <!--
+  <start parse="true" index="false">file://c:/Eigene Dateien</start>
+  -->
+
+  <!-- HTML parsing -->
+  <!--
+  <start parse="true" index="true">http://www.mydomain.de/some/path/</start>
+  -->
+</startlist>
+
+
+<!-- The whitelist containing prefixes an URL must have to be processed -->
+<whitelist>
+  <prefix name="file">file://</prefix>
+  <prefix>http://www.mydomain.de</prefix>
+</whitelist>
+
+
+<!-- The blacklist containing prefixes an URL must NOT have to be processed -->
+<blacklist>
+  <!--
+  <prefix>http://www.mydomain.de/some/dynamic/content/</prefix>
+  <regex>/backup/[^/]*$</regex>
+  -->
+</blacklist>
 
 
 <!-- The preferences for the search index -->
@@ -61,6 +77,15 @@
    | de.filiadata.lucene.LuceneToolkit.
    +-->
   <analyzerType>german</analyzerType>
+
+  <!--
+   | Specifies the interval between two breakpoints in minutes. If set to 0, no
+   | breakpoints will be created.
+   |
+   | A breakpoint is a snapshot the crawler creates periodically while working.
+   | If the crawler should crash it goes on from the last breakpoint.
+   +-->
+  <breakpointInterval>10</breakpointInterval>
 
   <!--
    | Specifies, whether the analysis files should be written.
@@ -110,24 +135,6 @@
 
 
 <!--
- | Specifies which control files should be crated. These files may be used to
- | check with a sceduling script whether the index was successfully built.
- |
- | <finishedWithoutFatalsFile>: The name of the control file that should be
- | created if the index creation finished without fatal errors.
- |
- | <finishedWithFatalsFile>: The name of the control file that should be
- | created if the index creation failed with a fatal error.
- +-->
-<!--
-<controlFiles>
-  <finishedWithoutFatalsFile>c:\Temp\control\NoFatals</finishedWithoutFatalsFile>
-  <finishedWithFatalsFile>c:\Temp\control\WithFatals</finishedWithFatalsFile>
-</controlFiles>
--->
-
-
-<!--
  | The preparators in the order they should be applied. Preparators that aren't listed
  | here will be applied after the listed ones.
  |
@@ -145,7 +152,7 @@
      | preparator is overridden.
      +-->
     <!--
-    <urlPattern>(^http://[^/]*/?$)|(^http://.*/[^\\.]*$)|(\\.(/|html|htm|jsp|php\\d?|asp)$)</urlPattern>
+    <urlPattern>(^http://[^/]*/?$)|(^http://.*/[^\.]*$)|(^http://.*/$)|(\.(html|htm|jsp|php\d?|asp)$)</urlPattern>
     -->
     <config>
       <!--
@@ -271,7 +278,11 @@
       </section>
     </config>    
   </preparator>
-  
+
+  <preparator enabled="false">
+      <class>.IfilterPreparator</class>
+  </preparator>
+
   <preparator>
     <class>.SimpleRtfPreparator</class>
   </preparator>
@@ -279,6 +290,69 @@
     <class>.SwingRtfPreparator</class>
   </preparator>
 </preparatorList>
+
+
+<!--
+ | The index may be extended with auxiliary fields. These are fields that have
+ | been generated from the URL of an document.
+ |
+ | Example: If you have a directory with a sub directory for every project,
+ | then you may create a field with the project's name.
+ |
+ | The folling tag will create a field "project" with the value "otto23"
+ | from the URL "file://c:/projects/otto23/docs/Spez.doc":
+ |   <auxiliaryField name="project" regexGroup="1">
+ |     <regex>^file://c:/projects/([^/]*)</regex>
+ |   </auxiliaryField>
+ |
+ | URLs that doen't match will get no "project" field.
+ |
+ | Having done this you may search for "Offer project:otto23" and you will get
+ | only hits from this project directory.
+ +-->
+<auxiliaryFieldList>
+  <auxiliaryField name="extension" regexGroup="1" toLowercase="true">
+    <regex>\.([^\.]*)$</regex>
+  </auxiliaryField>
+</auxiliaryFieldList>
+
+
+<!-- Specifies, whether to load URLs that are neither parsed nor indexed -->
+<loadUnparsedUrls>false</loadUnparsedUrls>
+
+
+<!--
+ | Der Timeout für HTTP-Downloads. Dieser Wert bestimmt die maximale Zeit
+ | in Sekunden, die ein HTTP-Download insgesamt dauern darf.
+ +-->
+<httpTimeout>180</httpTimeout>
+
+
+<!--
+ | The list of patterns a document's URL must match to, when the link text
+ | should be used as title instead of the document's real title.
+ +-->
+<useLinkTextAsTitleList>
+  <urlPattern>^http://.*\.(pdf|xls|doc|rtf)$</urlPattern>
+</useLinkTextAsTitleList>
+
+
+<!--
+ | Specifies which control files should be crated. These files may be used to
+ | check with a sceduling script whether the index was successfully built.
+ |
+ | <finishedWithoutFatalsFile>: The name of the control file that should be
+ | created if the index creation finished without fatal errors.
+ |
+ | <finishedWithFatalsFile>: The name of the control file that should be
+ | created if the index creation failed with a fatal error.
+ +-->
+<!--
+<controlFiles>
+  <finishedWithoutFatalsFile>c:\Temp\control\NoFatals</finishedWithoutFatalsFile>
+  <finishedWithFatalsFile>c:\Temp\control\WithFatals</finishedWithFatalsFile>
+</controlFiles>
+-->
 
 
 <!--
@@ -303,60 +377,9 @@
 
 <!-- The regular expressions that indetify URLs in HTML. -->
 <htmlParserPatternList>
-  <pattern parse="true" index="true" regexGroup="1">="([^"]*\.(htm|html|jsp|php\\d?|asp))"</pattern>
+  <pattern parse="true" index="true" regexGroup="1">="([^"]*\.(htm|html|jsp|php\d?|asp))"</pattern>
   <pattern parse="false" index="false" regexGroup="1">="([^"]*\.(js|css|jpg|gif|png))"</pattern>
   <pattern parse="false" index="true" regexGroup="1">="([^"]*\.[^\."]{3})"</pattern>
 </htmlParserPatternList>
-
-
-<!-- The list of URLs where the spidering will start. -->
-<startlist>
-  <!-- Directory parsing -->
-  <!--
-  <start parse="true" index="false">file://c:/Eigene Dateien</start>
-  -->
-
-  <!-- HTML parsing -->
-  <!--
-  <start parse="true" index="true">http://www.mydomain.de/some/path/</start>
-  -->
-</startlist>
-
-
-<!-- The blacklist containing prefixes an URL must NOT have to be processed -->
-<blacklist>
-  <!--
-  <prefix>http://www.mydomain.de/some/dynamic/content/</prefix>
-  <regex>/backup/[^/]*$</regex>
-  -->
-</blacklist>
-
-
-<!-- The whitelist containing prefixes an URL must have to be processed -->
-<whitelist>
-  <prefix name="file">file://</prefix>
-  <prefix>http://www.mydomain.de</prefix>
-</whitelist>
-
-
-<!--
- | The index may be extended with auxiliary fields. These are fields that have
- | been generated from the URL of an document.
- |
- | Example: If you have a directory with a sub directory for every project,
- | then you may create a field with the project's name.
- |
- | The folling tag will create a field "project" with the value "otto23"
- | from the URL "file://c:/projects/otto23/docs/Spez.doc":
- |   <auxiliaryField name="project" regexGroup="1">^file://c:/projects/([^/]*)</auxiliaryField>
- |
- | URLs that doen't match will get no "project" field.
- |
- | Having done this you may search for "Offer project:otto23" and you will get
- | only hits from this project directory.
- +-->
-<auxiliaryFieldList>
-  <auxiliaryField name="extension" regexGroup="1">\.([^\.]*)$</auxiliaryField>
-</auxiliaryFieldList>
 
 </configuration>

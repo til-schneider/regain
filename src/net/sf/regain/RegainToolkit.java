@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: RegainToolkit.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/RegainToolkit.java,v $
- *     $Date: 2005/08/13 09:22:50 $
+ *     $Date: 2005/10/18 07:50:08 $
  *   $Author: til132 $
- * $Revision: 1.14 $
+ * $Revision: 1.15 $
  */
 package net.sf.regain;
 
@@ -65,6 +65,9 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
  */
 public class RegainToolkit {
 
+  /** The encoding used for storing URLs in the index */
+  public static final String INDEX_ENCODING = "UTF-8";
+
   /**
    * Gibt an, ob die Worte, die der Analyzer identifiziert ausgegeben werden
    * sollen.
@@ -79,7 +82,7 @@ public class RegainToolkit {
 
   /** The number of bytes in a GB (giga byte). */
   private static final int SIZE_GB = 1024 * 1024 * 1024;
-
+  
   /** Der gecachte, systemspeziefische Zeilenumbruch. */
   private static String mLineSeparator;
 
@@ -984,12 +987,17 @@ public class RegainToolkit {
    * URL-encodes a String. 
    * 
    * @param text The String to URL-encode.
+   * @param encoding The encoding to use. 
    * @return The URL-encoded String.
    * @throws RegainException If URL-encoding failed.
    */
-  public static String urlEncode(String text) throws RegainException {
+  public static String urlEncode(String text, String encoding) throws RegainException {
     try {
-      return URLEncoder.encode(text, "UTF-8");
+      // For Java 1.2.2
+      //return URLEncoder.encode(text);
+
+      // Since Java 1.3
+      return URLEncoder.encode(text, encoding);
     }
     catch (UnsupportedEncodingException exc) {
       throw new RegainException("URL-encoding failed: '" + text + "'", exc);
@@ -1001,12 +1009,13 @@ public class RegainToolkit {
    * URL-decodes a String. 
    * 
    * @param text The String to URL-decode.
+   * @param encoding The encoding to use. 
    * @return The URL-decoded String.
    * @throws RegainException If URL-decoding failed.
    */
-  public static String urlDecode(String text) throws RegainException {
+  public static String urlDecode(String text, String encoding) throws RegainException {
     try {
-      return URLDecoder.decode(text, "UTF-8");
+      return URLDecoder.decode(text, encoding);
     }
     catch (UnsupportedEncodingException exc) {
       throw new RegainException("URL-decoding failed: '" + text + "'", exc);

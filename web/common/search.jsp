@@ -13,13 +13,7 @@
   <table class="top"><tr>
     <td><img src="img/logo_regain.gif" width="201" height="66"></td>
     <td class="searchTop">
-      <form name="search" action="search.jsp" method="get">
-        <search:msg key="searchFor"/>:
-        <search:input_hiddenparam name="index"/>
-        <search:input_query/>
-        <search:input_maxresults/>
-        <search:input_submit text="{msg:search}"/>
-      </form>
+      <%@include file="search_form.jsp" %>
     </td>
   </tr></table>
 
@@ -62,13 +56,7 @@
   <br/>
 
   <table class="searchBottom"><tr><td>
-    <form name="search" action="search.jsp" method="get">
-      <search:msg key="searchFor"/>:
-      <search:input_hiddenparam name="index"/>
-      <search:input_query/>
-      <search:input_maxresults/>
-      <search:input_submit text="{msg:search}"/>
-    </form>
+    <%@include file="search_form.jsp" %>
   </td></tr></table>
 
   <%@include file="footer.jsp" %>

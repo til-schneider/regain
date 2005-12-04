@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: PlainTextPreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/PlainTextPreparator.java,v $
- *     $Date: 2005/03/14 15:03:36 $
+ *     $Date: 2005/11/21 10:19:29 $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -42,8 +42,10 @@ public class PlainTextPreparator extends AbstractPreparator {
 
   /**
    * Creates a new instance of PlainTextPreparator.
+   *
+   * @throws RegainException If creating the preparator failed.
    */
-  public PlainTextPreparator() {
+  public PlainTextPreparator() throws RegainException {
     super("txt");
   }
 

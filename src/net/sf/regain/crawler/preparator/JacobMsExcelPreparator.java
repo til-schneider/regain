@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: JacobMsExcelPreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/JacobMsExcelPreparator.java,v $
- *     $Date: 2005/03/14 15:03:37 $
+ *     $Date: 2005/11/21 10:19:29 $
  *   $Author: til132 $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -60,8 +60,10 @@ public class JacobMsExcelPreparator extends AbstractJacobMsOfficePreparator {
 
   /**
    * Creates a new instance of JacobMsExcelPreparator.
+   *
+   * @throws RegainException If creating the preparator failed.
    */
-  public JacobMsExcelPreparator() {
+  public JacobMsExcelPreparator() throws RegainException {
     super(new String[] { "xls", "xlt" });
   }
 

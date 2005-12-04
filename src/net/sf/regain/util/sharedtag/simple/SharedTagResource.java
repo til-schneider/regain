@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: SharedTagResource.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/simple/SharedTagResource.java,v $
- *     $Date: 2005/04/02 17:29:03 $
+ *     $Date: 2005/10/18 07:50:08 $
  *   $Author: til132 $
- * $Revision: 1.9 $
+ * $Revision: 1.10 $
  */
 package net.sf.regain.util.sharedtag.simple;
 
@@ -49,7 +49,10 @@ import simple.http.serve.Context;
  * @author Til Schneider, www.murfman.de
  */
 public class SharedTagResource extends BasicResource {
-  
+
+  /** The encoding used by the simpleweb implementation of shared tags. */
+  public static final String SIMPLE_TAG_ENCODING = "UTF-8";
+
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(SharedTagResource.class);
   
@@ -100,15 +103,13 @@ public class SharedTagResource extends BasicResource {
     Executer executer, Throwable error)
     throws Exception
   {
-    String encoding = "utf-8";
-        
     // Write the page to a buffer first
     // If an exception should be thrown the user gets a clear error message
     ByteArrayOutputStream stream = new ByteArrayOutputStream();
-    PrintStream printStream = new PrintStream(stream, false, encoding);
+    PrintStream printStream = new PrintStream(stream, false, SIMPLE_TAG_ENCODING);
 
     PageRequest request = new SimplePageRequest(req);
-    PageResponse response = new SimplePageResponse(this, req, resp, printStream, encoding);
+    PageResponse response = new SimplePageResponse(this, req, resp, printStream, SIMPLE_TAG_ENCODING);
 
     // Add the error to the page attributes
     if (error != null) {
@@ -149,7 +150,7 @@ public class SharedTagResource extends BasicResource {
     }
     
     // The page has been generated without exception -> Send it to the user
-    resp.set("Content-Type", "text/html; charset=" + encoding);
+    resp.set("Content-Type", "text/html; charset=" + SIMPLE_TAG_ENCODING);
     PrintStream pageStream = resp.getPrintStream();
     try {
       stream.writeTo(pageStream);

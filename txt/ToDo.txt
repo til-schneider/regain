@@ -227,12 +227,30 @@ X Libs aktualisiert:
 ** Version 1.1 Beta 5 am 13.08.05 **
 
 X Bugfix: Im .war file hat das log4j.jar und das lucene.jar gefehlt.
+X Attribut "noQueryUrl" des Check-Tag optional machen.
 
 ** Version 1.1 Beta 5a am 15.08.05 **
+
+X Added PoiMsPowerPointPreparator (Thanks to Gerhard Olsson)
+X Multiindexsuche: SearchConfiguration.xml: Möglichkeit bieten, mehrere Indizes
+    als default zu deklarieren. (Dann per default Multiindex-Suche durchführen)
+X The fieldlistTag supports multiple indexes now.
+X Bugfix: file-to-http-bridge did create illegal URLs when multiple indexes
+    were searched.
+X IfilterPreparator: Einen Präparator schreiben, der das IFilter-Interface
+    unter Windows nutzt.
+X Groß-/Kleinschreibung in Auxilliary Fields
+X Zeit zwischen Breakpoints konfigurierbar
+X HTTP User agent konfigurierbar
+- Namen der verfügbaren Indizes von JSPs aus erreichbar machen
+    Geht schon: SearchToolkit.getIndexConfigArr(...)
 
 
 Filiadata:
 ----------
+
+  Prüfen: Gehen Sonderzeichen in Auxilliary Fields?
+
   Was passiert bei OutOfMemoryError im Crawler?
   Auxiliary-Field: toLowerCase-Attribut.
 
@@ -241,9 +259,19 @@ Filiadata:
     - Such-JSP: Zusaetzliche Eingabefelder fuer bestimmte Felder koennen mit
       "field.feldName" hinzugefuegt werden.
     - Init-Parameter von configFile nach searchConfigFile umbenannt.
+  Fieldlist-Daten (distinct values) vom Crawler ermitteln lassen
+    (Die erstmalige Ermittlung dauert lange bei großen Indizes (1 GB)).
 
 Prio A:
 -------
+  Bugfix: NullPointer, wenn regex-Gruppe nicht existiert.
+    Siehe Forum: http://forum.murfman.de/en/viewtopic.php?t=22
+
+  Prüfen, ob es mehrere Parameter gleichen Names in Präparator-Config gibt
+    See http://forum.murfman.de/de/viewtopic.php?p=351
+  Include better Jacob preparators or Reinhard Balling. See mail from 17.11.05.
+  TLD-Dokumentation generieren.
+  Pfade in Suche mit aufnehmen.
   Möglichkeit, Reguläre Ausdrücke auszuprobieren.
   Fehlende Teile der italienischen Lokalisierung
     Problem: Francos Mail-Adresse geht nicht :-(
@@ -253,12 +281,18 @@ Prio A:
   Suchmaske: Breakpoints nutzen.
   Desktopsuche: Mime-Types konfigurierbar (apache-Format)
   Suchmaske: Icons passend zu den Dateiendungen
-  Neuer Powerpoint-Praeparator: POI
   HTTP-Download: Redirects nicht einfach verfolgen, sondern neuen Job mit
     Redirect-URL hinzufügen, so dass im Index die Redirect-URL steht.
+  HtmlPreparator: Ignore text from script-Tags or tags with namespaces.
+    See http://forum.murfman.de/de/viewtopic.php?p=363
 
 Prio B:
 -------
+  Better Advanced search. See http://forum.murfman.de/de/posting.php?p=347
+  Bug: HtmlPreparator: Inhalt von style-Tags wird nicht entfernt.
+  Change whitelist / blacklist to one list of directives. This list should also
+    decide whether a document is parsed. That is the attributes "parse" and
+    "index" should be removed from htmlParserPatternList
   Bugfix: Präparieren von Dokumenten mit Leerzeichen im Dateinamen wird bei jedem
     Lauf erneut probiert (Erkennung des vorhandenen Eintrags funktioniert nicht)
     Konnte ich nicht reproduzieren...
@@ -270,10 +304,20 @@ Prio B:
 Prio C:
 -------
   Hit highlighting
+  Crawler: Abstraktion und nested Crawlers.
   Crawler: ZIP-Dateien durchsuchen
   Crawler: Mailboxen durchsuchen
+  Crawler: Anderen HTMLParser nutzen: http://htmlparser.sourceforge.net
   Neuer MS Word-Praeparator: OpenOffice
   Neuer PDF-Praeparator: PJX (http://www.etymon.com/epub.html)
   Desktopsuche: Nach Speichern der Konfiguration nur dann neu indexieren, wenn
     sich etwas geaendert hat, das den Index veraendert.
   Desktopsuche: JSP-Executer cachen.
+
+
+Release-Checkliste:
+-------------------
+* JavaDoc und TLDdoc online stellen.
+
+
+

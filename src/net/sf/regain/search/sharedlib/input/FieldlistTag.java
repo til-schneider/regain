@@ -2,11 +2,14 @@
  * CVS information:
  *  $RCSfile: FieldlistTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/input/FieldlistTag.java,v $
- *     $Date: 2005/08/07 10:51:09 $
+ *     $Date: 2005/08/19 11:48:57 $
  *   $Author: til132 $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  */
 package net.sf.regain.search.sharedlib.input;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.search.IndexSearcherManager;
@@ -46,15 +49,32 @@ public class FieldlistTag extends SharedTag {
 
     // Get the IndexConfig
     IndexConfig[] configArr = SearchToolkit.getIndexConfigArr(request);
-    if (configArr.length > 1) {
-      throw new RegainException("The fieldlist tag can only be used for one index!");
+    String[] fieldValues;
+    if (configArr.length == 1) {
+      // We have only one index -> Get the field values
+      IndexConfig config = configArr[0];
+      IndexSearcherManager manager = IndexSearcherManager.getInstance(config.getDirectory());
+      fieldValues = manager.getFieldValues(fieldName);
+    } else {
+      // We have multiple indexes -> Get the values of each index and merge them
+      HashSet valueSet = new HashSet();
+      for (int i = 0; i < configArr.length; i++) {
+        IndexSearcherManager manager = IndexSearcherManager.getInstance(configArr[i].getDirectory());
+        String[] currFieldValues = manager.getFieldValues(fieldName);
+        for (int j = 0; j < currFieldValues.length; j++) {
+          valueSet.add(currFieldValues[j]);
+        }
+      }
+
+      // Put the merged values into an array
+      fieldValues = new String[valueSet.size()];
+      valueSet.toArray(fieldValues);
+
+      // Sort the array
+      Arrays.sort(fieldValues);
     }
-    IndexConfig config = configArr[0];
     
-    IndexSearcherManager manager = IndexSearcherManager.getInstance(config.getDirectory());
-    
-    String[] fieldValues = manager.getFieldValues(fieldName);
-    
+    // Generate a combo box containing the field values
     response.print("<select name=\"field." + fieldName + "\" size=\"1\">");
     response.print("<option value=\"\">" + allMsg + "</option>");
     for (int i = 0; i < fieldValues.length; i++) {
