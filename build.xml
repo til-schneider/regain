@@ -22,9 +22,9 @@
  | CVS information:
  |  $RCSfile: build.xml,v $
  |   $Source: /cvsroot/regain/regain/build.xml,v $
- |     $Date: 2005/11/21 09:48:53 $
+ |     $Date: 2006/02/26 10:51:20 $
  |   $Author: til132 $
- | $Revision: 1.45 $
+ | $Revision: 1.52 $
  |
  | Author: Til Schneider, www.murfman.de
  +-->
@@ -61,7 +61,7 @@
   <property name="package-lists.dir" value="txt/package-lists"/>
   
   <property name="lucene.jar" value="lucene-1.4.3.jar"/>
-  <property name="regexp.jar" value="jakarta-regexp-1.3.jar"/>
+  <property name="regexp.jar" value="jakarta-regexp-1.4.jar"/>
   <property name="log4j.jar" value="log4j-1.2.11.jar"/>
   
   <!-- Autodetect the platform -->
@@ -251,11 +251,11 @@
   <target name="doc">
     <echo message="Generating JavaDoc documentation ..." />
     <delete dir="temp/doc"/>
-    <mkdir dir="temp/doc"/>
+    <mkdir dir="temp/doc/javadoc"/>
     <javadoc packagenames="*"
              sourcepathref="docpath"
              classpathref="classpath"
-             destdir="temp/doc"
+             destdir="temp/doc/javadoc"
              doctitle="${doc.title}"
              windowtitle="${doc.title}"
              header="${doc.header}"
@@ -269,6 +269,13 @@
             href="${java-api-location}"
             packagelistLoc="txt/dummy-jdk-api-doc"/>
     </javadoc>
+
+    <mkdir dir="temp/doc/tlddoc"/>
+    <java fork="true" jar="lib/ant/tlddoc.jar"
+          failonerror="true">
+        <arg line="-d temp/doc/tlddoc"/>
+        <arg value="web/server/regain-search.tld"/>
+    </java>
   </target>
 
 
@@ -358,7 +365,7 @@
       <manifest>
         <attribute name="Preparator-Classes" value=".JacobMsExcelPreparator;.JacobMsWordPreparator;.JacobMsPowerPointPreparator"/>
       </manifest>
-      <fileset dir="temp/included-lib-classes/common">
+      <fileset dir="temp/included-lib-classes/win">
         <include name="com/jacob/**"/>
         <include name="de/filiadata/lucene/spider/generated/msoffice2000/**"/>
       </fileset>
@@ -430,6 +437,10 @@
     <antcall target="-simple-preparator">
       <param name="classname" value="XmlPreparator"/>
     </antcall>      
+
+    <antcall target="-simple-preparator">
+      <param name="classname" value="ExternalPreparator"/>
+    </antcall>      
   </target>
 
 
@@ -465,9 +476,7 @@
       <fileset dir="lib/linux" includes="libtray.so"/>
     </copy>
     <copy todir="temp/runtime/desktop/win/conf/default">
-      <fileset dir="txt" includes="DesktopConfiguration.xml"/>
-      <fileset dir="txt" includes="CrawlerConfiguration.xml"/>
-      <fileset dir="txt" includes="SearchConfiguration.xml"/>
+      <fileset dir="txt" includes="*Configuration*.xml"/>
       <fileset dir="txt" includes="log4j.properties"/>
     </copy>
     <copy todir="temp/runtime/desktop/linux/conf/default">
@@ -513,13 +522,17 @@
    | Merges the message files (msg*.properties) of two directories.
    +-->
   <target name="-merge-messages" if="target">
-	  <loadfile property="msg-1" srcFile="${path-1}/msg.properties"/>
-	  <loadfile property="msg-2" srcFile="${path-2}/msg.properties"/>
-	  <echo file="${target}/msg.properties" message="${msg-1}${msg-2}"/>
+    <loadfile property="msg-1" srcFile="${path-1}/msg.properties"/>
+    <loadfile property="msg-2" srcFile="${path-2}/msg.properties"/>
+    <echo file="${target}/msg.properties" message="${msg-1}${msg-2}"/>
 
     <loadfile property="msg_de-1" srcFile="${path-1}/msg_de.properties"/>
     <loadfile property="msg_de-2" srcFile="${path-2}/msg_de.properties"/>
     <echo file="${target}/msg_de.properties" message="${msg_de-1}${msg_de-2}"/>
+
+    <loadfile property="msg_it-1" srcFile="${path-1}/msg_it.properties"/>
+    <loadfile property="msg_it-2" srcFile="${path-2}/msg_it.properties"/>
+    <echo file="${target}/msg_it.properties" message="${msg_it-1}${msg_it-2}"/>
   </target>
 
 
@@ -532,7 +545,7 @@
     <copy todir="temp/runtime/crawler">
       <fileset dir="lib/win" includes="jacob.dll"/>
       <fileset dir="lib/win" includes="ifilter_wrapper.dll"/>
-      <fileset dir="txt" includes="CrawlerConfiguration.xml"/>
+      <fileset dir="txt" includes="CrawlerConfiguration*.xml"/>
       <fileset dir="txt" includes="log4j.properties"/>
     </copy>
 
@@ -741,8 +754,13 @@
       <arg value="../../../test/docs"/>
       <arg value="../../test/docs"/>
       <classpath>
-        <fileset dir="lib">
+        <fileset dir="temp/preparator">
           <include name="*.jar"/>
+        </fileset>
+        <fileset dir="lib">
+          <include name="${lucene.jar}"/>
+          <include name="${regexp.jar}"/>
+          <include name="${log4j.jar}"/>
         </fileset>
         <pathelement path="temp/classes"/>
       </classpath>      
@@ -779,7 +797,7 @@
    | Runs the project.
    +-->
   <target name="run-crawler" depends="runtime">
-    <java jar="temp/runtime/crawler/${programname.file}.jar"
+    <java jar="temp/runtime/crawler/${programname.file}-crawler.jar"
           dir="temp/runtime/crawler"
           fork="true">
           <!--

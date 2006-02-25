@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: SearchToolkit.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/SearchToolkit.java,v $
- *     $Date: 2005/10/18 07:50:08 $
+ *     $Date: 2006/01/21 08:01:16 $
  *   $Author: til132 $
- * $Revision: 1.21 $
+ * $Revision: 1.22 $
  */
 package net.sf.regain.search;
 
@@ -141,9 +141,12 @@ public class SearchToolkit {
     if (queryString == null) {
       // Get the query parameter
       StringBuffer query = new StringBuffer();
-      String queryParam = request.getParameter("query");
-      if (queryParam != null) {
-        query.append(queryParam);
+      String[] queryParamArr = request.getParametersNotNull("query");
+      for (int i = 0; i < queryParamArr.length; i++) {
+        if (i != 0) {
+          query.append(" ");
+        }
+        query.append(queryParamArr[i]);
       }
       
       // Append the additional fields to the query

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: IndexWriterManager.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/IndexWriterManager.java,v $
- *     $Date: 2005/08/13 10:34:27 $
+ *     $Date: 2006/01/17 10:50:26 $
  *   $Author: til132 $
- * $Revision: 1.23 $
+ * $Revision: 1.24 $
  */
 package net.sf.regain.crawler;
 
@@ -38,6 +38,7 @@ import java.util.HashMap;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
+import net.sf.regain.crawler.config.AuxiliaryField;
 import net.sf.regain.crawler.config.CrawlerConfig;
 import net.sf.regain.crawler.config.UrlMatcher;
 import net.sf.regain.crawler.document.DocumentFactory;
@@ -283,13 +284,16 @@ public class IndexWriterManager {
                                 + mTempIndexDir.getAbsolutePath());
     }
 
+    // Get the untokenized field names
+    String[] untokenizedFieldNames = getUntokenizedFieldNames(config);
+
     // Create the Analyzer
     // NOTE: Make shure you use the same Analyzer in the SearchContext too!
     String analyzerType = config.getAnalyzerType();
     String[] stopWordList = config.getStopWordList();
     String[] exclusionList = config.getExclusionList();
     mAnalyzer = RegainToolkit.createAnalyzer(analyzerType, stopWordList,
-        exclusionList);
+        exclusionList, untokenizedFieldNames);
 
     // Alten Index kopieren, wenn Index aktualisiert werden soll
     if (updateIndex) {
@@ -325,6 +329,9 @@ public class IndexWriterManager {
     CrawlerToolkit.writeToFile(analyzerType, new File(mTempIndexDir, "analyzerType.txt"));
     CrawlerToolkit.writeListToFile(stopWordList, new File(mTempIndexDir, "stopWordList.txt"));
     CrawlerToolkit.writeListToFile(exclusionList, new File(mTempIndexDir, "exclusionList.txt"));
+    if (untokenizedFieldNames.length != 0) {
+        CrawlerToolkit.writeListToFile(untokenizedFieldNames, new File(mTempIndexDir, "untokenizedFieldNames.txt"));
+    }
 
     // Prepare the analysis directory if wanted
     if (config.getWriteAnalysisFiles()) {
@@ -340,6 +347,27 @@ public class IndexWriterManager {
     mDocumentFactory = new DocumentFactory(config, mAnalysisDir);
   }
 
+  
+  /**
+   * Returns the names of the fields that shouldn't be tokenized.
+   * 
+   * @param config The crawler configuration.
+   * @return The names of the fields that shouldn't be tokenized.
+   */
+  private String[] getUntokenizedFieldNames(CrawlerConfig config) {
+    AuxiliaryField[] auxFieldArr = config.getAuxiliaryFieldList();
+    ArrayList list = new ArrayList();
+    for (int i = 0; i < auxFieldArr.length; i++) {
+      if (! auxFieldArr[i].isTokenized()) {
+        list.add(auxFieldArr[i].getFieldName());
+      }
+    }
+
+    String[] asArr = new String[list.size()];
+    list.toArray(asArr);
+    return asArr;
+  }
+  
 
   /**
    * Gibt zur�ck, ob ein bestehender Index aktualisiert wird.

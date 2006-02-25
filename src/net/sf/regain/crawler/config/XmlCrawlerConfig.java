@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: XmlCrawlerConfig.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/XmlCrawlerConfig.java,v $
- *     $Date: 2005/11/21 10:46:29 $
+ *     $Date: 2006/01/21 22:54:38 $
  *   $Author: til132 $
- * $Revision: 1.11 $
+ * $Revision: 1.14 $
  */
 package net.sf.regain.crawler.config;
 
@@ -167,8 +167,8 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * @throws RegainException Wenn die Konfiguration fehlerhaft ist.
    */
   private void readLoadUnparsedUrls(Element config) throws RegainException {
-    Node node = XmlToolkit.getChild(config, "loadUnparsedUrls", true);
-    mLoadUnparsedUrls = XmlToolkit.getTextAsBoolean(node);
+    Node node = XmlToolkit.getChild(config, "loadUnparsedUrls");
+    mLoadUnparsedUrls = (node == null) ? false : XmlToolkit.getTextAsBoolean(node);
   }
 
 
@@ -179,8 +179,8 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * @throws RegainException Wenn die Konfiguration fehlerhaft ist.
    */
   private void readHttpTimeoutSecs(Element config) throws RegainException {
-    Node node = XmlToolkit.getChild(config, "httpTimeout", true);
-    mHttpTimeoutSecs = XmlToolkit.getTextAsInt(node);
+    Node node = XmlToolkit.getChild(config, "httpTimeout");
+    mHttpTimeoutSecs = (node == null) ? 180 : XmlToolkit.getTextAsInt(node);
   }
 
 
@@ -243,22 +243,22 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
     node = XmlToolkit.getChild(indexNode, "dir", true);
     mIndexDir = XmlToolkit.getText(node, true);
-    node = XmlToolkit.getChild(indexNode, "buildIndex", true);
-    mBuildIndex = XmlToolkit.getTextAsBoolean(node);
+    node = XmlToolkit.getChild(indexNode, "buildIndex");
+    mBuildIndex = (node == null) ? true : XmlToolkit.getTextAsBoolean(node);
     node = XmlToolkit.getChild(indexNode, "analyzerType", true);
     mAnalyzerType = XmlToolkit.getText(node, true);
     node = XmlToolkit.getChild(indexNode, "stopwordList", true);
     mStopWordList = XmlToolkit.getTextAsWordList(node, true);
     node = XmlToolkit.getChild(indexNode, "exclusionList", true);
     mExclusionList = XmlToolkit.getTextAsWordList(node, false);
-    node = XmlToolkit.getChild(indexNode, "writeAnalysisFiles", true);
-    mWriteAnalysisFiles = XmlToolkit.getTextAsBoolean(node);
+    node = XmlToolkit.getChild(indexNode, "writeAnalysisFiles");
+    mWriteAnalysisFiles = (node == null) ? false : XmlToolkit.getTextAsBoolean(node);
 
     node = XmlToolkit.getChild(indexNode, "breakpointInterval");
     mBreakpointInterval = (node == null) ? 10 : XmlToolkit.getTextAsInt(node);
 
-    node = XmlToolkit.getChild(indexNode, "maxFailedDocuments", true);
-    mMaxFailedDocuments = XmlToolkit.getTextAsDouble(node) / 100.0;
+    node = XmlToolkit.getChild(indexNode, "maxFailedDocuments");
+    mMaxFailedDocuments = (node == null) ? 1.0 : (XmlToolkit.getTextAsDouble(node) / 100.0);
   }
 
 
@@ -398,11 +398,15 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * @throws RegainException Wenn die Konfiguration fehlerhaft ist.
    */
   private void readUseLinkTextAsTitleRegexList(Node config) throws RegainException {
-    Node node = XmlToolkit.getChild(config, "useLinkTextAsTitleList", true);
-    Node[] nodeArr = XmlToolkit.getChildArr(node, "urlPattern");
-    mUseLinkTextAsTitleRegexList = new String[nodeArr.length];
-    for (int i = 0; i < nodeArr.length; i++) {
-      mUseLinkTextAsTitleRegexList[i] = XmlToolkit.getText(nodeArr[i], true);
+    Node node = XmlToolkit.getChild(config, "useLinkTextAsTitleList");
+    if (node == null) {
+      mUseLinkTextAsTitleRegexList = new String[0];
+    } else {
+      Node[] nodeArr = XmlToolkit.getChildArr(node, "urlPattern");
+      mUseLinkTextAsTitleRegexList = new String[nodeArr.length];
+      for (int i = 0; i < nodeArr.length; i++) {
+        mUseLinkTextAsTitleRegexList[i] = XmlToolkit.getText(nodeArr[i], true);
+      }
     }
   }
 
@@ -436,7 +440,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
       node = XmlToolkit.getChild(nodeArr[i], "config");
       PreparatorConfig prepConfig = null;
       if (node != null) {
-        prepConfig = readPreparatorConfig(node, xmlFile);
+        prepConfig = readPreparatorConfig(node, xmlFile, className);
       }
       
       mPreparatorSettingsArr[i] = new PreparatorSettings(enabled, className, urlRegex, prepConfig);
@@ -469,8 +473,12 @@ public class XmlCrawlerConfig implements CrawlerConfig {
                 "either the attribute 'value' or the attribute 'regexGroup'");
         }
 
+        boolean store    = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "store", true);
+        boolean index    = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "index", true);
+        boolean tokenize = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "tokenize", false);
+
         mAuxiliaryFieldArr[i] = new AuxiliaryField(fieldName, value,
-            toLowerCase, urlRegex, urlRegexGroup);
+            toLowerCase, urlRegex, urlRegexGroup, store, index, tokenize);
       }
     }
   }
@@ -518,10 +526,12 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * 
    * @param prepConfig The node to read the preparator config from.
    * @param xmlFile The file the configuration was read from.
+   * @param className The class name of the preparator.
    * @return The configuration of a preparator.
    * @throws RegainException If the configuration has errors.
    */
-  private PreparatorConfig readPreparatorConfig(Node prepConfig, File xmlFile)
+  private PreparatorConfig readPreparatorConfig(Node prepConfig, File xmlFile,
+    String className)
     throws RegainException
   {
     // Check whether the config is in a extra file
@@ -544,6 +554,13 @@ public class XmlCrawlerConfig implements CrawlerConfig {
       for (int paramIdx = 0; paramIdx < paramArr.length; paramIdx++) {
         String paramName = XmlToolkit.getAttribute(paramArr[paramIdx], "name", true);
         String paramValue = XmlToolkit.getText(paramArr[paramIdx], true);
+
+        if (paramMap.containsKey(paramName)) {
+          throw new RegainException("Preparator configuration of '" + className
+              + "' has multiple '" + paramName + "' parameters in section '"
+              + sectionName + "'");
+        }
+
         paramMap.put(paramName, paramValue);
       }
       

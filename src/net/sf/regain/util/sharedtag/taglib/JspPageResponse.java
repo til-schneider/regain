@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: JspPageResponse.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/taglib/JspPageResponse.java,v $
- *     $Date: 2005/03/16 12:30:31 $
+ *     $Date: 2006/01/03 11:25:03 $
  *   $Author: til132 $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  */
 package net.sf.regain.util.sharedtag.taglib;
 
@@ -35,6 +35,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 import net.sf.regain.RegainException;
+import net.sf.regain.RegainToolkit;
 import net.sf.regain.util.sharedtag.PageResponse;
 
 /**
@@ -64,7 +65,7 @@ public class JspPageResponse extends PageResponse {
     mServletResponse = (HttpServletResponse) pageContext.getResponse();
   }
 
-  
+
   /**
    * Gets the character encoding of the response.
    * 
@@ -72,10 +73,11 @@ public class JspPageResponse extends PageResponse {
    * @throws RegainException If getting th encoding failed.
    */
   public String getEncoding() throws RegainException {
-    return mServletResponse.getCharacterEncoding();
+  	String encoding = mServletResponse.getCharacterEncoding();
+    return (encoding != null) ? encoding : RegainToolkit.getSystemDefaultEncoding();
   }
-  
-  
+
+
   /**
    * Sets the header with the given name.
    * 

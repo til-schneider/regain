@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: FieldTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/hit/FieldTag.java,v $
- *     $Date: 2005/08/07 10:51:09 $
+ *     $Date: 2006/01/19 21:03:32 $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  */
 package net.sf.regain.search.sharedlib.hit;
 
@@ -34,11 +34,11 @@ import net.sf.regain.util.sharedtag.PageResponse;
 import org.apache.lucene.document.Document;
 
 /**
- * Generates an index field value of the current hit's document.
+ * Generates the value of an index field of the current hit's document.
  * <p>
  * Tag Parameters:
  * <ul>
- * <li><code>field</code>: The name of the index field to generate.</li>
+ * <li><code>field</code>: The name of the index field to write the value of.</li>
  * </ul>
  *
  * @author Til Schneider, www.murfman.de

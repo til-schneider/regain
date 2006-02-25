@@ -1,0 +1,59 @@
+Ca. 28.07.04:
+=============
+    Updates:
+      jakarta regexp: 1.2 -> 1.3
+      jakarta log4j: 1.1.3 -> 1.2.9
+      jakarta lucene: 1.3 -> 1.4.2
+      xerces-j: ? -> 2.6.2
+      pdfBox: 0.6.4 -> 0.6.7
+      Jakarta POI: 2.0 RC 2 -> 2.5.1
+      jacob: 1.7 -> 1.8 (neue Webseite: http://sourceforge.net/projects/jacob-project/)
+    Unterschiede:
+      jacob: Laeuft jetzt auch mit Java 1.4
+      JacobMsExcelPreparator:
+        Stabilitaet: Fuehrte frueher zu Absturz der VM. Jetzt keine Probleme.
+        Geschwindigkeit: 5,00 sec fuer 27,50 kB
+        Qualitaet: Es werden nicht alle Spalten ausgelesen.
+      JacobMsPowerPointPreparator:
+        Stabilitaet: Unveraendert: Keine Probleme bekannt
+        Geschwindigkeit: Unveraendert: Fuer 820,50 kB: 7,07 sec -> 7,53 sec
+        Qualitaet: Unveraendert: Keine Probleme bekannt
+      JacobMsWordPreparator:
+        Stabilitaet: Unveraendert: Keine Probleme bekannt
+        Geschwindigkeit: Unveraendert: Fuer 3,59 MB: 36,34 sec -> 37,98 sec
+        Qualitaet: Unveraendert: Keine Probleme bekannt
+      PdfPreparator:
+        Stabilitaet: Unveraendert: Keine Probleme bekannt
+        Geschwindigkeit: Faktor 4 langsamer: Fuer 674,44 kB: 13,69 sec -> 1:06 min
+                                                    2. Test: 13,43 sec -> 1:07 min
+        Qualitaet: Besser: Es wird mehr erkannt. Probleme mit Umlauten aus Latex
+      PoiMsExcelPreparator:
+        Stabilitaet: Unveraendert: Keine Probleme bekannt
+        Geschwindigkeit: Unveraendert: Fuer 27,50 kB: 1,27 sec -> 1,91 sec
+        Qualitaet: Unveraendert: Keine Probleme bekannt
+      PoiMsWordPreparator:
+        Stabilitaet: Unveraendert: 2 von 5 Dokumenten brechen ab.
+        Geschwindigkeit: Unveraendert: Fuer 3,39 MB: 1,02 sec -> 1,11 sec
+        Qualitaet: Unveraendert: Vergleichbar mit JacobMsWordPreparator
+
+26.02.06:
+=========
+    Updates:
+      jakarta regexp: 1.3 -> 1.4
+      [jakarta log4j: 1.2.11 (current is 1.2.13, but update is not nessesary)]
+      [jakarta lucene: 1.4.3 (is up-to-date)]
+      [xerces-j: 2.6.2 (current is 2.7.1, but update is not nessesary)]
+      pdfBox: 0.7.1 -> 0.7.2
+      [Jakarta POI: 3.0 alpha1 20050704 (is up-to-date)]
+      [jacob: 1.8 (current is 1.9.1, API changes caused problems, so I went back
+                   to the old version (getDispatch -> toDispatch))]
+      jdic: 0.8.8 -> 0.9.1
+    Results:
+      PdfBoxPreparator:
+        Stability: No known problems
+        Speed: 1 MB: 12,38 secs -> 10,82 secs
+        Quality: Unchanged
+
+
+
+

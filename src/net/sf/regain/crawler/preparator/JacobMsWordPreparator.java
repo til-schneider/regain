@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: JacobMsWordPreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/JacobMsWordPreparator.java,v $
- *     $Date: 2005/11/21 10:19:29 $
+ *     $Date: 2006/01/21 11:53:30 $
  *   $Author: til132 $
- * $Revision: 1.10 $
+ * $Revision: 1.11 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -154,7 +154,7 @@ public class JacobMsWordPreparator extends AbstractJacobMsOfficePreparator {
                                new Variant(true));    // readOnly
 
       // iterate through the sections
-      StringBuffer content = new StringBuffer();
+      StringBuffer content = new StringBuffer(DEFAULT_BUFFER_SIZE);
       Sections sections = doc.getSections();
       for (int i = 1; i <= sections.getCount(); i++) {
         Section sec = sections.item(i);

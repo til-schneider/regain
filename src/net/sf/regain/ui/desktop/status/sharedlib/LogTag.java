@@ -19,55 +19,55 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: StacktraceTag.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/error/StacktraceTag.java,v $
- *     $Date: 2006/01/19 21:03:51 $
+ *  $RCSfile: LogTag.java,v $
+ *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/status/sharedlib/LogTag.java,v $
+ *     $Date: 2006/01/22 12:08:20 $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 1.1 $
  */
-package net.sf.regain.search.sharedlib.error;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+package net.sf.regain.ui.desktop.status.sharedlib;
 
 import net.sf.regain.RegainException;
+import net.sf.regain.util.io.MemoryAppender;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
+import net.sf.regain.util.sharedtag.SharedTag;
+
+import org.apache.log4j.Appender;
+import org.apache.log4j.Logger;
 
 /**
- * Generates the stacktrace of the error.
+ * Writes the last log messages.
  *
  * @author Til Schneider, www.murfman.de
  */
-public class StacktraceTag extends AbstractErrorTag {
+public class LogTag extends SharedTag {
+
+  /** The memory appender that holds the last log messages. */
+  private static MemoryAppender mMemoryAppender;
+
 
   /**
    * Called when the parser reaches the end tag.
    *  
    * @param request The page request.
    * @param response The page response.
-   * @param error The error of the request.
    * @throws RegainException If there was an exception.
    */
-  protected void printEndTag(PageRequest request,
-    PageResponse response, Throwable error)
+  public void printEndTag(PageRequest request, PageResponse response)
     throws RegainException
   {
-    if (error != null) {
-      try {
-        StringWriter strWriter = new StringWriter();
-        PrintWriter writer = new PrintWriter(strWriter);
-        error.printStackTrace(writer);
-        writer.close();
-        strWriter.close();
-        
-        response.printNoHtml(strWriter.toString());
+    if (mMemoryAppender == null) {
+      Appender app = (MemoryAppender) Logger.getRootLogger().getAppender("memory");
+      if (app instanceof MemoryAppender) {
+        mMemoryAppender = (MemoryAppender) app;
+      } else {
+        response.print("No MemoryAppender with the name 'memory' configured!");
+        return;
       }
-      catch (IOException exc) {
-        throw new RegainException("Printing stacktrace failed", exc);
-      } 
     }
+
+    mMemoryAppender.printLog(response);
   }
 
 }

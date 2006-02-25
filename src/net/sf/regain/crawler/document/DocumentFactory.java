@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: DocumentFactory.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/document/DocumentFactory.java,v $
- *     $Date: 2005/11/14 08:12:55 $
+ *     $Date: 2006/01/17 10:50:26 $
  *   $Author: til132 $
- * $Revision: 1.18 $
+ * $Revision: 1.20 $
  */
 package net.sf.regain.crawler.document;
 
@@ -352,14 +352,20 @@ public class DocumentFactory {
             // We have no value set -> Extract the value from the regex
             value = regex.getParen(auxiliaryFieldArr[i].getUrlRegexGroup());
           }
-          if (auxiliaryFieldArr[i].getToLowerCase()) {
-            value = value.toLowerCase();
-          }
 
-          if (mLog.isDebugEnabled()) {
-            mLog.debug("Adding auxiliary field: " + fieldName + "=" + value);
+          if (value != null) {
+            if (auxiliaryFieldArr[i].getToLowerCase()) {
+              value = value.toLowerCase();
+            }
+
+            if (mLog.isDebugEnabled()) {
+              mLog.debug("Adding auxiliary field: " + fieldName + "=" + value);
+            }
+            boolean store = auxiliaryFieldArr[i].isStored();
+            boolean index = auxiliaryFieldArr[i].isIndexed();
+            boolean token = auxiliaryFieldArr[i].isTokenized();
+            doc.add(new Field(fieldName, value, store, index, token));
           }
-          doc.add(Field.Keyword(fieldName, value));
         }
       }
     }

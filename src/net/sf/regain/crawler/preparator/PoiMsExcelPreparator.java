@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: PoiMsExcelPreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/PoiMsExcelPreparator.java,v $
- *     $Date: 2005/11/21 10:19:29 $
+ *     $Date: 2006/01/21 11:53:30 $
  *   $Author: til132 $
- * $Revision: 1.7 $
+ * $Revision: 1.8 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -93,7 +93,7 @@ public class PoiMsExcelPreparator extends AbstractPreparator {
       mWorkbook = new HSSFWorkbook(poiFs);
       mDataFormat = mWorkbook.createDataFormat();
 
-      StringBuffer cleanBuffer = new StringBuffer();
+      StringBuffer cleanBuffer = new StringBuffer(DEFAULT_BUFFER_SIZE);
       for (int sheetIdx = 0; sheetIdx < mWorkbook.getNumberOfSheets(); sheetIdx++) {
         HSSFSheet sheet = mWorkbook.getSheetAt(sheetIdx);
 

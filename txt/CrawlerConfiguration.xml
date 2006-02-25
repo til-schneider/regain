@@ -8,10 +8,17 @@
 
 <!--
  | Configuration for the regain crawler (for creating a search index)
+ |
+ | You can find a detailed description of all configuration tags here:
+ | http://regain.murfman.de/wiki/en/index.php/CrawlerConfiguration.xml
+ |
+ | You can find more configration examples in the CrawlerConfiguration_examples.xml.
  +-->
 <configuration>
 
-<!-- Proxy settings -->
+<!--
+ | Enter your HTTP proxy settings here (Look at the preferences of your browser)
+ +-->
 <proxy>
   <!--
   <host>proxy</host>
@@ -23,12 +30,10 @@
 
 
 <!--
- | The user agent the crawler should use for identifying at the HTTP server(s).
+ | The list of URLs where the spidering will start.
+ |
+ | Enter the start page of your web site resp. a file system folder here.
  +-->
-<userAgent>Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)</userAgent>
-
-
-<!-- The list of URLs where the spidering will start. -->
 <startlist>
   <!-- Directory parsing -->
   <!--
@@ -42,14 +47,22 @@
 </startlist>
 
 
-<!-- The whitelist containing prefixes an URL must have to be processed -->
+<!--
+ | The whitelist containing prefixes an URL must have to be processed
+ |
+ | Enter the domain of your web site here.
+ +-->
 <whitelist>
   <prefix name="file">file://</prefix>
   <prefix>http://www.mydomain.de</prefix>
 </whitelist>
 
 
-<!-- The blacklist containing prefixes an URL must NOT have to be processed -->
+<!--
+ | The blacklist containing prefixes an URL must NOT have to be processed
+ |
+ | Enter sub directories you don't want to be indexed here.
+ +-->
 <blacklist>
   <!--
   <prefix>http://www.mydomain.de/some/dynamic/content/</prefix>
@@ -58,13 +71,19 @@
 </blacklist>
 
 
-<!-- The preferences for the search index -->
+<!--
+ | ==================================================================================
+ | That's all you have to configure! The rest of this file is advanced configuration.
+ | ==================================================================================
+ +-->
+
+
+<!--
+ | The preferences for the search index.
+ +-->
 <searchIndex>
   <!-- The directory where the index should be located -->
   <dir>searchindex</dir>
-
-  <!-- Specifies, whether the index should be built -->
-  <buildIndex>true</buildIndex>
 
   <!--
    | Specifies the analyzer type to use.
@@ -72,37 +91,8 @@
    | The following types are supported:
    |  * english: For the english language
    |  * german: For the german language
-   |
-   | You can add more types by extending the method createAnalyser in the class
-   | de.filiadata.lucene.LuceneToolkit.
    +-->
   <analyzerType>german</analyzerType>
-
-  <!--
-   | Specifies the interval between two breakpoints in minutes. If set to 0, no
-   | breakpoints will be created.
-   |
-   | A breakpoint is a snapshot the crawler creates periodically while working.
-   | If the crawler should crash it goes on from the last breakpoint.
-   +-->
-  <breakpointInterval>10</breakpointInterval>
-
-  <!--
-   | Specifies, whether the analysis files should be written.
-   | The analysis files help to check the quality of the index building process.
-   +-->
-  <writeAnalysisFiles>false</writeAnalysisFiles>
-
-  <!--
-   | Gibt den maximalen Prozentsatz von gescheiterten Dokumenten an. (0..100)
-   |
-   | Ist das Verhältnis von gescheiterten Dokumenten zur Gesamtzahl von Dokumenten
-   | größer als dieser Prozentsatz, so wird der Index verworfen.
-   |
-   | Gescheiterte Dokumente sind Dokumente die es entweder nicht gibt (Deadlink)
-   | oder die nicht ausgelesen werden konnten.
-   +-->
-  <maxFailedDocuments>100</maxFailedDocuments>
 
   <!--
    | Contains all words that should not be indexed.
@@ -144,150 +134,63 @@
  |   ... to configure preparators
  +-->
 <preparatorList>
-  <preparator>
-    <class>.HtmlPreparator</class>
-    <!--
-     | The regular expression a URL must match to, to be prepared by this
-     | preparator. If specified the regular expression used internally by the
-     | preparator is overridden.
-     +-->
-    <!--
-    <urlPattern>(^http://[^/]*/?$)|(^http://.*/[^\.]*$)|(^http://.*/$)|(\.(html|htm|jsp|php\d?|asp)$)</urlPattern>
-    -->
-    <config>
-      <!--
-       | The regular expressions that find the start and end locations of the content
-       | that should be indexed in HTML pages.
-       |
-       | "prefix":        The prefix the content extractor is responsible for.
-       |                  You may specify more content extractors.
-       | "startRegex":    The regular expression that finds the start of the
-       |                  content. When the content should be indexed from the
-       |                  start, specify an empty text for "startRegex".
-       | "endRegex":      The regular expression that finds the end of the
-       |                  content. When the content should be indexed to the
-       |                  end, specify an empty text for "endRegex".
-       | "headlineRegex": The regular expression that finds the headline.
-       | "headlineRegex.group": The group of "headlineRegex" that extracts the
-       |                  headline.
-       +-->
-      <!--
-      <section name="contentExtractor">
-        <param name="prefix">http://www.testit.de/</param>
-        <param name="startRegex">&lt;!&minus;&minus; Start content &minus;&minus;&gt;</param>
-        <param name="endRegex"></param>
-        <param name="headlineRegex">&lt;a name=.*&gt;(.*)&lt;/a&gt;</param>
-        <param name="headlineRegex.group">1</param>
-      </section>
-      -->
-
-      <!--
-       | The ectractor that extracts the navigation path in HTML pages.
-       |
-       | "prefix":        The prefix the path extractor is responsible for.
-       | "startRegex":    The regular expression that finds the start of the area
-       |                  where the whole navigation path is.
-       | "endRegex":      The regular expression that finds the end of the area where
-       |                  the whole navigation path is.
-       | "pathNodeRegex": The regular expression that extracts one node of the
-       |                  navigation path.
-       | "pathNodeRegex.urlGroup": The group of "pathNodeRegex" that extracts
-       |                  the URL of the path node.
-       | "pathNodeRegex.titleGroup": The group of "pathNodeRegex" that extracts
-       |                  the title of the path node.
-       +-->
-      <!--
-      <section name="pathExtractor">
-        <param name="prefix">http://www.testit.de/</param>
-        <param name="startRegex">&lt;!&minus;&minus; Pfad-Beginn &minus;&minus;&gt;</param>
-        <param name="endRegex">&lt;!&minus;&minus; Pfad-Ende &minus;&minus;&gt;</param>
-        <param name="pathNodeRegex">&lt;a.*href="([^"]*)">(.*)&lt;/a></param>
-        <param name="pathNodeRegex.urlGroup">1</param>
-        <param name="pathNodeRegex.titleGroup">2</param>
-      </section>
-      -->
-    </config>
-  </preparator>
-  
-  <preparator>
-    <class>.PoiMsExcelPreparator</class>
-  </preparator>
-  <preparator enabled="false">
-    <class>.JacobMsExcelPreparator</class>
-    <config>
-      <!--
-       | properties:
-       |   The semicolon separated list of document properties that should be
-       |   extracted.
-       |   Possible properties are:
-       |     propTitle, subject, author, keywords, comments, template,
-       |     lastAuthor, revision, timeLastPrinted, timeCreated, timeLastSaved,
-       |     totalEditTime, pages, words, characters, security, category,
-       |     manager, company, bytes, lines, paras, hyperlinkBase, charsWSpaces
-       +-->
-      <section name="main">
-        <param name="properties">author</param>
-      </section>
-    </config>
-  </preparator>
-  
-  <preparator>
-    <class>.PoiMsWordPreparator</class>
-  </preparator>
-  <preparator enabled="false">
-    <class>.JacobMsWordPreparator</class>
-    <config>
-      <!--
-       | headlineStyles:
-       |   The semicolon separated list of Word style names (format templates)
-       |   used by headline paragraphs.
-       |
-       | properties:
-       |   The semicolon separated list of document properties that should be
-       |   extracted.
-       |   Possible properties are:
-       |     propTitle, subject, author, keywords, comments, template,
-       |     lastAuthor, revision, timeLastPrinted, timeCreated, timeLastSaved,
-       |     totalEditTime, pages, words, characters, security, category,
-       |     manager, company, bytes, lines, paras, hyperlinkBase, charsWSpaces
-       +-->
-      <section name="main">
-        <param name="headlineStyles">Überschrift 1;Überschrift 2</param>
-        <param name="properties">author</param>
-      </section>
-    </config>
-  </preparator>
-  
-  <preparator enabled="false">
-    <class>.JacobMsPowerPointPreparator</class>
-    <config>
-      -->
-      <!--
-       | properties:
-       |   The semicolon separated list of document properties that should be
-       |   extracted.
-       |   Possible properties are:
-       |     propTitle, subject, author, keywords, comments, template,
-       |     lastAuthor, revision, timeLastPrinted, timeCreated, timeLastSaved,
-       |     totalEditTime, pages, words, characters, security, category,
-       |     manager, company, bytes, lines, paras, slides, notes, hiddenSlides,
-       |     mmClips, hyperlinkBase, charsWSpaces
-       +-->
-      <section name="main">
-        <param name="properties">author</param>
-      </section>
-    </config>    
-  </preparator>
-
+  <!--
+   | Enable this preparator if you want to use the text extractor of
+   | Microsoft Windows. This preparator is able to read tons of file formats.
+   +-->
   <preparator enabled="false">
       <class>.IfilterPreparator</class>
   </preparator>
 
+  <!--
+   | Enable this preparator if you want to use MS Excel for indexing your Excel
+   | documents.
+   +-->
+  <preparator enabled="false">
+    <class>.JacobMsExcelPreparator</class>
+  </preparator>
+  
+  <!--
+   | Enable this preparator if you want to use MS Word for indexing your Word
+   | documents.
+   +-->
+  <preparator enabled="false">
+    <class>.JacobMsWordPreparator</class>
+  </preparator>
+  
+  <!--
+   | Enable this preparator if you want to use MS Powerpoint for indexing your
+   | Powerpoint documents.
+   +-->
+  <preparator enabled="false">
+    <class>.JacobMsPowerPointPreparator</class>
+  </preparator>
+
+  <!--
+   | This tells regain that it should first try the SimpleRtfPreparator for RTF
+   | files. Only if this one fails the SwingRtfPreparator is used
+   | (which is much slower).
+   +-->
   <preparator>
     <class>.SimpleRtfPreparator</class>
   </preparator>
   <preparator>
     <class>.SwingRtfPreparator</class>
+  </preparator>
+
+  <!--
+   | This preparator may be used if you have an external program that can
+   | extract text. It's disabled by default.
+   +-->
+  <preparator enabled="false">
+    <class>.ExternalPreparator</class>
+    <config>
+      <section name="command">
+        <param name="urlPattern">\.ps$</param>
+        <param name="commandLine">ps2ascii ${filename}</param>
+        <param name="checkExitCode">false</param>
+      </section>
+    </config>
   </preparator>
 </preparatorList>
 
@@ -311,68 +214,14 @@
  | only hits from this project directory.
  +-->
 <auxiliaryFieldList>
+  <!-- Don't change these two fields. But you may add your own. -->
   <auxiliaryField name="extension" regexGroup="1" toLowercase="true">
     <regex>\.([^\.]*)$</regex>
   </auxiliaryField>
+  <auxiliaryField name="location" regexGroup="1" store="false" tokenize="true">
+    <regex>^(.*)$</regex>
+  </auxiliaryField>
 </auxiliaryFieldList>
-
-
-<!-- Specifies, whether to load URLs that are neither parsed nor indexed -->
-<loadUnparsedUrls>false</loadUnparsedUrls>
-
-
-<!--
- | Der Timeout für HTTP-Downloads. Dieser Wert bestimmt die maximale Zeit
- | in Sekunden, die ein HTTP-Download insgesamt dauern darf.
- +-->
-<httpTimeout>180</httpTimeout>
-
-
-<!--
- | The list of patterns a document's URL must match to, when the link text
- | should be used as title instead of the document's real title.
- +-->
-<useLinkTextAsTitleList>
-  <urlPattern>^http://.*\.(pdf|xls|doc|rtf)$</urlPattern>
-</useLinkTextAsTitleList>
-
-
-<!--
- | Specifies which control files should be crated. These files may be used to
- | check with a sceduling script whether the index was successfully built.
- |
- | <finishedWithoutFatalsFile>: The name of the control file that should be
- | created if the index creation finished without fatal errors.
- |
- | <finishedWithFatalsFile>: The name of the control file that should be
- | created if the index creation failed with a fatal error.
- +-->
-<!--
-<controlFiles>
-  <finishedWithoutFatalsFile>c:\Temp\control\NoFatals</finishedWithoutFatalsFile>
-  <finishedWithFatalsFile>c:\Temp\control\WithFatals</finishedWithFatalsFile>
-</controlFiles>
--->
-
-
-<!--
- | The CrawlerAccessController to use.
- | 
- | This is a part of the access control system that ensures that only those
- | documents are shown in the search results that the user is allowed to
- | read.
- |
- | If you specify a CrawlerAccessController, don't forget to specify the
- | SearchAccessController counterpart in the SearchConfiguration.xml!
- +-->
-<!--
-<crawlerAccessController>
-  <class jar="myAccess.jar">mypackage.MyCrawlerAccessController</class>
-  <config>
-    <param name="bla">blubb</param>
-  </config>
-</crawlerAccessController>
--->
 
 
 <!-- The regular expressions that indetify URLs in HTML. -->

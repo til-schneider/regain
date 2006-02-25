@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: JacobMsExcelPreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/JacobMsExcelPreparator.java,v $
- *     $Date: 2005/11/21 10:19:29 $
+ *     $Date: 2006/01/21 11:53:30 $
  *   $Author: til132 $
- * $Revision: 1.6 $
+ * $Revision: 1.8 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -33,6 +33,7 @@ import net.sf.regain.crawler.document.RawDocument;
 
 import com.jacob.com.ComFailException;
 import com.jacob.com.ComThread;
+import com.jacob.com.Dispatch;
 import com.jacob.com.SafeArray;
 import com.jacob.com.Variant;
 
@@ -48,6 +49,7 @@ import de.filiadata.lucene.spider.generated.msoffice2000.excel.*;
  * es wird der Titel extrahiert.
  *
  * @author Til Schneider, www.murfman.de
+ * @author Reinhard Balling
  */
 public class JacobMsExcelPreparator extends AbstractJacobMsOfficePreparator {
 
@@ -83,6 +85,19 @@ public class JacobMsExcelPreparator extends AbstractJacobMsOfficePreparator {
 
 
   /**
+   * Wrapper for calling the ActiveX-Method with input-parameter(s).
+   * 
+   * @param row an input-parameter of type int
+   * @param col an input-parameter of type int
+   * @return the result is of type Range
+   */
+  public Range getCells(Worksheet sheet, int row, int col) {
+    return new Range(Dispatch.call(sheet, "Cells", new Variant(row), 
+        new Variant(col)).toDispatch());
+  }
+
+
+  /**
    * Präpariert ein Dokument für die Indizierung.
    *
    * @param rawDocument Das zu präpariernde Dokument.
@@ -97,55 +112,82 @@ public class JacobMsExcelPreparator extends AbstractJacobMsOfficePreparator {
       // Neue Excel-Applikation erstellen
       mExcelApplication = new Application();
     }
+    //Dispatch.put(mExcelApplication, "Visible", new Variant(true));
 
     try {
+      // Some constants needed later on
+      Variant what = new Variant("*");
+      Variant lookIn = new Variant(-4163);
+      Variant lookAt = new Variant(XlLookAt.xlWhole);
+      Variant searchOrderByRows = new Variant(XlSearchOrder.xlByRows);
+      Variant searchOrderByCols = new Variant(XlSearchOrder.xlByColumns);
+      int searchDirectionUp = XlSearchDirection.xlNext;
+      int searchDirectionDown = XlSearchDirection.xlPrevious;
+      Variant xlFalse = new Variant(false);    
+
       // Get all workbooks
       Workbooks wbs = mExcelApplication.getWorkbooks();
 
       // Open the file
       java.io.File file = rawDocument.getContentAsFile();
-      Workbook wb = wbs.open(file.getAbsolutePath());
+      // RB 20051106: Need to add second argument to open call, otherwise Excel
+      // can hang here waiting for an answer to the dialogue box asking to
+      // update external links
+      Workbook wb = wbs.open(file.getAbsolutePath(), new Variant(0));
 
       // Collect the content of all sheets
       Sheets sheets = wb.getWorksheets();
       int sheetCount = sheets.getCount();
-      StringBuffer contentBuf = new StringBuffer();
+
+      //System.out.println("Sheetcount = "+sheetCount); 
+      StringBuffer contentBuf = new StringBuffer(DEFAULT_BUFFER_SIZE);
       for (int sheetIdx = 1; sheetIdx <= sheetCount; sheetIdx++) {
         Variant sheetVariant = (Variant) sheets.getItem(new Variant(sheetIdx));
         Worksheet sheet = new Worksheet(sheetVariant.toDispatch());
+        Variant after = new Variant(sheet.getRange(new Variant("IV65536")));
+        Range extractRange;
+        // Find the top left and bottom right corner enclosing the data in the sheet
+        try {
+          // The following calls may fail because the find operation returns
+          // a null pointer. This exception is caught by reverting to the
+          // UsedRange call which also returns the used area in a spreadsheet, 
+          // even though it is often bigger than necessary.
+          int firstRow = sheet.getCells().find(what, after, lookIn, lookAt, searchOrderByRows, 
+                  searchDirectionUp, xlFalse, xlFalse).getRow();
+          int firstCol = sheet.getCells().find(what, after, lookIn, lookAt, searchOrderByCols, 
+              searchDirectionUp, xlFalse, xlFalse).getColumn();
+          int lastRow = sheet.getCells().find(what, after, lookIn, lookAt, searchOrderByRows, 
+                  searchDirectionDown, xlFalse, xlFalse).getRow();
+          int lastCol = sheet.getCells().find(what, after, lookIn, lookAt, searchOrderByCols, 
+                  searchDirectionDown, xlFalse, xlFalse).getColumn();
+          extractRange = sheet.getRange(new Variant(getCells(sheet, firstRow, firstCol)), 
+                                        new Variant(getCells(sheet, lastRow, lastCol)));
+          //System.out.println("Sheet "+sheetIdx+"   ProperUsedRange="+extractRange.getAddress());        
+        } catch(NullPointerException e) {
+          extractRange = sheet.getUsedRange();
+          //System.out.println("Sheet "+sheetIdx+"   UsedRange="+extractRange.getAddress());        
+        }
+        //RB 20051106: If the sheet is empty, getUsedRange returns $A$1 and
+        // toSafeArray fails. Therefore we have to check that there is some text
+        // to extract by comparing the address of the range to the string "$A$1".
+        if (!extractRange.getAddress().equals("$A$1")) {
+          SafeArray cellArray = extractRange.getValue().toSafeArray();
 
-        // Letzte Zelle mit Daten finden
-        // VB code: (Quelle: http://www.vbgamer.de/cgi-bin/loadframe.pl?ID=vb/tipps/tip0342.shtml)
-        //   myWorksheet.Cells.Find(What:="*", After:=.Range("A1"), _
-        //                          SearchOrder:=xlByRows, _
-        //                          SearchDirection:=xlPrevious).Row
-        Variant what = new Variant("*");
-        Variant after = new Variant(sheet.getRange(new Variant("A1")));
-        Variant lookIn = new Variant(1);
-        Variant lookAt = new Variant(XlLookAt.xlWhole);
-        Variant searchOrder = new Variant(XlSearchOrder.xlByRows);
-        int searchDirection = XlSearchDirection.xlPrevious;
-        Range lastCell = sheet.getCells().find(what, after, lookIn, lookAt,
-          searchOrder, searchDirection);
-
-        // Get an array with all cells
-        Variant rangeVariant = new Variant("A1:" + lastCell.getAddress());
-        SafeArray cellArray = sheet.getRange(rangeVariant).getValue().toSafeArray();
-
-        int startRow = cellArray.getLBound(1);
-        int startCol = cellArray.getLBound(2);
-        int endRow   = cellArray.getUBound(1);
-        int endCol   = cellArray.getUBound(2);
-
-        for (int row = startRow; row <= endRow; row++) {
-          for (int col = startCol; col <= endCol; col++) {
-            String cellValue = cellArray.getString(row, col);
-            if ((cellValue != null) && (cellValue.length() != 0)) {
-              contentBuf.append(cellValue);
-              contentBuf.append(" ");
+          int startRow = cellArray.getLBound(1);
+          int startCol = cellArray.getLBound(2);
+          int endRow   = cellArray.getUBound(1);
+          int endCol   = cellArray.getUBound(2);
+  
+          for (int row = startRow; row <= endRow; row++) {
+            for (int col = startCol; col <= endCol; col++) {
+              String cellValue = cellArray.getString(row, col);
+              if ((cellValue != null) && (cellValue.length() != 0)) {
+                contentBuf.append(cellValue);
+                contentBuf.append(" ");
+              }
             }
+            contentBuf.append("\n");
           }
-          contentBuf.append("\n");
         }
       }
       

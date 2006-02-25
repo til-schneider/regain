@@ -2,17 +2,15 @@
  * CVS information:
  *  $RCSfile: AuxiliaryField.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/AuxiliaryField.java,v $
- *     $Date: 2005/11/14 08:12:56 $
+ *     $Date: 2006/01/17 10:50:42 $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  */
 package net.sf.regain.crawler.config;
 
-import org.apache.regexp.RE;
-import org.apache.regexp.RESyntaxException;
-
 import net.sf.regain.RegainException;
-import net.sf.regain.XmlToolkit;
+
+import org.apache.regexp.RE;
 
 /**
  * An auxiliary field is a additional field put into the index.
@@ -51,6 +49,15 @@ public class AuxiliaryField {
   /** The group of the regex that contains the value. */
   private int mUrlRegexGroup;
 
+  /** Specifies whether the field value should be stored in the index. */
+  private boolean mStore;
+
+  /** Specifies whether the field value should be indexed. */
+  private boolean mIndex;
+
+  /** Specifies whether the field value should be tokenized. */
+  private boolean mTokenize;
+
 
   /**
    * Creates a new instance of AuxiliaryField.
@@ -62,11 +69,15 @@ public class AuxiliaryField {
    *        lower case.
    * @param urlRegex The regex that extracts the value of the field.
    * @param urlRegexGroup The group of the regex that contains the value.
+   * @param store Specifies whether the field value should be stored in the
+   *        index.
+   * @param index Specifies whether the field value should be indexed.
+   * @param tokenize Specifies whether the field value should be tokenized.
    * 
    * @throws RegainException If the regex has a syntax error.
    */
   public AuxiliaryField(String fieldName, String value, boolean toLowerCase,
-    RE urlRegex, int urlRegexGroup)
+    RE urlRegex, int urlRegexGroup, boolean store, boolean index, boolean tokenize)
     throws RegainException
   {
     mFieldName = fieldName;
@@ -74,6 +85,9 @@ public class AuxiliaryField {
     mToLowerCase = toLowerCase;
     mUrlRegex = urlRegex;
     mUrlRegexGroup = urlRegexGroup;
+    mStore = store;
+    mIndex = index;
+    mTokenize = tokenize;
   }
   
   
@@ -126,6 +140,36 @@ public class AuxiliaryField {
    */
   public int getUrlRegexGroup() {
     return mUrlRegexGroup;
+  }
+
+  
+  /**
+   * Returns whether the field value should be stored in the index.
+   *
+   * @return whether the field value should be stored in the index.
+   */
+  public boolean isStored() {
+    return mStore;
+  }
+
+  
+  /**
+   * Returns whether the field value should be indexed.
+   *
+   * @return whether the field value should be indexed.
+   */
+  public boolean isIndexed() {
+    return mIndex;
+  }
+
+  
+  /**
+   * Returns whether the field value should be tokenized.
+   *
+   * @return whether the field value should be tokenized.
+   */
+  public boolean isTokenized() {
+    return mTokenize;
   }
   
 }

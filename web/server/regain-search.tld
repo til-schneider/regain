@@ -7,228 +7,378 @@
 <taglib>
   <tlibversion>1.0</tlibversion>
   <jspversion>1.1</jspversion>
-  <shortname>TagLib for searching in a Lucene index</shortname>
+  <shortname>search</shortname>
+  <info>TagLib for the regain search engine</info>
 
   <tag>
+    <info>
+      Writes a localized message. The messages are defined in the msg*.properties.
+    </info>
     <name>msg</name>
     <tagclass>net.sf.regain.ui.server.taglib.MsgTag</tagclass>
     <bodycontent>empty</bodycontent>
 
     <attribute>
+      <description>
+        The key of the message to write.
+      </description>
       <name>key</name>
       <required>true</required>
     </attribute>
   </tag>
 
   <tag>
+    <info>
+      Writes the value of a HTML request parameter. 
+    </info>
     <name>param</name>
     <tagclass>net.sf.regain.ui.server.taglib.ParamTag</tagclass>
     <bodycontent>empty</bodycontent>
 
     <attribute>
+      <description>
+        The name of the request parameter whichs value should be.
+      </description>
       <name>name</name>
       <required>true</required>
     </attribute>
   </tag>
 
   <tag>
+    <info>
+      Checks whether there is a index and whether a query was given. If one of
+      these conditions is not fulfilled, a redirect to another page is sent.
+    </info>
     <name>check</name>
     <tagclass>net.sf.regain.ui.server.taglib.CheckTag</tagclass>
     <bodycontent>empty</bodycontent>
 
     <attribute>
+      <description>
+        The URL to redirect to if there is no index.
+      </description>
       <name>noIndexUrl</name>
       <required>true</required>
     </attribute>
     <attribute>
+      <description>
+        The URL to redirect to if there is no query.
+      </description>
       <name>noQueryUrl</name>
       <required>false</required>
     </attribute>
   </tag>
 
   <tag>
+    <info>
+      Creates hyperlinks to navigate through the search result pages.
+    </info>
     <name>navigation</name>
     <tagclass>net.sf.regain.ui.server.taglib.NavigationTag</tagclass>
     <bodycontent>empty</bodycontent>
 
     <attribute>
+      <description>
+        The message to use for labeling the back link.
+      </description>
       <name>msgBack</name>
       <required>true</required>
     </attribute>
     <attribute>
+      <description>
+        The message to use for labeling the forward link.
+      </description>
       <name>msgForward</name>
       <required>true</required>
     </attribute>
     <attribute>
+      <description>
+        The URL of the page where the links should point to.
+      </description>
       <name>targetPage</name>
       <required>false</required>
     </attribute>
     <attribute>
+      <description>
+        The CSS style sheet class to use for the link tags.
+      </description>
       <name>class</name>
       <required>false</required>
     </attribute>
   </tag>
 
   <tag>
+    <info>
+      The list tag encloses the JSP code that should be repeated for every shown
+      search hit.
+
+      Reads the request parameters: "fromresult" (The index of the first result
+      to show) and "maxresults" (The maximum number of results to show).
+    </info>
     <name>list</name>
     <tagclass>net.sf.regain.ui.server.taglib.ListTag</tagclass>
     <bodycontent>jsp</bodycontent>
 
     <attribute>
+      <description>
+        The message to generate if the were no results.
+      </description>
       <name>msgNoResults</name>
       <required>true</required>
     </attribute>
   </tag>
 
   <tag>
+    <info>
+      Writes the value of a HTML request parameter as a hidden field.
+    </info>
     <name>input_hiddenparam</name>
     <tagclass>net.sf.regain.ui.server.taglib.input.HiddenparamTag</tagclass>
     <bodycontent>empty</bodycontent>
 
     <attribute>
+      <description>
+        The name of the request parameter whichs value should be generated.
+      </description>
       <name>name</name>
       <required>true</required>
     </attribute>
   </tag>
 
   <tag>
+    <info>
+      Generates a combobox list that shows all distinct values of a field in the
+      index.
+    </info>
     <name>input_fieldlist</name>
     <tagclass>net.sf.regain.ui.server.taglib.input.FieldlistTag</tagclass>
     <bodycontent>empty</bodycontent>
 
     <attribute>
+      <description>
+        The name of the index field to created the list for.
+      </description>
       <name>field</name>
       <required>true</required>
     </attribute>
     <attribute>
+      <description>
+        The message to show for the item that ignores this field.
+      </description>
       <name>allMsg</name>
       <required>true</required>
     </attribute>
   </tag>
 
   <tag>
+    <info>
+      Writes an input field that contains the current search query.
+    </info>
     <name>input_query</name>
     <tagclass>net.sf.regain.ui.server.taglib.input.QueryTag</tagclass>
     <bodycontent>empty</bodycontent>
+
+    <attribute>
+      <description>
+        The size of the input field.
+      </description>
+      <name>size</name>
+      <required>false</required>
+    </attribute>
   </tag>
 
   <tag>
+    <info>
+      Writes a hidden field that contains the maximum number of results.
+    </info>
     <name>input_maxresults</name>
     <tagclass>net.sf.regain.ui.server.taglib.input.MaxresultsTag</tagclass>
     <bodycontent>empty</bodycontent>
   </tag>
 
   <tag>
+    <info>
+      Writes a submit button.
+    </info>
     <name>input_submit</name>
     <tagclass>net.sf.regain.ui.server.taglib.input.SubmitTag</tagclass>
     <bodycontent>empty</bodycontent>
 
     <attribute>
+      <description>
+        The button text.
+      </description>
       <name>text</name>
       <required>true</required>
     </attribute>
   </tag>
 
   <tag>
+    <info>
+      Writes the error message.
+    </info>
     <name>error_message</name>
     <tagclass>net.sf.regain.ui.server.taglib.error.MessageTag</tagclass>
     <bodycontent>empty</bodycontent>
   </tag>
 
   <tag>
+    <info>
+      Writes the stacktrace of the error.
+    </info>
     <name>error_stacktrace</name>
     <tagclass>net.sf.regain.ui.server.taglib.error.StacktraceTag</tagclass>
     <bodycontent>empty</bodycontent>
   </tag>
 
   <tag>
+    <info>
+      Writes the query as String.
+    </info>
     <name>stats_query</name>
     <tagclass>net.sf.regain.ui.server.taglib.stats.QueryTag</tagclass>
     <bodycontent>empty</bodycontent>
   </tag>
 
   <tag>
+    <info>
+      Writes the number of the first hit shown on this page.
+    </info>
     <name>stats_from</name>
     <tagclass>net.sf.regain.ui.server.taglib.stats.FromTag</tagclass>
     <bodycontent>empty</bodycontent>
   </tag>
 
   <tag>
+    <info>
+      Writes the number of the last hit shown on this page.
+    </info>
     <name>stats_to</name>
     <tagclass>net.sf.regain.ui.server.taglib.stats.ToTag</tagclass>
     <bodycontent>empty</bodycontent>
   </tag>
 
   <tag>
+    <info>
+      Writes the total number of hits.
+    </info>
     <name>stats_total</name>
     <tagclass>net.sf.regain.ui.server.taglib.stats.TotalTag</tagclass>
     <bodycontent>empty</bodycontent>
   </tag>
 
   <tag>
+    <info>
+      Writes the time the plain search took in seconds.
+    </info>
     <name>stats_searchtime</name>
     <tagclass>net.sf.regain.ui.server.taglib.stats.SearchtimeTag</tagclass>
     <bodycontent>empty</bodycontent>
   </tag>
 
   <tag>
+    <info>
+      Writes a link to the current hit's document. For the link text the title
+      is used.
+      This tag must be inside a link tag.
+    </info>
     <name>hit_link</name>
     <tagclass>net.sf.regain.ui.server.taglib.hit.LinkTag</tagclass>
     <bodycontent>empty</bodycontent>
 
     <attribute>
+      <description>
+        The CSS style sheet class to use for the link.
+      </description>
       <name>class</name>
       <required>false</required>
     </attribute>
   </tag>
 
   <tag>
+    <info>
+      Writes the navigation path to the current hit's document.
+      This tag must be inside a link tag.
+    </info>
     <name>hit_path</name>
     <tagclass>net.sf.regain.ui.server.taglib.hit.PathTag</tagclass>
     <bodycontent>empty</bodycontent>
 
     <attribute>
+      <description>
+        The CSS style sheet class to use for the link.
+      </description>
       <name>class</name>
       <required>false</required>
     </attribute>
     <attribute>
+      <description>
+        Specifies whether links (a tags) should be created.
+      </description>
       <name>createLinks</name>
       <required>false</required>
     </attribute>
     <attribute>
+      <description>
+        The HTML code that should be inserted before the path if the document
+        has one.
+      </description>
       <name>before</name>
       <required>false</required>
     </attribute>
     <attribute>
+      <description>
+        The HTML code that should be inserted after the path if the document
+        has one.
+      </description>
       <name>after</name>
       <required>false</required>
     </attribute>
   </tag>
 
   <tag>
+    <info>
+      Writes the score of the current hit in percent.
+      This tag must be inside a link tag.
+    </info>
     <name>hit_score</name>
     <tagclass>net.sf.regain.ui.server.taglib.hit.ScoreTag</tagclass>
     <bodycontent>empty</bodycontent>
   </tag>
 
   <tag>
+    <info>
+      Writes the size to the current hit's document.
+      This tag must be inside a link tag.
+    </info>
     <name>hit_size</name>
     <tagclass>net.sf.regain.ui.server.taglib.hit.SizeTag</tagclass>
     <bodycontent>empty</bodycontent>
   </tag>
 
   <tag>
+    <info>
+      Writes the URL of the current hit's document.
+      This tag must be inside a link tag.
+    </info>
     <name>hit_url</name>
     <tagclass>net.sf.regain.ui.server.taglib.hit.UrlTag</tagclass>
     <bodycontent>empty</bodycontent>
   </tag>
 
   <tag>
+    <info>
+      Writes the value of an index field of the current hit's document.
+      This tag must be inside a link tag.
+    </info>
     <name>hit_field</name>
     <tagclass>net.sf.regain.ui.server.taglib.hit.FieldTag</tagclass>
     <bodycontent>empty</bodycontent>
 
     <attribute>
+      <description>
+        The name of the index field to write the value of
+      </description>
       <name>field</name>
       <required>true</required>
     </attribute>

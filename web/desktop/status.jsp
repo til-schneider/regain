@@ -38,6 +38,9 @@
       <h4><search:msg key="timing"/></h4>
       <pre><status:profiler/></pre>
 
+      <h4><search:msg key="lastLogMessages"/></h4>
+      <pre><status:log/></pre>
+
       <br>
     </td></tr>
   </table>

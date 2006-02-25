@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: IfilterPreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/IfilterPreparator.java,v $
- *     $Date: 2005/11/21 10:19:29 $
+ *     $Date: 2006/01/21 11:53:30 $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -158,7 +158,7 @@ public class IfilterPreparator extends AbstractPreparator {
     IfilterWrapper ifilter = getIfilterWrapperForExtension(extension);
 
     String fileName = rawDocument.getContentAsFile().getAbsolutePath();
-    StringBuffer buffer = new StringBuffer();
+    StringBuffer buffer = new StringBuffer(DEFAULT_BUFFER_SIZE);
 
     ifilter.getText(fileName, buffer);
 

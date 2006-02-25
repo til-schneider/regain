@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: RegainToolkit.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/RegainToolkit.java,v $
- *     $Date: 2005/10/18 07:50:08 $
+ *     $Date: 2006/01/17 10:50:26 $
  *   $Author: til132 $
- * $Revision: 1.15 $
+ * $Revision: 1.17 $
  */
 package net.sf.regain;
 
@@ -47,6 +47,7 @@ import java.net.URLEncoder;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
@@ -82,7 +83,10 @@ public class RegainToolkit {
 
   /** The number of bytes in a GB (giga byte). */
   private static final int SIZE_GB = 1024 * 1024 * 1024;
-  
+
+  /** The cached system's default encoding. */
+  private static String mSystemDefaultEncoding;
+
   /** Der gecachte, systemspeziefische Zeilenumbruch. */
   private static String mLineSeparator;
 
@@ -349,25 +353,26 @@ public class RegainToolkit {
   
 
   /**
-   * Erzeugt einen Analyzer, der sowohl vom Crawler als auch von der Suchmaske
-   * genutzt wird. Es ist sehr wichtig, dass beide den gleichen Analyzer nutzen,
-   * daher nutzen beide diese Methode.
+   * Creates an analyzer that is used both from the crawler and the search mask.
+   * It is important that both use the same analyzer which is the reason for
+   * this method.
    * <p>
-   * Momentan werden folgende Analyzer-Typen unterstützt:
+   * At the moment the following analyzer types are supported:
    * <ul>
-   *   <li>english: Ein Analyzer für englisch</li>
-   *   <li>german: Ein Analyzer für deutsch</li>
+   *   <li>english: An analyzer for the english language.</li>
+   *   <li>german: An analyzer for the german language.</li>
    * </ul>
    *
-   * @param analyzerType Der Typ des zu erstellenden Analyzers.
-   * @param stopWordList Alle Worte, die nicht indiziert werden sollen.
-   * @param exclusionList Alle Worte, die bei der Indizierung nicht vom Analyzer
-   *        verändert werden sollen.
-   * @return Der Analyzer
-   * @throws RegainException Wenn die Erzeugung fehl schlug.
+   * @param analyzerType The type of the analyzer to create.
+   * @param stopWordList All words that should not be indexed.
+   * @param exclusionList All words that shouldn't be changed by the analyzer.
+   * @param untokenizedFieldNames The names of the fields that should not be
+   *        tokenized.
+   * @return The analyzer.
+   * @throws RegainException If the creation failed.
    */
   public static Analyzer createAnalyzer(String analyzerType,
-    String[] stopWordList, String[] exclusionList)
+    String[] stopWordList, String[] exclusionList, String[] untokenizedFieldNames)
     throws RegainException
   {
     if (analyzerType == null) {
@@ -410,7 +415,7 @@ public class RegainToolkit {
       throw new RegainException("Unkown analyzer type: '" + analyzerType + "'");
     }
 
-    analyzer = new WrapperAnalyzer(analyzer);
+    analyzer = new WrapperAnalyzer(analyzer, untokenizedFieldNames);
 
     if (ANALYSE_ANALYZER) {
       return createAnalysingAnalyzer(analyzer);
@@ -785,6 +790,20 @@ public class RegainToolkit {
     return mLineSeparator;
   }
 
+  
+  /**
+   * Returns the system's default encoding.
+   *
+   * @return the system's default encoding.
+   */
+  public static String getSystemDefaultEncoding() {
+    if (mSystemDefaultEncoding == null) {
+      mSystemDefaultEncoding = new InputStreamReader(System.in).getEncoding();
+    }
+
+    return mSystemDefaultEncoding;
+  }
+  
 
   /**
    * Checks whether the given String contains whitespace.
@@ -1033,20 +1052,29 @@ public class RegainToolkit {
    */
   private static class WrapperAnalyzer extends Analyzer {
     
-    /** The analyzer to use for the "groups" field. */
-    private Analyzer mGroupsAnalyzer;
+    /** The analyzer to use for a field that shouldn't be stemmed. */
+    private Analyzer mNoStemmingAnalyzer;
     /** The nested analyzer. */
     private Analyzer mNestedAnalyzer;
+    /** The names of the fields that should not be tokenized. */
+    private HashSet mUntokenizedFieldNames;
     
     
     /**
      * Creates a new instance of WrapperAnalyzer.
      * 
      * @param nestedAnalyzer The nested analyzer.
+     * @param untokenizedFieldNames The names of the fields that should not be
+     *        tokenized.
      */
-    public WrapperAnalyzer(Analyzer nestedAnalyzer) {
-      mGroupsAnalyzer = new WhitespaceAnalyzer();
+    public WrapperAnalyzer(Analyzer nestedAnalyzer, String[] untokenizedFieldNames) {
+      mNoStemmingAnalyzer = new WhitespaceAnalyzer();
       mNestedAnalyzer = nestedAnalyzer;
+
+      mUntokenizedFieldNames = new HashSet();
+      for (int i = 0; i < untokenizedFieldNames.length; i++) {
+          mUntokenizedFieldNames.add(untokenizedFieldNames[i]);
+      }
     }
     
     
@@ -1055,11 +1083,18 @@ public class RegainToolkit {
      * Reader.
      */
     public TokenStream tokenStream(String fieldName, Reader reader) {
-      if (fieldName.equals("groups")) {
-        return mGroupsAnalyzer.tokenStream(fieldName, reader);
+      boolean useStemming = true;
+      // NOTE: For security reasons we explicitely check for the groups field
+      //       and don't use the mUntokenizedFieldNames for this implicitely
+      if (fieldName.equals("groups") || mUntokenizedFieldNames.contains(fieldName)) {
+          useStemming = false;
+      }
+
+      if (useStemming) {
+          Reader lowercasingReader = new LowercasingReader(reader);
+          return mNestedAnalyzer.tokenStream(fieldName, lowercasingReader);
       } else {
-        Reader lowercasingReader = new LowercasingReader(reader);
-        return mNestedAnalyzer.tokenStream(fieldName, lowercasingReader);
+        return mNoStemmingAnalyzer.tokenStream(fieldName, reader);
       }
     }
     

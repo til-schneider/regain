@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: UrlChecker.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/UrlChecker.java,v $
- *     $Date: 2005/08/01 09:37:28 $
+ *     $Date: 2006/02/07 16:24:01 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  */
 package net.sf.regain.crawler;
 
@@ -269,7 +269,7 @@ public class UrlChecker {
       // All tests passed -> Keep the file
       return true;
     } else {
-      return mIgnoredUrlSet.contains(url);
+      return mAcceptedUrlSet.contains(url);
     }
   }
 

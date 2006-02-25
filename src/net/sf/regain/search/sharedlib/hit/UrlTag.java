@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: UrlTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/hit/UrlTag.java,v $
- *     $Date: 2005/08/07 10:51:09 $
+ *     $Date: 2006/01/19 21:03:32 $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  */
 package net.sf.regain.search.sharedlib.hit;
 
@@ -36,7 +36,7 @@ import net.sf.regain.util.sharedtag.PageResponse;
 import org.apache.lucene.document.Document;
 
 /**
- * Generates the summary of the current hit's document.
+ * Generates the URL of the current hit's document.
  * <p>
  * The URL is generated as plain text not as a link. If you want a link use the
  * link tag.

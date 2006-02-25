@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: PreparatorTest.java,v $
  *   $Source: /cvsroot/regain/regain/test/src/net/sf/regain/test/PreparatorTest.java,v $
- *     $Date: 2005/11/21 10:19:29 $
+ *     $Date: 2006/01/21 10:47:13 $
  *   $Author: til132 $
- * $Revision: 1.11 $
+ * $Revision: 1.12 $
  */
 package net.sf.regain.test;
 
@@ -106,17 +106,22 @@ public class PreparatorTest {
       testPreparator(docDir, outputDir, "ppt", ifilterPreparator);
       testPreparator(docDir, outputDir, "rtf", ifilterPreparator);
       testPreparator(docDir, outputDir, "xls", ifilterPreparator);
-
-      testPreparator(docDir, outputDir, "html", new HtmlPreparator());
       testPreparator(docDir, outputDir, "doc", new JacobMsWordPreparator());
+      testPreparator(docDir, outputDir, "ppt", new JacobMsPowerPointPreparator());
+      testPreparator(docDir, outputDir, "xls", new JacobMsExcelPreparator());
+    }
+    catch (RegainException exc) {
+      mLog.error("Creating Windows-only preparator failed", exc);
+    }
+
+    try {
+      testPreparator(docDir, outputDir, "html", new HtmlPreparator());
       testPreparator(docDir, outputDir, "doc", new PoiMsWordPreparator());
       testPreparator(docDir, outputDir, "pdf", new PdfBoxPreparator());
-      testPreparator(docDir, outputDir, "ppt", new JacobMsPowerPointPreparator());
       testPreparator(docDir, outputDir, "ppt", new PoiMsPowerPointPreparator());
       testPreparator(docDir, outputDir, "rtf", new SimpleRtfPreparator());
       testPreparator(docDir, outputDir, "rtf", new SwingRtfPreparator());
       testPreparator(docDir, outputDir, "txt", new PlainTextPreparator());
-      testPreparator(docDir, outputDir, "xls", new JacobMsExcelPreparator());
       testPreparator(docDir, outputDir, "xls", new PoiMsExcelPreparator());
       testPreparator(docDir, outputDir, "xml", new XmlPreparator());
     }

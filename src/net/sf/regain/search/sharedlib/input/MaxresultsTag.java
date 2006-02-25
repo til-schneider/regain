@@ -21,13 +21,14 @@
  * CVS information:
  *  $RCSfile: MaxresultsTag.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/input/MaxresultsTag.java,v $
- *     $Date: 2005/03/01 16:00:39 $
+ *     $Date: 2006/01/17 10:45:08 $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  */
 package net.sf.regain.search.sharedlib.input;
 
 import net.sf.regain.RegainException;
+import net.sf.regain.search.SearchConstants;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
 import net.sf.regain.util.sharedtag.SharedTag;
@@ -37,7 +38,7 @@ import net.sf.regain.util.sharedtag.SharedTag;
  *
  * @author Til Schneider, www.murfman.de
  */
-public class MaxresultsTag extends SharedTag {
+public class MaxresultsTag extends SharedTag implements SearchConstants {
 
   /**
    * Called when the parser reaches the end tag.
@@ -49,7 +50,7 @@ public class MaxresultsTag extends SharedTag {
   public void printEndTag(PageRequest request, PageResponse response)
     throws RegainException
   {
-    String maxresults = request.getParameter("maxresults");
+    String maxresults = request.getParameter(PARAM_MAX_RESULTS);
     if (maxresults != null) {
       response.print("<input name=\"maxresults\" type=\"hidden\" "
         + "value=\"" + maxresults + "\"/>");

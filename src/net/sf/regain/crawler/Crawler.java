@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: Crawler.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/Crawler.java,v $
- *     $Date: 2005/11/21 10:46:29 $
+ *     $Date: 2006/01/29 14:04:01 $
  *   $Author: til132 $
- * $Revision: 1.24 $
+ * $Revision: 1.28 $
  */
 package net.sf.regain.crawler;
 
@@ -376,7 +376,12 @@ public class Crawler implements ErrorLogger {
       if (url.startsWith("file://")) {
         try {
           File file = RegainToolkit.urlToFile(url);
-          if (file.isDirectory()) {
+          // Check whether the file is readable.
+          if (! file.canRead()) {
+            mCrawlerJobProfiler.abortMeasuring();
+            logError("File is not readable: '" + url + "'", null, false);
+            continue;
+          } else if (file.isDirectory()) {
             // This IS a directory -> Add all child files as Jobs
             if (shouldBeParsed) {
               parseDirectory(file);
@@ -397,6 +402,15 @@ public class Crawler implements ErrorLogger {
       try {
         rawDocument = new RawDocument(url, mCurrentJob.getSourceUrl(),
                                       mCurrentJob.getSourceLinkText());
+      }
+      catch (RedirectException exc) {
+        String redirectUrl = exc.getRedirectUrl();
+        mLog.info("Redirect '" + url +  "' -> '" + redirectUrl + "'");
+        mUrlChecker.setIgnored(url);
+        addJob(redirectUrl, mCurrentJob.getSourceUrl(), shouldBeParsed,
+               shouldBeIndexed, mCurrentJob.getSourceLinkText());
+        mCrawlerJobProfiler.stopMeasuring(0);
+        continue;
       }
       catch (RegainException exc) {
         // Check whether the exception was caused by a dead link
@@ -479,6 +493,13 @@ public class Crawler implements ErrorLogger {
     int entryCount = 0;
     try {
       entryCount = mIndexWriterManager.getIndexEntryCount();
+      // NOTE: We've got to substract the errors, because for each failed
+      //       document a substitude document is added to the index
+      //       (which should not be counted).
+      entryCount -= mErrorCount;
+      if (entryCount < 0) {
+        entryCount = 0;
+      }
     }
     catch (Throwable thr) {
       logError("Counting index entries failed", thr, true);
@@ -753,7 +774,7 @@ public class Crawler implements ErrorLogger {
       // Get the URL for the current child file
       String url = RegainToolkit.fileToUrl(childArr[childIdx]);
 
-      // Check wether this is a directory
+      // Check whether this is a directory
       if (childArr[childIdx].isDirectory()) {
         // It's a directory -> Add a parse job
         addJob(url, sourceUrl, true, false, null);
@@ -787,14 +808,16 @@ public class Crawler implements ErrorLogger {
         String parentUrl = rawDocument.getUrl();
         String url = re.getParen(urlGroup);
 
-        // Convert the URL to an absolute URL
-        url = CrawlerToolkit.toAbsoluteUrl(url, parentUrl);
+        if (url != null) {
+          // Convert the URL to an absolute URL
+          url = CrawlerToolkit.toAbsoluteUrl(url, parentUrl);
 
-        // Try to get a link text
-        String linkText = getLinkText(contentAsString, offset);
+          // Try to get a link text
+          String linkText = getLinkText(contentAsString, offset);
 
-        // Add the job
-        addJob(url, parentUrl, shouldBeParsed, shouldBeIndexed, linkText);
+          // Add the job
+          addJob(url, parentUrl, shouldBeParsed, shouldBeIndexed, linkText);
+        }
       }
     }
   }

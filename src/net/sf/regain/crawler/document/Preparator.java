@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: Preparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/document/Preparator.java,v $
- *     $Date: 2005/08/13 11:33:30 $
+ *     $Date: 2006/01/21 11:53:30 $
  *   $Author: til132 $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  */
 package net.sf.regain.crawler.document;
 
@@ -65,6 +65,9 @@ import net.sf.regain.crawler.config.PreparatorConfig;
  * @author Til Schneider, www.murfman.de
  */
 public interface Preparator {
+
+  /** The default StringBuffer size that should be used for the content buffer. */
+  public static final int DEFAULT_BUFFER_SIZE = 16384; // 16 k
 
   /**
    * Initializes the preparator.

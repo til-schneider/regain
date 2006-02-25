@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: CrawlerToolkit.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/CrawlerToolkit.java,v $
- *     $Date: 2005/11/21 10:46:29 $
+ *     $Date: 2006/01/29 14:04:01 $
  *   $Author: til132 $
- * $Revision: 1.15 $
+ * $Revision: 1.17 $
  */
 package net.sf.regain.crawler;
 
@@ -40,9 +40,10 @@ import net.sf.regain.crawler.config.CrawlerConfig;
 import net.sf.regain.util.io.HtmlEntities;
 
 /**
- * Enthï¿½lt Hilfsmethoden fï¿½r den Crawler und seine Hilfsklassen.
+ * Contains help methods for the crawler.
  *
  * @author Til Schneider, www.murfman.de
+ * @author Gerhard Olsson
  */
 public class CrawlerToolkit {
 
@@ -50,6 +51,13 @@ public class CrawlerToolkit {
   private static Logger mLog = Logger.getLogger(CrawlerToolkit.class);
 
 
+  /**
+   * Returns a human readable command string for a command.
+   *
+   * @param commandArr The command separated in executable and parameters.
+   * @return The human readable command, where the parameters follow the
+   *         execuable separated by spaces.
+   */
   private static String toCommand(String[] commandArr) {
     StringBuffer buffer = new StringBuffer();
     for (int i = 0; i < commandArr.length; i++) {
@@ -154,15 +162,26 @@ public class CrawlerToolkit {
    * @param url the URL of the page
    *
    * @return a stream reading data from the specified URL.
+   * @throws RedirectException if the URL redirects to another URL.
    * @throws HttpStreamException if something went wrong.
    */
-  public static InputStream getHttpStream(URL url) throws HttpStreamException {
+  public static InputStream getHttpStream(URL url)
+    throws RedirectException, HttpStreamException
+  {
     URLConnection conn = null;
     try {
       conn = url.openConnection();
       if (conn instanceof HttpURLConnection) {
         HttpURLConnection hconn = (HttpURLConnection) conn;
-        // hconn.setInstanceFollowRedirects(false); // Not available in Java 1.2.2
+        // Required in Java 1.5 (redirect followed automatically)
+        // (Not available in Java 1.2.2)
+        hconn.setInstanceFollowRedirects(false);
+
+        // Set the preferred charset
+        String charset = RegainToolkit.getSystemDefaultEncoding() + ",utf-8,*";
+        hconn.setRequestProperty("Accept-Charset", charset);
+
+        // Check the response code
         int response = hconn.getResponseCode();
         boolean redirect = (response >= 300 && response <= 399);
 
@@ -170,24 +189,28 @@ public class CrawlerToolkit {
         // that was input to the new, redirected URL
         if (redirect) {
           String loc = conn.getHeaderField("Location");
-          if (loc == null) {
-            throw new IOException("Redirect did not provide a 'Location' header");
-          } else {
-            if (loc.startsWith("http", 0)) {
-              url = new URL(loc);
+          if (loc != null) {
+            String redirectUrl;
+            if (loc.startsWith("http")) {
+              redirectUrl = new URL(loc).toString();
             } else {
-              url = new URL(url, loc);
+              redirectUrl = new URL(url, loc).toString();
             }
-            return getHttpStream(url);
+            throw new RedirectException("Redirect '" + url +
+                "' -> '" + redirectUrl + "'", redirectUrl);
           }
+          throw new IOException("Redirect did not provide a 'Location' header");
         }
       }
 
       return conn.getInputStream();
     }
+    catch (RedirectException thr) {
+      throw thr;
+    }
     catch (Throwable thr) {
-      throw HttpStreamException.createInstance("Getting HTTP connection to "
-        + url.toString() + " failed", thr, conn);
+      throw HttpStreamException.createInstance("Could not get HTTP connection to "
+          + url.toString(), thr, conn);
     }
   }
 
@@ -215,8 +238,11 @@ public class CrawlerToolkit {
       out.close();
       return out.toByteArray();
     }
+    catch (RedirectException exc) {
+      throw exc;
+    }
     catch (IOException exc) {
-      throw new RegainException("Loading Dokument by HTTP failed", exc);
+      throw new RegainException("Could not load Document with HTTP", exc);
     }
     finally {
       if (in != null) {
@@ -554,7 +580,7 @@ public class CrawlerToolkit {
    * @return Der von Tags gesäberte Text
    */
   public static String cleanFromHtmlTags(String text) {
-    StringBuffer clean = new StringBuffer();
+    StringBuffer clean = new StringBuffer(text.length());
 
     int offset = 0;
     int tagStart;

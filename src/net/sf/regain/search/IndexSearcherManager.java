@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: IndexSearcherManager.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/IndexSearcherManager.java,v $
- *     $Date: 2005/03/12 09:46:31 $
+ *     $Date: 2006/01/17 10:50:42 $
  *   $Author: til132 $
- * $Revision: 1.8 $
+ * $Revision: 1.9 $
  */
 package net.sf.regain.search;
 
@@ -312,9 +312,17 @@ public class IndexSearcherManager {
       File exclusionListFile = new File(mWorkingIndexDir, "exclusionList.txt");
       String[] exclusionList = readWordListFromFile(exclusionListFile);
 
+      File untokenizedFieldNamesFile = new File(mWorkingIndexDir, "untokenizedFieldNames.txt");
+      String[] untokenizedFieldNames;
+      if (untokenizedFieldNamesFile.exists()) {
+          untokenizedFieldNames = readWordListFromFile(untokenizedFieldNamesFile); 
+      } else {
+          untokenizedFieldNames = new String[0];
+      }
+
       // NOTE: Make shure to use the same analyzer in the crawler
       mAnalyzer = RegainToolkit.createAnalyzer(analyzerType, stopWordList,
-                                               exclusionList);
+                                               exclusionList, untokenizedFieldNames);
     }
 
     return mAnalyzer;

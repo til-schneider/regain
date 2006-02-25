@@ -6,8 +6,13 @@
 ]>
 
 <!--
- | Configuration for the regain search taglib
- | (for searching on a previously created search index)
+ | Configuration for the regain search mask.
+ |
+ | Normally you only have to specify the directory where the search index is
+ | located. You do this in the <dir> tag of the <index name="main"> (line 74).
+ |
+ | You can find a detailed description of all configuration tags here:
+ | http://regain.murfman.de/wiki/en/index.php/SearchConfiguration.xml
  +-->
 <configuration>
 
@@ -41,7 +46,7 @@
        | "field:"-operator. Read the lucene query syntax for details:
        | http://jakarta.apache.org/lucene/docs/queryparsersyntax.html
        +-->
-      <searchFieldList>content title headlines</searchFieldList>
+      <searchFieldList>content title headlines location</searchFieldList>
 
       <!--
        | The SearchAccessController to use.
