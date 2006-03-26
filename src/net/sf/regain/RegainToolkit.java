@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: RegainToolkit.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/RegainToolkit.java,v $
- *     $Date: 2006/01/17 10:50:26 $
+ *     $Date: 2006/03/27 12:02:26 $
  *   $Author: til132 $
- * $Revision: 1.17 $
+ * $Revision: 1.18 $
  */
 package net.sf.regain;
 
@@ -128,15 +128,15 @@ public class RegainToolkit {
 
 
   /**
-   * Schreibt alle Daten, die der Reader liefert in den Writer.
+   * Writes all data from the reader to the writer.
    * <p>
-   * Weder der Reader noch der Writer werden dabei geschlossen. Dies muss die
-   * aufrufende Methode übernehmen!
+   * Neither the reader nor the writer will be closed. This has to be done by
+   * the caller!
    *
-   * @param reader Der Reader, der die Daten liefert.
-   * @param writer Der Writer auf den die Daten geschrieben werden sollen.
+   * @param reader The reader that provides the data.
+   * @param writer The writer where to write the data.
    *
-   * @throws IOException Wenn Lesen oder Schreiben fehl schlug.
+   * @throws IOException If reading or writing failed.
    */
   public static void pipe(Reader reader, Writer writer) throws IOException {
     char[] buffer = new char[10240]; // 10 kB (or kChars ;-) )

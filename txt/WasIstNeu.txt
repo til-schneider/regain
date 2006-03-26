@@ -1,3 +1,27 @@
+Version 1.1.1 am 27.03.06
+-------------------------
+
+* Bugfixes in der Server-Variante
+
+
+Version 1.1 am 26.02.06
+-----------------------
+
+* regain sucht nun auch in den URLs.
+* Die Desktop-Suche zeigt nun die letzten Log-Meldungen.
+* Bessere Behandlung von HTTP-Redirects. (Danke an Gerhard Olsson)
+* Zusatzfelder haben nun die Optionen "tokenize", "store" und "index".
+* Die Tag Library ist nun dokumentiert.
+* Die Suchmaske akzeptiert nun mehrere "query" Parameter
+  (diese werden einfach aneinandergehängt)
+* Die Jacob-Präparatoren wurden verbessert. (Danke an Reinhard Balling)
+* Neuer Präparator ExternalPrepartor: Dieser Präparator ruft externe Programme
+  oder Skripte auf, um den Text aus Dokumenten zu extrahieren.
+  (Danke an Paul Ortyl)
+* Italienische Lokalisierung fertiggestellt. (Danke an Franco Lombardo)
+* Ein paar Bugfixes
+
+
 Version 1.1 Beta 6 am 05.12.05
 ------------------------------
 

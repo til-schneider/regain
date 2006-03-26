@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: IfilterPreparator.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/IfilterPreparator.java,v $
- *     $Date: 2006/01/21 11:53:30 $
+ *     $Date: 2006/03/27 12:02:27 $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 1.4 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -112,7 +112,7 @@ public class IfilterPreparator extends AbstractPreparator {
             + "\\PersistentHandler";
           String persistentHandlerGuid = getRegistryKeyValue(regKey);
           if (persistentHandlerGuid != null) {
-            // It has one add the extension
+            // It has one -> add the extension
             list.add(classChildren[i].substring(1));
           }
         }
@@ -185,7 +185,10 @@ public class IfilterPreparator extends AbstractPreparator {
 
     // We don't have a ifilter for that extension yet -> Get the GUID of the
     // ifilter from the Windows registry, then get the ifilter
-  
+
+    // The following description comes from:
+    // http://www.codeproject.com/csharp/FullTextSearchingIFinters.asp
+
     // # Step 1: Determine if there is a PersistentHandler associated with the file
     //           extension. This can be found in the registry under
     //           HKEY_LOCAL_MACHINE\Software\Classes\FileExtension, e.g.

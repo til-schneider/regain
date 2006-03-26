@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile: FileServlet.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/server/FileServlet.java,v $
- *     $Date: 2005/10/18 07:50:07 $
+ *     $Date: 2006/03/23 21:34:19 $
  *   $Author: til132 $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  */
 package net.sf.regain.ui.server;
 
@@ -59,10 +59,14 @@ public class FileServlet extends HttpServlet {
       // Create a shared wrapper
       PageRequest request = new JspPageRequest(pageContext);
       PageResponse response = new JspPageResponse(pageContext);
-      
+
       // Extract the file name
-      String fileUrl = SearchToolkit.extractFileUrl(req.getRequestURI(), req.getCharacterEncoding());
-      
+      String encoding = req.getCharacterEncoding();
+      if (encoding == null) {
+          encoding = RegainToolkit.getSystemDefaultEncoding();
+      }
+      String fileUrl = SearchToolkit.extractFileUrl(req.getRequestURI(), encoding);
+
       // Check the file
       try {
         if (SearchToolkit.allowFileAccess(request, fileUrl)) {

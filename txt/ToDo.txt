@@ -1,4 +1,3 @@
-<<<<<<< ToDo.txt
 X Urversion
 
 ** Version 1.0 am 28.07.04 **
@@ -237,6 +236,9 @@ X Updated libs: jdic, regexp and PdfBox
 
 ** Version 1.1 am 26.02.06 **
 
+X Bugfix: NullPointer in URLDecoder.decode caused by FileServlet
+X Bugfix: MemoryAppender didn't work when PageResponse wasn't in the classpath.
+
 
 Filiadata:
 ----------
@@ -252,6 +254,10 @@ Filiadata:
 Prio A:
 -------
 
+  NullPointerException in HtmlPreparator
+    See http://forum.murfman.de/en/viewtopic.php?p=411#411
+  Give preparators the possibility to add index fields on their own.
+    See mail of Daniel Varela Santoalla from 09.02.06.
   Bugfix: IfilterPreparator geht unter WinXP Home nicht.
   Prüfen: Werden manche HTTP-URLs wirklich gelöscht?
     Siehe: http://forum.murfman.de/de/viewtopic.php?p=417
@@ -289,6 +295,8 @@ Prio B:
 
 Prio C:
 -------
+  PlainTextPreparator: Add option to set the max. amount of text to extract.
+    (avoid OutOfMemory)
   Hit highlighting
   Crawler: Abstraktion und nested Crawlers.
   Crawler: ZIP-Dateien durchsuchen
@@ -305,322 +313,14 @@ Prio C:
 
 Release-Checkliste:
 -------------------
+* Revision taggen
 * WasIstNeu.txt und WhatIsNew.txt aktualisieren
 * Lokalisierungen an Übersetzer geben
     * it -> Franco
 * JavaDoc und TLDdoc online stellen.
+* Homepage aktualisieren:
+  * docs.php
+  * news.php
+  * download.php 
+* Newsletter verschicken
 
-
-
-=======
-X Urversion
-
-** Version 1.0 am 28.07.04 **
-
-X Aktualisierung auf die neusten Versionen der genutzten Projekte, sofern
-    Ergebnis dadurch nicht schlechter wird.
-    Ergebnis siehe DependencyUpdates.txt
-X Word-Preparator: oeffnen und Schliessen von Word loggen
-X Parameter fuer Praeparatoren: (Aufwand: 4 Std.)
-    Praeparatoren sollen in der Konfiguration parametrisierbar werden. Diese
-    Parameter sollen optional in extra Datei ausgelagert werden koennen.
-X Jacob-Praeparatoren nicht mehr als Default nutzen.
-X Suchmaske: Konfiguration in externe XML-Datei auslagern
-    (Nicht mehr in web.xml)
-X Suchmaske: URL-Rewriting: Z.B. Indizierung von file://someserver/bla/blubb/...,
-    jedoch Anzeige im Browser mit http://intranet/blubb/... (Aufwand: 4 Std.)
-X Zusatz-Index-Felder aus Dokument-URL generieren. (Aufwand: 4 Std.)
-    Z.B. bei URL "file://var/sicherung/dk100/..." Feld "system" mit Wert "dk100" indexieren.
-    Oder bei "file://blubb/projects/Otto13/..." Feld "project" mit Wert "Otto13".
-X Suchemaske: Expertensuche: (Aufwand: 4 Std.)
-    Zusaetzliche Eingabefelder fuer bestimmte Suchfelder ermoeglichen. Die Werte
-    diese Felder dann mit "field:value" an Suchstring anhaengen.
-X Pruefen: Koennen die im Index enthaltenen Werte (distinct values) der
-    Suchfelder in der erweiterten Suchmaske als Auswahlmoeglichkeit angeboten
-    werden? (fuer Expertensuche mit ComboBoxes) (Aufwand: 4 Std.)
-    Ergebnis: Es ist machbar. (Mit IndexReader.terms())
-X Handbuch aktualisieren:
-    - Neue Versionen der abhaengigen Projekte
-    - Parameter fuer Praeparatoren (contentExtractor und pathExtractor "verschoben")
-    - Suchmaske wird nun ueber XML Datei konfiguriert (wo die liegt, steht in web.xml)
-    - Config Suchmaske: URL-Rewriting
-X Word-Preparator: Beruecksichtigungen von Formatvorlagen bei der Indizierung
-    von Word-Dokumenten. (Aufwand: max. 4 Std., wenn mehr Ruecksprache)
-    Text aus Abschnitten, die bestimmte Formatvorlagen nutzen bei der Suche
-    staerker gewichten (z.B. ueberschriften). Die Namen der Formatvorlagen
-    kommen aus der Konfiguration.
-X Handbuch aktualisieren:
-    - Config Crawler: Zusatzfelder aus Pfad generieren
-    - Installations- und Konfigurationsbeschreibung der Suchmaske ueberarbeitet,
-      so dass der Umgang mit der SearchConfiguration.xml erklaert wird.
-X SharedTags: Die selben Tags fuer Taglib-Technologie und simpleweb-Technologie
-    nutzen.
-X SharedTags: JSP-Parser fuer simpleweb
-X DesktopSuche: Such-JSPs unter simpleweb zum Laufen bekommen.
-X Desktopsuche: Einstellungen
-    - Wie oft soll er aktualisiert werden
-    - Welche Verzeichnisse sollen indiziert werden sollen
-    - Welche Verzeichnisse sollen ausgelassen werden
-    - Welche Webseiten sollen indiziert werden
-X Desktopsuche: Periodisch den Crawler aufrufen und automatisch geaenderte
-    Konfiguration laden
-X Desktopsuche: Task-Icon mit Menue
-X Desktopsuche: Exe creation with jsmooth
-X Desktopsuche: Installer
-X Desktopsuche: Besseres Seiten-Design
-X Desktopsuche: Willkommensseite anzeigen, wenn keine Start-URLs definiert sind.
-X Desktopsuche: file-Treffer ueber http bereitstellen
-X Bug: Indexierung von Webseiten geht nicht
-X Desktopsuche: FileService: Mime-Types setzen
-X Desktopsuche: Status
-    - Wann wurde der Index zuletzt aktualisiert
-    - Fortschritt bei laufender Aktualisierung
-X Desktopsuche: search.jsp:
-    - Forward zu noindex.jsp, wenn kein Index vorhanden.
-    - Forward zu searchinput.jsp, wenn query nicht gesetzt.
-X Desktopsuche: Links zu den anderen Seiten im Footer-Bereich
-X aenderungen fuer die Desktopsuche in Server-Variante uebernehmen
-X Jacob-Praeparatoren: Indizierung der Office-Dokumenten-Beschreibungs-Felder.
-    Dazu Preparator-Schnittstelle erweitern um: Map getAdditionalFields()
-    Folgende Felder extrahieren: Moeglichst alles aus Eigenschaften/Zusammenfassung
-    Einstellbar, welche Felder aufgenommen werden sollen.
-X Expertensuche: Tag fuer Combobox, die distinct values eines Feldes beinhaltet.
-X Neues Feld: extension: Dateiendung indexieren.
-X Internationalisierung und Lokalisierung fuer deutsch und englisch.
-X Bug: "http://www.murfman.de" wird geparst, aber nicht indexiert.
-    (Regex fuer HTML-Praeparator falsch)
-X Desktopsuche: Status: Aktueller Index: Groesse in MB, Anzahl Dokumente.
-    Aktuelle Indexierung: Aktuelle Anzahl Indexierte Dokumente.
-X Desktopsuche: Bei Update-Installation alte Konfiguration nicht ueberschreiben.
-X Openoffice-Praeparator
-X Desktopsuche: Port einstellbar
-
-** Version 1.1 Beta 1 am 10.03.05 **
-
-X Crawler: Regelmaessig Breakpoints setzen: IndexWriter und IndexReader schliessen
-    und aktuellen Stand in gesondertes Verzeichnis kopieren. Falls Indexierung
-    abgebrochen wurde auf diesem Breakpoint aufsetzten.
-X Desktopsuche: Status: Profiler-Ergebnisse anzeigen
-
-** Version 1.1 Beta 2 am 12.03.05 **
-
-X Bug: Excel-Praeparator kommt nicht mit allen Zahlen- und Datumsformaten klar.
-X Crawler: RawDocument: InputStream anbieten. Bei file-URL Daten nicht cachen.
-X Crawler: Fehler-Log nicht am Ende erstellen, sondern sofort und mit Stacktrace.
-X Praeparatoren in eigene Jars kapseln. Alle Jars werden in ein Verzeichnis
-    gepackt und beim Start geladen. Wenn mehrere Praeparatoren viel gemeinsamen
-    Code haben, dann koennen sie zusammen in ein Jar gepackt werden.
-    So ist im regain.jar nur das, was regain selbst braucht und die
-    Praeparatoren lassen sich leichter austauschen (insbesondere verschiedene
-    Versionen der selben Implementierung). Ausserdem koennen andere auch
-    Praeparatoren anbieten, die dann sehr einfach eingebunden werden koennen.
-    Die Konfiguration der Praeparatoren steckt weiterhin in der
-    CrawlerConfiguration.xml, allerdings muessen dort nicht mehr alle
-    Praeparatoren angegeben werden. Die Praeparatoren werden in der Reihenfolge
-    abgearbeitet, in der sie konfiguriert sind. (Die nicht konfigurierten
-    Praeparatoren in unbestimmter Reihenfolge danach).
-X Desktopsuche: Task-Icon fuer Linux
-X Bug: File-Service: Datei von Netzlaufwerken (//fileserver/bla/blubb) werden
-    nicht geladen (Forbidden)
-X Bug: Desktopsuche: Suchergebnisse: Umlaute werden falsch dargestellt.
-X Desktopsuche: Einstellungen: Beim Speichern als Grundgeruest
-    default-Config-Dateien nutzen.
-X Desktopsuche: Aktuelle Indexierung pausieren und manuelles Starten einer
-    Indexierung.
-X Bug: HTML-Praeparator kommt nicht mit allen Dateien klar (Siehe Mail von Jochen Stiepel)
-X Changelog erstellen
-X Desktopsuche: index.php zeigen
-X Desktopsuche: Schoenere Fehlerseite (errorpage benutzen)
-
-** Version 1.1 Beta 3 am 17.03.05 **
-
-X Bugfix: Nicht alle Zeitmessungen werden angezeigt.
-X Suchmaske: Version anzeigen
-X Zugriffsrechte beachten: Ein Benutzer kann nur die Dokumente sehen, fuer die
-    er auch Leserechte hat. (Aufwand: 2 Tage)
-X Taglib-Tag, das ein bestimmtes Indexfeld ausgibt.
-X Suche: SearchConfigFactory: Die SuchKonfiguration soll über eine Factory
-    geladen werden. Welche Factory genutzt werden soll, wird in der web.xml
-    festgelegt.
-
-** Version 1.1 Beta 4 am 13.04.05 **
-
-X Autodetektion des Ressourcenverzeichnisses
-X Bugfix: Zugriffsrechte-Management: Gruppennamen wurden auch bei
-  nicht-Whitespace-Zeichen wie "/", "-", "\" getrennt.
-X Dateizugriffs-Servlet abschaltbar.
-X Blacklist und Whitelist: Reguläre Ausdrücke zulassen.
-X Crawler: Arbeitspeicher sparen: Dateien vom Dateisystem nicht ins
-    mFoundUrlSet oder mIgnoredUrlSet aufnehmen. Beim Dateisystem ist durch die
-    klare Baumstruktur sowieso klar, welche Dokumente schon bearbeitet wurden.
-    (Dazu muss Start-List muss untereinander praefixfrei sein!)
-X Crawler: Arbeitspeicher sparen: Dateien am Anfang der mJobList einfügen,
-    Verzeichnisse am Ende. So wird die mJobList klein gehalten, weil erst
-    alle Dateien abgearbeitet werden, bevor neue Jobs hinzugefügt werden.
-X Crawler: Auch fehlerhafte Dokumente aufnehmen. Diese dann bei einem zweiten
-    Durchlauf nicht erneut versuchen. Per Aufrufparameter jedoch trotzdem neu
-    versuchen.
-X Multiindexsuche: Mit der selben Suchmaske mehrere Indizes durchsuchen.
-- Neuer MS Word-Praeparator: http://textmining.org
-    Habe ich gelassen, nachdem ich bemerkt habe, dass textmining.org für
-    Word-Versionen > 6.0 einfach POI nutzt.
-X HtmlPreparator-Regex korrigieren: Auch Endungen .jsp, .php, .php3, .php4, .asp
-    zulassen.
-X Italienische Lokalisierung Teil I. Siehe Mail von Franco Lombardo vom 30.05.05.
-X Bugfix: CrawlerToolkit.toAbsoluteUrl(...) löst . und .. nicht auf.
-    Siehe Mail von j1234 vom 30.05.05.
-X JUnit-Tests ermöglichen
-X Bugfix: System-Tray-Klasse fehlt in Linux zip
-    Siehe Forum: http://forum.murfman.de/en/viewtopic.php?t=12
-X Bugfix: NullPointer in removeObsoleteEntries(...). Z.B. wenn ein Breakpoint
-    erstellt wird. (Entstanden bei "Dateien vom Dateisystem nicht ins
-    mFoundUrlSet oder mIgnoredUrlSet aufnehmen")
-X I18N-Files mit getResource() holen, so dass Tomcat auch als Service laufen kann.
-    Das ganze sollte von Verzeichnis auf URL umgestellt werden, da nicht jede
-    Servlet-Engine ihre war-Dateien auspackt. Mit URL könnten auch Ressourcen
-    direkt aus der war-Datei geladen werden.
-X Ausgangsverzeichnis zur Suche der Konfigurationsdatei bestimmen, so dass
-    Tomcat auch als Service laufen kann.
-X Desktopsuche: Aktuelles Dokument in Status-Seite zeigen.
-X Bugfix: HTTP-Download hat volle Timeout-Zeit gewartet, wenn RuntimeException
-    geworfen wurde.
-X Bessere Fehlermeldung, wenn Redirect keinen Location-Header hat.
-X Crawler: Logging: Anstatt "Adding to index" lieber "Preparation done"
-X Bei mißglücktem Dokument: Nicht "Adding to index" loggen, sondern
-    "Created substitude document"
-X Breakpoints: Erst neuen breakpoint erstellen, dann den alten löschen.
-    Damit verhindern, dass es gar keinen breakpoint gibt, wenn regain beendet
-    wird.
-X Optional erlauben, url-patterns für Präparatoren anzugeben.
-    Siehe Forum: http://forum.murfman.de/en/viewtopic.php?t=9
-X Expertensuche: Fehlermeldung wird gezeigt, wenn noch kein Index vorhanden ist.
-    Statt dessen: noindex.jsp zeigen.
-X Desktopsuche: Installer komplett auch auf Englisch
-X Libs aktualisiert:
-    log4j: 1.2.9 (352 kB) -> 1.2.11 (352 kB)
-    lucene: 1.4.2 (323 kB) -> 1.4.3 (323 kB)
-    PDFBox: 0.6.7a (2.230 kB) -> 0.7.1 (3.213 kB)
-      Gleiche Erkennungsrate, etwas schneller
-    POI: 2.5.1 (990 kB) -> 3.0 alpha 1 (1.504 kB)
-      Word: Gleiche Erkennungsrate, langsamer
-      Excel: Gleiche Erkennungsrate, langsamer
-
-** Version 1.1 Beta 5 am 13.08.05 **
-
-X Bugfix: Im .war file hat das log4j.jar und das lucene.jar gefehlt.
-X Attribut "noQueryUrl" des Check-Tag optional machen.
-
-** Version 1.1 Beta 5a am 15.08.05 **
-
-X Added PoiMsPowerPointPreparator (Thanks to Gerhard Olsson)
-X Multiindexsuche: SearchConfiguration.xml: Möglichkeit bieten, mehrere Indizes
-    als default zu deklarieren. (Dann per default Multiindex-Suche durchführen)
-X The fieldlistTag supports multiple indexes now.
-X Bugfix: file-to-http-bridge did create illegal URLs when multiple indexes
-    were searched.
-X IfilterPreparator: Einen Präparator schreiben, der das IFilter-Interface
-    unter Windows nutzt.
-X Groß-/Kleinschreibung in Auxilliary Fields
-X Zeit zwischen Breakpoints konfigurierbar
-X HTTP User agent konfigurierbar
-- Namen der verfügbaren Indizes von JSPs aus erreichbar machen
-    Geht schon: SearchToolkit.getIndexConfigArr(...)
-
-** Version 1.1 Beta 6 am 05.12.05 **
-
-X Bugfix: NullPointer, wenn regex-Gruppe nicht existiert.
-    Siehe Forum: http://forum.murfman.de/en/viewtopic.php?t=22
-X Bugfix: getCharacterEncoding returned null in some cases
-    See: http://forum.murfman.de/en/viewtopic.php?p=186
-X Bugfix: Analyzer: Don't use stemming for auxilliary fields that aren't tokenized.
-X Auxiliary fields: Add options "tokenize", "store" and "index".
-X Introduce a new "location" field that contains the tokenized URL.
-X Pfade in Suche mit aufnehmen.
-X Fieldlist tag: Don't show "%20" created by Crawler.addJob
-X TLD-Dokumentation generieren.
-X Search mask: Allow multiple query parameters (Just concatinate them)
-X Include improved Jacob preparators of Reinhard Balling. See mail from 17.11.05.
-X Include and improve ExternalPrepartor of Paul Ortyl. See mail from 10.12.05.
-X Prüfen, ob es mehrere Parameter gleichen Names in Präparator-Config gibt
-    See http://forum.murfman.de/de/viewtopic.php?p=351
-X Fehlende Teile der italienischen Lokalisierung. (Danke an Franco Lombardo)
-X Delivering a simpler default CrawlerConfiguration.xml.
-X Desktopsuche: Die letzten x Log-Nachrichten
-X Added redirect handling of Gerhard Olsson
-
-
-Filiadata:
-----------
-
-  Was passiert bei OutOfMemoryError im Crawler?
-
-  Ärger mit MS Office beseitigen (Jacob). Siehe Mail von Michael Danner vom 15.04.05.
-  Handbuch aktualisieren:
-    - Init-Parameter von configFile nach searchConfigFile umbenannt.
-  Fieldlist-Daten (distinct values) vom Crawler ermitteln lassen
-    (Die erstmalige Ermittlung dauert lange bei großen Indizes (1 GB)).
-
-Prio A:
--------
-
-  Bugfix: IfilterPreparator geht unter WinXP Home nicht.
-  Prüfen: Werden manche HTTP-URLs wirklich gelöscht?
-    Siehe: http://forum.murfman.de/de/viewtopic.php?p=417
-
-  Desktop search: Status page: Add checkbox "Create completely new index" for
-    index update button.
-  Desktop search: Status page: Add checkbox "Stop reloading when index update is finished"
-    for page reload button.
-
-  Handbuch: Installation: Was muss man konfigurieren, damit es läuft.
-  Desktopsuche: Mime-Types konfigurierbar (apache-Format)
-  Übersetzungen holen: lastLogMessages
-
-Prio B:
--------
-  Möglichkeit, Reguläre Ausdrücke auszuprobieren.
-  Desktopsuche: Einstellungen: Verzeichnis-Selektor
-  Suchmaske: Icons passend zu den Dateiendungen
-  HtmlPreparator: Ignore text from script-Tags or tags with namespaces.
-    See http://forum.murfman.de/de/viewtopic.php?p=363
-    (Waiting for contribution of gerhard, see http://forum.murfman.de/en/viewtopic.php?t=53)
-  Suchmaske: Breakpoints nutzen.
-  Better Advanced search. See http://forum.murfman.de/de/posting.php?p=347
-  Bug: HtmlPreparator: Inhalt von style-Tags wird nicht entfernt.
-  Change whitelist / blacklist to one list of directives. This list should also
-    decide whether a document is parsed. That is the attributes "parse" and
-    "index" should be removed from htmlParserPatternList
-  Bugfix: Präparieren von Dokumenten mit Leerzeichen im Dateinamen wird bei jedem
-    Lauf erneut probiert (Erkennung des vorhandenen Eintrags funktioniert nicht)
-    Konnte ich nicht reproduzieren...
-  Desktopsuche: Zugriff von aussen fuer einstellbare Benutzer/Passwort-Paare
-    erlauben.
-  Sessions for simpleweb. See SimplePageRequest
-  Unter Java 1.2.2 oder zur Not 1.3 lauffaehig machen.
-
-Prio C:
--------
-  Hit highlighting
-  Crawler: Abstraktion und nested Crawlers.
-  Crawler: ZIP-Dateien durchsuchen
-  Crawler: Mailboxen durchsuchen
-  Crawler: Anderen HTMLParser nutzen: http://htmlparser.sourceforge.net
-  Neuer MS Word-Praeparator: OpenOffice
-  Neuer PDF-Praeparator: PJX (http://www.etymon.com/epub.html)
-  Desktopsuche: Nach Speichern der Konfiguration nur dann neu indexieren, wenn
-    sich etwas geaendert hat, das den Index veraendert.
-  Desktopsuche: JSP-Executer cachen.
-  Symlink detection: Don't index the content of symlinks if the file/directory
-    they point to are indexed.
-    See http://forum.murfman.de/en/viewtopic.php?p=192
-
-Release-Checkliste:
--------------------
-* WasIstNeu.txt und WhatIsNew.txt aktualisieren
-* Lokalisierungen an Übersetzer geben
-    * it -> Franco
-* JavaDoc und TLDdoc online stellen.
-
-
-
->>>>>>> 1.108

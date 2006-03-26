@@ -1,3 +1,26 @@
+Version 1.1.1 on 2006-03-27
+---------------------------
+
+* Bugfixes in the server variant
+
+
+Version 1.1 on 2006-02-26
+-------------------------
+
+* regain now searches the URLs, too.
+* The desktop search now shows the last log messages.
+* Better handling of HTTP-Redirects. (Thanks to Gerhard Olsson)
+* Auxiliary fields have new options: "tokenize", "store" and "index".
+* Added documentation of the Tag Library.
+* The search mask now accepts multiple "query" parameters
+  (they are just concatinated)
+* The Jacob preparators have been improved. (Thanks to Reinhard Balling)
+* New preparator ExternalPrepartor: This preparator calls an external program
+  or script in order to get the text of documents. (Thanks to Paul Ortyl)
+* Completed italian localization. (Thanks to Franco Lombardo)
+* Some Bugfixes
+
+
 Version 1.1 Beta 6 on 2005-12-05
 --------------------------------
 

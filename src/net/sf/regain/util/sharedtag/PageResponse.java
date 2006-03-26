@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: PageResponse.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/PageResponse.java,v $
- *     $Date: 2005/03/30 10:30:03 $
+ *     $Date: 2006/04/12 14:44:20 $
  *   $Author: til132 $
- * $Revision: 1.5 $
+ * $Revision: 1.6 $
  */
 package net.sf.regain.util.sharedtag;
 
@@ -31,13 +31,14 @@ import java.io.OutputStream;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
+import net.sf.regain.util.io.Printer;
 
 /**
  * A page response.
  *
  * @author Til Schneider, www.murfman.de
  */
-public abstract class PageResponse {
+public abstract class PageResponse implements Printer {
   
   /**
    * Gets the character encoding of the response.

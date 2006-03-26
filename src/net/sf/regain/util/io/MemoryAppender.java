@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile: MemoryAppender.java,v $
  *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/io/MemoryAppender.java,v $
- *     $Date: 2006/01/22 12:08:20 $
+ *     $Date: 2006/04/12 14:44:19 $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  */
 package net.sf.regain.util.io;
 
@@ -31,7 +31,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import net.sf.regain.RegainException;
-import net.sf.regain.util.sharedtag.PageResponse;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
@@ -71,25 +70,25 @@ public class MemoryAppender extends AppenderSkeleton {
 
   
   /**
-   * Prints the cached logging events to a page response.
+   * Prints the cached logging events to a page printer.
    *
-   * @param response The page response to print to.
+   * @param printer The page printer to print to.
    * @throws RegainException If printing failed.
    */
-  public void printLog(PageResponse response) throws RegainException {
+  public void printLog(Printer printer) throws RegainException {
     synchronized (mCache) {
       Iterator iter = mCache.iterator();
       while (iter.hasNext()) {
         Object[] itemArr = (Object[]) iter.next();
         LoggingEvent evt = (LoggingEvent) itemArr[0];
-        String layout = (String) itemArr[1];
+        String formattedEvt = (String) itemArr[1];
 
-        if (layout == null) {
-          layout = getLayout().format(evt);
-          itemArr[1] = layout;
+        if (formattedEvt == null) {
+          formattedEvt = getLayout().format(evt);
+          itemArr[1] = formattedEvt;
         }
 
-        response.print(layout);
+        printer.print(formattedEvt);
       }
     }
   };
