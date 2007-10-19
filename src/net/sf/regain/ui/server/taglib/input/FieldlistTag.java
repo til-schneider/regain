@@ -1,10 +1,10 @@
 /*
  * CVS information:
- *  $RCSfile: FieldlistTag.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/server/taglib/input/FieldlistTag.java,v $
- *     $Date: 2005/03/09 15:47:07 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-03-09 16:47:07 +0100 (Mi, 09 Mrz 2005) $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 60 $
  */
 package net.sf.regain.ui.server.taglib.input;
 

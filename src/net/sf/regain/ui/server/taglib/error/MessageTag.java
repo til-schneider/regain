@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: MessageTag.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/server/taglib/error/MessageTag.java,v $
- *     $Date: 2005/03/30 10:30:02 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-03-30 12:30:03 +0200 (Mi, 30 Mrz 2005) $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 111 $
  */
 package net.sf.regain.ui.server.taglib.error;
 

@@ -1,10 +1,10 @@
 /*
  * CVS information:
- *  $RCSfile: SearchConfigFactory.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/config/SearchConfigFactory.java,v $
- *     $Date: 2005/04/11 08:16:25 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-04-11 10:16:26 +0200 (Mo, 11 Apr 2005) $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 125 $
  */
 package net.sf.regain.search.config;
 

@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: SharedTagResource.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/simple/SharedTagResource.java,v $
- *     $Date: 2005/10/18 07:50:08 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-10-18 09:51:30 +0200 (Di, 18 Okt 2005) $
  *   $Author: til132 $
- * $Revision: 1.10 $
+ * $Revision: 175 $
  */
 package net.sf.regain.util.sharedtag.simple;
 

@@ -17,13 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Contact: Til Schneider, info@murfman.de
- *
- * CVS information:
- *  $RCSfile: SearchToolkit.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/SearchToolkit.java,v $
- *     $Date: 2006/01/21 08:01:16 $
- *   $Author: til132 $
- * $Revision: 1.22 $
  */
 package net.sf.regain.search;
 
@@ -255,14 +248,27 @@ public class SearchToolkit {
   public static String extractFileUrl(String requestPath, String encoding)
     throws RegainException
   {
-    int filePos = requestPath.indexOf("file/");
-    String filename = RegainToolkit.urlDecode(requestPath.substring(filePos + 5), encoding);
-    
+    // FIXME: Filenames with "+" or "%C3" still don't work
+
+    // NOTE: This is the counterpart to net.sf.regain.search.sharedlib.hit.LinkTag 
+
+    // NOTE: Removing index GET Parameter not nessesary: We already have the requestPath
+    // NOTE: Encoding "/" to "%2F" not nessesary: We would encode it in the next step anyway
+
+    // The servlet engine has already decoded "%xx" with page encoding
+    // But spaces are still "+"
+    // -> Decode the spaces
+    String href = RegainToolkit.replace(requestPath, "+", " ");
+
+    // Cut off "http://domain/file/"
+    int filePos = href.indexOf("file/");
+    String filename = href.substring(filePos + 5);
+
     // Restore the double slashes
     filename = RegainToolkit.replace(filename, "\\", "/");
-    
+
     // Assemble the file URL
-    return RegainToolkit.fileNameToUrl(filename);
+    return RegainToolkit.fileNameToUrl(filename); 
   }
 
 

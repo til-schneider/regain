@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: SearchAccessController.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/access/SearchAccessController.java,v $
- *     $Date: 2005/04/14 08:15:34 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-04-14 10:15:34 +0200 (Do, 14 Apr 2005) $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 130 $
  */
 package net.sf.regain.search.access;
 

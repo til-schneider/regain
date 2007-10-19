@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: SearchConstants.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/SearchConstants.java,v $
- *     $Date: 2005/03/01 20:28:04 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-03-01 21:28:04 +0100 (Di, 01 Mrz 2005) $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 47 $
  */
 package net.sf.regain.search;
 

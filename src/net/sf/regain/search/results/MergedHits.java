@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: MergedHits.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/results/MergedHits.java,v $
- *     $Date: 2005/08/08 08:40:41 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-08-08 10:40:41 +0200 (Mo, 08 Aug 2005) $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 151 $
  */
 package net.sf.regain.search.results;
 

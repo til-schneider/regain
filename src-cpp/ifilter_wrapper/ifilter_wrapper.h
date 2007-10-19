@@ -37,7 +37,7 @@ JNIEXPORT void JNICALL Java_net_sf_regain_crawler_preparator_ifilter_IfilterWrap
  * Signature: (Ljava/lang/String;Ljava/lang/StringBuffer;Z)V
  */
 JNIEXPORT void JNICALL Java_net_sf_regain_crawler_preparator_ifilter_IfilterWrapper_getText
-  (JNIEnv *, jobject, jstring, jobject, jboolean);
+  (JNIEnv *, jobject, jstring, jobject, jboolean, jboolean, jboolean);
 
 /*
  * Class:     net_sf_regain_crawler_preparator_ifilter_IfilterWrapper

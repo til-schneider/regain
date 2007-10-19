@@ -239,21 +239,47 @@ X Updated libs: jdic, regexp and PdfBox
 X Bugfix: NullPointer in URLDecoder.decode caused by FileServlet
 X Bugfix: MemoryAppender didn't work when PageResponse wasn't in the classpath.
 
+** Version 1.1.1 am 27.03.06 rev 207 **
 
-Filiadata:
-----------
+X Bugfix: PreparatorConfig was null, when preparator configration had no
+    config tag.
+X Bugfix: HTTP-Redirects didn't work (Fix was not tested yet!).
+X Index-Felder "size" und "last-modified" suchbar machen.
+X New Preparator: EmptyPreparator (Contributed by Gerhard Olsson)
+X Bugfix: IfilterPreparator did not work on Windows Server 2003.
+X Bugfix: Filenames containing "%20" were not encoded properly
+    See Mail of Michael from 31.07.06 17:10 (rev 226, 227)
+X Bugfix: File-to-http-bridge didn't work after filename encoding fix.
+    Now it should be really cleaned up. Meaning: Other encoding problems with
+    the file-to-http-bridge should be fixed now, too.
+X Prefetch distinct field values by the crawler
+    (The first fetch takes much time for huge indexes (1 GB)).
+    Once the values for a field was fetched, it is stored in a cache file in the
+    index directory, making subsequent retrievals much faster.
+X Bug: IFilterPreparator hangs when trying to index Excel files having
+    more than 32 kB of data in one cell.
+X Bugfix: Files having a "%25" in their filename were not found in IE when not
+    using the file-to-http-bridge
+X Bugfix: Files having a space in their filename were not when using the
+    file-to-http-bridge
+X Non-existing index directory doesn't cause an error now, instead it will be
+    created
+X Showing type icons in search results
+X Made the maximum number of terms per document configurable
 
-  Was passiert bei OutOfMemoryError im Crawler?
+** Version 1.2 am 20.10.07 rev 247 **
 
-  Ärger mit MS Office beseitigen (Jacob). Siehe Mail von Michael Danner vom 15.04.05.
-  Handbuch aktualisieren:
-    - Init-Parameter von configFile nach searchConfigFile umbenannt.
-  Fieldlist-Daten (distinct values) vom Crawler ermitteln lassen
-    (Die erstmalige Ermittlung dauert lange bei großen Indizes (1 GB)).
 
 Prio A:
 -------
 
+  Bug: start URL check doesn't work properly. start URL "file://bla" is removed when "file://blaber" exists.
+    See: http://forum.murfman.de/de/viewtopic.php?p=992#992
+  Better indexing of URLs:
+    * URL decoded: No "%20"
+    * Camel case solved: "HelloOtto" -> "HelloOtto Hello Otto"
+  Add CatchAllPreparator (or the URL parsing functionality) of aslo
+    See http://forum.murfman.de/en/viewtopic.php?t=209
   NullPointerException in HtmlPreparator
     See http://forum.murfman.de/en/viewtopic.php?p=411#411
   Give preparators the possibility to add index fields on their own.
@@ -273,6 +299,10 @@ Prio A:
 
 Prio B:
 -------
+
+  Desktop search: Index path not hardcoded, but taken from CrawlerConfiguration.xml
+    See forum: http://forum.murfman.de/de/viewtopic.php?t=204
+  Desktopsuche: Kommandozeilen-Parameter, um ohne Tray-Icon zu starten.
   Möglichkeit, Reguläre Ausdrücke auszuprobieren.
   Desktopsuche: Einstellungen: Verzeichnis-Selektor
   Suchmaske: Icons passend zu den Dateiendungen
@@ -295,6 +325,8 @@ Prio B:
 
 Prio C:
 -------
+
+  Allow regular expressions in rewrite rules (with group-based replacing)
   PlainTextPreparator: Add option to set the max. amount of text to extract.
     (avoid OutOfMemory)
   Hit highlighting
@@ -313,14 +345,14 @@ Prio C:
 
 Release-Checkliste:
 -------------------
-* Revision taggen
-* WasIstNeu.txt und WhatIsNew.txt aktualisieren
 * Lokalisierungen an Übersetzer geben
     * it -> Franco
+* WasIstNeu.txt und WhatIsNew.txt aktualisieren
+* Revision taggen
 * JavaDoc und TLDdoc online stellen.
 * Homepage aktualisieren:
   * docs.php
   * news.php
-  * download.php 
+  * download.php
 * Newsletter verschicken
 

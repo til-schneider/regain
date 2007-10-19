@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: HtmlPathExtractor.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/html/HtmlPathExtractor.java,v $
- *     $Date: 2005/03/10 11:39:13 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-03-10 12:39:29 +0100 (Do, 10 Mrz 2005) $
  *   $Author: til132 $
- * $Revision: 1.4 $
+ * $Revision: 67 $
  */
 package net.sf.regain.crawler.preparator.html;
 

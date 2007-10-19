@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: ExecuterParser.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/simple/ExecuterParser.java,v $
- *     $Date: 2005/11/21 10:19:29 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-11-21 11:20:09 +0100 (Mo, 21 Nov 2005) $
  *   $Author: til132 $
- * $Revision: 1.7 $
+ * $Revision: 180 $
  */
 package net.sf.regain.util.sharedtag.simple;
 

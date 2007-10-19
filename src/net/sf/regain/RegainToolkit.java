@@ -19,21 +19,24 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: RegainToolkit.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/RegainToolkit.java,v $
- *     $Date: 2006/03/27 12:02:26 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2006-08-21 11:37:35 +0200 (Mo, 21 Aug 2006) $
  *   $Author: til132 $
- * $Revision: 1.18 $
+ * $Revision: 232 $
  */
 package net.sf.regain;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -45,9 +48,13 @@ import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
@@ -57,6 +64,9 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.index.TermEnum;
 
 /**
  * Enthält Hilfsmethoden, die sowohl vom Crawler als auch von der Suchmaske
@@ -329,6 +339,136 @@ public class RegainToolkit {
     }
   }
 
+
+  /**
+   * Reads a word list from a file.
+   *
+   * @param file The file to read the list from.
+   *
+   * @return The lines of the file.
+   * @throws RegainException If reading failed.
+   */
+  public static String[] readListFromFile(File file) throws RegainException {
+    if (! file.exists()) {
+      return null;
+    }
+
+    FileReader reader = null;
+    BufferedReader buffReader = null;
+    try {
+      reader = new FileReader(file);
+      buffReader = new BufferedReader(reader);
+
+      ArrayList list = new ArrayList();
+      String line;
+      while ((line = buffReader.readLine()) != null) {
+        list.add(line);
+      }
+
+      String[] asArr = new String[list.size()];
+      list.toArray(asArr);
+
+      return asArr;
+    }
+    catch (IOException exc) {
+      throw new RegainException("Reading word list from " + file.getAbsolutePath()
+        + "failed", exc);
+    }
+    finally {
+      if (buffReader != null) {
+        try { buffReader.close(); } catch (IOException exc) {}
+      }
+      if (reader != null) {
+        try { reader.close(); } catch (IOException exc) {}
+      }
+    }
+  }
+
+
+  /**
+   * Writes data to a file
+   *
+   * @param data The data
+   * @param file The file to write to
+   *
+   * @throws RegainException When writing failed
+   */
+  public static void writeToFile(byte[] data, File file)
+    throws RegainException
+  {
+    FileOutputStream stream = null;
+    try {
+      stream = new FileOutputStream(file);
+      stream.write(data);
+      stream.close();
+    }
+    catch (IOException exc) {
+      throw new RegainException("Writing file failed: " + file.getAbsolutePath(), exc);
+    }
+    finally {
+      if (stream != null) {
+        try { stream.close(); } catch (IOException exc) {}
+      }
+    }
+  }
+
+
+  /**
+   * Writes a String into a file.
+   *
+   * @param text The string.
+   * @param file The file to write to.
+   *
+   * @throws RegainException If writing failed.
+   */
+  public static void writeToFile(String text, File file)
+    throws RegainException
+  {
+    writeListToFile(new String[] { text }, file);
+  }
+
+
+  /**
+   * Writes a word list in a file. Each item of the list will be written in a
+   * line.
+   *
+   * @param wordList The word list.
+   * @param file The file to write to.
+   *
+   * @throws RegainException If writing failed.
+   */
+  public static void writeListToFile(String[] wordList, File file)
+    throws RegainException
+  {
+    if ((wordList == null) || (wordList.length == 0)) {
+      // Nothing to do
+      return;
+    }
+
+    FileOutputStream stream = null;
+    PrintStream printer = null;
+    try {
+      stream = new FileOutputStream(file);
+      printer = new PrintStream(stream);
+
+      for (int i = 0; i < wordList.length; i++) {
+        printer.println(wordList[i]);
+      }
+    }
+    catch (IOException exc) {
+      throw new RegainException("Writing word list to " + file.getAbsolutePath()
+        + " failed", exc);
+    }
+    finally {
+      if (printer != null) {
+        printer.close();
+      }
+      if (stream != null) {
+        try { stream.close(); } catch (IOException exc) {}
+      }
+    }
+  }
+
   
   /**
    * Gets the size of a directory with all files.
@@ -350,7 +490,104 @@ public class RegainToolkit {
     }
     return size;
   }
-  
+
+
+  /**
+   * Returns the destinct values of one or more fields.
+   * <p>
+   * If an index directory is provided, then the values will be read from there.
+   * They will be extracted from the search index if there are no matching
+   * cache files. After extracting the cache files will be created, so the next
+   * call will be faster.
+   *
+   * @param indexReader The index reader to use for reading the field values.
+   * @param fieldNameArr The names of the fields to read the destinct values for.
+   * @param indexDir The index directory where to read or write the cached
+   *        destinct values. May be null.
+   * @return A hashmap containing for a field name (key, String) the sorted
+   *         array of destinct values (value, String[]).
+   * @throws RegainException If reading from the index failed. Or if reading or
+   *         writing a cache file failed.
+   */
+  public static HashMap readFieldValues(IndexReader indexReader,
+      String[] fieldNameArr, File indexDir)
+      throws RegainException
+  {
+    // Create the result map
+    HashMap resultMap = new HashMap();
+
+    // Try to read the field values from the cache files
+    // and remember the failed field names in a set
+    HashSet fieldsToReadSet = new HashSet();
+    for (int i = 0; i < fieldNameArr.length; i++) {
+      String field = fieldNameArr[i];
+
+      String[] fieldValueArr = null;
+      if (indexDir != null) {
+        File fieldFile = new File(indexDir, "field_values_" + field + ".txt");
+
+        // NOTE: fieldValueArr stays null if the file does not exist
+        fieldValueArr = readListFromFile(fieldFile);
+      }
+
+      if (fieldValueArr != null) {
+        resultMap.put(field, fieldValueArr);
+      } else {
+        // There is no cache file -> We have to read the values from the index
+        fieldsToReadSet.add(field);
+
+        // Add an empty ArrayList that can hold the values
+        resultMap.put(field, new ArrayList());
+      }
+    }
+
+    // For bug-prevention: Enforce the usage of the fieldsToReadSet
+    // (There may be some field names removed)
+    fieldNameArr = null;
+
+    // Read the terms
+    if (! fieldsToReadSet.isEmpty()) {
+      try {
+        TermEnum termEnum = indexReader.terms();
+        while(termEnum.next()) {
+          Term term = termEnum.term();
+          String field = term.field();
+          if (fieldsToReadSet.contains(field)) {
+            // This is a value of a wanted field
+            ArrayList valueList = (ArrayList) resultMap.get(field);
+            valueList.add(term.text());
+          }
+        }
+      } catch (IOException exc) {
+        throw new RegainException("Reading terms from index failed", exc);
+      }
+    }
+
+    // Convert the lists into arrays.
+    Iterator readFieldIter = fieldsToReadSet.iterator();
+    while (readFieldIter.hasNext()) {
+      String field = (String) readFieldIter.next();
+
+      ArrayList valueList = (ArrayList) resultMap.get(field);
+      String[] valueArr = new String[valueList.size()];
+      valueList.toArray(valueArr);
+
+      // Sort the array
+      Arrays.sort(valueArr);
+
+      // Overwrite the list with the array
+      resultMap.put(field, valueArr);
+
+      // Write the results to a file
+      if (indexDir != null) {
+        File fieldFile = new File(indexDir, "field_values_" + field + ".txt");
+        writeListToFile(valueArr, fieldFile);
+      }
+    }
+
+    return resultMap;
+  }
+
 
   /**
    * Creates an analyzer that is used both from the crawler and the search mask.
@@ -952,12 +1189,12 @@ public class RegainToolkit {
       throw new RegainException("URL must have the file:// protocol to get a "
         + "File for it");
     }
-  
+
     // Cut the file://
     String fileName = url.substring(7);
-  
-    // Replace %20 by spaces
-    return replace(fileName, "%20", " ");
+
+    // Replace URL-encoded special characters
+    return urlDecode(fileName, INDEX_ENCODING);
   }
 
 
@@ -975,30 +1212,66 @@ public class RegainToolkit {
 
 
   /**
-   * Gets the URL of a file name.
+   * Returns the URL of a file name.
    *
    * @param fileName The file name to get the URL for
    * @return The URL of the file.
+   * @throws RegainException If URL-encoding failed. 
    */
-  public static String fileNameToUrl(String fileName) {
-    // Replace spaces by %20
-    fileName = replace(fileName, " ", "%20");
-  
+  public static String fileNameToUrl(String fileName)
+    throws RegainException
+  {
+    // Replace special characters
+    fileName = urlEncode(fileName, INDEX_ENCODING);
+
     // Replace file separators by /
-    fileName = replace(fileName, File.separator, "/");
-  
+    // NOTE: "/" is "%2F", "\" is "%5C"
+    fileName = replace(fileName, "%2F", "/");
+    fileName = replace(fileName, "%5C", "/"); // Yes: "\" should become "/"
+
     return "file://" + fileName;
   }
 
 
   /**
-   * Gets the URL of a file.
+   * Returns the URL of a file.
    *
    * @param file The file to get the URL for
    * @return The URL of the file.
+   * @throws RegainException If URL-encoding failed. 
    */
-  public static String fileToUrl(File file) {
+  public static String fileToUrl(File file)
+    throws RegainException
+  {
     return fileNameToUrl(file.getAbsolutePath());
+  }
+
+
+  /**
+   * Gets the canonical URL of a file (no symbolic links, normalised names etc).
+   * Symbolic link detection may fail in certain situations, like for NFS file systems
+   *
+   * @param file The file to get the canonical URL for
+   * @return The URL of the file.
+   * @throws RegainException If URL-encoding failed. 
+   */
+  public static String fileToCanonicalUrl(File file)
+    throws RegainException
+  {
+    String canUrl = null;
+    try{
+      //This may throw SecurityException
+      canUrl=file.getCanonicalPath();
+    }catch (Exception e){
+      return null;
+    }  
+    //Canonical url returns "current dir:parh"
+    int pos = canUrl.indexOf(':')+1;
+    if (pos > 0 && pos < canUrl.length()){
+      canUrl = canUrl.substring(pos);
+    }
+
+    return fileNameToUrl(canUrl);
   }
 
 

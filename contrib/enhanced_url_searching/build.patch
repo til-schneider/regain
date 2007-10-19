@@ -1,0 +1,85 @@
+Index: build.properties.sample
+===================================================================
+RCS file: /cvsroot/regain/regain/build.properties.sample,v
+retrieving revision 1.1
+diff -U3 -r1.1 build.properties.sample
+--- build.properties.sample	18 Oct 2005 07:50:08 -0000	1.1
++++ build.properties.sample	15 Aug 2006 14:37:03 -0000
+@@ -14,5 +14,11 @@
+ #java-1_3.dir=/usr/local/lib/jdk1.3
+ java-1_3.dir=c:/Programme/jdk1.3
+ 
++# source level to use. Stick to 1.3 source
++sourcelev=1.3
++
++# target .class format. Stick to 1.3 format
++target=1.3
++
+ # The directory where the tomcat server is located
+ deploy-target.dir=c:/Programme/jakarta-tomcat-5.0.19/webapps
+Index: build.xml
+===================================================================
+RCS file: /cvsroot/regain/regain/build.xml,v
+retrieving revision 1.53
+diff -U3 -r1.53 build.xml
+--- build.xml	26 Apr 2006 18:58:10 -0000	1.53
++++ build.xml	15 Aug 2006 14:37:03 -0000
+@@ -289,8 +289,9 @@
+     <javac destdir="temp/classes"
+            debug="${debug}"
+            deprecation="true"
+-           executable="${java-1_3.dir}/bin/javac"
+-           fork="true">
++           fork="true"
++           target="${target}"
++           source="${sourcelev}">
+       <src>
+         <path refid="sourcepath"/>
+       </src>
+@@ -317,7 +318,8 @@
+     <javac destdir="temp/classes"
+            debug="${debug}"
+            deprecation="true"
+-           target="1.2">
++           target="${target}"
++           source="${sourcelev}">
+       <src>
+         <pathelement location="test/src"/>
+       </src>
+@@ -847,6 +854,23 @@
+     </java>
+   </target>
+ 
++  <target name="run-desktop-debug" depends="runtime-fast">
++    <java classname="net.sf.regain.ui.desktop.Main"
++          dir="temp/runtime/desktop/${platform}"
++          fork="true">
++          <!--
++          jvm="${java-1_2_2.dir}/bin/java"
++          -->
++      <jvmarg value="-Djava.library.path=."/>
++      <jvmarg value="-Xmx256M"/>
++      <jvmarg value="-Xdebug"/>
++      <jvmarg value="-Xnoagent"/>
++      <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=y"/>
++      <classpath>
++        <path refid="classpath"/>
++      </classpath>
++    </java>
++  </target>
+   
+   <!--
+    | Creates all the stuff that can be downloaded.
+@@ -1017,9 +1040,10 @@
+     <mkdir dir="${jacobgen-classes.dir}"/>
+     <javac srcdir="${jacobgen-src.dir}"
+            destdir="${jacobgen-classes.dir}"
+-           target="1.2"
+            debug="${debug}"
+-           deprecation="true">
++           deprecation="true"
++           target="${target}"
++           source="${sourcelev}">
+       <classpath>
+         <path refid="jacobgen-classpath"/>
+       </classpath>

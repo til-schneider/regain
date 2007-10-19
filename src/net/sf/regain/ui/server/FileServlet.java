@@ -1,10 +1,10 @@
 /*
  * CVS information:
- *  $RCSfile: FileServlet.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/server/FileServlet.java,v $
- *     $Date: 2006/03/23 21:34:19 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2006-03-23 22:34:21 +0100 (Do, 23 Mrz 2006) $
  *   $Author: til132 $
- * $Revision: 1.6 $
+ * $Revision: 207 $
  */
 package net.sf.regain.ui.server;
 

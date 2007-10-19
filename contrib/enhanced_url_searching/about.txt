@@ -1,0 +1,25 @@
+== Contributer ==
+
+This was contributed by Daniele Tamino.
+
+
+== Status ==
+
+Not yet tested.
+
+
+== Description ==
+
+Adds better searching for file / directory names, by tokenizing the URL and putting it to an auxiliary field.
+
+The problems that I wanted to address are:
+  1. Index unknown file types, using only the url
+  2. Search for exact filenames (with or without extension)
+  3. Search for partial filenames
+
+
+== Detailed information ==
+
+See forum: http://forum.murfman.de/en/viewtopic.php?t=209
+Description see "Author's description.html"
+

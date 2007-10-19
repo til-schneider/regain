@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: JacobMsPowerPointPreparator.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/JacobMsPowerPointPreparator.java,v $
- *     $Date: 2006/01/21 11:53:30 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2006-01-21 12:53:30 +0100 (Sa, 21 Jan 2006) $
  *   $Author: til132 $
- * $Revision: 1.8 $
+ * $Revision: 194 $
  */
 package net.sf.regain.crawler.preparator;
 

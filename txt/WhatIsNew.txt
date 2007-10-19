@@ -1,3 +1,22 @@
+Version 1.2 am 2007-07-20
+-------------------------
+
+* The search result show now icons indicating the file's type.
+* The index fields "size" and "last-modified" are now searchable.
+* New preparator: EmptyPreparator (Contributed by Gerhard Olsson). This
+  preparator extracts no content files assigned to it. Therefore only the path
+  and the filename is written to the index (helpful for all file types having no
+  matching preparator).
+* The maximum number of terms per document is now configurable using the
+  <maxFieldLength> tag in the CrawlerConfiguration.xml. Default is 10000.
+* The IfilterPreparator works now under Windows Server 2003, too.
+* The values for the <search:input_fieldlist> tag may now be determined when
+  indexing. Therefore this operation beeing slow for large indexes must not be
+  executed any more when searching the first time. This may be configured
+  using the <valuePrefetchFields> tag in the CrawlerConfiguration.xml.
+* Several bugfixes
+
+
 Version 1.1.1 on 2006-03-27
 ---------------------------
 

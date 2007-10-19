@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: ExternalPreparator.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/ExternalPreparator.java,v $
- *     $Date: 2006/01/22 12:08:20 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2006-01-22 13:08:20 +0100 (So, 22 Jan 2006) $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 199 $
  */
 package net.sf.regain.crawler.preparator;
 

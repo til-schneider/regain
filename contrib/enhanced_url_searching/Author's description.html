@@ -1,0 +1,45 @@
+<html>
+<head>
+<title>regain patch (auxiliary fields)</title>
+<link rel="important stylesheet" href="chrome://messenger/skin/messageBody.css">
+</head>
+<body>
+Hi,<br>I'm Daniele Tamino (&quot;aslo&quot; in the forum), and I've made the patch I've been talking about, to enhance the auxiliary fields in regain, and to better tokenize and index the url.<br>I've added the option to urlDecode the url before processing, that is 'true' by default, but you can change it in XmlCrawlerConfig#readAuxiliaryFieldList if you like.
+<br><br>I've attached a patch to build.xml and build.properties.sample, with some little changes I've made, that I think should be in the cvs (like a run-desktop-debug target, to start a remote debugger).<br><br><font style="font-weight: bold;" size="4">
+
+Some examples</font><br>Old syntax (still supported):<br><div style="margin-left: 40px;"><span style="font-family: courier new,monospace;">&lt;auxiliaryField name=&quot;extension&quot; regexGroup=&quot;1&quot; toLowercase=&quot;true&quot;&gt;
+</span><br style="font-family: courier new,monospace;"><span style="font-family: courier new,monospace;">&nbsp;&nbsp;&nbsp; &lt;regex&gt;\.([^\./]*)$&lt;/regex&gt;</span><br style="font-family: courier new,monospace;"><span style="font-family: courier new,monospace;">
+
+
+&lt;/auxiliaryField&gt;</span><br style="font-family: courier new,monospace;"></div>Same field, with new syntax:<br>
+<div style="margin-left: 40px;"><span style="font-family: courier new,monospace;">&lt;auxiliaryField name=&quot;extension&quot; toLowercase=&quot;true&quot;&gt;</span><br style="font-family: courier new,monospace;"><span style="font-family: courier new,monospace;">
+
+
+
+&nbsp;&nbsp;&nbsp; &lt;regex regexGroup=&quot;1&quot;&gt;\.([^\./]*)$&lt;/regex&gt;</span><br style="font-family: courier new,monospace;"><span style="font-family: courier new,monospace;">
+&lt;/auxiliaryField&gt;</span><br>
+</div>
+The original reason why I implemented this is to add this additional field:<br><div style="margin-left: 40px;"><span style="font-family: courier new,monospace;"> &lt;auxiliaryField name=&quot;location-tok&quot; store=&quot;false&quot; tokenize=&quot;true&quot; decode=&quot;true&quot;&gt;
+</span><br style="font-family: courier new,monospace;"><span style="font-family: courier new,monospace;">&nbsp;&nbsp;&nbsp; &lt;replace regex=&quot;^[^:]*:(//)?(.*?)((\?|#).*)?$&quot;&gt;$2&lt;/replace&gt;</span><br style="font-family: courier new,monospace;">
+
+
+<span style="font-family: courier new,monospace;">&nbsp;&nbsp;&nbsp; &lt;replace regex=&quot;[\-_/.]+&quot;&gt; &lt;/replace&gt;</span><br style="font-family: courier new,monospace;"><span style="font-family: courier new,monospace;">&nbsp;&nbsp;&nbsp; &lt;replace regex=&quot;([a-z])([A-Z])&quot;&gt;$1 $2&lt;/replace&gt;
+</span><br style="font-family: courier new,monospace;"><span style="font-family: courier new,monospace;">&lt;/auxiliaryField&gt;</span><br></div>This replaces characters '-',&nbsp; '_',&nbsp; '/',&nbsp; '.', with whitespace, and adds whitespace between a lower-upper case letters pair.
+<br><br><font style="font-weight: bold;" size="4">Reference</font><br>Here I'll briefly describe the syntax: the &quot;value&quot; and &quot;regexGroup&quot; attributes are moved from the &lt;auxiliaryField&gt; tag to the &lt;regex&gt; tag. The new &lt;replace&gt; tag has only a mandatory attribute, regex, which specifies what to find and replace with the text within the tag, as in the
+org.jakarta.regexp.RE#subst() method.<br>You can have more than one &lt;regex&gt; or &lt;replace&gt; tag, and you can mix the two (don't know if this is useful, but you can). They are executed in sequence, in the specified order.
+<br><ul><li>The <span style="font-family: courier new,monospace;">&lt;replace regex=<span style="font-style: italic;">&quot;regex&quot;</span>&gt;<span style="font-style: italic;">replacement</span>&lt;/replace&gt;</span>
+
+
+ tag replaces every occurrence of <span style="font-style: italic;">regex</span> int the url with the given <span style="font-style: italic;">replacement</span>, and the output is used as the input of the subsequent command. The regex attribute is mandatory.
+</li><li>The <span style="font-family: courier new,monospace;">&lt;regex value=<span style="font-style: italic;">&quot;value&quot;</span> regexGroup=<span style="font-style: italic;">#</span><span style="font-family: courier new,monospace;">
+
+
+&gt;</span><span style="font-style: italic;">regex</span>&lt;/regex&gt;</span> tag does not change the url, it only searches for a match with the given regex. If a match is found, and the value attribute is specified, that becomes the value of the field. If regexGroup is specified instead, that group becomes the field value, and finally if no value or regexGroup attribute is specified the whole match is used as the value (
+i.e. regexGroup=0 by default). If no match is found, the next tag in the list is processed.<br></li><li>If in the end no match is found, and the last tag was a &lt;replace&gt;, the modified url becomes the field value. If the last tag was a &lt;regex&gt; instead, the field is not created at all for this url.
+</li></ul>Another example, maybe there's a better way to do this, but it's just an example (not tested):<br><div style="margin-left: 40px; font-family: courier new,monospace;">&lt;auxiliaryField name=&quot;mime-type&quot; store=&quot;true&quot; tokenize=&quot;false&quot;&gt;
+<br>&nbsp;&nbsp;&nbsp; &lt;replace regex=&quot;.*(\.([^.]*))?$&quot;&gt;$2&lt;/replace&gt; &lt;!-- get extension --&gt;<br>&nbsp;&nbsp;&nbsp; &lt;regex value=&quot;text/plain&quot;&gt;txt&lt;/regex&gt;<br>&nbsp;&nbsp;&nbsp; &lt;regex value=&quot;application/pdf&quot;&gt;txt&lt;/regex&gt;
+<br>
+&nbsp;&nbsp;&nbsp; &lt;regex value=&quot;application/ogg&quot;&gt;ogg&lt;/regex&gt;<br>&nbsp;&nbsp;&nbsp; &lt;!-- and so on ... --&gt;<br>&nbsp; &nbsp; &lt;!-- if no match, the field is not created --&gt; &nbsp;  <br>
+&lt;/auxiliaryField&gt;<br></div><br>Best regards,<br>Daniele<br><div style="font-family: courier new,monospace;"><br></div>
+</body>
+</html>

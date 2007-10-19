@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: ifilter_wrapper.cpp,v $
- *   $Source: /cvsroot/regain/regain/src-cpp/ifilter_wrapper/ifilter_wrapper.cpp,v $
- *     $Date: 2005/10/28 16:00:23 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2006-10-11 18:08:34 +0200 (Mi, 11 Okt 2006) $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 237 $
  */
 
 #include "stdafx.h"
@@ -51,21 +51,21 @@
 BOOL APIENTRY DllMain( HANDLE hModule, 
                        DWORD  ul_reason_for_call, 
                        LPVOID lpReserved
-					 )
+                     )
 {
-    return TRUE;
+  return TRUE;
 }
 
 
 void ThrowException(JNIEnv *env, const char* desc, jint hr)
 {
-    jclass failClass = env->FindClass("net/sf/regain/RegainException");
-    jmethodID failCons = 
-       env->GetMethodID(failClass, "<init>", "(Ljava/lang/String;)V");
-    if (!desc) desc = "Java/COM Error";
-    jstring js = env->NewStringUTF(desc);
-    jthrowable fail = (jthrowable)env->NewObject(failClass, failCons, js);
-    env->Throw(fail);
+  jclass failClass = env->FindClass("net/sf/regain/RegainException");
+  jmethodID failCons = 
+    env->GetMethodID(failClass, "<init>", "(Ljava/lang/String;)V");
+  if (!desc) desc = "Java/COM Error";
+  jstring js = env->NewStringUTF(desc);
+  jthrowable fail = (jthrowable)env->NewObject(failClass, failCons, js);
+  env->Throw(fail);
 }
 
 
@@ -78,165 +78,201 @@ void ThrowException(JNIEnv *env, const char* desc, jint hr)
 JNIEXPORT void JNICALL Java_net_sf_regain_crawler_preparator_ifilter_IfilterWrapper_doCoInitialize
   (JNIEnv *env, jclass clazz, jint mode)
 {
-	int threadMode = mode;
-	CoInitializeEx(NULL, threadMode);
+  int threadMode = mode;
+  CoInitializeEx(NULL, threadMode);
 }
 
 
 JNIEXPORT void JNICALL Java_net_sf_regain_crawler_preparator_ifilter_IfilterWrapper_doCoUninitialize
   (JNIEnv *env, jclass clazz)
 {
-	CoUninitialize();
+  CoUninitialize();
 }
 
 
 JNIEXPORT void JNICALL Java_net_sf_regain_crawler_preparator_ifilter_IfilterWrapper_init
   (JNIEnv *env, jobject obj, jstring _progid)
 {
-	jclass clazz = env->GetObjectClass(obj);
-	jfieldID jf = env->GetFieldID(clazz, COM_FIELD_NAME, "J");
+  jclass clazz = env->GetObjectClass(obj);
+  jfieldID jf = env->GetFieldID(clazz, COM_FIELD_NAME, "J");
 
-	const char *progid = env->GetStringUTFChars(_progid, NULL);
-	HRESULT hr;
-	IUnknown *punk = NULL;
-	USES_CONVERSION;
-	LPOLESTR bsProgId = A2W(progid);
+  const char *progid = env->GetStringUTFChars(_progid, NULL);
+  HRESULT hr;
+  IUnknown *punk = NULL;
+  USES_CONVERSION;
+  LPOLESTR bsProgId = A2W(progid);
 
-    env->ReleaseStringUTFChars(_progid, progid);
-    // it's a moniker
-    hr = CoGetObject(bsProgId, NULL, IID_IUnknown, (LPVOID *)&punk);
+  env->ReleaseStringUTFChars(_progid, progid);
+  // it's a moniker
+  hr = CoGetObject(bsProgId, NULL, IID_IUnknown, (LPVOID *)&punk);
+  if (FAILED(hr)) {
+    ThrowException(env, "Can't find moniker", hr);
+    return;
+  }
+
+  IClassFactory *pIClass;
+  // if it was a clsid moniker, I may have a class factory
+  hr = punk->QueryInterface(IID_IClassFactory, (void **)&pIClass);
+  if (SUCCEEDED(hr)) {
+    punk->Release();
+    // try to create an instance
+    hr = pIClass->CreateInstance(NULL, IID_IUnknown, (void **)&punk);
     if (FAILED(hr)) {
-		ThrowException(env, "Can't find moniker", hr);
-		return;
+      ThrowException(env, "Can't create moniker class instance", hr);
+      return;
     }
+    pIClass->Release();
+  }
 
-	IClassFactory *pIClass;
-    // if it was a clsid moniker, I may have a class factory
-    hr = punk->QueryInterface(IID_IClassFactory, (void **)&pIClass);
-	if (SUCCEEDED(hr)) {
-		punk->Release();
-		// try to create an instance
-		hr = pIClass->CreateInstance(NULL, IID_IUnknown, (void **)&punk);
-		if (FAILED(hr)) {
-			ThrowException(env, "Can't create moniker class instance", hr);
-			return;
-		}
-		pIClass->Release();
-	}
-
-	// Store a pointer to the IFilter in the Java Object
-	env->SetLongField(obj, jf, (SIZE_T)punk);
+  // Store a pointer to the IFilter in the Java Object
+  env->SetLongField(obj, jf, (SIZE_T)punk);
 }
 
 
 JNIEXPORT void JNICALL Java_net_sf_regain_crawler_preparator_ifilter_IfilterWrapper_getText
   (JNIEnv *env, jobject obj, jstring _fileName, jobject stringBuffer,
-   jboolean showTextEndings)
+   jboolean showTextEndings, jboolean showDebugMessages, jboolean onlyThrowExceptionWhenNoTextWasFound)
 {
-	jclass clazz = env->GetObjectClass(obj);
-	jfieldID jf = env->GetFieldID(clazz, COM_FIELD_NAME, "J");
-	jlong num = env->GetLongField(obj, jf);
+  jclass clazz = env->GetObjectClass(obj);
+  jfieldID jf = env->GetFieldID(clazz, COM_FIELD_NAME, "J");
+  jlong num = env->GetLongField(obj, jf);
 
-    IPersistFile *pPersistFile;
-    IFilter *pFilter;
+  IPersistFile *pPersistFile;
+  IFilter *pFilter;
 
-	HRESULT hr;
-	STAT_CHUNK st;
-	SCODE scode;
+  HRESULT hr;
+  STAT_CHUNK st;
+  SCODE scode;
 
-	IUnknown *punk = (IUnknown *)num;
-	if (! punk) {
-		ThrowException(env, "Not initialized", hr);
-		return;
-	}
+  IUnknown *punk = (IUnknown *)num;
+  if (! punk) {
+    ThrowException(env, "Not initialized", hr);
+    return;
+  }
 
-	hr = punk->QueryInterface(IID_IPersistFile, (void **)&pPersistFile);
-	if (!SUCCEEDED(hr)) {
-		ThrowException(env, "Can't query interface object for IPersistFile", hr);
-		return;
-	}
+  hr = punk->QueryInterface(IID_IPersistFile, (void **)&pPersistFile);
+  if (!SUCCEEDED(hr)) {
+    ThrowException(env, "Can't query interface object for IPersistFile", hr);
+    return;
+  }
 
-	hr = punk->QueryInterface(IID_IFilter, (void **)&pFilter);
-	if (!SUCCEEDED(hr)) {
-		pPersistFile->Release();
-		ThrowException(env, "Can't query interface object for IFilter", hr);
-		return;
-	}
+  hr = punk->QueryInterface(IID_IFilter, (void **)&pFilter);
+  if (!SUCCEEDED(hr)) {
+    pPersistFile->Release();
+    ThrowException(env, "Can't query interface object for IFilter", hr);
+    return;
+  }
 
-	const jchar *fileName = env->GetStringChars(_fileName, NULL);
-	pPersistFile->Load(fileName, 0);
-	env->ReleaseStringChars(_fileName, fileName);
+  const jchar *fileName = env->GetStringChars(_fileName, NULL);
+  pPersistFile->Load((LPOLESTR)fileName, 0);
+  env->ReleaseStringChars(_fileName, fileName);
 
-	ULONG pwdFlags;
-	scode = pFilter->Init(0, 0, NULL, &pwdFlags);
-	if (scode != S_OK) {
-		pPersistFile->Release();
-		pFilter->Release();
-		ThrowException(env, "Initializing IFilter failed", hr);
-		return;
-	}
+  ULONG pwdFlags;
+  scode = pFilter->Init(0, 0, NULL, &pwdFlags);
+  if (scode != S_OK) {
+    pPersistFile->Release();
+    pFilter->Release();
+    ThrowException(env, "Initializing IFilter failed", hr);
+    return;
+  }
 
-	jclass sbufClass = env->GetObjectClass(stringBuffer);
-	jmethodID appendID = env->GetMethodID(sbufClass, "append",
-		"(Ljava/lang/String;)Ljava/lang/StringBuffer;");
+  jclass sbufClass = env->GetObjectClass(stringBuffer);
+  jmethodID appendID = env->GetMethodID(sbufClass, "append",
+    "(Ljava/lang/String;)Ljava/lang/StringBuffer;");
 
-	const ULONG bufferSize = 1024;
-	WCHAR buffer[bufferSize];
-	ULONG len;
+  const ULONG bufferSize = 10240;
+  WCHAR buffer[bufferSize];
+  ULONG len;
+  ULONG totalLen = 0;
 
-	while ((scode = pFilter->GetChunk(&st)) != FILTER_E_END_OF_CHUNKS) {
-		if (st.flags == CHUNK_TEXT) {
+  if (showDebugMessages) {
+    printf("Ifilter.GetChunk constants: S_OK=0x%x, FILTER_E_END_OF_CHUNKS=0x%x, FILTER_E_EMBEDDING_UNAVAILABLE=0x%x, FILTER_E_LINK_UNAVAILABLE=0x%x, FILTER_E_PASSWORD=0x%x, FILTER_E_ACCESS=0x%x\n",
+      S_OK, FILTER_E_END_OF_CHUNKS, FILTER_E_EMBEDDING_UNAVAILABLE, FILTER_E_LINK_UNAVAILABLE, FILTER_E_PASSWORD, FILTER_E_ACCESS);
+    printf("Ifilter.GetText constants: S_OK=0x%x, FILTER_E_NO_TEXT=0x%x, FILTER_E_NO_MORE_TEXT=0x%x, FILTER_S_LAST_TEXT=0x%x, CHUNK_TEXT=0x%x\n",
+      S_OK, FILTER_E_NO_TEXT, FILTER_E_NO_MORE_TEXT, FILTER_S_LAST_TEXT, CHUNK_TEXT);
+  }
 
-			while (true) {
-				len = bufferSize;
-				// NOTE: len will set by GetText to the correct length
-				scode = pFilter->GetText(&len, buffer);
+  while (true) {
+    scode = pFilter->GetChunk(&st);
 
-				if (scode == FILTER_E_NO_MORE_TEXT) {
-					// We are done
-					break;
-				}
+    if (showDebugMessages) {
+      printf("Got chunk start: scode=0x%x, st.flags=0x%x\n", scode, st.flags);
+    }
 
-				//printf("C: size: %d\n", len);
+    if (scode == S_OK) {
+      if (st.flags == CHUNK_TEXT) {
+        while (true) {
+          len = bufferSize;
+          // NOTE: len will set by GetText to the correct length
+          scode = pFilter->GetText(&len, buffer);
 
-				// Create a Java String
-				jstring str = env->NewString((jchar*)buffer, len);
+          if (showDebugMessages) {
+            printf("Got text: scode=0x%x, size=%d\n", scode, len);
+          }
 
-				// Append it to the StringBuffer
-				env->CallObjectMethod(stringBuffer, appendID, str);
+          if (scode == FILTER_E_NO_MORE_TEXT) {
+            // We are done
+            break;
+          }
 
-				if (showTextEndings) {
-					str = env->NewStringUTF("\n<end of text>\n");
-					env->CallObjectMethod(stringBuffer, appendID, str);
-				}
-			}
+          // Create a Java String
+          jstring str = env->NewString((jchar*)buffer, len);
 
-			// End of chunk
-			if (showTextEndings) {
-				jstring str = env->NewStringUTF("\n<end of chunk>\n");
-				env->CallObjectMethod(stringBuffer, appendID, str);
-			}
-			jstring str = env->NewStringUTF("\n");
-			env->CallObjectMethod(stringBuffer, appendID, str);
-		}
-	}
+          // Append it to the StringBuffer
+          env->CallObjectMethod(stringBuffer, appendID, str);
 
-	// Release the Interfaces
-	pPersistFile->Release();
-	pFilter->Release();
+          if (showTextEndings) {
+            str = env->NewStringUTF("\n<end of text>\n");
+            env->CallObjectMethod(stringBuffer, appendID, str);
+          }
+
+          totalLen += len;
+        }
+
+        // End of chunk
+        if (showTextEndings) {
+            jstring str = env->NewStringUTF("\n<end of chunk>\n");
+            env->CallObjectMethod(stringBuffer, appendID, str);
+        }
+        jstring str = env->NewStringUTF("\n");
+        env->CallObjectMethod(stringBuffer, appendID, str);
+      }
+    } else if (scode == FILTER_E_EMBEDDING_UNAVAILABLE || scode == FILTER_E_LINK_UNAVAILABLE) {
+      // This chunk can't be read -> Go on with the next one (do nothing)
+    } else if (scode == FILTER_E_END_OF_CHUNKS) {
+      // End of chunks -> Stop here
+      break;
+    } else {
+      // There was an error
+      if (!onlyThrowExceptionWhenNoTextWasFound || totalLen == 0) {
+        if (scode == FILTER_E_PASSWORD) {
+          ThrowException(env, "Extracting text failed: Password or other security-related access failure", hr);
+        } else if (scode == FILTER_E_ACCESS) {
+          ThrowException(env, "Extracting text failed: General access failure", hr);
+        } else {
+          ThrowException(env, "Extracting text failed: GetChunk returned unknown status code", hr);
+        }
+      }
+      break;
+    }
+  }
+
+  // Release the Interfaces
+  pPersistFile->Release();
+  pFilter->Release();
 }
 
 
 JNIEXPORT void JNICALL Java_net_sf_regain_crawler_preparator_ifilter_IfilterWrapper_close
   (JNIEnv *env, jobject obj)
 {
-	jclass clazz = env->GetObjectClass(obj);
-	jfieldID jf = env->GetFieldID(clazz, COM_FIELD_NAME, "J");
-	jlong num = env->GetLongField(obj, jf);
+  jclass clazz = env->GetObjectClass(obj);
+  jfieldID jf = env->GetFieldID(clazz, COM_FIELD_NAME, "J");
+  jlong num = env->GetLongField(obj, jf);
 
-	IUnknown *punk = (IUnknown *)num;
-	punk->Release();
-	env->SetLongField(obj, jf, (SIZE_T)NULL);
+  IUnknown *punk = (IUnknown *)num;
+  punk->Release();
+  env->SetLongField(obj, jf, (SIZE_T)NULL);
 }
 
 

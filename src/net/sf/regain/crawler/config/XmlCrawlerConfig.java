@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: XmlCrawlerConfig.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/XmlCrawlerConfig.java,v $
- *     $Date: 2006/01/21 22:54:38 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2007-10-20 18:22:56 +0200 (Sa, 20 Okt 2007) $
  *   $Author: til132 $
- * $Revision: 1.14 $
+ * $Revision: 247 $
  */
 package net.sf.regain.crawler.config;
 
@@ -72,6 +72,10 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   private int mHttpTimeoutSecs;
   /** Das Verzeichnis, in dem der Suchindex stehen soll. */
   private String mIndexDir;
+
+  /** The maximum number of terms per document. */
+  private int mMaxFieldLength;
+
   /** Der zu verwendende Analyzer-Typ. */
   private String mAnalyzerType;
 
@@ -108,6 +112,9 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   private UrlMatcher[] mBlackList;
   /** The white list. */
   private WhiteListEntry[] mWhiteListEntryArr;
+
+  /** The names of the fields to prefetch the destinct values for. */
+  private String[] mValuePrefetchFields;
 
   /**
    * Die regul�ren Ausdr�cke, auf die die URL eines Dokuments passen muss,
@@ -247,6 +254,8 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     mBuildIndex = (node == null) ? true : XmlToolkit.getTextAsBoolean(node);
     node = XmlToolkit.getChild(indexNode, "analyzerType", true);
     mAnalyzerType = XmlToolkit.getText(node, true);
+    node = XmlToolkit.getChild(indexNode, "maxFieldLength", false);
+    mMaxFieldLength = (node == null) ? -1 : XmlToolkit.getTextAsInt(node);
     node = XmlToolkit.getChild(indexNode, "stopwordList", true);
     mStopWordList = XmlToolkit.getTextAsWordList(node, true);
     node = XmlToolkit.getChild(indexNode, "exclusionList", true);
@@ -259,6 +268,9 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
     node = XmlToolkit.getChild(indexNode, "maxFailedDocuments");
     mMaxFailedDocuments = (node == null) ? 1.0 : (XmlToolkit.getTextAsDouble(node) / 100.0);
+
+    node = XmlToolkit.getChild(indexNode, "valuePrefetchFields", false);
+    mValuePrefetchFields = (node == null) ? null : XmlToolkit.getTextAsWordList(node, false);
   }
 
 
@@ -438,11 +450,13 @@ public class XmlCrawlerConfig implements CrawlerConfig {
       }
 
       node = XmlToolkit.getChild(nodeArr[i], "config");
-      PreparatorConfig prepConfig = null;
+      PreparatorConfig prepConfig;
       if (node != null) {
         prepConfig = readPreparatorConfig(node, xmlFile, className);
+      } else {
+        prepConfig = new PreparatorConfig();
       }
-      
+
       mPreparatorSettingsArr[i] = new PreparatorSettings(enabled, className, urlRegex, prepConfig);
     }
   }
@@ -707,6 +721,12 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   }
 
 
+  // overridden
+  public int getMaxFieldLength() {
+    return mMaxFieldLength;
+  }
+
+
   /**
    * Gibt alle Worte zur�ck, die nicht indiziert werden sollen.
    *
@@ -850,6 +870,11 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     return mWhiteListEntryArr;
   }
 
+
+  // overridden
+  public String[] getValuePrefetchFields() {
+    return mValuePrefetchFields;
+  }
 
 
   /**

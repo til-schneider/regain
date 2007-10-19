@@ -30,7 +30,7 @@ function removeFromList(listName) {
   // Remove marked entries
   var text = field.value;
   for (var i = 0; i < list.length; i++) {
-    if (list.options[i].value == text) {
+    if (list.options[i].selected) {
       list.options[i] = null;
     }
   }

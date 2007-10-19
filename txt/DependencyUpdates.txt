@@ -54,6 +54,31 @@ Ca. 28.07.04:
         Speed: 1 MB: 12,38 secs -> 10,82 secs
         Quality: Unchanged
 
+20.10.07:
+=========
+    Updates:
+      jakarta regexp: 1.4 -> 1.5
+      [jakarta log4j: 1.2.11 (is running well, version 2 is available)]
+      jakarta lucene: 1.4.3 -> 2.2.0
+      [xerces-j: 2.6.2 (is running well, I did not look for new version)]
+      [pdfBox: 0.7.2 (new version 0.7.3 caused 100% errors)]
+      Jakarta POI: 3.0 alpha1 20050704 -> 3.0.1
+      [jacob: 1.8 (is running well, I did not look for new version)]
+      jdic: 0.9.1 -> 0.9.3
+    Results:
+      pdfBox 0.7.3 caused 100% errors, so I stayed on 0.7.2
+      Overall:
+        Speed: 1.43 MB/sec -> 1.55 MB/sec
+        Quality: Unchanged
 
-
+Websites:
+=========
+  jakarta regexp: http://jakarta.apache.org/site/downloads/downloads_regexp.cgi
+  jakarta log4j: http://logging.apache.org/
+  jakarta lucene: http://lucene.apache.org/java/docs/index.html
+  xerces-j: 
+  pdfBox: http://www.pdfbox.org/
+  Jakarta POI: http://poi.apache.org/
+  jacob: http://sourceforge.net/projects/jacob-project/
+  jdic: https://jdic.dev.java.net/
 

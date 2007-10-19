@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: DesktopConstants.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/DesktopConstants.java,v $
- *     $Date: 2005/03/16 12:53:47 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-03-16 13:53:50 +0100 (Mi, 16 Mrz 2005) $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 90 $
  */
 package net.sf.regain.ui.desktop;
 

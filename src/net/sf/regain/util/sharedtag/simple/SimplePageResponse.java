@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: SimplePageResponse.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/simple/SimplePageResponse.java,v $
- *     $Date: 2005/03/16 12:30:30 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-03-16 13:30:31 +0100 (Mi, 16 Mrz 2005) $
  *   $Author: til132 $
- * $Revision: 1.4 $
+ * $Revision: 89 $
  */
 package net.sf.regain.util.sharedtag.simple;
 

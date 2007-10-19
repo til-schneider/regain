@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: QueryTag.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/server/taglib/input/QueryTag.java,v $
- *     $Date: 2005/02/24 15:31:35 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-02-24 16:31:49 +0100 (Do, 24 Feb 2005) $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 30 $
  */
 package net.sf.regain.ui.server.taglib.input;
 

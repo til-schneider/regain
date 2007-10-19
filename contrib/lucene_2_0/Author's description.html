@@ -1,0 +1,46 @@
+<html>
+<head>
+<title>Lucene 2.0 + Dyn. Links</title>
+</head>
+<body>
+<div class="moz-text-plain"><pre wrap>
+anbei wie besprochen nur die Klassen mit meinem Code.
+Ich habe hoffentlich jede Zeile mit //paro: gekennzeichnet.
+
+in build.xml folgendes ergänzen:
+&lt;property name="lucene.jar" value="lucene-core-2.0.0.jar"/&gt;
+&lt;property name="lucene-analyzers.jar" value="lucene-analyzers-2.0.0.jar"/&gt;
+
+...
+  &lt;target name="runtime-server" depends="prepare-once, runtime-server-fast,
+-web-temps"&gt;
+    &lt;jar jarfile="temp/runtime/crawler/${programname.file}-crawler.jar"
+         compress="false"
+         index="true"&gt;
+      &lt;manifest&gt;
+        &lt;attribute name="Main-Class" value="net.sf.regain.crawler.Main"/&gt;
+      &lt;/manifest&gt;
+      &lt;fileset dir="temp/included-lib-classes/common"&gt;
+        ...
+		&lt;!-- HTML stuff --&gt;
+		&lt;include name="au/id/jericho/lib/**"/&gt;
+
+      &lt;/fileset&gt;
+	  ...
+      &lt;lib dir="lib"&gt;
+        &lt;include name="${lucene.jar}"/&gt;
+	  &lt;include name="${lucene-analyzers.jar}"/&gt;
+        &lt;include name="${regexp.jar}"/&gt;
+        &lt;include name="${log4j.jar}"/&gt;
+      &lt;/lib&gt;
+	...
+    &lt;/war&gt;
+  &lt;/target&gt;
+
+in test-preparators und deploy-classes noch die lib:
+
+&lt;include name="${lucene-analyzers.jar}"/&gt;
+
+Also ich hoffe du kannst was mit meinem Code anfangen ;-)
+</pre></div></body>
+</html>

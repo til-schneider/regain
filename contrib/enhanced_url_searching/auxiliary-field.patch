@@ -1,0 +1,436 @@
+Index: src/net/sf/regain/crawler/document/DocumentFactory.java
+===================================================================
+RCS file: /cvsroot/regain/regain/src/net/sf/regain/crawler/document/DocumentFactory.java,v
+retrieving revision 1.21
+diff -u -r1.21 DocumentFactory.java
+--- src/net/sf/regain/crawler/document/DocumentFactory.java	26 Apr 2006 18:57:10 -0000	1.21
++++ src/net/sf/regain/crawler/document/DocumentFactory.java	15 Aug 2006 16:20:50 -0000
+@@ -343,30 +343,22 @@
+     AuxiliaryField[] auxiliaryFieldArr = mConfig.getAuxiliaryFieldList();
+     if (auxiliaryFieldArr != null) {
+       for (int i = 0; i < auxiliaryFieldArr.length; i++) {
+-        RE regex = auxiliaryFieldArr[i].getUrlRegex();
+-        if (regex.match(url)) {
++        String value = auxiliaryFieldArr[i].buildValue(url);
++        if (value != null) {
+           String fieldName = auxiliaryFieldArr[i].getFieldName();
+ 
+-          String value = auxiliaryFieldArr[i].getValue();
+-          if (value == null) {
+-            // We have no value set -> Extract the value from the regex
+-            value = regex.getParen(auxiliaryFieldArr[i].getUrlRegexGroup());
++          if (auxiliaryFieldArr[i].getToLowerCase()) {
++	      value = value.toLowerCase();
+           }
+ 
+-          if (value != null) {
+-            if (auxiliaryFieldArr[i].getToLowerCase()) {
+-              value = value.toLowerCase();
+-            }
+-
+-            if (mLog.isDebugEnabled()) {
+-              mLog.debug("Adding auxiliary field: " + fieldName + "=" + value);
+-            }
+-            boolean store = auxiliaryFieldArr[i].isStored();
+-            boolean index = auxiliaryFieldArr[i].isIndexed();
+-            boolean token = auxiliaryFieldArr[i].isTokenized();
+-            doc.add(new Field(fieldName, value, store, index, token));
++          if (mLog.isDebugEnabled()) {
++	      mLog.debug("Adding auxiliary field: " + fieldName + "=" + value);
+           }
+-        }
++          boolean store = auxiliaryFieldArr[i].isStored();
++          boolean index = auxiliaryFieldArr[i].isIndexed();
++          boolean token = auxiliaryFieldArr[i].isTokenized();
++          doc.add(new Field(fieldName, value, store, index, token));
++	}
+       }
+     }
+     
+Index: src/net/sf/regain/crawler/config/XmlCrawlerConfig.java
+===================================================================
+RCS file: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/XmlCrawlerConfig.java,v
+retrieving revision 1.15
+diff -u -r1.15 XmlCrawlerConfig.java
+--- src/net/sf/regain/crawler/config/XmlCrawlerConfig.java	12 Apr 2006 14:49:16 -0000	1.15
++++ src/net/sf/regain/crawler/config/XmlCrawlerConfig.java	15 Aug 2006 16:20:50 -0000
+@@ -39,6 +39,7 @@
+ import org.w3c.dom.Document;
+ import org.w3c.dom.Element;
+ import org.w3c.dom.Node;
++import org.w3c.dom.NodeList;
+ 
+ /**
+  * Liest die konfigurierenden Einstellungen aus einer XML-Datei und stellt sie
+@@ -465,22 +466,29 @@
+       mAuxiliaryFieldArr = new AuxiliaryField[nodeArr.length];
+       for (int i = 0; i < nodeArr.length; i++) {
+         String fieldName = XmlToolkit.getAttribute(nodeArr[i], "name", true);
+-        RE urlRegex = readRegexChild(nodeArr[i]);
+-        String value = XmlToolkit.getAttribute(nodeArr[i], "value");
++        boolean store    = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "store", true);
++        boolean index    = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "index", true);
++        boolean tokenize = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "tokenize", false);
++        boolean decode = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "decode", true);
+         boolean toLowerCase = XmlToolkit.getAttributeAsBoolean(nodeArr[i],
+                 "toLowerCase", true);
++        
++        // check for new style (attributes inside <regex> and <replace>) or
++        // old style (attributes in <auxiliaryField>, single <regex> tag).
++        String value = XmlToolkit.getAttribute(nodeArr[i], "value");
+         int urlRegexGroup = XmlToolkit.getAttributeAsInt(nodeArr[i], "regexGroup", -1);
+         if ((value == null) && (urlRegexGroup == -1)) {
+-          throw new RegainException("The node 'auxiliaryField' must have " +
+-                "either the attribute 'value' or the attribute 'regexGroup'");
++            // new style field
++            mAuxiliaryFieldArr[i] = new AuxiliaryField(fieldName, toLowerCase,
++                    store, index, tokenize, decode);
++            readAuxiliaryFieldChildren(nodeArr[i], mAuxiliaryFieldArr[i]);
++        } else {
++            RE urlRegex = readRegexChild(nodeArr[i]);
++            mAuxiliaryFieldArr[i] =
++                    new AuxiliaryField(fieldName, value, toLowerCase, urlRegex,
++                    urlRegexGroup, store, index, tokenize, decode);
+         }
+-
+-        boolean store    = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "store", true);
+-        boolean index    = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "index", true);
+-        boolean tokenize = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "tokenize", false);
+-
+-        mAuxiliaryFieldArr[i] = new AuxiliaryField(fieldName, value,
+-            toLowerCase, urlRegex, urlRegexGroup, store, index, tokenize);
++        
+       }
+     }
+   }
+@@ -521,8 +529,39 @@
+           }
+       }
+   }
++
++
++  private void readAuxiliaryFieldChildren(Node node, AuxiliaryField af)
++    throws RegainException
++  {
++      NodeList children = node.getChildNodes();
++      for (int i = 0; i < children.getLength(); i++) {
++          Node child = children.item(i);
++              if ("regex".equals(child.getNodeName())) {
++                  String value = XmlToolkit.getAttribute(child, "value");
++                  // default group is 0 (all match)
++                  int group = XmlToolkit.getAttributeAsInt(child, "regexGroup", 0);
++                  String regex = XmlToolkit.getText(child, true);
++                  try {
++                      af.addRegexTag(new RE(regex), value, group);
++                  } catch (RESyntaxException exc) {
++                      throw new RegainException("Regex of node '" + child.getNodeName()
++                          + "' has a wrong syntax: '" + regex + "'", exc);
++                  }
++              } else if ("replace".equals(child.getNodeName())) {
++                  String regex = XmlToolkit.getAttribute(child, "regex", true);
++                  String replace = XmlToolkit.getText(child, true);
++                  try {
++                      af.addReplaceTag(new RE(regex), replace);
++                  } catch (RESyntaxException exc) {
++                      throw new RegainException("Regex of node '" + child.getNodeName()
++                          + "' has a wrong syntax: '" + regex + "'", exc);
++                  }
++              }
++      }
++  }
+   
+-  
++
+   /**
+    * Reads the configuration of a preparator from a node.
+    * 
+@@ -846,7 +885,7 @@
+    * The black list is an array of WhiteListEntry, a URLs <i>must</i> match to,
+    * in order to be processed.
+    *
+-   * @return Die Weiﬂe Liste
++   * @return Die Wei√üe Liste
+    */
+   public WhiteListEntry[] getWhiteList() {
+     return mWhiteListEntryArr;
+Index: src/net/sf/regain/crawler/config/AuxiliaryField.java
+===================================================================
+RCS file: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/AuxiliaryField.java,v
+retrieving revision 1.3
+diff -u -r1.3 AuxiliaryField.java
+--- src/net/sf/regain/crawler/config/AuxiliaryField.java	17 Jan 2006 10:50:42 -0000	1.3
++++ src/net/sf/regain/crawler/config/AuxiliaryField.java	15 Aug 2006 16:20:50 -0000
+@@ -8,9 +8,14 @@
+  */
+ package net.sf.regain.crawler.config;
+ 
++import java.util.ArrayList;
++import java.util.Iterator;
++import java.util.List;
+ import net.sf.regain.RegainException;
++import net.sf.regain.RegainToolkit;
+ 
+ import org.apache.regexp.RE;
++import org.apache.regexp.RESyntaxException;
+ 
+ /**
+  * An auxiliary field is a additional field put into the index.
+@@ -36,18 +41,36 @@
+ 
+   /**
+    * The value of the auxiliary field. If null, the value will be extracted from
+-   * the regex using the urlRegexGroup.
++   * the regex using the mUrlRegList and mUrlReplace.
+    */
+   private String mValue;
+ 
+   /** Specifies whether the (extracted) value should be converted to lower case. */
+   private boolean mToLowerCase;
+   
+-  /** The regex that extracts the value of the field. */
+-  private RE mUrlRegex;
++  /** This class is used only to hold the tag attributes together, as a
++   * "structure", not as a real class. Member fields are accessed directly.
++   * There are only two tags at the moment, <regex> and <replace>, this
++   * handles both. When there will be three or more, it's better to
++   * generalize this in a more OOP fashion.
++   */
++  private class Extractor {
++      RE mRegex;
++      String mReplace;
++      String mValue;
++      int mGroup;
++
++      public Extractor(RE regex, String replace, String value, int group) {
++          mRegex = regex;
++          mReplace = replace;
++          mValue = value;
++          mGroup = group;
++      }
++  }
+   
+-  /** The group of the regex that contains the value. */
+-  private int mUrlRegexGroup;
++  /** The list of extractor to be applied, in sequence. */
++  private List mExtractorList = new ArrayList();
++  // private List<Extractor> mExtractor; // for java 1.5
+ 
+   /** Specifies whether the field value should be stored in the index. */
+   private boolean mStore;
+@@ -58,38 +81,114 @@
+   /** Specifies whether the field value should be tokenized. */
+   private boolean mTokenize;
+ 
++  /** Specifies whether the url should be decoded before it's proecssed. */
++  private boolean mUrlDecode;
+ 
+   /**
+-   * Creates a new instance of AuxiliaryField.
++   * Creates a new instance of AuxiliaryField. The list of tags is empty, it
++   * must be populated using addRegexTag() and addReplaceTag().
+    * 
+-   * @param fieldName The name of the auxiliary field.
+-   * @param value The value of the auxiliary field. If null, the value will be
+-   *        extracted from the regex using the urlRegexGroup.
++   * @param fieldName the name of the auxiliary field
+    * @param toLowerCase Whether the (extracted) value should be converted to
+    *        lower case.
+-   * @param urlRegex The regex that extracts the value of the field.
+-   * @param urlRegexGroup The group of the regex that contains the value.
+    * @param store Specifies whether the field value should be stored in the
+    *        index.
+    * @param index Specifies whether the field value should be indexed.
+    * @param tokenize Specifies whether the field value should be tokenized.
++   * @param decode Specifies if the url should be decoded before being processed.
+    * 
+    * @throws RegainException If the regex has a syntax error.
+    */
+-  public AuxiliaryField(String fieldName, String value, boolean toLowerCase,
+-    RE urlRegex, int urlRegexGroup, boolean store, boolean index, boolean tokenize)
++  public AuxiliaryField(String fieldName, boolean toLowerCase, boolean store,
++			boolean index, boolean tokenize, boolean decode)
+     throws RegainException
+   {
+     mFieldName = fieldName;
+-    mValue = value;
+     mToLowerCase = toLowerCase;
+-    mUrlRegex = urlRegex;
+-    mUrlRegexGroup = urlRegexGroup;
+     mStore = store;
+     mIndex = index;
+     mTokenize = tokenize;
++    mUrlDecode = decode;
++  }
++  
++  /**
++   * Compatibility constructor, for the old syntax of the <auxiliaryField> tag.
++   * The parameters are the same as
++   * {@link AuxiliaryField(String, boolean, boolean, boolean, boolean, boolean)},
++   * except for urlRegex and urlRegexGroup.
++   *
++   * @param urlRegex the regex that extracts the value of the field
++   * @param urlRegexGroup the group of the regex that contains the value
++   * @see #AuxiliaryField(String, boolean, boolean, boolean, boolean)
++   */
++  public AuxiliaryField(String fieldName, String value, boolean toLowerCase,
++          RE urlRegex, int urlRegexGroup, boolean store, boolean index,
++          boolean tokenize, boolean decode)
++    throws RegainException
++  {
++      this(fieldName, toLowerCase, store, index, tokenize, decode);
++      addRegexTag(urlRegex, value, urlRegexGroup);
++  }
++
++  /**
++   * Adds a <regex> tag for this auxiliary field. This searches for an
++   * occurrence of the given regex and, if found, sets the value of the field
++   * to a specified fixed string, or to a part of the text matched. No other
++   * processing is done on this value.
++   *
++   * @param urlRegex the regex to match
++   * @param value If not null, this is the replacement for the text
++   *        matched.
++   * @param urlRegexGroup If value == null, this is the regex group to use as
++   *        the value when there's a match.
++   */
++  public void addRegexTag(RE urlRegex, String value, int urlRegexGroup) {
++      mExtractorList.add(new Extractor(urlRegex, null, value, urlRegexGroup));
++  }
++  
++  /**
++   * Adds a <replace> tag for this auxiliary field. This takes the input string
++   * (original or modified url) and replaces every occurrence of regex with
++   * the given replacement. The output is used as the input of subsequent
++   * <regex> or <replace> tags, or as the field value if this is the last tag.
++   *
++   * @param urlRegex the regex to match
++   * @param replace the replacement for the text matched. See
++   *        {@link RE#subst(String, String, int)} for the syntax.
++   */
++    public void addReplaceTag(RE urlRegex, String replace) {
++      mExtractorList.add(new Extractor(urlRegex, replace, null, -1));
++  }
++
++  /**
++   * Same as {@link #addRegexTag(RE, String, int)}, but takes a string for
++   * the regex.
++   */
++  public void addRegexTag(String urlRegex, String value, int urlRegexGroup) 
++    throws RegainException
++  {
++      try {
++        addRegexTag(new RE(urlRegex), value, urlRegexGroup);
++      } catch (RESyntaxException exc) {
++          throw new RegainException("Regex has a wrong syntax: "
++                  + urlRegex, exc);
++      }
+   }
+   
++  /**
++   * Same as {@link #addReplaceTag(RE, String)}, but takes a string for
++   * the regex.
++   */
++  public void addReplaceTag(String urlRegex, String replace)
++    throws RegainException
++  {
++      try {
++          addReplaceTag(new RE(urlRegex), replace);
++      } catch (RESyntaxException exc) {
++          throw new RegainException("Regex has a wrong syntax: "
++                  + urlRegex, exc);
++      }
++  }
+   
+   /**
+    * Gets the name of the auxiliary field.
+@@ -104,7 +203,7 @@
+   /**
+    * Returns the value of the auxiliary field.
+    * <p>
+-   * If null, the value will be extracted from the regex using the urlRegexGroup.
++   * If null, the value will be extracted from the regex using mExtractor.
+    *
+    * @return The value of the auxiliary field.
+    */
+@@ -112,7 +211,6 @@
+     return mValue;
+   }
+ 
+-
+   /**
+    * Returns whether the (extracted) value should be converted to lower case.
+    *
+@@ -122,26 +220,6 @@
+     return mToLowerCase;
+   }
+ 
+-
+-  /**
+-   * Gets the regex that extracts the value of the field.
+-   * 
+-   * @return The regex that extracts the value of the field.
+-   */
+-  public RE getUrlRegex() {
+-    return mUrlRegex;
+-  }
+-  
+-  
+-  /**
+-   * Gets the group of the regex that contains the value.
+-   * 
+-   * @return The group of the regex that contains the value.
+-   */
+-  public int getUrlRegexGroup() {
+-    return mUrlRegexGroup;
+-  }
+-
+   
+   /**
+    * Returns whether the field value should be stored in the index.
+@@ -172,4 +250,46 @@
+     return mTokenize;
+   }
+   
++  private static final int REPLACE_ALL = org.apache.regexp.RE.REPLACE_ALL;
++  private static final int REPLACE_BACKREFERENCES = 
++          org.apache.regexp.RE.REPLACE_BACKREFERENCES;
++
++  /**
++   * Build the value of the field, given the url of the document to be indexed.
++   * @return the value of the field, or null if no field should be created.
++   */
++  public String buildValue(String url)  throws RegainException {
++      // At the moment, there are only two tags, <regex> and <replace>.
++      // When they'll be three or more, this should be generalized.
++      if (mUrlDecode) {
++	  url = RegainToolkit.urlDecode(url, RegainToolkit.INDEX_ENCODING);
++      }
++      
++      String ret = url;
++      
++      Iterator it = mExtractorList.iterator();
++      while (it.hasNext()) {
++          Extractor ex = (Extractor) it.next();
++          if (ex.mReplace != null) {
++              // <replace> tag
++              url = ex.mRegex.subst(ret, ex.mReplace,
++                      REPLACE_ALL | REPLACE_BACKREFERENCES);
++              ret = url;
++          } else {
++              // <regex> tag
++              if (ex.mRegex.match(url)) {
++                  if (ex.mValue != null) {
++                      ret = ex.mValue;
++                  } else {
++                      ret = ex.mRegex.getParen(ex.mGroup);
++                  }
++                  break; // stop processing if there's a match
++              }
++              ret = null;
++          } // end if (<replace> or <regex> tag)
++      } // end for (each extractor)
++      
++      return ret;
++  }
++  
+ }

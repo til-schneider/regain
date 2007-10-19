@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: SingleSearchResults.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/results/SingleSearchResults.java,v $
- *     $Date: 2005/08/20 11:20:14 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2007-10-20 15:40:39 +0200 (Sa, 20 Okt 2007) $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 244 $
  */
 package net.sf.regain.search.results;
 
@@ -42,6 +42,7 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
 
@@ -104,11 +105,11 @@ public class SingleSearchResults implements SearchResults {
         String[] searchFieldArr = indexConfig.getSearchFieldList();
         for (int i = 0; i < searchFieldArr.length; i++) {
           QueryParser parser = new QueryParser(searchFieldArr[i], analyzer);
-          parser.setOperator(QueryParser.DEFAULT_OPERATOR_AND);
+          parser.setDefaultOperator(QueryParser.AND_OPERATOR);
           Query fieldQuery = parser.parse(queryText);
 
           // Add as OR
-          query.add(fieldQuery, false, false);
+          query.add(fieldQuery, Occur.SHOULD);
         }
       } catch (ParseException exc) {
         throw new RegainException("Error while parsing search pattern '"
@@ -121,15 +122,15 @@ public class SingleSearchResults implements SearchResults {
         BooleanQuery groupQuery = new BooleanQuery();
         for (int i = 0; i < groupArr.length; i++) {
           // Add as OR
-          groupQuery.add(new TermQuery(new Term("groups", groupArr[i])), false, false);
+          groupQuery.add(new TermQuery(new Term("groups", groupArr[i])), Occur.SHOULD);
         }
-        
+
         // Create a main query that contains the group query and the search query
         // combined with AND
         BooleanQuery mainQuery = new BooleanQuery();
-        mainQuery.add(query, true, false);
-        mainQuery.add(groupQuery, true, false);
-        
+        mainQuery.add(query, Occur.MUST);
+        mainQuery.add(groupQuery, Occur.MUST);
+
         // Set the main query as query to use
         query = mainQuery;
       }

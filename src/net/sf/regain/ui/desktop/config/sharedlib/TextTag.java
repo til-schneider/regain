@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: TextTag.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/config/sharedlib/TextTag.java,v $
- *     $Date: 2005/03/10 13:47:33 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-03-10 14:48:07 +0100 (Do, 10 Mrz 2005) $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 68 $
  */
 package net.sf.regain.ui.desktop.config.sharedlib;
 

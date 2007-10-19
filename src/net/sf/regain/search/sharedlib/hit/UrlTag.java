@@ -19,15 +19,16 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: UrlTag.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/hit/UrlTag.java,v $
- *     $Date: 2006/01/19 21:03:32 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2006-09-11 20:12:53 +0200 (Mo, 11 Sep 2006) $
  *   $Author: til132 $
- * $Revision: 1.4 $
+ * $Revision: 234 $
  */
 package net.sf.regain.search.sharedlib.hit;
 
 import net.sf.regain.RegainException;
+import net.sf.regain.RegainToolkit;
 import net.sf.regain.search.SearchToolkit;
 import net.sf.regain.search.results.SearchResults;
 import net.sf.regain.util.sharedtag.PageRequest;
@@ -65,7 +66,12 @@ public class UrlTag extends AbstractHitTag {
 
     String url = results.getHitUrl(hitIndex);
 
-    response.print(url);
+    boolean beautified = getParameterAsBoolean("beautified", false);
+    if (beautified && url.startsWith("file://")) {
+      response.print(RegainToolkit.urlToFileName(url));
+    } else {
+      response.print(RegainToolkit.urlDecode(url, RegainToolkit.INDEX_ENCODING));
+    }
   }
 
 }

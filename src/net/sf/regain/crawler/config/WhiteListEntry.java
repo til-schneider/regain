@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: WhiteListEntry.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/WhiteListEntry.java,v $
- *     $Date: 2005/05/11 09:21:40 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-05-11 11:21:40 +0200 (Mi, 11 Mai 2005) $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 134 $
  */
 package net.sf.regain.crawler.config;
 

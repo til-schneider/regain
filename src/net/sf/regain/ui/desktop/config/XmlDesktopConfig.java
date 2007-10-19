@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: XmlDesktopConfig.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/config/XmlDesktopConfig.java,v $
- *     $Date: 2005/03/16 08:55:48 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-03-16 09:55:48 +0100 (Mi, 16 Mrz 2005) $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 87 $
  */
 package net.sf.regain.ui.desktop.config;
 

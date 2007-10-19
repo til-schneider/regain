@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: FormTag.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/status/sharedlib/autoupdate/FormTag.java,v $
- *     $Date: 2005/03/16 13:50:03 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-03-16 14:50:04 +0100 (Mi, 16 Mrz 2005) $
  *   $Author: til132 $
- * $Revision: 1.4 $
+ * $Revision: 91 $
  */
 package net.sf.regain.ui.desktop.status.sharedlib.autoupdate;
 

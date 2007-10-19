@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: MemoryAppender.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/io/MemoryAppender.java,v $
- *     $Date: 2006/04/12 14:44:19 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2006-04-12 16:44:20 +0200 (Mi, 12 Apr 2006) $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 209 $
  */
 package net.sf.regain.util.io;
 

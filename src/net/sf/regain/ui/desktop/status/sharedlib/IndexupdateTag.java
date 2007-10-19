@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: IndexupdateTag.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/status/sharedlib/IndexupdateTag.java,v $
- *     $Date: 2005/08/13 09:22:50 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-08-13 11:22:50 +0200 (Sa, 13 Aug 2005) $
  *   $Author: til132 $
- * $Revision: 1.7 $
+ * $Revision: 156 $
  */
 package net.sf.regain.ui.desktop.status.sharedlib;
 

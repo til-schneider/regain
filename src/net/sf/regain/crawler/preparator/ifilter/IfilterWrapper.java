@@ -19,13 +19,15 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: IfilterWrapper.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/ifilter/IfilterWrapper.java,v $
- *     $Date: 2005/10/28 16:00:42 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2006-10-11 18:08:34 +0200 (Mi, 11 Okt 2006) $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 237 $
  */
 package net.sf.regain.crawler.preparator.ifilter;
+
+import org.apache.log4j.Logger;
 
 /**
  * A Java wrapper around one Ifilter. 
@@ -34,6 +36,9 @@ package net.sf.regain.crawler.preparator.ifilter;
  * @author Til Schneider, www.murfman.de
  */
 public class IfilterWrapper {
+
+  /** The logger for this class. */
+  private static Logger mLog = Logger.getLogger(IfilterWrapper.class);
 
   static {
     System.loadLibrary("ifilter_wrapper");
@@ -106,7 +111,7 @@ public class IfilterWrapper {
    * @param buffer The StringBuffer where to store the text.
    */
   public void getText(String fileName, StringBuffer buffer) {
-    getText(fileName, buffer, false);
+    getText(fileName, buffer, false, mLog.isDebugEnabled(), false);
   }
 
 
@@ -117,8 +122,15 @@ public class IfilterWrapper {
    * @param buffer The StringBuffer where to store the text.
    * @param showTextEndings specifies whether to include tags that show where a
    *        text block is finished for debug reasons (the text is retrieved in blocks).
+   * @param showDebugMessages Whether debug messages should be printed out.
+   * @param onlyThrowExceptionWhenNoTextWasFound Whether to throw an exception
+   *        when an error occured, but some text already was extracted.
+   *        (If no text was extracted the exception is always thrown when there
+   *        is an error)
    */
-  private native void getText(String fileName, StringBuffer buffer, boolean showTextEndings);
+  private native void getText(String fileName, StringBuffer buffer,
+    boolean showTextEndings, boolean showDebugMessages,
+    boolean onlyThrowExceptionWhenNoTextWasFound);
 
 
   /**

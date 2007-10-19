@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: JspPageRequest.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/sharedtag/taglib/JspPageRequest.java,v $
- *     $Date: 2005/08/10 14:00:46 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-08-10 16:00:46 +0200 (Mi, 10 Aug 2005) $
  *   $Author: til132 $
- * $Revision: 1.8 $
+ * $Revision: 155 $
  */
 package net.sf.regain.util.sharedtag.taglib;
 

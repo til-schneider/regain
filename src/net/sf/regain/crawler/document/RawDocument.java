@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: RawDocument.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/document/RawDocument.java,v $
- *     $Date: 2005/03/30 17:23:14 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2006-08-21 11:37:35 +0200 (Mo, 21 Aug 2006) $
  *   $Author: til132 $
- * $Revision: 1.8 $
+ * $Revision: 232 $
  */
 package net.sf.regain.crawler.document;
 
@@ -38,6 +38,7 @@ import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.crawler.CrawlerToolkit;
 import net.sf.regain.crawler.Profiler;
+import net.sf.regain.crawler.RedirectException;
 
 import org.apache.log4j.Logger;
 
@@ -181,10 +182,14 @@ public class RawDocument {
       // Wir haben keinen Inhalt
       HTTP_LOADING_PROFILER.abortMeasuring();
 
-      // Pr�fen, ob der Download fehl schlug
+      // Check whether download failed
       if (loaderThread.getError() != null) {
-        throw new RegainException("Loading Document by HTTP failed: " + url,
-                                  loaderThread.getError());
+        if (loaderThread.getError() instanceof RedirectException) {
+          throw (RedirectException) loaderThread.getError();
+        } else {
+          throw new RegainException("Loading Document by HTTP failed: " + url,
+                                    loaderThread.getError());
+        }
       }
 
       // Wir haben weder einen Inhalt noch einen Fehler
@@ -344,7 +349,7 @@ public class RawDocument {
    */
   public void writeToFile(File file) throws RegainException {
     try {
-      CrawlerToolkit.writeToFile(getContent(), file);
+      RegainToolkit.writeToFile(getContent(), file);
 
       if (mContentAsFile == null) {
         // Falls das Dokument in Dateiform ben�tigt wird, dann diese Datei

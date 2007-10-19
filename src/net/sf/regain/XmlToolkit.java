@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: XmlToolkit.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/XmlToolkit.java,v $
- *     $Date: 2005/11/14 08:12:55 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-11-14 09:12:56 +0100 (Mo, 14 Nov 2005) $
  *   $Author: til132 $
- * $Revision: 1.8 $
+ * $Revision: 178 $
  */
 package net.sf.regain;
 

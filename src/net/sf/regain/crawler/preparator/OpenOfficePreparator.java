@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: OpenOfficePreparator.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/OpenOfficePreparator.java,v $
- *     $Date: 2005/11/21 10:19:29 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2007-10-20 17:52:23 +0200 (Sa, 20 Okt 2007) $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 246 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -52,10 +52,34 @@ public class OpenOfficePreparator extends AbstractPreparator {
    * @throws RegainException If creating the preparator failed.
    */
   public OpenOfficePreparator() throws RegainException {
-    super(new String[] { "sds", "sdc", "sdw", "sgl", "sda", "sdd", "sdf", "sxw",
-           "stw", "sxg", "sxc", "stc", "sxi", "sti", "sxd", "std", "sxm", "odt",
-           "ott", "oth", "odm", "odg", "otg", "odp", "otp", "ods", "ots", "odc",
-           "odf", "odb", "odi" });
+    super(new String[] {
+        // Writer
+        "odt", "oth", "ott", "sdw", "stw", "sxw",
+
+        // Calc
+        "ods", "ots", "sdc", "stc", "sxc",
+
+        // Draw
+        "otg", "sda", "std",
+
+        // Impress
+        "odg", "odp", "otp", "sdd", "sti", "sxd", "sxi",
+
+        // Base
+        "odb",
+
+        // Math
+        "odf", "sxm",
+
+        // Chart
+        "odc", "sds",
+
+        // Image
+        "odi",
+
+        // Master
+        "odm", "sgl", "sxg",
+      });
   }
 
 

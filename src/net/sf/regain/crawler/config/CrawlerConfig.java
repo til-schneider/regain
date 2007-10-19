@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: CrawlerConfig.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/CrawlerConfig.java,v $
- *     $Date: 2005/11/21 10:46:29 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2007-10-20 18:22:56 +0200 (Sa, 20 Okt 2007) $
  *   $Author: til132 $
- * $Revision: 1.8 $
+ * $Revision: 247 $
  */
 package net.sf.regain.crawler.config;
 
@@ -113,6 +113,16 @@ public interface CrawlerConfig {
    * @return en zu verwendenden Analyzer-Typ
    */
   public String getAnalyzerType();
+
+  /**
+   * Returns the maximum number of terms that will be indexed for a single field
+   * in a document.
+   * <p>
+   * Is <= 0 if lucene's default should be used.
+   *
+   * @return the maximum number of terms per document.
+   */
+  public int getMaxFieldLength();
 
   /**
    * Gibt alle Worte zurück, die nicht indiziert werden sollen.
@@ -221,6 +231,16 @@ public interface CrawlerConfig {
    * @return Die Weiße Liste
    */
   public WhiteListEntry[] getWhiteList();
+
+  /**
+   * The names of the fields to prefetch the destinct values for.
+   * <p>
+   * Used for speeding up the search:input_fieldlist tag.
+   *
+   * @return the names of the fields to prefetch the destinct values for.
+   *         May be null or empty.
+   */
+  public String[] getValuePrefetchFields();
 
   /**
    * Gibt die regulären Ausdrücke zurück, auf die die URL eines Dokuments passen

@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: IndexUpdateManager.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/IndexUpdateManager.java,v $
- *     $Date: 2005/11/21 10:46:29 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2006-08-21 11:37:35 +0200 (Mo, 21 Aug 2006) $
  *   $Author: til132 $
- * $Revision: 1.8 $
+ * $Revision: 232 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -34,7 +34,6 @@ import java.util.Date;
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.crawler.Crawler;
-import net.sf.regain.crawler.CrawlerToolkit;
 import net.sf.regain.crawler.config.CrawlerConfig;
 import net.sf.regain.crawler.config.XmlCrawlerConfig;
 
@@ -239,18 +238,18 @@ public class IndexUpdateManager implements DesktopConstants {
     }
   }
 
-  
+
   /**
    * Saves the current time as the last index update.
    */
   private void saveIndexLastUpdate() {
     try {
       String lastUpdate = RegainToolkit.lastModifiedToString(new Date());
-      CrawlerToolkit.writeToFile(lastUpdate, LASTUPDATE_FILE);
+      RegainToolkit.writeToFile(lastUpdate, LASTUPDATE_FILE);
     }
     catch (RegainException exc) {
       mLog.error("Writing last update file failed", exc);
     }
   }
-  
+
 }

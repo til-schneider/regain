@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: DummyCrawlerConfig.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/DummyCrawlerConfig.java,v $
- *     $Date: 2005/11/21 10:46:29 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2007-10-20 18:22:56 +0200 (Sa, 20 Okt 2007) $
  *   $Author: til132 $
- * $Revision: 1.9 $
+ * $Revision: 247 $
  */
 package net.sf.regain.crawler.config;
 
@@ -141,6 +141,12 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    */
   public String getAnalyzerType() {
     return "german";
+  }
+
+
+  // overridden
+  public int getMaxFieldLength() {
+    return -1;
   }
 
 
@@ -301,6 +307,12 @@ public class DummyCrawlerConfig implements CrawlerConfig {
     return new WhiteListEntry[] {
       new WhiteListEntry(new PrefixUrlMatcher("file://"), null)
     };
+  }
+
+  
+  // overridden
+  public String[] getValuePrefetchFields() {
+    return null;
   }
 
 

@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: DocumentFactory.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/document/DocumentFactory.java,v $
- *     $Date: 2006/01/17 10:50:26 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2007-10-20 15:40:39 +0200 (Sa, 20 Okt 2007) $
  *   $Author: til132 $
- * $Revision: 1.20 $
+ * $Revision: 244 $
  */
 package net.sf.regain.crawler.document;
 
@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
@@ -46,6 +47,8 @@ import net.sf.regain.crawler.config.CrawlerConfig;
 import net.sf.regain.crawler.config.PreparatorSettings;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.analysis.Token;
+import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.regexp.RE;
@@ -364,7 +367,10 @@ public class DocumentFactory {
             boolean store = auxiliaryFieldArr[i].isStored();
             boolean index = auxiliaryFieldArr[i].isIndexed();
             boolean token = auxiliaryFieldArr[i].isTokenized();
-            doc.add(new Field(fieldName, value, store, index, token));
+
+            doc.add(new Field(fieldName, value,
+                store ? Field.Store.YES : Field.Store.NO,
+                index ? (token ? Field.Index.TOKENIZED : Field.Index.UN_TOKENIZED) : Field.Index.NO));
           }
         }
       }
@@ -376,28 +382,21 @@ public class DocumentFactory {
       
       // Check the Group array
       RegainToolkit.checkGroupArray(mCrawlerAccessController, groupArr);
-      
-      // Put the groups in a space separated list
-      StringBuffer groupList = new StringBuffer();
-      for (int i = 0; i < groupArr.length; i++) {
-        if (i != 0) {
-          groupList.append(" ");
-        }
-        groupList.append(groupArr[i]);
-      }
-      
+
       // Add the field
       // NOTE: The field "groups" is tokenized, but not stemmed.
       //       See: RegainToolkit.WrapperAnalyzer
-      doc.add(Field.Text("groups", groupList.toString()));
+      Iterator groupIter = Arrays.asList(groupArr).iterator();
+      doc.add(new Field("groups", new IteratorTokenStream(groupIter)));
     }
 
     // Add the URL of the document
-    doc.add(Field.Keyword("url", url));
+    doc.add(new Field("url", url, Field.Store.YES, Field.Index.UN_TOKENIZED));
 
     // Add the document's size
     int size = rawDocument.getLength();
-    doc.add(Field.UnIndexed("size", Integer.toString(size)));
+    doc.add(new Field("size", Integer.toString(size), Field.Store.YES,
+        Field.Index.UN_TOKENIZED));
 
     // Add last modified
     Date lastModified = rawDocument.getLastModified();
@@ -407,7 +406,8 @@ public class DocumentFactory {
       lastModified = new Date();
     }
     String lastModifiedAsString = RegainToolkit.lastModifiedToString(lastModified);
-    doc.add(Field.UnIndexed("last-modified", lastModifiedAsString));
+    doc.add(new Field("last-modified", lastModifiedAsString, Field.Store.YES,
+        Field.Index.UN_TOKENIZED));
 
     // Write the raw content to an analysis file
     writeContentAnalysisFile(rawDocument);
@@ -418,7 +418,8 @@ public class DocumentFactory {
       while (iter.hasNext()) {
         String fieldName = (String) iter.next();
         String fieldValue = (String) additionalFieldMap.get(fieldName);
-        doc.add(Field.Text(fieldName, fieldValue));
+        doc.add(new Field(fieldName, fieldValue, Field.Store.COMPRESS,
+            Field.Index.TOKENIZED));
       }
     }
 
@@ -427,11 +428,13 @@ public class DocumentFactory {
       writeAnalysisFile(url, "clean", cleanedContent);
 
       // Add the cleaned content of the document
-      doc.add(Field.UnStored("content", cleanedContent));
+      doc.add(new Field("content", cleanedContent, Field.Store.NO,
+          Field.Index.TOKENIZED));
     } else {
       // We have no content! This is a substitude document
       // -> Add a "preparation-error"-field
-      doc.add(Field.UnIndexed("preparation-error", "true"));
+      doc.add(new Field("preparation-error", "true", Field.Store.YES,
+          Field.Index.NO));
     }
 
     // Check whether to use the link text as title
@@ -447,7 +450,7 @@ public class DocumentFactory {
 
     // Add the document's title
     if (hasContent(title)) {
-      doc.add(Field.Text("title", title));
+      doc.add(new Field("title", title, Field.Store.YES, Field.Index.TOKENIZED));
     }
 
     // Add the document's summary
@@ -455,18 +458,20 @@ public class DocumentFactory {
       summary = createSummaryFromContent(cleanedContent);
     }
     if (hasContent(summary)) {
-      doc.add(Field.Text("summary", summary));
+      doc.add(new Field("summary", summary, Field.Store.COMPRESS,
+          Field.Index.TOKENIZED));
     }
 
     // Add the document's headlines
     if (hasContent(headlines)) {
-      doc.add(Field.Text("headlines", headlines));
+      doc.add(new Field("headlines", headlines, Field.Store.NO,
+          Field.Index.TOKENIZED));
     }
 
     // Add the document's path
     if (path != null) {
       String asString = pathToString(path);
-      doc.add(Field.UnIndexed("path", asString));
+      doc.add(new Field("path", asString, Field.Store.YES, Field.Index.NO));
 
       // Write the path to an analysis file
       writeAnalysisFile(url, "path", asString);

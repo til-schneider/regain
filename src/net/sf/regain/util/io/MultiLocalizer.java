@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: MultiLocalizer.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/io/MultiLocalizer.java,v $
- *     $Date: 2005/08/10 06:26:21 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-08-10 08:26:23 +0200 (Mi, 10 Aug 2005) $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 154 $
  */
 package net.sf.regain.util.io;
 

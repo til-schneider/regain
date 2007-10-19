@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: MaxresultsTag.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/input/MaxresultsTag.java,v $
- *     $Date: 2006/01/17 10:45:08 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2006-01-17 11:45:08 +0100 (Di, 17 Jan 2006) $
  *   $Author: til132 $
- * $Revision: 1.4 $
+ * $Revision: 188 $
  */
 package net.sf.regain.search.sharedlib.input;
 

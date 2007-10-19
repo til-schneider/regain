@@ -297,6 +297,31 @@
 
   <tag>
     <info>
+      Generates an img showing the hit's type using its extension.
+      This tag must be inside a link tag.
+    </info>
+    <name>hit_typeicon</name>
+    <tagclass>net.sf.regain.ui.server.taglib.hit.TypeiconTag</tagclass>
+    <bodycontent>empty</bodycontent>
+
+    <attribute>
+      <description>
+        The path where the type icons are located.
+      </description>
+      <name>imgpath</name>
+      <required>true</required>
+    </attribute>
+    <attribute>
+      <description>
+        The extension used by the type icons (default is "gif").
+      </description>
+      <name>iconextension</name>
+      <required>false</required>
+    </attribute>
+  </tag>
+
+  <tag>
+    <info>
       Writes the navigation path to the current hit's document.
       This tag must be inside a link tag.
     </info>
@@ -364,6 +389,14 @@
     <name>hit_url</name>
     <tagclass>net.sf.regain.ui.server.taglib.hit.UrlTag</tagclass>
     <bodycontent>empty</bodycontent>
+
+    <attribute>
+      <description>
+        Whether the URL should be shown human readable.
+      </description>
+      <name>url</name>
+      <required>false</required>
+    </attribute>
   </tag>
 
   <tag>

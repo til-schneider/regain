@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: BrowserSelectorFrame.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/BrowserSelectorFrame.java,v $
- *     $Date: 2005/08/04 13:52:50 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-08-04 15:52:50 +0200 (Do, 04 Aug 2005) $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 143 $
  */
 package net.sf.regain.ui.desktop;
 

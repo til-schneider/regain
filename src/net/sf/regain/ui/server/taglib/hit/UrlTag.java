@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: UrlTag.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/server/taglib/hit/UrlTag.java,v $
- *     $Date: 2005/02/24 15:31:35 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2006-08-11 14:09:03 +0200 (Fr, 11 Aug 2006) $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 228 $
  */
 package net.sf.regain.ui.server.taglib.hit;
 
@@ -43,6 +43,16 @@ public class UrlTag extends SharedTagWrapperTag {
    */
   public UrlTag() {
     super(new net.sf.regain.search.sharedlib.hit.UrlTag());
+  }
+
+
+  /**
+   * Sets whether the URL should be shown human readable.
+   * 
+   * @param beautified Whether the URL should be shown human readable.
+   */
+  public void setBeautified(String beautified) {
+    getNestedTag().setParameter("beautified", beautified);
   }
 
 }

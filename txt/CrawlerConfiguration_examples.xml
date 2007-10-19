@@ -85,6 +85,14 @@
   <analyzerType>german</analyzerType>
 
   <!--
+   | Sets the maximum number of terms that will be indexed for a single field in
+   | a document.
+   |
+   | If missing or set to -1, then lucene's default will be used (10000).
+   +-->
+  <maxFieldLength>10000</maxFieldLength>
+
+  <!--
    | Specifies the interval between two breakpoints in minutes. If set to 0, no
    | breakpoints will be created.
    |
@@ -136,6 +144,17 @@
    | Separate the words by a blank.
    +-->
   <exclusionList></exclusionList>
+
+  <!--
+   | The names of the fields of which to prefetch the destinct values.
+   | Separate the field names by a blank.
+   |
+   | Put in the names of the fields you use a search:input_fieldlist tag for.
+   | The values shown in the list will then be extracted by the crawler and not
+   | by the search mask, which prevents a slow first loading of a page for huge
+   | indexes.
+   +-->
+  <valuePrefetchFields>extension</valuePrefetchFields>
 
 </searchIndex>
 

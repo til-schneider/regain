@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: FromTag.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/stats/FromTag.java,v $
- *     $Date: 2005/03/01 15:59:39 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-03-01 17:04:30 +0100 (Di, 01 Mrz 2005) $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 46 $
  */
 package net.sf.regain.search.sharedlib.stats;
 

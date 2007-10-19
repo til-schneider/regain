@@ -1,10 +1,10 @@
 /*
  * CVS information:
- *  $RCSfile: AuxiliaryField.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/AuxiliaryField.java,v $
- *     $Date: 2006/01/17 10:50:42 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2006-01-17 11:50:42 +0100 (Di, 17 Jan 2006) $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 189 $
  */
 package net.sf.regain.crawler.config;
 

@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: ProfilerTag.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/status/sharedlib/ProfilerTag.java,v $
- *     $Date: 2005/03/12 13:32:55 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-03-12 14:32:55 +0100 (Sa, 12 Mrz 2005) $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 72 $
  */
 package net.sf.regain.ui.desktop.status.sharedlib;
 

@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: RegainException.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/RegainException.java,v $
- *     $Date: 2005/02/24 15:29:28 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-02-24 16:31:49 +0100 (Do, 24 Feb 2005) $
  *   $Author: til132 $
- * $Revision: 1.4 $
+ * $Revision: 30 $
  */
 package net.sf.regain;
 

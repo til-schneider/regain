@@ -54,11 +54,11 @@ package net.sf.regain.util.io;
  * <http://www.apache.org/>.
  * 
  * CVS information:
- *  $RCSfile: HtmlEntities.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/util/io/HtmlEntities.java,v $
- *     $Date: 2005/03/14 15:04:15 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-03-14 16:04:35 +0100 (Mo, 14 Mrz 2005) $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 82 $
  */
 
 import java.util.Hashtable;

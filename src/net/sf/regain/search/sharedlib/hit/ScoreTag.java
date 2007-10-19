@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: ScoreTag.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/sharedlib/hit/ScoreTag.java,v $
- *     $Date: 2005/03/01 16:00:22 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-03-01 17:04:30 +0100 (Di, 01 Mrz 2005) $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 46 $
  */
 package net.sf.regain.search.sharedlib.hit;
 

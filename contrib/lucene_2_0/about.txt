@@ -1,0 +1,23 @@
+== Contributer ==
+
+This was contributed by Patrick Roessing.
+
+
+== Status ==
+
+Not yet tested.
+
+Unfortunately no unified patch but a description how to patch the code.
+
+
+== Description ==
+
+* Update to Lucene 2.0
+* Patch for dynamic HTML
+
+
+== Detailed information ==
+
+See forum: http://forum.murfman.de/de/viewtopic.php?t=391
+Description see "Author's description.html"
+

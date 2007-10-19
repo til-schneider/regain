@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: UrlChecker.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/UrlChecker.java,v $
- *     $Date: 2006/02/07 16:24:01 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2006-02-07 17:24:01 +0100 (Di, 07 Feb 2006) $
  *   $Author: til132 $
- * $Revision: 1.2 $
+ * $Revision: 202 $
  */
 package net.sf.regain.crawler;
 

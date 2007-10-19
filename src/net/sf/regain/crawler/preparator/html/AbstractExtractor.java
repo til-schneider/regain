@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: AbstractExtractor.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/preparator/html/AbstractExtractor.java,v $
- *     $Date: 2004/11/25 15:37:39 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2004-11-25 16:37:40 +0100 (Do, 25 Nov 2004) $
  *   $Author: til132 $
- * $Revision: 1.3 $
+ * $Revision: 17 $
  */
 package net.sf.regain.crawler.preparator.html;
 

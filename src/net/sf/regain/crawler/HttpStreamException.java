@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  * 
  * CVS information:
- *  $RCSfile: HttpStreamException.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/HttpStreamException.java,v $
- *     $Date: 2004/07/28 20:26:04 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2004-07-28 22:26:06 +0200 (Mi, 28 Jul 2004) $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 2 $
  */
 package net.sf.regain.crawler;
 

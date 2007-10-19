@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: Crawler.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/Crawler.java,v $
- *     $Date: 2006/01/29 14:04:01 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2006-08-11 11:22:53 +0200 (Fr, 11 Aug 2006) $
  *   $Author: til132 $
- * $Revision: 1.28 $
+ * $Revision: 226 $
  */
 package net.sf.regain.crawler;
 
@@ -763,8 +763,9 @@ public class Crawler implements ErrorLogger {
    * und erzeugt f�r jeden Treffer einen neuen Job.
    *
    * @param dir Das zu durchsuchende Verzeichnis.
+   * @throws RegainException If encoding the found URLs failed. 
    */
-  private void parseDirectory(File dir) {
+  private void parseDirectory(File dir) throws RegainException {
     // Get the URL for the directory
     String sourceUrl = RegainToolkit.fileToUrl(dir);
 

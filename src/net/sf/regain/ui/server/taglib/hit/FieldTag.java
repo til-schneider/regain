@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: FieldTag.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/server/taglib/hit/FieldTag.java,v $
- *     $Date: 2005/03/30 11:10:44 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-03-30 13:10:44 +0200 (Mi, 30 Mrz 2005) $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 112 $
  */
 package net.sf.regain.ui.server.taglib.hit;
 

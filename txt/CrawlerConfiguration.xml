@@ -33,6 +33,9 @@
  | The list of URLs where the spidering will start.
  |
  | Enter the start page of your web site resp. a file system folder here.
+ |
+ | NOTE: The examples are in a comment. Thus, if you add your path in one of
+ |       them, then don't forget to uncomment them.
  +-->
 <startlist>
   <!-- Directory parsing -->
@@ -121,6 +124,17 @@
    +-->
   <exclusionList></exclusionList>
 
+  <!--
+   | The names of the fields of which to prefetch the destinct values.
+   | Separate the field names by a blank.
+   |
+   | Put in the names of the fields you use a search:input_fieldlist tag for.
+   | The values shown in the list will then be extracted by the crawler and not
+   | by the search mask, which prevents a slow first loading of a page for huge
+   | indexes.
+   +-->
+  <valuePrefetchFields>extension</valuePrefetchFields>
+
 </searchIndex>
 
 
@@ -137,6 +151,10 @@
   <!--
    | Enable this preparator if you want to use the text extractor of
    | Microsoft Windows. This preparator is able to read tons of file formats.
+   |
+   | NOTE: Under Windows 2000 you have to make shure that reg.exe is installed
+   |       (It's part of the "Support Tools").
+   |       For details see: http://support.microsoft.com/kb/301423
    +-->
   <preparator enabled="false">
       <class>.IfilterPreparator</class>

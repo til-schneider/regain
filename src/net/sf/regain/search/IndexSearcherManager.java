@@ -19,20 +19,16 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: IndexSearcherManager.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/search/IndexSearcherManager.java,v $
- *     $Date: 2006/01/17 10:50:42 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2006-08-21 11:37:35 +0200 (Mo, 21 Aug 2006) $
  *   $Author: til132 $
- * $Revision: 1.9 $
+ * $Revision: 232 $
  */
 package net.sf.regain.search;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import net.sf.regain.RegainException;
@@ -40,8 +36,6 @@ import net.sf.regain.RegainToolkit;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -215,7 +209,7 @@ public class IndexSearcherManager {
       if (! mWorkingIndexDir.exists()) {
         checkForIndexUpdate();
       }
-  
+
       try {
         mIndexReader = IndexReader.open(mWorkingIndexDir.getAbsolutePath());
       }
@@ -240,36 +234,18 @@ public class IndexSearcherManager {
     if (mFieldTermHash == null) {
       mFieldTermHash = new HashMap();
     }
-    
+
     String[] valueArr = (String[]) mFieldTermHash.get(field);
     if (valueArr == null) {
-      // Read the terms
-      try {
-        TermEnum termEnum = getIndexReader().terms();
+      // Read the field values
+      HashMap valueMap = RegainToolkit.readFieldValues(getIndexReader(),
+          new String[] { field }, mWorkingIndexDir);
+      valueArr = (String[]) valueMap.get(field);
 
-        ArrayList valueList = new ArrayList();
-        while(termEnum.next()) {
-          Term term = termEnum.term();
-          if (term.field().equals(field)) {
-            valueList.add(term.text());
-          }
-        }
-        
-        // Convert the list into an array.
-        valueArr = new String[valueList.size()];
-        valueList.toArray(valueArr);
-        
-        // Sort the array
-        Arrays.sort(valueArr);
-      }
-      catch (IOException exc) {
-        throw new RegainException("Reading terms from index failed", exc);
-      }
-      
-      // Cache the values
+      // Copy the field values to our cache
       mFieldTermHash.put(field, valueArr);
     }
-    
+
     return valueArr;
   }
 
@@ -308,14 +284,14 @@ public class IndexSearcherManager {
       File analyzerTypeFile = new File(mWorkingIndexDir, "analyzerType.txt");
       String analyzerType = RegainToolkit.readStringFromFile(analyzerTypeFile);
       File stopWordListFile = new File(mWorkingIndexDir, "stopWordList.txt");
-      String[] stopWordList = readWordListFromFile(stopWordListFile);
+      String[] stopWordList = RegainToolkit.readListFromFile(stopWordListFile);
       File exclusionListFile = new File(mWorkingIndexDir, "exclusionList.txt");
-      String[] exclusionList = readWordListFromFile(exclusionListFile);
+      String[] exclusionList = RegainToolkit.readListFromFile(exclusionListFile);
 
       File untokenizedFieldNamesFile = new File(mWorkingIndexDir, "untokenizedFieldNames.txt");
       String[] untokenizedFieldNames;
       if (untokenizedFieldNamesFile.exists()) {
-          untokenizedFieldNames = readWordListFromFile(untokenizedFieldNamesFile); 
+          untokenizedFieldNames = RegainToolkit.readListFromFile(untokenizedFieldNamesFile); 
       } else {
           untokenizedFieldNames = new String[0];
       }
@@ -327,52 +303,6 @@ public class IndexSearcherManager {
 
     return mAnalyzer;
   }
-
-
-  /**
-   * Liest eine Wortliste aus einer Datei.
-   *
-   * @param file Die Datei aus der die Liste gelesen werden soll.
-   *
-   * @return Die Zeilen der Datei.
-   * @throws RegainException Wenn das Lesen fehl schlug.
-   */
-  private String[] readWordListFromFile(File file) throws RegainException {
-    if (! file.exists()) {
-      return null;
-    }
-
-    FileReader reader = null;
-    BufferedReader buffReader = null;
-    try {
-      reader = new FileReader(file);
-      buffReader = new BufferedReader(reader);
-
-      ArrayList list = new ArrayList();
-      String line;
-      while ((line = buffReader.readLine()) != null) {
-        list.add(line);
-      }
-
-      String[] asArr = new String[list.size()];
-      list.toArray(asArr);
-
-      return asArr;
-    }
-    catch (IOException exc) {
-      throw new RegainException("Reading word list from " + file.getAbsolutePath()
-        + "failed", exc);
-    }
-    finally {
-      if (buffReader != null) {
-        try { buffReader.close(); } catch (IOException exc) {}
-      }
-      if (reader != null) {
-        try { reader.close(); } catch (IOException exc) {}
-      }
-    }
-  }
-
 
 
   /**

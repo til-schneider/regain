@@ -1,10 +1,10 @@
 /*
  * CVS information:
- *  $RCSfile: QueryTag.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/server/taglib/stats/QueryTag.java,v $
- *     $Date: 2005/03/08 08:51:35 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-03-08 09:52:08 +0100 (Di, 08 Mrz 2005) $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 59 $
  */
 package net.sf.regain.ui.server.taglib.stats;
 

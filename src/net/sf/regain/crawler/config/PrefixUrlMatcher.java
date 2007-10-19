@@ -19,11 +19,11 @@
  * Contact: Til Schneider, info@murfman.de
  *
  * CVS information:
- *  $RCSfile: PrefixUrlMatcher.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/crawler/config/PrefixUrlMatcher.java,v $
- *     $Date: 2005/05/11 09:21:40 $
+ *  $RCSfile$
+ *   $Source$
+ *     $Date: 2005-05-11 11:21:40 +0200 (Mi, 11 Mai 2005) $
  *   $Author: til132 $
- * $Revision: 1.1 $
+ * $Revision: 134 $
  */
 package net.sf.regain.crawler.config;
 
