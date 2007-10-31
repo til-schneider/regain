@@ -8,9 +8,9 @@
   <JVMSearchPath>jview</JVMSearchPath>
   <arguments></arguments>
   <embeddedJar>true</embeddedJar>
-  <executableName>..\temp\runtime\desktop\win\regain.exe</executableName>
+  <executableName>..\build\runtime\desktop\win\regain.exe</executableName>
   <iconLocation>..\src\net\sf\regain\ui\desktop\regain_icon_16.gif</iconLocation>
-  <jarLocation>..\temp\runtime\desktop\win\regain.jar</jarLocation>
+  <jarLocation>..\build\runtime\desktop\win\regain.jar</jarLocation>
   <mainClassName>net.sf.regain.ui.desktop.Main</mainClassName>
   <initialMemoryHeap>-1</initialMemoryHeap>
   <maximumMemoryHeap>268435456</maximumMemoryHeap> 

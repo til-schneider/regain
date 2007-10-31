@@ -1,4 +1,4 @@
-<%@page contentType="text/html"%>
+<%@page contentType="text/html; charset=UTF-8"%>
 <%@taglib uri="regain-search.tld" prefix="search" %>
 
 <html>

@@ -101,20 +101,23 @@ Section $(SecProgName)
   File txt\license.txt
   File txt\WhatIsNew.txt
   File txt\WasIstNeu.txt
-  File temp\runtime\desktop\win\*.dll
-  File temp\runtime\desktop\win\regain.exe
+  File build\runtime\desktop\win\*.dll
+  File build\runtime\desktop\win\regain.exe
 
   SetOutPath $INSTDIR\conf\default
-  File temp\runtime\desktop\win\conf\default\*
+  File build\runtime\desktop\win\conf\default\*
 
   SetOutPath $INSTDIR\preparator
-  File temp\runtime\desktop\win\preparator\*
+  File build\runtime\desktop\win\preparator\*
 
   SetOutPath $INSTDIR\web
-  File temp\runtime\desktop\win\web\*
+  File build\runtime\desktop\win\web\*
 
   SetOutPath $INSTDIR\web\img
-  File temp\runtime\desktop\win\web\img\*
+  File build\runtime\desktop\win\web\img\*
+
+  SetOutPath $INSTDIR\web\img\ext
+  File build\runtime\desktop\win\web\img\ext\*
 
   SetOutPath $INSTDIR
   WriteUninstaller "Uninstall.exe"

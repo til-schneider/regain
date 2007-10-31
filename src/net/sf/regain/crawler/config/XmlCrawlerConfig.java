@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2007-10-20 18:22:56 +0200 (Sa, 20 Okt 2007) $
+ *     $Date: 2007-11-01 13:53:31 +0100 (Do, 01 Nov 2007) $
  *   $Author: til132 $
- * $Revision: 247 $
+ * $Revision: 260 $
  */
 package net.sf.regain.crawler.config;
 
@@ -256,8 +256,8 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     mAnalyzerType = XmlToolkit.getText(node, true);
     node = XmlToolkit.getChild(indexNode, "maxFieldLength", false);
     mMaxFieldLength = (node == null) ? -1 : XmlToolkit.getTextAsInt(node);
-    node = XmlToolkit.getChild(indexNode, "stopwordList", true);
-    mStopWordList = XmlToolkit.getTextAsWordList(node, true);
+    node = XmlToolkit.getChild(indexNode, "stopwordList", false);
+    mStopWordList = (node == null) ? null : XmlToolkit.getTextAsWordList(node, true);
     node = XmlToolkit.getChild(indexNode, "exclusionList", true);
     mExclusionList = XmlToolkit.getTextAsWordList(node, false);
     node = XmlToolkit.getChild(indexNode, "writeAnalysisFiles");

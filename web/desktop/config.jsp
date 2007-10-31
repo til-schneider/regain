@@ -1,4 +1,4 @@
-<%@page contentType="text/html" errorPage="errorpage.jsp"%>
+<%@page contentType="text/html; charset=UTF-8" errorPage="errorpage.jsp"%>
 
 <html>
 <head>

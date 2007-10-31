@@ -269,6 +269,17 @@ X Made the maximum number of terms per document configurable
 
 ** Version 1.2 am 20.10.07 rev 247 **
 
+X Fixed desktop version (some classes for jdic were missing)
+X Added missing jars to server variant
+
+** Version 1.2.1 am 30.10.07 rev 254 **
+
+X Fixed TLD-definition of the attribute beatified of the hit_url tag
+X Fixed URL-encoding problems with file-to-http-bridge
+X Added support for using any analyzer class
+
+** Version 1.2.2 am 01.11.07 **
+
 
 Prio A:
 -------
@@ -348,6 +359,8 @@ Release-Checkliste:
 * Lokalisierungen an Übersetzer geben
     * it -> Franco
 * WasIstNeu.txt und WhatIsNew.txt aktualisieren
+* Copyright-Jahr in footer.jsp anpassen
+* Version bauen
 * Revision taggen
 * JavaDoc und TLDdoc online stellen.
 * Homepage aktualisieren:

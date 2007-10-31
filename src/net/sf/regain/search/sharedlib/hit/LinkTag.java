@@ -89,21 +89,17 @@ public class LinkTag extends AbstractHitTag {
       String fileName = RegainToolkit.urlToFileName(url);
 
       // Workaround: Double slashes have to be prevented, because tomcat
-      // merges two slashes to one (even if one of them is URL-encoded)
-      // -> We change one of the slashes to a backslash
-      //    (because we know that there is no other backslash)
-
-      // Change any slash at the beginning
-      // (because we will add the prefix "file/" later)
-      if (fileName.startsWith("/")) {
-        fileName = "\\" + fileName.substring(1); 
-      }
-
-      // Change the other double slashes
-      fileName = RegainToolkit.replace(fileName, "//", "/\\");
+      // merges two slashes to one (even if one of them is URL-encoded and even
+      // if one of them is a backslash or an encoded backslash)
+      // -> We escape the second slashe with "$/$" and normal "$" with "$$"
+      //    (This should work in all cases: "a//b" -> "a/$/$b",
+      //    "a///b" -> "a/$/$/b", "a$b" -> "a$$b", "a$/$b" -> "a$$/$$b")
+      String decodedHref = RegainToolkit.replace("file/" + fileName,
+          new String[] {"//",   "$"},
+          new String[] {"/$/$", "$$"});
 
       // Create a URL (encoded with the page encoding)
-      href = "file/" + RegainToolkit.urlEncode(fileName, encoding);
+      href = RegainToolkit.urlEncode(decodedHref, encoding);
 
       // Now decode the forward slashes
       // NOTE: This step is only for beautifing the URL, the above workaround is

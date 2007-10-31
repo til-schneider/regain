@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-08-11 14:09:03 +0200 (Fr, 11 Aug 2006) $
+ *     $Date: 2007-11-01 12:32:25 +0100 (Do, 01 Nov 2007) $
  *   $Author: til132 $
- * $Revision: 228 $
+ * $Revision: 256 $
  */
 package net.sf.regain.ui.server.taglib.hit;
 
@@ -49,7 +49,8 @@ public class UrlTag extends SharedTagWrapperTag {
   /**
    * Sets whether the URL should be shown human readable.
    * 
-   * @param beautified Whether the URL should be shown human readable.
+   * @param beautified Whether the URL should be shown human readable
+   *        (for http-URLs: URL decoded, for file-URLs: The file name).
    */
   public void setBeautified(String beautified) {
     getNestedTag().setParameter("beautified", beautified);

@@ -22,9 +22,9 @@
  | CVS information:
  |  $RCSfile$
  |   $Source$
- |     $Date: 2007-10-20 15:31:55 +0200 (Sa, 20 Okt 2007) $
+ |     $Date: 2007-10-30 21:15:04 +0100 (Di, 30 Okt 2007) $
  |   $Author: til132 $
- | $Revision: 243 $
+ | $Revision: 254 $
  |
  | Author: Til Schneider, www.murfman.de
  +-->
@@ -59,11 +59,7 @@
   <property name="jacobgen-classes.dir" value="build/jacobgen/classes"/>
   <property name="jacobgen-packed.dir" value="jacobgen/packed"/>
   <property name="package-lists.dir" value="txt/package-lists"/>
-  
-  <property name="lucene.jar" value="lucene-1.4.3.jar"/>
-  <property name="regexp.jar" value="jakarta-regexp-1.4.jar"/>
-  <property name="log4j.jar" value="log4j-1.2.11.jar"/>
-  
+
   <!-- Autodetect the platform -->
   <condition property="platform" value="linux">
     <os family="unix"/>
@@ -589,6 +585,9 @@
 
       <!-- desktop specific stuff -->
       <include name="simple/**"/>
+      <include name="org/jdesktop/jdic/init/**"/>
+      <include name="org/jdesktop/jdic/tray/**"/>
+      <include name="org/jdesktop/jdic/browser/internal/WebBrowserUtil.*"/>
     </fileset>
     <fileset id="desktop-common-classes" dir="build/classes">
       <exclude name="net/sf/regain/crawler/preparator/**"/>
@@ -679,9 +678,9 @@
         <exclude name="net/sf/regain/util/ui/**"/>
       </classes>
       <lib dir="lib">
-        <include name="${lucene.jar}"/>
-        <include name="${regexp.jar}"/>
-        <include name="${log4j.jar}"/>
+        <include name="lucene-*.jar"/>
+        <include name="jakarta-regexp-*.jar"/>
+        <include name="log4j-*.jar"/>
       </lib>
 	    <fileset dir="web/common">
 	      <exclude name="msg*.properties"/>
@@ -762,9 +761,9 @@
           <include name="*.jar"/>
         </fileset>
         <fileset dir="lib">
-          <include name="${lucene.jar}"/>
-          <include name="${regexp.jar}"/>
-          <include name="${log4j.jar}"/>
+          <include name="lucene-*.jar"/>
+          <include name="jakarta-regexp-*.jar"/>
+          <include name="log4j-*.jar"/>
         </fileset>
         <pathelement path="build/classes"/>
       </classpath>      
@@ -980,10 +979,10 @@
     <mkdir dir="${deploy-target.dir}/${programname.file}/WEB-INF/lib"/>
 	<copy todir="${deploy-target.dir}/${programname.file}/WEB-INF/lib">
 	  <fileset dir="lib">
-	    <include name="${lucene.jar}"/>
-	    <include name="${regexp.jar}"/>
-      <include name="${log4j.jar}"/>
-	  </fileset>
+        <include name="lucene-*.jar"/>
+        <include name="jakarta-regexp-*.jar"/>
+        <include name="log4j-*.jar"/>
+ 	  </fileset>
 	</copy>
   </target>
 

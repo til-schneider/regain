@@ -248,27 +248,24 @@ public class SearchToolkit {
   public static String extractFileUrl(String requestPath, String encoding)
     throws RegainException
   {
-    // FIXME: Filenames with "+" or "%C3" still don't work
-
-    // NOTE: This is the counterpart to net.sf.regain.search.sharedlib.hit.LinkTag 
-
+    // NOTE: This is the counterpart to net.sf.regain.search.sharedlib.hit.LinkTag
     // NOTE: Removing index GET Parameter not nessesary: We already have the requestPath
-    // NOTE: Encoding "/" to "%2F" not nessesary: We would encode it in the next step anyway
 
-    // The servlet engine has already decoded "%xx" with page encoding
-    // But spaces are still "+"
-    // -> Decode the spaces
-    String href = RegainToolkit.replace(requestPath, "+", " ");
+    // Decode the URL
+    String decodedHref = RegainToolkit.urlDecode(requestPath, encoding);
 
     // Cut off "http://domain/file/"
-    int filePos = href.indexOf("file/");
-    String filename = href.substring(filePos + 5);
+    int filePos = decodedHref.indexOf("file/");
+    String fileName = decodedHref.substring(filePos + 5);
 
     // Restore the double slashes
-    filename = RegainToolkit.replace(filename, "\\", "/");
+    // See workaround in net.sf.regain.search.sharedlib.hit.LinkTag
+    fileName = RegainToolkit.replace(fileName,
+        new String[] {"$/$", "$$"},
+        new String[] {"/",   "$"});
 
     // Assemble the file URL
-    return RegainToolkit.fileNameToUrl(filename); 
+    return RegainToolkit.fileNameToUrl(fileName); 
   }
 
 

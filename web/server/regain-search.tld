@@ -392,9 +392,10 @@
 
     <attribute>
       <description>
-        Whether the URL should be shown human readable.
+        Whether the URL should be shown human readable
+        (for http-URLs: URL decoded, for file-URLs: The file name).
       </description>
-      <name>url</name>
+      <name>beautified</name>
       <required>false</required>
     </attribute>
   </tag>

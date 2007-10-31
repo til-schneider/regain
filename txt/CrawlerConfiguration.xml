@@ -91,9 +91,12 @@
   <!--
    | Specifies the analyzer type to use.
    |
-   | The following types are supported:
+   | You may specify the class name of the analyzer or you use one of the
+   | following aliases: 
    |  * english: For the english language
+   |    (alias for org.apache.lucene.analysis.standard.StandardAnalyzer)
    |  * german: For the german language
+   |    (alias for org.apache.lucene.analysis.de.GermanAnalyzer)
    +-->
   <analyzerType>german</analyzerType>
 

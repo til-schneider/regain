@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-03-23 22:34:21 +0100 (Do, 23 Mrz 2006) $
+ *     $Date: 2007-11-01 12:36:15 +0100 (Do, 01 Nov 2007) $
  *   $Author: til132 $
- * $Revision: 207 $
+ * $Revision: 257 $
  */
 package net.sf.regain.ui.server;
 
@@ -34,15 +34,29 @@ import net.sf.regain.util.sharedtag.taglib.JspPageResponse;
  */
 public class FileServlet extends HttpServlet {
 
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+    throws ServletException, IOException
+  {
+    handleRequest(req, resp);
+  }
+
+
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+    throws ServletException, IOException
+  {
+    handleRequest(req, resp);
+  }
+
+
   /**
-   * Handles a HTTP GET request.
+   * Handles a HTTP request.
    * 
    * @param req The request.
    * @param resp The response.
    * @throws ServletException If handling the request failed.
    * @throws IOException If writing to the result page failed.
    */
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+  private void handleRequest(HttpServletRequest req, HttpServletResponse resp)
     throws ServletException, IOException
   {
     // Create a page context
@@ -61,10 +75,7 @@ public class FileServlet extends HttpServlet {
       PageResponse response = new JspPageResponse(pageContext);
 
       // Extract the file name
-      String encoding = req.getCharacterEncoding();
-      if (encoding == null) {
-          encoding = RegainToolkit.getSystemDefaultEncoding();
-      }
+      String encoding = "utf-8"; // We use utf-8 in our JSPs
       String fileUrl = SearchToolkit.extractFileUrl(req.getRequestURI(), encoding);
 
       // Check the file
