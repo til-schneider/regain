@@ -308,6 +308,16 @@
       <class>.IfilterPreparator</class>
   </preparator>
 
+  <!--
+   | Add the extensions of those files to the urlPattern of this preparator for
+   | which there are no preparators for extracting the content. regain will then
+   | add at least the file names and paths to the index.
+   +-->
+  <preparator>
+    <urlPattern>\.(mp3|wav)$</urlPattern>
+    <class>.EmptyPreparator</class>
+  </preparator>
+
   <preparator>
     <class>.SimpleRtfPreparator</class>
   </preparator>

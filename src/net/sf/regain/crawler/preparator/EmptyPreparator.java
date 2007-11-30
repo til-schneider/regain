@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-04-26 20:58:10 +0200 (Mi, 26 Apr 2006) $
+ *     $Date: 2007-12-01 12:44:05 +0100 (Sa, 01 Dez 2007) $
  *   $Author: til132 $
- * $Revision: 217 $
+ * $Revision: 261 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -31,22 +31,12 @@ import net.sf.regain.RegainException;
 import net.sf.regain.crawler.document.AbstractPreparator;
 import net.sf.regain.crawler.document.RawDocument;
 
-import org.apache.regexp.RE;
-
 /**
  * A preparator adding an empty text for all documents.
  *
  * @author Gerhard Olsson
  */
 public class EmptyPreparator extends AbstractPreparator {
-
-  /**
-   * Creates a new instance of EmptyPreparator.
-   */
-  public EmptyPreparator() {
-    super(new RE(".*", RE.MATCH_CASEINDEPENDENT));
-  }
-
 
   // overridden
   public void prepare(RawDocument rawDocument) throws RegainException {

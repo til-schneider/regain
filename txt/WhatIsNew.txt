@@ -1,4 +1,26 @@
-Version 1.2 am 2007-07-20
+Version 1.2.3 on 2007-12-01
+---------------------------
+
+* Bugfix: In some cases no file contents were indexed.
+
+
+Version 1.2.2 on 2007-11-01
+---------------------------
+
+* It is now possible to use any Lucene analyzer.
+* Bugfix: The attibute beautified of hit_url tag was missing in the TLD
+  definition.
+* Bugfix: Fixed URL-encoding problems when using the file-to-http-bridge.
+
+
+Version 1.2.1 on 2007-10-30
+---------------------------
+
+* Bugfix: In regain 1.2 some libs were missing. This was fixed with
+  version 1.2.1.
+
+
+Version 1.2 on 2007-07-20
 -------------------------
 
 * The search result show now icons indicating the file's type.

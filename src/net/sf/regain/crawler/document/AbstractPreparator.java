@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-11-21 11:20:09 +0100 (Mo, 21 Nov 2005) $
+ *     $Date: 2007-12-01 12:44:05 +0100 (Sa, 01 Dez 2007) $
  *   $Author: til132 $
- * $Revision: 180 $
+ * $Revision: 261 $
  */
 package net.sf.regain.crawler.document;
 
@@ -69,22 +69,44 @@ public abstract class AbstractPreparator implements Preparator {
 
   /**
    * Creates a new instance of AbstractPreparator.
-   * 
-   * @param urlRegex The regex a URL must match to to be accepted by this
-   *        preparator.
+   * <p>
+   * The preparator won't accept any documents until a new rule was defined
+   * using {@link #setUrlRegex(RE)}.
+   *
+   * @see #setUrlRegex(RE)
+   * @see #accepts(RawDocument)
+   */
+  public AbstractPreparator() {
+  }
+
+
+  /**
+   * Creates a new instance of AbstractPreparator.
+   * <p>
+   * If <code>urlRegex</code> is null, the preparator won't accept any documents.
+   *
+   * @param urlRegex the regex a URL must match to to be accepted by this
+   *        preparator (may be null)
+   *
+   * @see #setUrlRegex(RE)
    * @see #accepts(RawDocument)
    */
   public AbstractPreparator(RE urlRegex) {
     mUrlRegex = urlRegex;
   }
 
-  
+
   /**
    * Creates a new instance of AbstractPreparator.
+   * <p>
+   * If <code>extention</code> is null or empty, the preparator won't accept any
+   * documents.
    * 
    * @param extention The file extension a URL must have to be accepted by
    *        this preparator.
    * @throws RegainException If creating the preparator failed.
+   *
+   * @see #setUrlRegex(RE)
    * @see #accepts(RawDocument)
    */
   public AbstractPreparator(String extention) throws RegainException {
@@ -94,10 +116,15 @@ public abstract class AbstractPreparator implements Preparator {
 
   /**
    * Creates a new instance of AbstractPreparator.
-   * 
+   * <p>
+   * If <code>extentionArr</code> is null or empty, the preparator won't accept
+   * any documents.
+   *
    * @param extentionArr The file extensions a URL must have one to be accepted
    *        by this preparator.
    * @throws RegainException If creating the preparator failed.
+   *
+   * @see #setUrlRegex(RE)
    * @see #accepts(RawDocument)
    */
   public AbstractPreparator(String[] extentionArr) throws RegainException {
@@ -107,7 +134,9 @@ public abstract class AbstractPreparator implements Preparator {
   
   /**
    * Creates a regex that matches a file extensions.
-   * 
+   * <p>
+   * If <code>extention</code> is null or empty, null will be returned.
+   *
    * @param extention The file extension to create the regex for.
    * @return The regex.
    * @throws RegainException If the regex couldn't be created.
@@ -115,6 +144,10 @@ public abstract class AbstractPreparator implements Preparator {
   private static RE createExtentionRegex(String extention)
     throws RegainException
   {
+    if (extention == null || extention.length() == 0) {
+      return null;
+    }
+
     String regex = "\\." + extention + "$";
     try {
       return new RE(regex, RE.MATCH_CASEINDEPENDENT);
@@ -127,7 +160,9 @@ public abstract class AbstractPreparator implements Preparator {
 
   /**
    * Creates a regex that matches a set of file extensions.
-   * 
+   * <p>
+   * If <code>extentionArr</code> is null or empty, null will be returned.
+   *
    * @param extentionArr The file extensions to create the regex for.
    * @return The regex.
    * @throws RegainException If the regex couldn't be created.
@@ -135,22 +170,20 @@ public abstract class AbstractPreparator implements Preparator {
   private static RE createExtentionRegex(String[] extentionArr)
     throws RegainException
   {
-    String urlRegex;
-    if (extentionArr.length == 0) {
-      throw new IllegalArgumentException("extentionArr is empty");
-    }
-    else {
-      StringBuffer buffer = new StringBuffer("\\.(");
-      for (int i = 0; i < extentionArr.length; i++) {
-        if (i > 0) {
-          buffer.append("|");
-        }
-        buffer.append(extentionArr[i]);
-      }
-      buffer.append(")$");
-      urlRegex = buffer.toString();
+    if (extentionArr == null || extentionArr.length == 0) {
+      return null;
     }
 
+    StringBuffer buffer = new StringBuffer("\\.(");
+    for (int i = 0; i < extentionArr.length; i++) {
+      if (i > 0) {
+        buffer.append("|");
+      }
+      buffer.append(extentionArr[i]);
+    }
+    buffer.append(")$");
+
+    String urlRegex = buffer.toString();
     try {
       return new RE(urlRegex, RE.MATCH_CASEINDEPENDENT);
     } catch (RESyntaxException exc) {
@@ -176,8 +209,10 @@ public abstract class AbstractPreparator implements Preparator {
   /**
    * Sets the regular expression a URL must match to, to be prepared by this
    * preparator.
-   * 
-   * @param urlRegex The new URL regex.
+   * <p>
+   * If <code>urlRegex</code> is null, the preparator won't accept any documents.
+   *
+   * @param urlRegex the new URL regex (may be null)
    * @see #accepts(RawDocument)
    */
   public void setUrlRegex(RE urlRegex) {
@@ -194,7 +229,11 @@ public abstract class AbstractPreparator implements Preparator {
    * @see #setUrlRegex(RE)
    */
   public boolean accepts(RawDocument rawDocument) {
-    return mUrlRegex.match(rawDocument.getUrl());
+    if (mUrlRegex == null) {
+      return false;
+    } else {
+      return mUrlRegex.match(rawDocument.getUrl());
+    }
   }
 
 

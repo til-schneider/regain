@@ -278,13 +278,25 @@ X Fixed TLD-definition of the attribute beatified of the hit_url tag
 X Fixed URL-encoding problems with file-to-http-bridge
 X Added support for using any analyzer class
 
-** Version 1.2.2 am 01.11.07 **
+** Version 1.2.2 am 01.11.07 rev 260 **
+
+X Bug: Manchmal werden keine Dateiinhalte indexiert: EmptyPreparator sollte per
+    Default keine Dokumente übernehmen.
+    Siehe http://forum.murfman.de/de/viewtopic.php?t=625
+
+** Version 1.2.3 am 01.12.07 **
 
 
 Prio A:
 -------
 
-  Bug: start URL check doesn't work properly. start URL "file://bla" is removed when "file://blaber" exists.
+  Präparator-Logik überarbeiten:
+    * Definierte Reihenfolge für nicht konfigurierte Präparatoren
+    * Mehrere Instanzen eines Präparators erlauben
+  Parameter "parse" und "index" aus startlist entfernen.
+    Siehe http://forum.murfman.de/de/viewtopic.php?p=1891#1891
+  Bug: start URL check doesn't work properly. start URL "file://bla" is removed
+    when "file://blaber" exists.
     See: http://forum.murfman.de/de/viewtopic.php?p=992#992
   Better indexing of URLs:
     * URL decoded: No "%20"

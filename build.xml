@@ -286,6 +286,8 @@
            debug="${debug}"
            deprecation="true"
            executable="${java-1_4.dir}/bin/javac"
+           source="1.3"
+           target="1.3"
            fork="true">
       <src>
         <path refid="sourcepath"/>

@@ -1,3 +1,24 @@
+Version 1.2.3 am 01.12.07
+-------------------------
+
+* Bugfix: In manchen Fällen wurden keine Dateiinhalte indexiert.
+
+
+Version 1.2.2 am 01.11.07
+-------------------------
+
+* Es kann nun jeder beliebige Lucene-Analyzer verwendet werden.
+* Bugfix: In der TLD-Definition hat das Attribut beautified im hit_url-Tag gefehlt.
+* Bugfix: Im Zusammenhang mit der File-to-Http-Bridge gab es URL-encoding-Probleme
+
+
+Version 1.2.1 am 30.10.07
+-------------------------
+
+* Bugfix: In regain 1.2 haben ein paar Bibliotheken gefehlt. Dies wurde mit
+  Version 1.2.1 behoben.
+
+
 Version 1.2 am 20.10.07
 -----------------------
 
