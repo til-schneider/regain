@@ -21,16 +21,16 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2007-11-01 13:53:31 +0100 (Do, 01 Nov 2007) $
- *   $Author: til132 $
- * $Revision: 260 $
+ *     $Date: 2008-08-07 11:35:53 +0200 (Do, 07 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 328 $
  */
 package net.sf.regain.crawler.config;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Properties;
-
+import java.util.ArrayList;
 import net.sf.regain.RegainException;
 import net.sf.regain.XmlToolkit;
 
@@ -75,6 +75,9 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
   /** The maximum number of terms per document. */
   private int mMaxFieldLength;
+
+  /** The maximum count of equal occurences of path-parts in an URI. */
+  private int mMaxCycleCount;
 
   /** Der zu verwendende Analyzer-Typ. */
   private String mAnalyzerType;
@@ -135,6 +138,9 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   private String mCrawlerAccessControllerJar;
   /** The configuration of the CrawlerAccessController. */
   private Properties mCrawlerAccessControllerConfig;
+  
+  /** The maximum amount of characters which will be copied from content to summary */
+  private int mMaxSummaryLength;
 
 
   /**
@@ -163,9 +169,20 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     readPreparatorSettingsList(config, xmlFile);
     readAuxiliaryFieldList(config);
     readCrawlerAccessController(config);
+    readMaxCycleCount(config);
+    readMaxSummaryLength(config);  }
+
+ /**
+   * Read the value for the cycle detection.
+   *
+   * @param config Die Konfiguration, aus der gelesen werden soll.
+   * @throws RegainException Wenn die Konfiguration fehlerhaft ist.
+   */
+  private void readMaxCycleCount(Element config) throws RegainException {
+    Node node = XmlToolkit.getChild(config, "MaxCycleCount");
+    mMaxCycleCount = (node == null) ? -1 : XmlToolkit.getTextAsInt(node);
   }
-
-
+  
   /**
    * Liest aus der Konfiguration, ob Dokumente geladen werden sollen, die weder
    * indiziert, noch auf URLs durchsucht werden.
@@ -320,7 +337,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Liest die URL-Patterns fï¿½r den HTML-Parser aus der Konfiguration.
+   * Reads the  URL-patterns for the old HTML-parser from the config.
    * <p>
    * Diese werden beim durchsuchen eines HTML-Dokuments dazu verwendet, URLs
    * zu identifizieren.
@@ -329,17 +346,21 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * @throws RegainException Wenn die Konfiguration fehlerhaft ist.
    */
   private void readHtmlParserUrlPatterns(Node config) throws RegainException {
-    Node node = XmlToolkit.getChild(config, "htmlParserPatternList", true);
-    Node[] nodeArr = XmlToolkit.getChildArr(node, "pattern");
-    mHtmlParserUrlPatterns = new UrlPattern[nodeArr.length];
-    for (int i = 0; i < nodeArr.length; i++) {
-      String regexPattern = XmlToolkit.getText(nodeArr[i], true);
-      int regexGroup = XmlToolkit.getAttributeAsInt(nodeArr[i], "regexGroup");
-      boolean parse = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "parse");
-      boolean index = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "index");
+    Node node = XmlToolkit.getChild(config, "htmlParserPatternList", false);
+    if( node!=null ) {
+      Node[] nodeArr = XmlToolkit.getChildArr(node, "pattern");
+      mHtmlParserUrlPatterns = new UrlPattern[nodeArr.length];
+      for (int i = 0; i < nodeArr.length; i++) {
+        String regexPattern = XmlToolkit.getText(nodeArr[i], true);
+        int regexGroup = XmlToolkit.getAttributeAsInt(nodeArr[i], "regexGroup");
+        boolean parse = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "parse");
+        boolean index = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "index");
 
-      mHtmlParserUrlPatterns[i] = new UrlPattern(regexPattern, regexGroup,
-        parse, index);
+        mHtmlParserUrlPatterns[i] = new UrlPattern(regexPattern, regexGroup,
+          parse, index);
+      }
+    } else {
+      mHtmlParserUrlPatterns = new UrlPattern[0];
     }
   }
 
@@ -361,11 +382,11 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     mBlackList = new UrlMatcher[prefixNodeArr.length + regexNodeArr.length];
     for (int i = 0; i < prefixNodeArr.length; i++) {
       String prefix = XmlToolkit.getText(prefixNodeArr[i], true);
-      mBlackList[i] = new PrefixUrlMatcher(prefix);
+      mBlackList[i] = new PrefixUrlMatcher(prefix, false, false);
     }
     for (int i = 0; i < regexNodeArr.length; i++) {
       String regex = XmlToolkit.getText(regexNodeArr[i], true);
-      mBlackList[prefixNodeArr.length + i] = new RegexUrlMatcher(regex);
+      mBlackList[prefixNodeArr.length + i] = new RegexUrlMatcher(regex,false,false);
     }
   }
 
@@ -387,13 +408,17 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     mWhiteListEntryArr = new WhiteListEntry[prefixNodeArr.length + regexNodeArr.length];
     for (int i = 0; i < prefixNodeArr.length; i++) {
       String prefix = XmlToolkit.getText(prefixNodeArr[i], true);
-      UrlMatcher matcher = new PrefixUrlMatcher(prefix);
+      boolean parse = XmlToolkit.getAttributeAsBoolean(prefixNodeArr[i], "parse", true);
+      boolean index = XmlToolkit.getAttributeAsBoolean(prefixNodeArr[i], "index", true);
+      UrlMatcher matcher = new PrefixUrlMatcher(prefix, parse, index);
       String name = XmlToolkit.getAttribute(prefixNodeArr[i], "name");
       mWhiteListEntryArr[i] = new WhiteListEntry(matcher, name);
     }
     for (int i = 0; i < regexNodeArr.length; i++) {
       String regex = XmlToolkit.getText(regexNodeArr[i], true);
-      UrlMatcher matcher = new RegexUrlMatcher(regex);
+      boolean parse = XmlToolkit.getAttributeAsBoolean(regexNodeArr[i], "parse", true);
+      boolean index = XmlToolkit.getAttributeAsBoolean(regexNodeArr[i], "index", true);
+      UrlMatcher matcher = new RegexUrlMatcher(regex, parse, index);
       String name = XmlToolkit.getAttribute(regexNodeArr[i], "name");
       mWhiteListEntryArr[prefixNodeArr.length + i] = new WhiteListEntry(matcher, name);
     }
@@ -440,6 +465,8 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     for (int i = 0; i < nodeArr.length; i++) {
       boolean enabled = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "enabled", true);
       
+      int priority = XmlToolkit.getAttributeAsInt(nodeArr[i], "priority", 0);
+      
       node = XmlToolkit.getChild(nodeArr[i], "class", true);
       String className = XmlToolkit.getText(node, true);
 
@@ -457,7 +484,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
         prepConfig = new PreparatorConfig();
       }
 
-      mPreparatorSettingsArr[i] = new PreparatorSettings(enabled, className, urlRegex, prepConfig);
+      mPreparatorSettingsArr[i] = new PreparatorSettings(enabled, priority, className, urlRegex, prepConfig);
     }
   }
 
@@ -864,7 +891,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * The black list is an array of WhiteListEntry, a URLs <i>must</i> match to,
    * in order to be processed.
    *
-   * @return Die Weiße Liste
+   * @return The white list
    */
   public WhiteListEntry[] getWhiteList() {
     return mWhiteListEntryArr;
@@ -946,4 +973,53 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     return mCrawlerAccessControllerConfig;
   }
   
+  /**
+   * Returns the maximum count of equal occurences of path-parts in an URI.
+   *
+   * @return MaxCycleCount
+   */
+  public int getMaxCycleCount() {
+    return mMaxCycleCount;
+  }
+
+ /**
+   * Returns maximum amount of characters which will be copied from content to summary
+   *
+   * @return MaxSummaryLength
+   */
+  public int getMaxSummaryLength() {
+    return mMaxSummaryLength;
+  }
+  
+  
+   /**
+   * Read the value for the cycle detection.
+   *
+   * @param config Die Konfiguration, aus der gelesen werden soll.
+   * @throws RegainException Wenn die Konfiguration fehlerhaft ist.
+   */
+  private void readMaxSummaryLength(Element config) throws RegainException {
+    Node node = XmlToolkit.getChild(config, "MaxSummaryLength");
+    mMaxSummaryLength = (node == null) ? 250000 : XmlToolkit.getTextAsInt(node);
+  }
+
+  /**
+   * Returns the names of the fields that shouldn't be tokenized.
+   * 
+   * @param config The crawler configuration.
+   * @return The names of the fields that shouldn't be tokenized.
+   */
+  public String[] getUntokenizedFieldNames() {
+    AuxiliaryField[] auxFieldArr = getAuxiliaryFieldList();
+    ArrayList list = new ArrayList();
+    for (int i = 0; i < auxFieldArr.length; i++) {
+      if (! auxFieldArr[i].isTokenized()) {
+        list.add(auxFieldArr[i].getFieldName());
+      }
+    }
+
+    String[] asArr = new String[list.size()];
+    list.toArray(asArr);
+    return asArr;
+  }  
 }

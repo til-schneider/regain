@@ -21,21 +21,19 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-11-21 11:20:09 +0100 (Mo, 21 Nov 2005) $
- *   $Author: til132 $
- * $Revision: 180 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.crawler.preparator;
 
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.crawler.document.AbstractPreparator;
 import net.sf.regain.crawler.document.RawDocument;
 
-import org.pdfbox.encryption.DocumentEncryption;
 import org.pdfbox.exceptions.CryptographyException;
 import org.pdfbox.exceptions.InvalidPasswordException;
 import org.pdfbox.pdfparser.PDFParser;
@@ -59,7 +57,7 @@ public class PdfBoxPreparator extends AbstractPreparator {
    * @throws RegainException If creating the preparator failed.
    */
   public PdfBoxPreparator() throws RegainException {
-    super("pdf");
+    super("application/pdf");
   }
 
 
@@ -87,33 +85,17 @@ public class PdfBoxPreparator extends AbstractPreparator {
 
       // Decrypt the PDF-Dokument
       if (pdfDocument.isEncrypted()) {
-        // code for PDFBox before 0.6.7
-        // DecryptDocument decryptor = new DecryptDocument(pdfDocument);
-        
-        // code for PDFBox 0.6.7 or higher
-        DocumentEncryption decryptor = new DocumentEncryption(pdfDocument);
-        
-        // Just try using the default password and move on
-        decryptor.decryptDocument("");
+        pdfDocument.decrypt("");
       }
 
-      // WORKAROUND: The PDFTextStripper has a bug: it does not append a space
-      //             after every word to the writer. That's why word a
-      //             concatinated.
-      StringWriter writer = new StringWriter();
-
-      // Clean the content and write it to a String
-      // FixedPdfTextStripper stripper = new FixedPdfTextStripper();
+      // Extract the text with a utility class
       PDFTextStripper stripper = new PDFTextStripper();
+      stripper.setSuppressDuplicateOverlappingText(false);
+      stripper.setSortByPosition(true);
+      stripper.setStartPage(1);
+      stripper.setEndPage(Integer.MAX_VALUE);
 
-      // code for PDFBox before 0.6.4
-      // stripper.writeText(pdfDocument.getDocument(), writer);
-
-      // code for PDFBox 0.6.4 or higher
-      stripper.writeText(pdfDocument, writer);
-
-      writer.close();
-      setCleanedContent(writer.toString());
+      setCleanedContent(stripper.getText(pdfDocument));
 
       // Get the title
       // NOTE: There is more information that could be read from a PFD-Dokument.

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-11-21 11:20:09 +0100 (Mo, 21 Nov 2005) $
- *   $Author: til132 $
- * $Revision: 180 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -54,7 +54,7 @@ public class SimpleRtfPreparator extends AbstractPreparator {
    * @throws RegainException If creating the preparator failed.
    */
   public SimpleRtfPreparator() throws RegainException {
-    super("rtf");
+    super("application/rtf");
   }
 
 

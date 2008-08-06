@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-13 11:22:50 +0200 (Sa, 13 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 156 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -56,6 +56,13 @@ public class Main implements DesktopConstants {
    * @param args The command line arguments.
    */
   public static void main(String[] args) {
+	boolean useTrayIcon = true;
+	for (int i = 0; i < args.length; i++) {	
+	  if (args[i].equalsIgnoreCase("-noTrayIcon")) {
+	    useTrayIcon = false;
+	  }	
+	}
+	 
     // Initialize the configuration
     // (Copy all files from the default dir that don't exist in the config dir)
     String[] defaultFileArr = DEFAULT_CONFIG_DIR.list();
@@ -91,7 +98,7 @@ public class Main implements DesktopConstants {
     // Initialize the search mask
     URL baseurl;
     try {
-      baseurl = new File("web").toURL();
+      baseurl = new File("web").toURI().toURL();
     }
     catch (MalformedURLException exc) {
       exc.printStackTrace();
@@ -106,7 +113,7 @@ public class Main implements DesktopConstants {
     ExecuterParser.registerNamespace("status", "net.sf.regain.ui.desktop.status.sharedlib");
     
     // Start the Tray icon
-    TrayIconManager.getInstance().init();
+    TrayIconManager.getInstance().init(useTrayIcon);
     
     // Start the webserver
     try {
@@ -120,6 +127,11 @@ public class Main implements DesktopConstants {
     // Start the index update manager
     INDEX_DIR.mkdir();
     IndexUpdateManager.getInstance().init();
+     
+    // Opening browser only in tryIcon-less mode
+    if(!useTrayIcon) {
+      DesktopToolkit.openPageInBrowser("welcome.jsp");
+    }
   }
   
   

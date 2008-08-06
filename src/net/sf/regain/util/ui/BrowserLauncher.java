@@ -33,7 +33,7 @@ import java.lang.reflect.Method;
  * 8.1), and for all Mac OS 8.5 and later systems.  On Windows, it only runs under Win32 systems
  * (Windows 95, 98, and NT 4.0, as well as later versions of all).  On other systems, this drops
  * back from the inherently platform-sensitive concept of a default browser and simply attempts
- * to launch Netscape via a shell command.
+ * to launch Firefox via a shell command.
  * <p>
  * This code is Copyright 1999-2001 by Eric Albert (ejalbert@cs.stanford.edu) and may be
  * redistributed or modified in any form without restrictions as long as the portion of this
@@ -144,7 +144,8 @@ public class BrowserLauncher {
   
   /** JVM constant for any Windows 9x JVM */
   private static final int WINDOWS_9x = 6;
-
+  /** JVM constant for any Linux JVM */
+  private static final int LINUX = 7;
   /** JVM constant for any other platform */
   private static final int OTHER = -1;
 
@@ -167,25 +168,25 @@ public class BrowserLauncher {
    * The first parameter that needs to be passed into Runtime.exec() to open the default web
    * browser on Windows.
    */
-    private static final String FIRST_WINDOWS_PARAMETER = "/c";
+  private static final String FIRST_WINDOWS_PARAMETER = "/c";
     
-    /** The second parameter for Runtime.exec() on Windows. */
-    private static final String SECOND_WINDOWS_PARAMETER = "start";
+  /** The second parameter for Runtime.exec() on Windows. */
+  private static final String SECOND_WINDOWS_PARAMETER = "start";
     
-    /**
-     * The third parameter for Runtime.exec() on Windows.  This is a "title"
-     * parameter that the command line expects.  Setting this parameter allows
-     * URLs containing spaces to work.
-     */
-    private static final String THIRD_WINDOWS_PARAMETER = "\"\"";
+  /**
+   * The third parameter for Runtime.exec() on Windows.  This is a "title"
+   * parameter that the command line expects.  Setting this parameter allows
+   * URLs containing spaces to work.
+   */
+  private static final String THIRD_WINDOWS_PARAMETER = "\"\"";
   
   /**
-   * The shell parameters for Netscape that opens a given URL in an already-open copy of Netscape
+   * The shell parameters for Firefox that opens a given URL in an already-open copy of Firefix
    * on many command-line systems.
    */
-  private static final String NETSCAPE_REMOTE_PARAMETER = "-remote";
-  private static final String NETSCAPE_OPEN_PARAMETER_START = "'openURL(";
-  private static final String NETSCAPE_OPEN_PARAMETER_END = ")'";
+  private static final String FIREFOX_REMOTE_PARAMETER = "-remote";
+  private static final String FIREFOX_OPEN_PARAMETER_START = "'openURL(";
+  private static final String FIREFOX_OPEN_PARAMETER_END = ")'";
   
   /**
    * The message from any exception thrown throughout the initialization process.
@@ -230,10 +231,12 @@ public class BrowserLauncher {
       } else {
         jvm = WINDOWS_NT;
       }
+    } else if (osName.startsWith("Linux")) {
+      jvm = LINUX;
     } else {
       jvm = OTHER;
     }
-    
+
     if (loadedWithoutErrors) {  // if we haven't hit any errors yet
       loadedWithoutErrors = loadClasses();
     }
@@ -243,11 +246,11 @@ public class BrowserLauncher {
    * This class should be never be instantiated; this just ensures so.
    */
   private BrowserLauncher() { }
-  
+
   public static void setBrowser(String customBrowser) {
     browser = customBrowser;
   }
-  
+
   /**
    * Called by a static initializer to load any classes, fields, and methods required at runtime
    * to locate the user's web browser.
@@ -319,7 +322,7 @@ public class BrowserLauncher {
         }
         break;
       case MRJ_3_0:
-          try {
+        try {
           Class linker = Class.forName("com.apple.mrj.jdirect.Linker");
           Constructor constructor = linker.getConstructor(new Class[]{ Class.class });
           linkage = constructor.newInstance(new Object[] { BrowserLauncher.class });
@@ -353,7 +356,7 @@ public class BrowserLauncher {
         }
         break;
       default:
-          break;
+        break;
     }
     return true;
   }
@@ -435,7 +438,7 @@ public class BrowserLauncher {
               }
             }
           } catch (IllegalArgumentException iare) {
-            browser = browser;
+            //browser = browser;
             errorMessage = iare.getMessage();
             return null;
           } catch (IllegalAccessException iae) {
@@ -460,9 +463,10 @@ public class BrowserLauncher {
       case WINDOWS_9x:
         browser = "command.com";
         break;
+      case LINUX:
       case OTHER:
       default:
-        browser = "netscape";
+        browser = "firefox";
         break;
     }
     return browser;
@@ -477,18 +481,20 @@ public class BrowserLauncher {
     if (!loadedWithoutErrors) {
       throw new IOException("Exception in finding browser: " + errorMessage);
     }
-    Object browser = locateBrowser();
-    if (browser == null) {
+    Object browserObj = locateBrowser();
+    if (browserObj == null) {
       throw new IOException("Unable to locate browser: " + errorMessage);
     }
-    
+    Process process = null;
+    ProcessBuilder processBuilder= null;
+
     switch (jvm) {
       case MRJ_2_0:
         Object aeDesc = null;
         try {
-          aeDesc = aeDescConstructor.newInstance(new Object[] { url });
-          putParameter.invoke(browser, new Object[] { keyDirectObject, aeDesc });
-          sendNoReply.invoke(browser, new Object[] { });
+          aeDesc = aeDescConstructor.newInstance(new Object[]{url});
+          putParameter.invoke(browserObj, new Object[]{keyDirectObject, aeDesc});
+          sendNoReply.invoke(browserObj, new Object[]{});
         } catch (InvocationTargetException ite) {
           throw new IOException("InvocationTargetException while creating AEDesc: " + ite.getMessage());
         } catch (IllegalAccessException iae) {
@@ -497,11 +503,11 @@ public class BrowserLauncher {
           throw new IOException("InstantiationException while creating AEDesc: " + ie.getMessage());
         } finally {
           aeDesc = null;  // Encourage it to get disposed if it was created
-          browser = null; // Ditto
+          browserObj = null; // Ditto
         }
         break;
       case MRJ_2_1:
-        Runtime.getRuntime().exec(new String[] { (String) browser, url } );
+        new ProcessBuilder((String) browserObj, url).start();
         break;
       case MRJ_3_0:
         int[] instance = new int[1];
@@ -511,8 +517,8 @@ public class BrowserLauncher {
           byte[] urlBytes = url.getBytes();
           int[] selectionEnd = new int[] { urlBytes.length };
           result = ICLaunchURL(instance[0], new byte[] { 0 }, urlBytes,
-                      urlBytes.length, selectionStart,
-                      selectionEnd);
+            urlBytes.length, selectionStart,
+            selectionEnd);
           if (result == 0) {
             // Ignore the return value; the URL was launched successfully
             // regardless of what happens here.
@@ -533,15 +539,16 @@ public class BrowserLauncher {
           throw new IOException("IllegalAccessException while calling openURL: " + iae.getMessage());
         }
         break;
-        case WINDOWS_NT:
-        case WINDOWS_9x:
-          // Add quotes around the URL to allow ampersands and other special
-          // characters to work.
-        Process process = Runtime.getRuntime().exec(new String[] { (String) browser,
-                                FIRST_WINDOWS_PARAMETER,
-                                SECOND_WINDOWS_PARAMETER,
-                                THIRD_WINDOWS_PARAMETER,
-                                '"' + url + '"' });
+      case WINDOWS_NT:
+      case WINDOWS_9x:
+        // Add quotes around the URL to allow ampersands and other special
+        // characters to work.
+        processBuilder = new ProcessBuilder( (String) browserObj,
+            FIRST_WINDOWS_PARAMETER,
+            SECOND_WINDOWS_PARAMETER,
+            THIRD_WINDOWS_PARAMETER,
+            '"' + url + '"');
+        process = processBuilder.start();
         // This avoids a memory leak on some versions of Java on Windows.
         // That's hinted at in <http://developer.java.sun.com/developer/qow/archive/68/>.
         try {
@@ -551,19 +558,20 @@ public class BrowserLauncher {
           throw new IOException("InterruptedException while launching browser: " + ie.getMessage());
         }
         break;
+      case LINUX:
       case OTHER:
-        // Assume that we're on Unix and that Netscape is installed
-        
-        // First, attempt to open the URL in a currently running session of Netscape
-        process = Runtime.getRuntime().exec(new String[] { (String) browser,
-                          NETSCAPE_REMOTE_PARAMETER,
-                          NETSCAPE_OPEN_PARAMETER_START +
-                          url +
-                          NETSCAPE_OPEN_PARAMETER_END });
+        // Assume that we're on Unix and that Firefox is installed
+
+        // First, attempt to open the URL in a currently running session of Firefox
+        processBuilder = new ProcessBuilder( (String) browserObj, FIREFOX_REMOTE_PARAMETER,
+          FIREFOX_OPEN_PARAMETER_START +
+          url +
+          FIREFOX_OPEN_PARAMETER_END );
+        process = processBuilder.start();
         try {
           int exitCode = process.waitFor();
-          if (exitCode != 0) {  // if Netscape was not open
-            Runtime.getRuntime().exec(new String[] { (String) browser, url });
+          if (exitCode != 0) {  // if Firefox was not open
+             new ProcessBuilder((String) browserObj, url).start();
           }
         } catch (InterruptedException ie) {
           throw new IOException("InterruptedException while launching browser: " + ie.getMessage());
@@ -571,7 +579,7 @@ public class BrowserLauncher {
         break;
       default:
         // This should never occur, but if it does, we'll try the simplest thing possible
-        Runtime.getRuntime().exec(new String[] { (String) browser, url });
+        new ProcessBuilder((String) browserObj, url).start();
         break;
     }
   }
@@ -583,5 +591,5 @@ public class BrowserLauncher {
   private native static int ICStart(int[] instance, int signature);
   private native static int ICStop(int[] instance);
   private native static int ICLaunchURL(int instance, byte[] hint, byte[] data, int len,
-                      int[] selectionStart, int[] selectionEnd);
+    int[] selectionStart, int[] selectionEnd);
 }

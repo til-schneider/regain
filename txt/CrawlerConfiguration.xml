@@ -136,7 +136,7 @@
    | by the search mask, which prevents a slow first loading of a page for huge
    | indexes.
    +-->
-  <valuePrefetchFields>extension</valuePrefetchFields>
+  <valuePrefetchFields>mimetype</valuePrefetchFields>
 
 </searchIndex>
 
@@ -213,6 +213,12 @@
       </section>
     </config>
   </preparator>
+
+  <!-- CatchAll-preparator on basis of EmptyPreparator -->
+  <preparator priority="-10">
+    <class>.EmptyPreparator</class>
+    <urlPattern>.*</urlPattern>
+  </preparator>
 </preparatorList>
 
 
@@ -242,14 +248,18 @@
   <auxiliaryField name="location" regexGroup="1" store="false" tokenize="true">
     <regex>^(.*)$</regex>
   </auxiliaryField>
+  <auxiliaryField name="mimetype" regexGroup="1" >
+    <regex>^()$</regex>
+  </auxiliaryField>
 </auxiliaryFieldList>
 
 
-<!-- The regular expressions that indetify URLs in HTML. -->
-<htmlParserPatternList>
-  <pattern parse="true" index="true" regexGroup="1">="([^"]*\.(htm|html|jsp|php\d?|asp))"</pattern>
+<!-- The regular expressions that indentify URLs in HTML. -->
+<!-- This configuration part is no longer neccessary -->
+<!--htmlParserPatternList>
+  <pattern parse="true" index="true" regexGroup="1">="([^"]*(/|htm|html|jsp|php\d?|asp))"</pattern>
   <pattern parse="false" index="false" regexGroup="1">="([^"]*\.(js|css|jpg|gif|png))"</pattern>
   <pattern parse="false" index="true" regexGroup="1">="([^"]*\.[^\."]{3})"</pattern>
-</htmlParserPatternList>
+</htmlParserPatternList-->
 
 </configuration>

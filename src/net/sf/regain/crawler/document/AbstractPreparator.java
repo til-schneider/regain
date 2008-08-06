@@ -21,15 +21,16 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2007-12-01 12:44:05 +0100 (Sa, 01 Dez 2007) $
- *   $Author: til132 $
- * $Revision: 261 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.crawler.document;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import java.util.Vector;
 import net.sf.regain.RegainException;
 import net.sf.regain.crawler.config.PreparatorConfig;
 
@@ -65,7 +66,10 @@ public abstract class AbstractPreparator implements Preparator {
   private PathElement[] mPath;
   /** The additional fields that should be indexed. */
   private HashMap mAdditionalFieldMap;
-
+  /** The assigned mimetypes for the preparator */
+  private String[] mMimeTypes;
+  /** The priority of the preparator. Used for the selection of preparators */
+  private int mPriority; 
 
   /**
    * Creates a new instance of AbstractPreparator.
@@ -109,8 +113,9 @@ public abstract class AbstractPreparator implements Preparator {
    * @see #setUrlRegex(RE)
    * @see #accepts(RawDocument)
    */
-  public AbstractPreparator(String extention) throws RegainException {
-    this(createExtentionRegex(extention));
+  public AbstractPreparator(String mimeType) throws RegainException {
+    mMimeTypes = new String[] {mimeType};
+    // this(createExtentionRegex(extention));
   }
 
 
@@ -127,8 +132,9 @@ public abstract class AbstractPreparator implements Preparator {
    * @see #setUrlRegex(RE)
    * @see #accepts(RawDocument)
    */
-  public AbstractPreparator(String[] extentionArr) throws RegainException {
-    this(createExtentionRegex(extentionArr));
+  public AbstractPreparator(String[] mimeTypeArr) throws RegainException {
+    mMimeTypes = mimeTypeArr;
+    // this(createExtentionRegex(extentionArr));
   }
 
   
@@ -230,7 +236,15 @@ public abstract class AbstractPreparator implements Preparator {
    */
   public boolean accepts(RawDocument rawDocument) {
     if (mUrlRegex == null) {
-      return false;
+      if( mMimeTypes != null && mMimeTypes.length > 0 ) {
+        for( String mimeType : mMimeTypes ){
+          if( mimeType.equals(rawDocument.getMimeType()))
+            return true;
+        }
+        return false;
+      } else {
+        return false;
+      }
     } else {
       return mUrlRegex.match(rawDocument.getUrl());
     }
@@ -392,10 +406,24 @@ public abstract class AbstractPreparator implements Preparator {
     mAdditionalFieldMap.put(fieldName, fieldValue);
   }
   
+  /** 
+   * Gets the priority of the preparator
+   * @return int the priority
+   */
+  public int getPriority() {
+    return mPriority;
+  }
 
   /**
-   * Gibt alle Ressourcen frei, die f�r die Informationen �ber das Dokument
-   * reserviert wurden.
+   * Sets the priority of the preparator
+   * @param priority read from config or default value settings
+   */
+  public void setPriority(int priority) {
+    this.mPriority = priority;
+  }
+
+  /**
+   * Release all ressources used for handling a document.
    */
   public void cleanUp() {
     mTitle = null;
@@ -406,7 +434,36 @@ public abstract class AbstractPreparator implements Preparator {
     mAdditionalFieldMap = null;
   }
 
+  /**
+   * Concatenate all parts together, use ', ' as delimiter. If a parts is empty or consists
+   * only of whitespaces the part will be negleted.
+   * 
+   * @param parts for concatenation
+   * @param maxPartsUsed number of partsused for concatenation
+   * @return the resulting string whith all single parts concatenated
+   */
+   protected String concatenateStringParts(Vector<String> parts, int maxPartsUsed) {
 
+    String result = "";
+
+    if (parts.size() > 0) {
+      int end = parts.size();
+      if (maxPartsUsed < parts.size()) {
+        end = maxPartsUsed;
+      }
+      for (int i = 0; i < end; i++) {
+        // Iterate over single parts
+        if (parts.get(i).length() > 0) {
+          result += parts.get(i);
+          if (i < end - 1) {
+            result += ", ";
+          }
+        }
+      }
+    }
+    return result;
+  }
+  
   /**
    * Frees all resources reserved by the preparator.
    * <p>

@@ -1,3 +1,53 @@
+Version 1.5.1 on 07.08.08 
+-------------------------
+* Filename will be indexed correctly
+* Date format of field 'last-modified' changed to "YYYYMMDD". By now range search could 
+  be applied to the field. (code contribution)
+* Improved locale-Handling in SharedTag (code contribution)
+
+Version 1.5.0 on 09.07.08 Preview
+---------------------------------
+* Link extraction with REgexp switched to HTMLParser link extraction
+* HTMLParser now complete integrated
+* -notrayicon - command line parameter for  desktop-search (TrayIcon will never be shown)
+* Lucene updated to version 2.3.2
+* Removing anchors from URLs
+* Definition of a default index update interval
+* Deletion of temporary files is handled safer
+* Improved mime-type detection
+
+Version 1.4.2 on 04.06.08 Preview
+---------------------------------
+* http://-links which ends with a / will be extracted and indexed
+
+Version 1.4.1 on 2008-04-27 Preview
+-----------------------------------
+* JavaPreparator for *.java-files. The JavaPreparator is not part
+  of the 'standard'-distribution because of his size and the limited 
+  user group.
+
+
+Version 1.4.0 on 05.04.08 Preview
+---------------------------------
+* Bugfix: StackOverflowError in link extraction catched
+* mp3-preparator extracts ID3v2 or ID3v1 tags
+* Generic audio preparator, which extract metadata from mp4 (iTunes), 
+  ogg-Vorbis and flac
+
+
+Version 1.3.0/1 on 16.03.08 Preview
+-----------------------------------
+
+* smb/CIFS driver 
+* new HTML-Parser for better content extraction
+* Bugfix mime typ detection
+* Priority for preparators
+* Highlighting for content and title
+* Preparator selektion on basis of mime-types 
+* Mimetype-detection (based on file extension and MagicMime)
+* Replacement "Extended Search" from extension selection to mimetype selection
+
+
 Version 1.2.3 on 2007-12-01
 ---------------------------
 

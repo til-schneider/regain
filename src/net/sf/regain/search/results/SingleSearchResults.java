@@ -21,20 +21,23 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2007-10-20 15:40:39 +0200 (Sa, 20 Okt 2007) $
- *   $Author: til132 $
- * $Revision: 244 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.search.results;
 
 import java.io.IOException;
 
 import net.sf.regain.RegainException;
+import net.sf.regain.RegainToolkit;
 import net.sf.regain.search.IndexSearcherManager;
 import net.sf.regain.search.config.IndexConfig;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -43,8 +46,13 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.highlight.Highlighter;
+import org.apache.lucene.search.highlight.QueryScorer;
+import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
+
+import java.io.StringReader;
 
 /**
  * Holds the results of a search on a single index.
@@ -71,6 +79,11 @@ public class SingleSearchResults implements SearchResults {
    */
   private RE mOpenInNewWindowRegex;
 
+  /** The boolean query used while searching and highlighting */
+  private BooleanQuery mQuery;
+  
+  /** The current analyzer */
+  private Analyzer mAnalyzer;
 
   /**
    * Creates a new instance of SearchContext.
@@ -96,20 +109,19 @@ public class SingleSearchResults implements SearchResults {
       IndexSearcherManager manager = IndexSearcherManager.getInstance(indexConfig.getDirectory());
 
       // Get the Analyzer
-      Analyzer analyzer = manager.getAnalyzer();
-
-      BooleanQuery query;
+      mAnalyzer = manager.getAnalyzer();
+      
       try {
-        query = new BooleanQuery();
+        mQuery = new BooleanQuery();
 
         String[] searchFieldArr = indexConfig.getSearchFieldList();
         for (int i = 0; i < searchFieldArr.length; i++) {
-          QueryParser parser = new QueryParser(searchFieldArr[i], analyzer);
+          QueryParser parser = new QueryParser(searchFieldArr[i], mAnalyzer);
           parser.setDefaultOperator(QueryParser.AND_OPERATOR);
           Query fieldQuery = parser.parse(queryText);
 
           // Add as OR
-          query.add(fieldQuery, Occur.SHOULD);
+          mQuery.add(fieldQuery, Occur.SHOULD);
         }
       } catch (ParseException exc) {
         throw new RegainException("Error while parsing search pattern '"
@@ -128,17 +140,17 @@ public class SingleSearchResults implements SearchResults {
         // Create a main query that contains the group query and the search query
         // combined with AND
         BooleanQuery mainQuery = new BooleanQuery();
-        mainQuery.add(query, Occur.MUST);
+        mainQuery.add(mQuery, Occur.MUST);
         mainQuery.add(groupQuery, Occur.MUST);
 
         // Set the main query as query to use
-        query = mainQuery;
+        mQuery = mainQuery;
       }
 
       // System.out.println("Query: '" + queryText + "' -> '" + query.toString() + "'");
       
       try {
-        mHits = manager.search(query);
+        mHits = manager.search(mQuery);
       } catch (RegainException exc) {
         throw new RegainException("Error while searching pattern: " + queryText, exc);
       }
@@ -168,7 +180,7 @@ public class SingleSearchResults implements SearchResults {
     return mQueryText;
   }
   
-  
+ 
   /**
    * Gets the search hits.
    * 
@@ -322,6 +334,89 @@ public class SingleSearchResults implements SearchResults {
    */
   public String getHitIndexName(int index) throws RegainException {
     return mIndexConfig.getName();
+  }
+
+  /**
+   * Highlights fields in the document. Fields for highlighting will be:
+   * - content
+   * - title
+   *
+   * @param index The index of the hit.
+   *
+   * @throws RegainException If highlighting failed.
+   */
+  public void highlightHitDocument(int index) throws RegainException {
+    
+    Highlighter highlighter = new Highlighter(
+            new SimpleHTMLFormatter("<span class=\"highlight\">", "</span>"),
+            new QueryScorer(mQuery) );
+    try {
+      // Remark: the summary is at this point not a summary. It contains the 
+      // first n characters from the document. n is configurable (default: 250000)
+      // We transform this summary into 
+      // a) a summary matching the search terms (highlighting)
+      // b) and a shortend summary (200 characters)
+      String text = mHits.doc(index).get("summary");
+
+      if( text != null ) {
+        // Overwrite the content with a shortend summary
+        String resSummary = RegainToolkit.createSummaryFromContent(text, 200);
+        if( resSummary != null ) {
+          mHits.doc(index).removeField("summary");
+          mHits.doc(index).add(new Field("summary", resSummary,
+                     Field.Store.YES, Field.Index.UN_TOKENIZED));
+        }
+
+        String resHighlSummary = null;
+        // Remove 'html', this works the same way as PageResponse.printNoHTML()
+        text = RegainToolkit.replace(text, "<", "&lt;");
+        text = RegainToolkit.replace(text, ">", "&gt;");
+
+        TokenStream tokenStream = mAnalyzer.tokenStream("content", 
+                new StringReader(text));
+        // Get 3 best fragments and seperate with a " ... "
+        resHighlSummary = highlighter.getBestFragments(tokenStream, text, 3, " ... ");
+
+        if (resHighlSummary != null) {
+          // write the result back to the document in a new field 
+          mHits.doc(index).add(new Field("highlightedSummary", resHighlSummary,
+                   Field.Store.YES, Field.Index.UN_TOKENIZED));
+        }
+      }
+      // Highlight the title
+      text = mHits.doc(index).get("title");
+      String resHighlTitle = null;
+      if (text != null) {
+        TokenStream tokenStream = mAnalyzer.tokenStream("content", 
+                new StringReader(text));
+        // Get the best fragment 
+        resHighlTitle = highlighter.getBestFragment(tokenStream, text);
+      }
+
+      if (resHighlTitle != null) {
+        // write the result back to the document in a new field 
+        mHits.doc(index).add(new Field("highlightedTitle", resHighlTitle,
+                 Field.Store.YES, Field.Index.UN_TOKENIZED));
+      }
+      
+      
+    } catch (org.apache.lucene.index.CorruptIndexException exCorr) {
+      throw new RegainException("Error while searching pattern: " + mQueryText, exCorr);
+
+    } catch (IOException exIO) {
+      throw new RegainException("Error while searching pattern: " + mQueryText, exIO);
+    }
+
+  }
+
+  /**
+   * Gets whether the search terms should be highlighted
+   *
+   * @return whether to highlight
+   * @throws RegainException If the value could not read from config
+   */
+  public boolean getShouldHighlight(int index) throws RegainException {
+    return mIndexConfig.getShouldHighlight();
   }
 
 }

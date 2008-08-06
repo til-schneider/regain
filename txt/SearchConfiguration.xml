@@ -46,7 +46,7 @@
        | "field:"-operator. Read the lucene query syntax for details:
        | http://jakarta.apache.org/lucene/docs/queryparsersyntax.html
        +-->
-      <searchFieldList>content title headlines location</searchFieldList>
+      <searchFieldList>content title headlines location filename</searchFieldList>
 
       <!--
        | The SearchAccessController to use.
@@ -66,6 +66,12 @@
         </config>
       </searchAccessController>
       -->
+      <!--
+       | Specifies whether the search terms should by highlighted whithin the
+       | search results (summary, title)
+       +-->
+      <Highlighting>true</Highlighting>
+      
     </defaultSettings>
     
     <!-- The search index 'main' -->

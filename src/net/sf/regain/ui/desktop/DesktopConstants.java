@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-16 13:53:50 +0100 (Mi, 16 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 90 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -39,6 +39,9 @@ public interface DesktopConstants {
   /** The default port for the webserver. */
   public static final int DEFAULT_PORT = 8020;
   
+  /** The default interval for index updates. */
+  public static final int DEFAULT_INTERVAL = 1440;
+
   /** The directory where the log files are located. */
   public static final File LOG_DIR = new File("log");
   

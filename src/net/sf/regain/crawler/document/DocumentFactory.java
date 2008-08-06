@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2007-10-20 15:40:39 +0200 (Sa, 20 Okt 2007) $
- *   $Author: til132 $
- * $Revision: 244 $
+ *     $Date: 2008-08-07 11:35:53 +0200 (Do, 07 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 328 $
  */
 package net.sf.regain.crawler.document;
 
@@ -47,12 +47,20 @@ import net.sf.regain.crawler.config.CrawlerConfig;
 import net.sf.regain.crawler.config.PreparatorSettings;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.Token;
+import java.io.FileInputStream;
+import java.io.StringReader;
+import java.net.URL;
+import java.util.Vector;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.WhitespaceAnalyzer;
+import org.apache.lucene.analysis.WhitespaceTokenizer;
+import org.semanticdesktop.aperture.mime.identifier.magic.MagicMimeTypeIdentifier;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
+import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
 /**
  * Fabrik, die aus der URL und den Rohdaten eines Dokuments ein Lucene-Ducument
@@ -67,12 +75,12 @@ public class DocumentFactory {
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(DocumentFactory.class);
 
-  /** Die maximale L�nge der Zusammenfassung. */
-  private static final int MAX_SUMMARY_LENGTH = 200;
-  
   /** The crawler config. */
   private CrawlerConfig mConfig;
 
+  /** The maximum amount of characters which will be copied from content to summary */
+  private int mMaxSummaryLength;
+  
   /**
    * Das Verzeichnis, in dem Analyse-Dateien erzeugt werden sollen. Ist
    * <CODE>null</CODE>, wenn keine Analyse-Dateien erzeugt werden sollen.
@@ -102,7 +110,7 @@ public class DocumentFactory {
   private Profiler mWriteAnalysisProfiler
     = new Profiler("Writing Analysis files", "files");
 
-
+  
   /**
    * Creates a new instance of DocumentFactory.
    * 
@@ -169,6 +177,8 @@ public class DocumentFactory {
         }
       }
     }
+    // Read some more configuration entries from the config
+    mMaxSummaryLength = mConfig.getMaxSummaryLength();
   }
 
 
@@ -182,28 +192,67 @@ public class DocumentFactory {
    *         the document couldn't be created.
    */
   public Document createDocument(RawDocument rawDocument, ErrorLogger errorLogger) {
+    // Determine the mime-type 
+
+    String mimeType;
+    try {
+      MagicMimeTypeIdentifier mmti = new MagicMimeTypeIdentifier();
+      File file = rawDocument.getContentAsFile();
+      FileInputStream fis = new FileInputStream(file);
+      byte[] bytes = new byte[mmti.getMinArrayLength()];
+      fis.read(bytes);
+      URL url;
+      url = new URL(rawDocument.getUrl());
+      mimeType = mmti.identify(bytes, file.getPath(), 
+              new URIImpl(url.getProtocol()+"://"+url.getHost()+url.getPath())) ;
+      if( mimeType == null || mimeType.length()==0 )
+        mimeType = "application/x-unknown-mime-type";
+    }
+      catch (Exception exc) {
+        errorLogger.logError("Determine mime-type of " + rawDocument.getUrl() +
+                              " failed", exc, false);
+      mimeType = "application/x-unknown-mime-type";
+    }
+    rawDocument.setMimeType( mimeType );
+    
     // Find the preparator that will prepare this URL
     Document doc = null;
     boolean preparatorFound = false;
+    Vector <Integer>matchingPreperators = new Vector <Integer>();
     for (int i = 0; i < mPreparatorArr.length; i++) {
       if (mPreparatorArr[i].accepts(rawDocument)) {
         // This preparator can prepare this URL
         preparatorFound = true;
-        
-        try {
-          doc = createDocument(mPreparatorArr[i], mPreparatorProfilerArr[i], rawDocument);
-          mLog.info("Preparation done: " + rawDocument.getUrl());
-          break;
-        }
-        catch (RegainException exc) {
-          errorLogger.logError("Preparing " + rawDocument.getUrl() +
-              " with preparator " + mPreparatorArr[i].getClass().getName() +
-              " failed", exc, false);
+        matchingPreperators.add(new Integer(i));
+        if (mLog.isDebugEnabled()) {
+          mLog.debug("Found: " + mPreparatorArr[i].getClass().getSimpleName() +
+                   ", Prio: " + mPreparatorArr[i].getPriority() );
         }
       }
     }
     
-    if (! preparatorFound) {
+    if (preparatorFound) {
+      // Find the preparator with the highest priority
+      Iterator prepIdxIter = matchingPreperators.iterator();
+      int highestPriorityIdx = ((Integer)prepIdxIter.next()).intValue();
+      // In case of more than one matching preperator find the one with the highest prio
+      while( prepIdxIter.hasNext() ) {
+        int currI = ((Integer)prepIdxIter.next()).intValue();
+        if( mPreparatorArr[currI].getPriority() > mPreparatorArr[highestPriorityIdx].getPriority() )
+          highestPriorityIdx = currI;
+      }
+      
+      try {
+        doc = createDocument(mPreparatorArr[highestPriorityIdx], mPreparatorProfilerArr[highestPriorityIdx], rawDocument);
+        mLog.info("Preparation with " + mPreparatorArr[highestPriorityIdx].getClass().getSimpleName() +
+                " done: " + rawDocument.getUrl());
+      }
+      catch (RegainException exc) {
+        errorLogger.logError("Preparing " + rawDocument.getUrl() +
+            " with preparator " + mPreparatorArr[highestPriorityIdx].getClass().getName() +
+            " failed", exc, false);
+      }
+    } else {
       mLog.info("No preparator feels responsible for " + rawDocument.getUrl());
     }
     
@@ -252,7 +301,7 @@ public class DocumentFactory {
     Map additionalFieldMap;
     if (mLog.isDebugEnabled()) {
       mLog.debug("Using preparator " + preparator.getClass().getName()
-        + " for " + rawDocument);
+        + " for " + rawDocument + ", " + rawDocument.getMimeType());
     }
     preparatorProfiler.startMeasuring();
     try {
@@ -281,7 +330,7 @@ public class DocumentFactory {
         + " did not extract the content of " + url);
     }
 
-    // Preparing suceed -> Create the document
+    // Preparing succeed -> Create the document
     Document doc = createDocument(rawDocument, cleanedContent, title,
                                   summary, headlines, path, additionalFieldMap);
 
@@ -392,12 +441,21 @@ public class DocumentFactory {
 
     // Add the URL of the document
     doc.add(new Field("url", url, Field.Store.YES, Field.Index.UN_TOKENIZED));
-
+    
+    // Add the file name (without protocol, drive-letter and path) 
+    doc.add(new Field("filename", new WhitespaceTokenizer(
+            new StringReader( RegainToolkit.urlToWhitespacedFileName(url)))));
+  
     // Add the document's size
     int size = rawDocument.getLength();
     doc.add(new Field("size", Integer.toString(size), Field.Store.YES,
         Field.Index.UN_TOKENIZED));
 
+    // Add the mime-type
+    String mimeType = rawDocument.getMimeType();
+    doc.add(new Field("mimetype", mimeType, Field.Store.YES,
+        Field.Index.UN_TOKENIZED));
+    
     // Add last modified
     Date lastModified = rawDocument.getLastModified();
     if (lastModified == null) {
@@ -405,7 +463,7 @@ public class DocumentFactory {
       // -> Take the current time
       lastModified = new Date();
     }
-    String lastModifiedAsString = RegainToolkit.lastModifiedToString(lastModified);
+    String lastModifiedAsString = RegainToolkit.lastModifiedToIndexString(lastModified);
     doc.add(new Field("last-modified", lastModifiedAsString, Field.Store.YES,
         Field.Index.UN_TOKENIZED));
 
@@ -504,14 +562,20 @@ public class DocumentFactory {
    *         keine erzeugt werden konnte.
    */
   private String createSummaryFromContent(String content) {
-    int lastSpacePos = content.lastIndexOf(' ', MAX_SUMMARY_LENGTH);
+    
+    if( content.length() > mMaxSummaryLength ) {
+      // cut the content only if it exceeds the max size for the summary
+      int lastSpacePos = content.lastIndexOf(' ', mMaxSummaryLength);
 
-    if (lastSpacePos == -1) {
-      return null;
+      if (lastSpacePos == -1) {
+        return null;
+      } else {
+        return content.substring(0, lastSpacePos) + "...";
+      }
     } else {
-      return content.substring(0, lastSpacePos) + "...";
+      return content;
     }
-  }
+}
 
 
 

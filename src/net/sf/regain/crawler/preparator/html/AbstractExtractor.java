@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2004-11-25 16:37:40 +0100 (Do, 25 Nov 2004) $
- *   $Author: til132 $
- * $Revision: 17 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.crawler.preparator.html;
 
@@ -143,7 +143,7 @@ public class AbstractExtractor {
    * @return Ob der Extrahierer das gegebene Dokument bearbeiten kann.
    */
   public boolean accepts(RawDocument rawDocument) {
-    return rawDocument.getUrl().startsWith(mPrefix);
+    return rawDocument.getUrl().matches(mPrefix);
   }
 
 

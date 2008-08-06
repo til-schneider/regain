@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-08-21 11:37:35 +0200 (Mo, 21 Aug 2006) $
- *   $Author: til132 $
- * $Revision: 232 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.crawler;
 
@@ -217,8 +217,8 @@ public class CrawlerToolkit {
 
 
   /**
-   * Lädt ein Dokument von einem HTTP-Server herunter und gibt seinen Inhalt
-   * zurück.
+   * Lï¿½dt ein Dokument von einem HTTP-Server herunter und gibt seinen Inhalt
+   * zurï¿½ck.
    *
    * @param url Die URL des zu ladenden Dokuments.
    *
@@ -256,11 +256,11 @@ public class CrawlerToolkit {
 
 
   /**
-   * Lï¿½dt eine Datei vom Dateisystem und gibt den Inhalt zurï¿½ck.
+   * Loads a file from the file system and returns the content
    *
-   * @param file Die zu ladende Datei
-   * @return Den Inhalt der Datei.
-   * @throws RegainException Falls das Laden fehl schlug.
+   * @param file The file to load
+   * @return byte[] The content of file
+   * @throws RegainException in case of problems while loading
    */
   public static byte[] loadFile(File file) throws RegainException {
     if (file.isDirectory()) {
@@ -291,6 +291,32 @@ public class CrawlerToolkit {
     }
   }
 
+  /**
+   * Loads content from a InputStream and returns the content
+   *
+   * @param inputStream the stream to read
+   * @return byte[] The content of the source
+   * @throws RegainException in case of problems while loading
+   */
+  public static byte[] loadFileFromStream(InputStream inputStream, int length) throws RegainException {
+    
+    ByteArrayOutputStream out = null;
+    try {
+      out = new ByteArrayOutputStream(length);
+
+      RegainToolkit.pipe(inputStream, out);
+
+      return out.toByteArray();
+    }
+    catch (IOException exc) {
+      throw new RegainException("Loading inputstream failed ", exc);
+    }
+    finally {
+      if (out != null) {
+        try { out.close(); } catch (IOException exc) {}
+      }
+    }
+  }
 
 
   /**
@@ -375,7 +401,22 @@ public class CrawlerToolkit {
     return url;
   }
 
-
+  /**
+   * Removes anchors from URLs like http://mydomain.com/index.html#anchor
+   * 
+   * @param url an URL with or without an anchor
+   * @return the URL without an anchor
+   */
+  public static String removeAnchor(String url){
+    // Remove anchors from link.
+    int index = url.indexOf('#');
+    if (index != -1) {
+      return url.substring(0, index);
+    } else {
+      return url;
+    }
+  }
+  
   /**
    * Prints the active threads to System.out. Usefull for debugging.
    */
@@ -438,9 +479,9 @@ public class CrawlerToolkit {
 
 
   /**
-   * Wandelt alle HTML-Entitäten in ihre Ensprechungen.
+   * Wandelt alle HTML-Entitï¿½ten in ihre Ensprechungen.
    *
-   * @param text Den Text, dessen HTML-Entitäten gewandelt werden sollen.
+   * @param text Den Text, dessen HTML-Entitï¿½ten gewandelt werden sollen.
    *
    * @return Der gewandelte Text.
    */
@@ -488,12 +529,12 @@ public class CrawlerToolkit {
 
 
   /**
-   * Säubert HTML-Text von seinen Tags und wandelt alle HTML-Entitäten in ihre
+   * Sï¿½ubert HTML-Text von seinen Tags und wandelt alle HTML-Entitï¿½ten in ihre
    * Ensprechungen.
    *
-   * @param text Der zu säubernde HTML-Text.
+   * @param text Der zu sï¿½ubernde HTML-Text.
    *
-   * @return Der von Tags gesäberte Text
+   * @return Der von Tags gesï¿½berte Text
    */
   public static String cleanFromHtmlTags(String text) {
     StringBuffer clean = new StringBuffer(text.length());

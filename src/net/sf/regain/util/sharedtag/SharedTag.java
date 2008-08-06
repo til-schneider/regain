@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-10 16:00:46 +0200 (Mi, 10 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 155 $
+ *     $Date: 2008-08-07 11:35:53 +0200 (Do, 07 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 328 $
  */
 package net.sf.regain.util.sharedtag;
 
@@ -249,13 +249,12 @@ public abstract class SharedTag {
     // Get the Localizer
     mLocalizer = (Localizer) request.getContextAttribute("Localizer");
     if (mLocalizer == null) {
-      // The default resource bundles are in english
-      Locale.setDefault(Locale.ENGLISH);
-
+      
       // Get the locale
       Locale locale = request.getLocale();
       if (locale == null) {
-        locale = Locale.getDefault();
+    	// The default resource bundles are in english
+        locale = Locale.ENGLISH;
       }
       
       // Init the MultiLocalizer if nessesary
@@ -387,6 +386,7 @@ public abstract class SharedTag {
    * 
    * @return The String representation.
    */
+  @Override
   public String toString() {
     return getTagName();
   }

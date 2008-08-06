@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-05-11 11:21:40 +0200 (Mi, 11 Mai 2005) $
- *   $Author: til132 $
- * $Revision: 134 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.crawler.config;
 
@@ -37,7 +37,7 @@ import org.apache.regexp.RESyntaxException;
  *  
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
-public class RegexUrlMatcher implements UrlMatcher {
+public class RegexUrlMatcher extends UrlMatcherImpl {
 
   /** The regex as String. */
   private String mUrlRegexAsString;
@@ -53,9 +53,10 @@ public class RegexUrlMatcher implements UrlMatcher {
    *        matched by this matcher.
    * @throws RegainException
    */
-  public RegexUrlMatcher(String regex)
+  public RegexUrlMatcher(String regex, boolean shouldBeParsed, boolean shouldBeIndexed)
     throws RegainException
   {
+    super(shouldBeParsed, shouldBeIndexed);
     mUrlRegexAsString = regex;
     
     try {

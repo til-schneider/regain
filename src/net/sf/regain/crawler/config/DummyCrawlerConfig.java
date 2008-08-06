@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2007-10-20 18:22:56 +0200 (Sa, 20 Okt 2007) $
- *   $Author: til132 $
- * $Revision: 247 $
+ *     $Date: 2008-08-07 11:35:53 +0200 (Do, 07 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 328 $
  */
 package net.sf.regain.crawler.config;
 
@@ -47,6 +47,14 @@ public class DummyCrawlerConfig implements CrawlerConfig {
     return "idatmpsrv";
   }
 
+  /**
+   * Returns the maximum count of equal occurences of path-parts in an URI.
+   *
+   * @return MaxCycleCount
+   */
+  public int getMaxCycleCount() {
+    return -1;
+  }
 
 
   /**
@@ -305,7 +313,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    */
   public WhiteListEntry[] getWhiteList() {
     return new WhiteListEntry[] {
-      new WhiteListEntry(new PrefixUrlMatcher("file://"), null)
+      new WhiteListEntry(new PrefixUrlMatcher("file://",true,true), null)
     };
   }
 
@@ -337,8 +345,8 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    */
   public PreparatorSettings[] getPreparatorSettingsList() {
     return new PreparatorSettings[] {
-      new PreparatorSettings(true, "net.sf.regain.crawler.document.HtmlPreparator", null, new PreparatorConfig()),
-      new PreparatorSettings(true, "net.sf.regain.crawler.document.XmlPreparator", null, new PreparatorConfig())
+      new PreparatorSettings(true, 0, "net.sf.regain.crawler.document.HtmlPreparator", null, new PreparatorConfig()),
+      new PreparatorSettings(true, 0, "net.sf.regain.crawler.document.XmlPreparator", null, new PreparatorConfig())
     };
   }
 
@@ -388,5 +396,25 @@ public class DummyCrawlerConfig implements CrawlerConfig {
   public Properties getCrawlerAccessControllerConfig() {
     return null;
   }
+  
+  
+  /**
+   * Returns the names of the fields that shouldn't be tokenized.
+   * 
+   * @param config The crawler configuration.
+   * @return The names of the fields that shouldn't be tokenized.
+   */
+  public String[] getUntokenizedFieldNames(){
+	  return null;
+  }
 
+  /**
+   * Returns maximum amount of characters which will be copied from content to summary
+   *
+   * @return MaxSummaryLength
+   */
+  public int getMaxSummaryLength(){
+    return 250000;
+  }
 }
+

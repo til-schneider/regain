@@ -350,15 +350,20 @@ Prio C:
 -------
 
   Allow regular expressions in rewrite rules (with group-based replacing)
+  Check StackOverflowError in Linkextraction 
+      Caused by: java.lang.StackOverflowError
+        at org.apache.regexp.StringCharacterIterator.charAt(Unknown Source)
+        at org.apache.regexp.RE.matchNodes(Unknown Source)
+        ...
   PlainTextPreparator: Add option to set the max. amount of text to extract.
     (avoid OutOfMemory)
-  Hit highlighting
+  Hit highlighting (done)
   Crawler: Abstraktion und nested Crawlers.
   Crawler: ZIP-Dateien durchsuchen
   Crawler: Mailboxen durchsuchen
-  Crawler: Anderen HTMLParser nutzen: http://htmlparser.sourceforge.net
+  Crawler: Anderen HTMLParser nutzen: http://htmlparser.sourceforge.net (done)
   Neuer MS Word-Praeparator: OpenOffice
-  Neuer PDF-Praeparator: PJX (http://www.etymon.com/epub.html)
+  Neuer PDF-Praeparator: PJX (http://www.etymon.com/epub.html) 
   Desktopsuche: Nach Speichern der Konfiguration nur dann neu indexieren, wenn
     sich etwas geaendert hat, das den Index veraendert.
   Desktopsuche: JSP-Executer cachen.

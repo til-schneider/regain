@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-16 09:55:48 +0100 (Mi, 16 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 87 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -55,6 +55,9 @@ public class TrayIconManager {
   
   /** The try icon */
   private TrayIcon mTrayIcon;
+
+  /** Is a tray icon used? */
+  private boolean active;
   
   
   /**
@@ -73,7 +76,10 @@ public class TrayIconManager {
   /**
    * Initializes the tray icon.
    */
-  public void init() {
+  public void init(boolean useTrayIcon) {
+    active = useTrayIcon;
+    if (! active) return;
+
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     } catch (Exception evt) {
@@ -141,6 +147,8 @@ public class TrayIconManager {
    * @param updateRunning Whether there is currently an index update running.
    */
   public void setIndexUpdateRunning(boolean updateRunning) {
+    if (! active) return;
+
     if (updateRunning) {
       ImageIcon icon = new ImageIcon(getClass().getResource("regain_icon_scan_16.gif"));
       mTrayIcon.setIcon(icon);

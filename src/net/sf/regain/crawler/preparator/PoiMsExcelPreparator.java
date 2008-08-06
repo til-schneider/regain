@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-01-21 12:53:30 +0100 (Sa, 21 Jan 2006) $
- *   $Author: til132 $
- * $Revision: 194 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -74,7 +74,7 @@ public class PoiMsExcelPreparator extends AbstractPreparator {
    * @throws RegainException If creating the preparator failed.
    */
   public PoiMsExcelPreparator() throws RegainException {
-    super(new String[] { "xls", "xlt" });
+    super( new String[] {"application/msexcel","application/vnd.ms-excel"} );
   }
 
 

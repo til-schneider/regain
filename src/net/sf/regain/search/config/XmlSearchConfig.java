@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-18 10:01:39 +0200 (Do, 18 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 172 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.search.config;
 
@@ -60,6 +60,10 @@ public class XmlSearchConfig implements SearchConfig {
     
     // Get the node that holds the default settings for all indexes
     Node defaultNode = XmlToolkit.getChild(listNode, "defaultSettings");
+    
+    // get the highlighted flag
+    node = XmlToolkit.getChild(defaultNode, "Highlighting");
+    boolean highlighting = (node == null) ? true : XmlToolkit.getTextAsBoolean(node);
     
     // Get the index nodes
     mIndexHash = new HashMap();
@@ -119,7 +123,7 @@ public class XmlSearchConfig implements SearchConfig {
       IndexConfig indexConfig = new IndexConfig(indexName, directory,
           openInNewWindowRegex, useFileToHttpBridge, searchFieldList, rewriteRules,
           searchAccessControllerClass, searchAccessControllerJar,
-          searchAccessControllerConfig);
+          searchAccessControllerConfig, highlighting);
       mIndexHash.put(indexName, indexConfig);
       
       // Check whether this index is default

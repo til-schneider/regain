@@ -98,3 +98,7 @@ select.editlist {
 input.editlist {
   width: 200px;
 }
+
+.highlight {
+  font-weight: bold;
+}

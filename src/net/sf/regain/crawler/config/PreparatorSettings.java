@@ -21,13 +21,12 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-13 13:33:30 +0200 (Sa, 13 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 160 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.crawler.config;
 
-import org.apache.regexp.RE;
 
 /**
  * The settings of a preparator
@@ -42,6 +41,9 @@ public class PreparatorSettings {
 
   /** Specifies whether the preparator is enabled. */
   private boolean mIsEnabled;
+  
+  /** Specifies the priority of the preparator */
+  private int mPriority;
   
   /**
    * The class name of the preparator. The class must implement
@@ -72,10 +74,11 @@ public class PreparatorSettings {
    *        preparator should be used.
    * @param preparatorConfig The configuration of the preparator.
    */
-  public PreparatorSettings(boolean isEnabled, String preparatorClassName,
+  public PreparatorSettings(boolean isEnabled, int priority, String preparatorClassName,
     String urlRegex, PreparatorConfig preparatorConfig)
   {
     mIsEnabled = isEnabled;
+    mPriority = priority;
     mUrlRegex = urlRegex;
     mPreparatorConfig = preparatorConfig;
     
@@ -127,6 +130,14 @@ public class PreparatorSettings {
    */
   public PreparatorConfig getPreparatorConfig() {
     return mPreparatorConfig;
+  }
+
+  /**
+   * Gets the priority of the preparator
+   * @return The priority as int. 0 is the default value
+   */
+  public int getPriority() {
+    return mPriority;
   }
 
 }

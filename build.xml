@@ -22,9 +22,9 @@
  | CVS information:
  |  $RCSfile$
  |   $Source$
- |     $Date: 2007-10-30 21:15:04 +0100 (Di, 30 Okt 2007) $
- |   $Author: til132 $
- | $Revision: 254 $
+ |     $Date: 2008-08-06 16:29:52 +0200 (Mi, 06 Aug 2008) $
+ |   $Author: thtesche $
+ | $Revision: 326 $
  |
  | Author: Til Schneider, www.murfman.de
  +-->
@@ -53,7 +53,7 @@
 
   <property name="doc.header" value="${programname} ${version} API"/>
   <property name="doc.title" value="API documentation for ${programname} ${version}"/>
-  <property name="doc.bottom" value="${programname} ${version}, Copyright (C) 2004 Til Schneider, www.murfman.de"/>
+  <property name="doc.bottom" value="${programname} ${version}, Copyright (C) 2004 Til Schneider, www.murfman.de, 2008 Thomas Tesche, www.thtesche.com"/>
 
   <property name="jacobgen-src.dir" value="build/jacobgen/generated-src"/>
   <property name="jacobgen-classes.dir" value="build/jacobgen/classes"/>
@@ -258,7 +258,7 @@
              bottom="${doc.bottom}"
              stylesheetfile="txt/stylesheet.css"
              access="private"
-             charset="ISO-8859-1"
+             charset="UTF-8"
              failonerror="true">
              <!-- additionalparam="-breakiterator" -->
       <link offline="true"
@@ -280,14 +280,14 @@
    | Compiles the source code.
    +-->
   <target name="make">
-    <echo message="Compiling the source code using ${java-1_4.dir} ..." />
+    <echo message="Compiling the source code using ${java.dir} ..." />
     <mkdir dir="build/classes"/>
     <javac destdir="build/classes"
            debug="${debug}"
            deprecation="true"
-           executable="${java-1_4.dir}/bin/javac"
-           source="1.3"
-           target="1.3"
+           executable="${java.dir}/bin/javac"
+           source="1.5"
+           target="1.5"
            fork="true">
       <src>
         <path refid="sourcepath"/>
@@ -315,7 +315,7 @@
     <javac destdir="build/classes"
            debug="${debug}"
            deprecation="true"
-           target="1.2">
+           target="1.5">
       <src>
         <pathelement location="test/src"/>
       </src>
@@ -382,6 +382,10 @@
         <include name="net/sf/regain/crawler/preparator/HtmlPreparator.*"/>
         <include name="net/sf/regain/crawler/preparator/html/**"/>
       </fileset>
+      <fileset dir="build/included-lib-classes/common">
+        <include name="font_metrics.properties"/>
+        <include name="org/htmlparser/**"/>
+      </fileset>
     </jar>
 
     <jar jarfile="build/preparator/SimpleRtfPreparator.jar"
@@ -402,10 +406,53 @@
       </manifest>
       <fileset dir="build/included-lib-classes/common">
         <include name="org/pdfbox/**"/>
+        <include name="org/fontbox/**"/>
+        <include name="org/bouncycastle/**"/>
         <include name="Resources/**"/>
       </fileset>
       <fileset dir="build/classes">
         <include name="net/sf/regain/crawler/preparator/PdfBoxPreparator.*"/>
+      </fileset>
+    </jar>
+
+    <jar jarfile="build/preparator/MP3Preparator.jar"
+         compress="false" index="true">
+      <manifest>
+        <attribute name="Preparator-Classes" value=".MP3Preparator"/>
+      </manifest>
+      <fileset dir="build/included-lib-classes/common">
+        <include name="org/jaudiotagger/**"/>
+      </fileset>
+      <fileset dir="build/classes">
+        <include name="net/sf/regain/crawler/preparator/MP3Preparator.*"/>
+      </fileset>
+    </jar>
+
+    <jar jarfile="build/preparator/GenericAudioPreparator.jar"
+         compress="false" index="true">
+      <manifest>
+        <attribute name="Preparator-Classes" value=".GenericAudioPreparator"/>
+      </manifest>
+      <fileset dir="build/included-lib-classes/common">
+        <include name="org/jaudiotagger/**"/>
+      </fileset>
+      <fileset dir="build/classes">
+        <include name="net/sf/regain/crawler/preparator/GenericAudioPreparator.*"/>
+      </fileset>
+    </jar>
+
+    <jar jarfile="build/preparator/JavaPreparator.jar"
+         compress="false" index="true">
+      <manifest>
+        <attribute name="Preparator-Classes" value=".JavaPreparator"/>
+      </manifest>
+      <fileset dir="build/included-lib-classes/common">
+        <include name="org/eclipse/**"/>
+        <include name="org/osgi/**"/>
+      </fileset>
+      <fileset dir="build/classes">
+        <include name="net/sf/regain/crawler/preparator/java/**"/>
+        <include name="net/sf/regain/crawler/preparator/JavaPreparator.*"/>
       </fileset>
     </jar>
 
@@ -503,18 +550,23 @@
     <copy todir="build/runtime/desktop/linux/web">
       <fileset dir="build/runtime/desktop/win/web"/>
     </copy>
-    
+        
     <!-- Copy the preparator jars -->
     <copy todir="build/runtime/crawler/preparator">
-      <fileset dir="build/preparator"/>
+      <fileset dir="build/preparator">
+        <exclude name="JavaPreparator.jar"/>
+      </fileset>
     </copy>
     <copy todir="build/runtime/desktop/win/preparator">
-      <fileset dir="build/preparator"/>
+      <fileset dir="build/preparator">
+        <exclude name="JavaPreparator.jar"/>
+      </fileset>
     </copy>
     <copy todir="build/runtime/desktop/linux/preparator">
       <fileset dir="build/preparator">
         <exclude name="JacobMsOfficePreparators.jar"/>
         <exclude name="IfilterPreparator.jar"/>
+        <exclude name="JavaPreparator.jar"/>
       </fileset>
     </copy>
   </target>
@@ -579,6 +631,15 @@
       <include name="org/apache/log4j/**"/>
       <include name="org/apache/regexp/**"/>
     
+      <!-- aperture -->
+      <include name="org/semanticdesktop/aperture/**"/>
+      <include name="org/ontoware/rdf2go/**"/>
+      <include name="org/slf4j/**"/>
+      <include name="org/openrdf/model/impl/**"/>
+
+      <!-- CIFS, Samba -->
+      <include name="jcifs/**"/>
+
       <!-- XML stuff -->
       <include name="javax/xml/**"/>
       <include name="org/w3c/dom/**"/>
@@ -654,6 +715,15 @@
         <include name="org/apache/lucene/**"/>
         <include name="org/apache/log4j/**"/>
         <include name="org/apache/regexp/**"/>
+        
+        <!-- aperture -->
+        <include name="org/semanticdesktop/aperture/**"/>
+        <include name="org/ontoware/rdf2go/**"/>
+        <include name="org/slf4j/**"/>
+        <include name="org/openrdf/model/impl/**"/>
+
+        <!-- CIFS, Samba -->
+        <include name="jcifs/**"/>
 
         <!-- XML stuff -->
         <include name="javax/xml/**"/>
@@ -728,7 +798,7 @@
    +-->
   <target name="installer" depends="jsmoothgen">
     <mkdir dir="build/public"/>
-    <exec executable="installer/makensis.exe"
+    <exec executable="C:\Dokumente und Einstellungen\thtesche\Eigene Dateien\NetBeansProjects\regain\installer\makensis.exe"
           failonerror="true">
       <arg value="/NOCD"/>
       <arg value="/DVERSION=${version}"/>
@@ -806,7 +876,7 @@
           dir="build/runtime/crawler"
           fork="true">
           <!--
-          jvm="${java-1_4.dir}/bin/java"
+          jvm="${java.dir}/bin/java"
           -->
     </java>
   </target>
@@ -815,12 +885,12 @@
   <!--
    | Runs the project.
    +-->
-  <target name="run-crawler-fast" depends="runtime-fast">
+   <target name="run-crawler-fast" depends="runtime-fast">
     <java classname="net.sf.regain.crawler.Main"
           dir="build/runtime/crawler"
           fork="true">
           <!--
-          jvm="${java-1_4.dir}/bin/java"
+          jvm="${java.dir}/bin/java"
           -->
       <jvmarg value="-Xmx256M"/>
       <classpath>
@@ -838,7 +908,7 @@
           dir="build/runtime/desktop/${platform}"
           fork="true">
           <!--
-          jvm="${java-1_4.dir}/bin/java"
+          jvm="${java.dir}/bin/java"
           -->
       <jvmarg value="-Djava.library.path=."/>
       <jvmarg value="-Xmx256M"/>
@@ -848,6 +918,25 @@
     </java>
   </target>
 
+  <!--
+   | Runs the project.
+   +-->
+  <target name="run-desktop-fast-notrayicon" depends="runtime-fast">
+    <java classname="net.sf.regain.ui.desktop.Main"
+          dir="build/runtime/desktop/${platform}"
+          fork="true">
+          <!--
+          jvm="${java.dir}/bin/java"
+          -->
+      <!-- Usefull for some Linux distris where the desktop integration don't work.. -->
+      <arg value="-noTrayIcon"/>
+      <jvmarg value="-Djava.library.path=."/>
+      <jvmarg value="-Xmx256M"/>
+      <classpath>
+        <path refid="classpath"/>
+      </classpath>
+    </java>
+  </target>
   
   <!--
    | Creates all the stuff that can be downloaded.

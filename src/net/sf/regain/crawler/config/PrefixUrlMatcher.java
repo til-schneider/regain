@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-05-11 11:21:40 +0200 (Mi, 11 Mai 2005) $
- *   $Author: til132 $
- * $Revision: 134 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.crawler.config;
 
@@ -32,19 +32,20 @@ package net.sf.regain.crawler.config;
  * 
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
-public class PrefixUrlMatcher implements UrlMatcher {
+public class PrefixUrlMatcher extends UrlMatcherImpl {
 
   /** The prefix a URL must start with in order to be matched by this matcher. */
   private String mUrlPrefix;
-
-
+ 
+  
   /**
    * Creates a new instance of PrefixUrlMatcher.
    * 
    * @param urlPrefix The prefix a URL must start with to be matched by this
    *        matcher.
    */
-  public PrefixUrlMatcher(String urlPrefix) {
+  public PrefixUrlMatcher(String urlPrefix, boolean shouldBeParsed, boolean shouldBeIndexed) {
+    super(shouldBeParsed, shouldBeIndexed);
     mUrlPrefix = urlPrefix;
   }
 
@@ -59,7 +60,7 @@ public class PrefixUrlMatcher implements UrlMatcher {
     return url.startsWith(mUrlPrefix);
   }
 
-
+ 
   /**
    * Gets a String representation of this UrlMatcher.
    */

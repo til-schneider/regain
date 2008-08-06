@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-13 13:33:30 +0200 (Sa, 13 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 160 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.crawler.document;
 
@@ -132,6 +132,9 @@ public class PreparatorFactory {
             prep.setUrlRegex(urlRegex);
           }
           
+          // Set the priority 
+          prep.setPriority(preparatorSettingsArr[i].getPriority());
+          
           // Add it to the array
           preparatorArr[prepIdx] = prep;
           prepIdx++;
@@ -200,7 +203,7 @@ public class PreparatorFactory {
         if (isPreparatorEnabled(className, preparatorSettingsArr)) {
           // Create the class loader if nessesary
           if (loader == null) {
-            loader = new URLClassLoader(new URL[] { file.toURL() });
+            loader = new URLClassLoader(new URL[] { file.toURI().toURL() });
           }
           
           // Load the preparator and add it to the preparatorHash

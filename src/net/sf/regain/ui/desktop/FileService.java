@@ -40,7 +40,7 @@ public class FileService extends BasicService {
   public void process(Request req, Response resp) throws Exception {
     // Check whether this request comes from localhost
     boolean localhost = req.getInetAddress().isLoopbackAddress();
-    if (! localhost) {
+    if (!localhost && !DesktopToolkit.getDesktopConfig().getExternalAccessAllowed() ) {
       // This request does not come from localhost -> Send 403 Forbidden
       handle(req, resp, 403);
     }
@@ -49,10 +49,10 @@ public class FileService extends BasicService {
     PageRequest request = new SimplePageRequest(req);
     PageResponse response = new SimplePageResponse(this, req, resp, null, null);
 
-    // Get the request path (Without GET-Parameters)
-    // NOTE: We don't use context.getRequestPath for this, because it decodes
-    //       the URL, but we want to decode it ourselves using our encoding
-    String requestPath = req.getURI();
+            // Get the request path (Without GET-Parameters)
+            // NOTE: We don't use context.getRequestPath for this, because it decodes
+            //       the URL, but we want to decode it ourselves using our encoding
+            String requestPath = req.getURI();
     int paramsStart = requestPath.indexOf('?');
     if (paramsStart != -1) {
       requestPath = requestPath.substring(0, paramsStart);
@@ -60,7 +60,7 @@ public class FileService extends BasicService {
 
     // Extract the file URL
     String fileUrl = SearchToolkit.extractFileUrl(requestPath,
-        SharedTagResource.SIMPLE_TAG_ENCODING);
+            SharedTagResource.SIMPLE_TAG_ENCODING);
 
     // Check the file URL
     if (SearchToolkit.allowFileAccess(request, fileUrl)) {

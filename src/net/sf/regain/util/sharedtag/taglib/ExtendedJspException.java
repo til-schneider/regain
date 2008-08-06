@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-02-24 16:31:49 +0100 (Do, 24 Feb 2005) $
- *   $Author: til132 $
- * $Revision: 30 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.util.sharedtag.taglib;
 
@@ -33,7 +33,7 @@ import java.io.PrintWriter;
 import javax.servlet.jsp.JspException;
 
 /**
- * Eine JspException, die eingebettete Exceptions unterstützt.
+ * Eine JspException, die eingebettete Exceptions unterstï¿½tzt.
  * <p>
  * This class has the same code as {@link net.sf.regain.RegainException}.
  * The only difference is, that is inherits from <code>JspException</code>.
@@ -125,7 +125,7 @@ public class ExtendedJspException extends JspException {
   private boolean superClassPrintsCause() {
     // Check whether there is a getCause method in the super class
     try {
-      getClass().getSuperclass().getMethod("getCause", null);
+      getClass().getSuperclass().getMethod("getCause");
       
       // The superclass has a getCause method -> It must be Java 1.4 or more
       return true;

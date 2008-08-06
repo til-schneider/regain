@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-01-21 12:53:30 +0100 (Sa, 21 Jan 2006) $
- *   $Author: til132 $
- * $Revision: 194 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.crawler.document;
 
@@ -68,6 +68,8 @@ public interface Preparator {
 
   /** The default StringBuffer size that should be used for the content buffer. */
   public static final int DEFAULT_BUFFER_SIZE = 16384; // 16 k
+  /** The default priority */
+  
 
   /**
    * Initializes the preparator.
@@ -183,5 +185,17 @@ public interface Preparator {
    * @throws RegainException Wenn der Präparator nicht geschlossen werden konnte.
    */
   public void close() throws RegainException;
+
+   /** 
+   * Gets the priority of the preparator
+   * @return int the priority
+   */
+  public int getPriority();
+
+  /**
+   * Sets the priority of the preparator
+   * @param priority read from config or default value settings
+   */
+  public void setPriority(int priority);
 
 }

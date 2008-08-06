@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-11-21 11:20:09 +0100 (Mo, 21 Nov 2005) $
- *   $Author: til132 $
- * $Revision: 180 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.util.sharedtag.simple;
 
@@ -32,6 +32,7 @@ import java.io.PrintStream;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.search.SearchToolkit;
+import net.sf.regain.ui.desktop.DesktopToolkit;
 import net.sf.regain.ui.desktop.FileService;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
@@ -84,7 +85,7 @@ public class SharedTagService extends BasicService {
   public void process(Request req, Response resp) throws Exception {
     // Check whether this request comes from localhost
     boolean localhost = req.getInetAddress().isLoopbackAddress();
-    if (! localhost) {
+    if (!localhost && !DesktopToolkit.getDesktopConfig().getExternalAccessAllowed() ) {
       // This request does not come from localhost -> Send 403 Forbidden
       handle(req, resp, 403);
     }

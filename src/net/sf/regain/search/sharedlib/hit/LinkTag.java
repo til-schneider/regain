@@ -57,9 +57,13 @@ public class LinkTag extends AbstractHitTag {
   {
     // Get the search results
     SearchResults results = SearchToolkit.getSearchResults(request);
+    boolean shouldHighlight = results.getShouldHighlight(hitIndex);
 
     String url   = results.getHitUrl(hitIndex);
-    String title = hit.get("title");
+    String fieldName = (shouldHighlight) ? "highlightedTitle" : "title";
+    String title = hit.get(fieldName);
+    if( shouldHighlight && (title==null || title.length()==0))
+      title = hit.get("title");
     boolean openInNewWindow = results.getOpenHitInNewWindow(hitIndex);
     
     // Trim the title
@@ -130,7 +134,10 @@ public class LinkTag extends AbstractHitTag {
       response.print(" class=\"" + styleSheetClass + "\"");
     }
     response.print(">");
-    response.printNoHtml(title);
+    if(shouldHighlight)
+      response.print(title);
+    else
+      response.printNoHtml(title);
     response.print("</a>");
   }
 

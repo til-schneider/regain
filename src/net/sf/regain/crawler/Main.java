@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-11-21 11:46:29 +0100 (Mo, 21 Nov 2005) $
- *   $Author: til132 $
- * $Revision: 181 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.crawler;
 
@@ -193,13 +193,13 @@ public class Main {
       "Allowed parameters:\n" +
       "  --help:             Shows this help page\n" +
       "  -forceNewIndex:     Forces the creation of a new search index\n" +
-      "  -retryFailedDocs:   The preparation of documents that failed last time is retried" +
+      "  -retryFailedDocs:   The preparation of documents that failed last time is retried\n" +
       "  -onlyEntries <CSV>: The white list entries to use, separated by comma (,)\n" +
-      "                      (Default: all entries)" +
+      "                      (Default: all entries)\n" +
       "  -config <file>:     The configuration file to use\n" +
-      "                      (Default: CrawlerConfiguration.xml)" +
+      "                      (Default: CrawlerConfiguration.xml)\n" +
       "  -logConfig <file>:  The logging configuration file to use\n" +
-      "                      (Default: log4j.properties)");
+      "                      (Default: log4j.properties)\n");
 
     System.exit(100);
   }

@@ -29,7 +29,7 @@
           </tr>
           <tr>
             <td><search:msg key="fileExtension"/>:</td>
-            <td><search:input_fieldlist field="extension" allMsg="{msg:allItem}"/></td>
+            <td><search:input_fieldlist field="mimetype" allMsg="{msg:allItem}"/></td>
           </tr>
           <tr>
             <td></td><td><search:input_submit text="{msg:search}"/></td>

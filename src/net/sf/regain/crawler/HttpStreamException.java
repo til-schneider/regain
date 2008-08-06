@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2004-07-28 22:26:06 +0200 (Mi, 28 Jul 2004) $
- *   $Author: til132 $
- * $Revision: 2 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.crawler;
 
@@ -112,7 +112,7 @@ public class HttpStreamException extends RegainException {
    * @return Ob der HTTP-Code con einem dead link stammt.
    */
   public boolean isHttpReturnCodeFromDeadLink() {
-    return (mHttpReturnCode == 404);
+    return (mHttpReturnCode == 404 || mHttpReturnCode == 400);
   }
   
 }

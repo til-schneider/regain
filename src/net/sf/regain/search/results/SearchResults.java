@@ -21,16 +21,15 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-20 13:20:15 +0200 (Sa, 20 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 174 $
+ *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 325 $
  */
 package net.sf.regain.search.results;
 
 import net.sf.regain.RegainException;
 
 import org.apache.lucene.document.Document;
-import org.apache.lucene.search.Hits;
 
 /**
  * Holds the results of one search.
@@ -117,5 +116,24 @@ public interface SearchResults {
    * @return The search time.
    */
   public int getSearchTime();
+
+  /**
+   * Highlights fields in the document.
+   *
+   * @param index The index of the hit.
+   * @return the document of one hit.
+   *
+   * @throws RegainException If highlighting failed.
+   * @see Document
+   */
+  public void highlightHitDocument(int index) throws RegainException;
+
+  /**
+   * Gets whether the search terms should be highlighted
+   *
+   * @return whether to highlight
+   * @throws RegainException If the value could not read from config
+   */
+  public boolean getShouldHighlight(int index) throws RegainException;
 
 }
