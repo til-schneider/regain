@@ -1,7 +1,13 @@
+Version 1.5.2 am 15.08.08 PREVIEW
+---------------------------------
+* Per Default wird der gesamte Content im Index gespeichert. Mittels <search:hit_content/> aus der
+  Taglib kann man eine ausklappbare Contentansicht in die Ergebnisliste einbauen. 
+  ACHTUNG: Experimentelles Feature. Die Indexe können sehr groß werden.
+
 Version 1.5.1 am 07.08.08 
 -------------------------
 * Dateiname wird korrekt indiziert
-* Datumsformat 'last-modified' auf "YYYYMMDD" ge�ndert. Damit kann man die RangeSearch auf
+* Datumsformat 'last-modified' auf "YYYYMMDD" geändert. Damit kann man die RangeSearch auf
   das Feld anwenden (Code-Contribution)
 * locale-Handling im SharedTag verbessert (Code-Contribution)
 
@@ -105,7 +111,7 @@ Version 1.1 am 26.02.06
 * Zusatzfelder haben nun die Optionen "tokenize", "store" und "index".
 * Die Tag Library ist nun dokumentiert.
 * Die Suchmaske akzeptiert nun mehrere "query" Parameter
-  (diese werden einfach aneinandergeh�ngt)
+  (diese werden einfach aneinandergehängt)
 * Die Jacob-Präparatoren wurden verbessert. (Danke an Reinhard Balling)
 * Neuer Präparator ExternalPrepartor: Dieser Präparator ruft externe Programme
   oder Skripte auf, um den Text aus Dokumenten zu extrahieren.
@@ -118,11 +124,11 @@ Version 1.1 Beta 6 am 05.12.05
 ------------------------------
 
 * Neuer Präparator: Mit dem PoiMsPowerPointPreparator steht nun auch ein
-  plattformunabh�ngiger Präparator für Powerpoint zur Verfügung.
+  plattformunabhängiger Präparator für Powerpoint zur Verfügung.
   (Vielen Dank an Gerhard Olsson)
 * Neuer Präparator: Der IfilterPreparator nutzt die I-Filter-Schnittstelle von
   Microsoft um etliche Dateiformate zu lesen. Leider läuft er nur unter Windows.
-* Multiindexsuche: In der SearchConfiguration.xml k�nnen nun auch mehrere
+* Multiindexsuche: In der SearchConfiguration.xml können nun auch mehrere
   Indizes als Default angegeben werden.
 * Die Zusatzfelder (Auxiliary Fields) können nun besser mit Groß-/Kleinschreibung
   umgehen.
@@ -138,22 +144,22 @@ Version 1.1 Beta 5 am 13.08.05
 * Multiindex-Suche: Es können nun mehrere Suchindizes über eine Suchmaske
   durchsucht werden. Die Suchanfragen werden dabei auf jeden Index losgelassen
   und anschließend vereint.
-* In der Wei�en und der Schwarzen Liste k�nnen jetzt auch regul�re Ausdr�cke
+* In der Weißen und der Schwarzen Liste können jetzt auch reguläre Ausdrücke
   angegeben werden.
 * Suchmaske: Der Ort der Ressourcen und der Konfiguration wird jetzt besser
   erkannt, so dass regain auch dann korrekt funktioniert, wenn Tomcat als
-  Service l�uft.
-* Suchmaske: Die File-zu-Http-Br�cke ist nun abschaltbar.
+  Service läuft.
+* Suchmaske: Die File-zu-Http-Brücke ist nun abschaltbar.
 * Crawler: Der Crawler braucht nun beim Durchsuchen von Verzeichnissen weniger
   Arbeitsspeicher
 * Crawler: Der Crawler nimmt nun auch fehlgeschlagene Dokumente in den Index
   auf, so dass diese bei einem erneuten Durchlauf nicht noch einmal probiert
   werden. Wird der Crawler jedoch mit der Option "-retryFailedDocs" aufgerufen,
   werden alle fehlgeschlagenen erneut probiert.
-* Der Html-Pr�parator �bernimmt nun auch die Endungen .jsp, .php, .php3, .php4
+* Der Html-Präparator übernimmt nun auch die Endungen .jsp, .php, .php3, .php4
   und .asp.
-* In der CrawlerConfiguration.xml kann nun bei einem Pr�parator angegeben
-  werden, welche Dokumente er pr�parieren soll.
+* In der CrawlerConfiguration.xml kann nun bei einem Präparator angegeben
+  werden, welche Dokumente er präparieren soll.
 * Mehrere Bugfixes
 
 
@@ -161,8 +167,8 @@ Version 1.1 Beta 4 am 13.04.05
 ------------------------------
 
 * Zugriffsrechte-Management: Es kann nun ein Rechte-Management eingebunden
-  werden, das dafuer sorgt, dass ein Benutzer nur Treffer f�r Dokumente erhaelt,
-  f�r die er Leserechte hat.
+  werden, das dafuer sorgt, dass ein Benutzer nur Treffer für Dokumente erhaelt,
+  für die er Leserechte hat.
 * Suche: Die search-Taglib hat nun ein Tag "hit_field", das ein beliebiges
   Indexfeld ausgibt. Das Tag "hit_summary" wurde in diesem Zuge entfernt.
 * Suche: Wenn Sie die Konfiguration der Suche nicht von einer XML-Datei laden
@@ -200,7 +206,7 @@ Version 1.1 Beta 3 am 17.03.05
 Version 1.1 Beta 2 am 12.03.05
 ------------------------------
 
-* Crawler: Der Crawler erstellt nun regelmae�ig sog. Breakpoints. Dabei wird
+* Crawler: Der Crawler erstellt nun regelmäßig sog. Breakpoints. Dabei wird
   der aktuellen Stand der Suchindex in ein gesondertes Verzeichnis kopiert.
   Falls die Indexierung abgebrochen wurde (Z.B. weil der Rechner
   heruntergefahren wurde), wird beim naechsten mal auf dem letzten Breakpoint
@@ -232,7 +238,7 @@ Version 1.1 Beta 1 am 10.03.05
   aus der URL eines Dokuments generiert werden.
   Beispiel: Angenommen Sie haben ein Verzeichnis mit einem Unterverzeichnis fuer
   jedes Projekt. Dann koennten Sie daraus ein Feld mit dem Projektnamen
-  generieren. Dadurch bekommen Sie bei der Suche nach "Angebot�project:otto23"
+  generieren. Dadurch bekommen Sie bei der Suche nach "Angebotsproject:otto23"
   nur Treffer aus diesem Verzeichnis.
 * Suche: Expertensuche: Die Werte, die fuer ein Feld im Index stehen,
   koennen nun als ComboBox auf einer Suchseite angeboten werden. Vor allem in

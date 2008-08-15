@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-07 11:35:53 +0200 (Do, 07 Aug 2008) $
+ *     $Date: 2008-08-14 17:36:39 +0200 (Do, 14 Aug 2008) $
  *   $Author: thtesche $
- * $Revision: 328 $
+ * $Revision: 333 $
  */
 package net.sf.regain.crawler.document;
 
@@ -55,6 +55,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.WhitespaceTokenizer;
+import org.apache.lucene.document.DateTools;
 import org.semanticdesktop.aperture.mime.identifier.magic.MagicMimeTypeIdentifier;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -463,8 +464,8 @@ public class DocumentFactory {
       // -> Take the current time
       lastModified = new Date();
     }
-    String lastModifiedAsString = RegainToolkit.lastModifiedToIndexString(lastModified);
-    doc.add(new Field("last-modified", lastModifiedAsString, Field.Store.YES,
+    doc.add(new Field("last-modified", 
+      DateTools.dateToString(lastModified, DateTools.Resolution.DAY), Field.Store.YES,
         Field.Index.UN_TOKENIZED));
 
     // Write the raw content to an analysis file
@@ -486,7 +487,7 @@ public class DocumentFactory {
       writeAnalysisFile(url, "clean", cleanedContent);
 
       // Add the cleaned content of the document
-      doc.add(new Field("content", cleanedContent, Field.Store.NO,
+      doc.add(new Field("content", cleanedContent, Field.Store.YES,
           Field.Index.TOKENIZED));
     } else {
       // We have no content! This is a substitude document

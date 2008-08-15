@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-07 11:35:53 +0200 (Do, 07 Aug 2008) $
+ *     $Date: 2008-08-14 17:36:39 +0200 (Do, 14 Aug 2008) $
  *   $Author: thtesche $
- * $Revision: 328 $
+ * $Revision: 333 $
  */
 package net.sf.regain.crawler;
 
@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -45,6 +46,7 @@ import net.sf.regain.crawler.document.RawDocument;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -59,9 +61,9 @@ import org.apache.lucene.search.TermQuery;
  * Kontrolliert und kapselt die Erstellung des Suchindex.
  * <p>
  * <b>Anwendung:</b><br>
- * Rufen Sie für jedes Dokument {@link #addToIndex(RawDocument, ErrorLogger)}
+ * Rufen Sie fï¿½r jedes Dokument {@link #addToIndex(RawDocument, ErrorLogger)}
  * auf. Rufen Sie am Ende {@link #close(boolean)} auf, um den Index zu
- * schließen. Danach sind keine weiteren Aufrufe von
+ * schlieï¿½en. Danach sind keine weiteren Aufrufe von
  * {@link #addToIndex(RawDocument, ErrorLogger)} erlaubt.
  *
  * @author Til Schneider, www.murfman.de
@@ -113,10 +115,10 @@ public class IndexWriterManager {
   private static final boolean WRITE_TERMS_SORTED = true;
 
   /**
-   * Workaround: Unter Windows klappt das Umbenennen unmittelbar nach Schließen
+   * Workaround: Unter Windows klappt das Umbenennen unmittelbar nach Schlieï¿½en
    * des Index nicht. Wahrscheinlich sind die Filepointer auf die gerade
-   * geschlossenen Dateien noch nicht richtig aufgeräumt, so dass ein Umbenennen
-   * des Indexverzeichnisses fehl schlägt. Das Umbenennen wird daher regelmäßig
+   * geschlossenen Dateien noch nicht richtig aufgerï¿½umt, so dass ein Umbenennen
+   * des Indexverzeichnisses fehl schlï¿½gt. Das Umbenennen wird daher regelmï¿½ï¿½ig
    * probiert, bis es entweder funktioniert oder bis der Timeout abgelaufen ist.
    */ 
   private static final long RENAME_TIMEOUT = 60000; // 1 min
@@ -152,7 +154,7 @@ public class IndexWriterManager {
   private IndexWriter mIndexWriter;
 
   /**
-   * Der gekapselte IndexReader. Wird zum Löschen von Dokumenten aus dem Index
+   * Der gekapselte IndexReader. Wird zum Lï¿½schen von Dokumenten aus dem Index
    * benï¿½tigt.
    * <p>
    * Ist <code>null</code>, wenn der Index nicht aktualisiert werden soll.
@@ -160,7 +162,7 @@ public class IndexWriterManager {
   private IndexReader mIndexReader;
 
   /**
-   * Der gekapselte IndexSearcher. Wird zum Finden von Dokumenten benötigt.
+   * Der gekapselte IndexSearcher. Wird zum Finden von Dokumenten benï¿½tigt.
    * <p>
    * Ist <code>null</code>, wenn der Index nicht aktualisiert werden soll.
    */
@@ -178,7 +180,7 @@ public class IndexWriterManager {
    */
   private boolean mRetryFailedDocs;
   
-  /** Die DocumentFactory, die die Inhalte für die Indizierung aufbereitet. */
+  /** Die DocumentFactory, die die Inhalte fï¿½r die Indizierung aufbereitet. */
   private DocumentFactory mDocumentFactory;
 
   /**
@@ -223,15 +225,15 @@ public class IndexWriterManager {
    */
   private int mInitialDocCount;
 
-  /** Der Profiler der das Hinzufügen zum Index mißt. */
+  /** Der Profiler der das Hinzufï¿½gen zum Index miï¿½t. */
   private Profiler mAddToIndexProfiler = new Profiler("Indexed documents", "docs");
 
   /** The profiler for the breakpoint creation. */
   private Profiler mBreakpointProfiler = new Profiler("Created breakpoints", "breakpoints");
 
   /**
-   * Enthält die URL und den LastUpdated-String aller Dokumente, deren Einträge
-   * beim Abschließen des Index entfernt werden müssen.
+   * Enthï¿½lt die URL und den LastUpdated-String aller Dokumente, deren Eintrï¿½ge
+   * beim Abschlieï¿½en des Index entfernt werden mï¿½ssen.
    * <p>
    * Die URL bildet den key, der LastUpdated-String die value.
    */
@@ -542,7 +544,7 @@ public class IndexWriterManager {
    *
    * @param indexDir Das Verzeichnis, in dem der Index liegt.
    * @param analyzerType Der Analyzer-Typ, den der alte Index haben muss, um
-   *        übernommen zu werden.
+   *        ï¿½bernommen zu werden.
    * @return Ob ein alter Index gefunden wurde.
    * @throws RegainException Wenn das Kopieren fehl schlug.
    */
@@ -556,7 +558,7 @@ public class IndexWriterManager {
     } else if (mNewIndexDir.exists()) {
       oldIndexDir = mNewIndexDir;
     } else {
-      // Es gibt keinen neuen Index -> Wir müssen den Index nehmen, der gerade
+      // Es gibt keinen neuen Index -> Wir mï¿½ssen den Index nehmen, der gerade
       // verwendet wird
       oldIndexDir = new File(indexDir, WORKING_INDEX_SUBDIR);
     }
@@ -566,7 +568,7 @@ public class IndexWriterManager {
       return false;
     }
 
-    // Analyzer-Typ des alten Index prüen
+    // Analyzer-Typ des alten Index prï¿½en
     File analyzerTypeFile = new File(oldIndexDir, "analyzerType.txt");
     String analyzerTypeOfIndex = RegainToolkit.readStringFromFile(analyzerTypeFile);
     if ((analyzerTypeOfIndex == null)
@@ -642,10 +644,16 @@ public class IndexWriterManager {
           // Compare the modification date with the one from the index entry
           String asString = doc.get("last-modified");
           if (asString != null) {
-            Date indexLastModified = RegainToolkit.indexStringToLastModified(asString);
-
-            long diff = docLastModified.getTime() - indexLastModified.getTime();
-             if (diff > 60000L) {
+            long diff = 8600001L;
+            Date indexLastModified = null;
+            try {
+              indexLastModified = DateTools.stringToDate(asString);
+              diff = docLastModified.getTime() - indexLastModified.getTime();
+            } catch (ParseException parseException) {
+              mLog.warn("Couldn't parse last-modified date from index. Document: " + 
+                rawDocument.getUrl(), parseException);
+            }
+            if (diff > 86400000L) {
               // -> The index entry is not up-to-date -> Delete the old entry
               mLog.info("Index entry is outdated. Creating a new one (" +
                   docLastModified + " > " + indexLastModified + "): " +
@@ -807,7 +815,7 @@ public class IndexWriterManager {
           else if (urlChecker.shouldBeKeptInIndex(url)) {
             shouldBeDeleted = false;
           }
-          // Prüfen, ob die URL zu einem zu-verschonen-Präfix passt
+          // Prï¿½fen, ob die URL zu einem zu-verschonen-Prï¿½fix passt
           else {
             shouldBeDeleted = true;
             for (int i = 0; i < preserveUrlMatcherArr.length; i++) {
@@ -832,7 +840,7 @@ public class IndexWriterManager {
       }
     }
 
-    // Merkliste der zu löschenden Einträge löschen
+    // Merkliste der zu lï¿½schenden Eintrï¿½ge lï¿½schen
     mUrlsToDeleteHash = null;
   }
 
@@ -878,10 +886,10 @@ public class IndexWriterManager {
 
 
   /**
-   * Gibt zurück, ob ein Dokument für die Löschung vorgemerkt wurde.
+   * Gibt zurï¿½ck, ob ein Dokument fï¿½r die Lï¿½schung vorgemerkt wurde.
    *
-   * @param doc Das zu prüfende Dokument.
-   * @return Ob das Dokument für die Löschung vorgemerkt wurde.
+   * @param doc Das zu prï¿½fende Dokument.
+   * @return Ob das Dokument fï¿½r die Lï¿½schung vorgemerkt wurde.
    */
   private boolean isMarkedForDeletion(Document doc) {
     String url = doc.get("url");
@@ -889,16 +897,16 @@ public class IndexWriterManager {
 
     if ((url == null) || (lastModified == null)) {
       // url und last-modified sind Mussfelder
-      // Da eines fehlt -> Dokument löschen
+      // Da eines fehlt -> Dokument lï¿½schen
       return true;
     }
 
     if (mUrlsToDeleteHash == null) {
-      // Es sind gar keine Dokumente zum Löschen vorgemerkt
+      // Es sind gar keine Dokumente zum Lï¿½schen vorgemerkt
       return false;
     }
 
-    // Prüfen, ob es einen Eintrag für diese URL gibt und ob er dem
+    // Prï¿½fen, ob es einen Eintrag fï¿½r diese URL gibt und ob er dem
     // last-modified des Dokuments entspricht
     String lastModifiedToDelete = (String) mUrlsToDeleteHash.get(url);
     return lastModified.equals(lastModifiedToDelete);
@@ -906,9 +914,9 @@ public class IndexWriterManager {
 
 
   /**
-   * Gibt die Anzahl der Einträge im Index zurück.
+   * Gibt die Anzahl der Eintrï¿½ge im Index zurï¿½ck.
    *
-   * @return Die Anzahl der Einträge im Index.
+   * @return Die Anzahl der Eintrï¿½ge im Index.
    * @throws RegainException Wenn die Anzahl nicht ermittelt werden konnte.
    */
   public int getIndexEntryCount() throws RegainException {
@@ -927,7 +935,7 @@ public class IndexWriterManager {
    * @throws RegainException If preparing the breakpoint failed.
    */
   private void prepareBreakpoint() throws RegainException {
-    // Testen, ob noch Einträge für die Löschung vorgesehen sind
+    // Testen, ob noch Eintrï¿½ge fï¿½r die Lï¿½schung vorgesehen sind
     if (mUrlsToDeleteHash != null) {
       throw new RegainException("There are still documents marked for deletion."
         + " The method removeObsoleteEntires(...) has to be called first.");
@@ -998,9 +1006,9 @@ public class IndexWriterManager {
 
 
   /**
-   * Optimiert und schließt den Index
+   * Optimiert und schlieï¿½t den Index
    *
-   * @param putIntoQuarantine Gibt an, ob der Index in Quarantäne soll.
+   * @param putIntoQuarantine Gibt an, ob der Index in Quarantï¿½ne soll.
    * @throws RegainException Wenn der Index nicht geschlossen werden konnte.
    */
   public void close(boolean putIntoQuarantine) throws RegainException {
@@ -1154,7 +1162,7 @@ public class IndexWriterManager {
    * <p>
    * Diese Methode braucht minimale Ressourcen.
    *
-   * @param termEnum Die Aufzählung mit allen Termen.
+   * @param termEnum Die Aufzï¿½hlung mit allen Termen.
    * @param writer Der Writer auf den geschrieben werden soll.
    *
    * @return Die Anzahl der Terme.
@@ -1178,11 +1186,11 @@ public class IndexWriterManager {
   /**
    * Schreibt die Terme vom IndexReader sortiert in den Writer.
    * <p>
-   * Um die Terme sortieren zu können, müssen sie zwischengespeichert werden. Falls
-   * es zu viele sind, könnte das schief gehen. In diesem Fall sollte man auf simples
+   * Um die Terme sortieren zu kï¿½nnen, mï¿½ssen sie zwischengespeichert werden. Falls
+   * es zu viele sind, kï¿½nnte das schief gehen. In diesem Fall sollte man auf simples
    * Schreiben umstellen.
    *
-   * @param termEnum Die Aufzählung mit allen Termen.
+   * @param termEnum Die Aufzï¿½hlung mit allen Termen.
    * @param writer Der Writer auf den geschrieben werden soll.
    *
    * @return Die Anzahl der Terme.

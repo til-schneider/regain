@@ -383,6 +383,15 @@
 
   <tag>
     <info>
+      Writes a hidden textarea which holds the whole content.
+    </info>
+    <name>hit_content</name>
+    <tagclass>net.sf.regain.ui.server.taglib.hit.ContentTag</tagclass>
+    <bodycontent>empty</bodycontent>
+  </tag>
+
+  <tag>
+    <info>
       Writes the URL of the current hit's document.
       This tag must be inside a link tag.
     </info>

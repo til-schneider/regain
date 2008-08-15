@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-07 12:51:09 +0200 (So, 07 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 145 $
+ *     $Date: 2008-08-14 17:36:39 +0200 (Do, 14 Aug 2008) $
+ *   $Author: thtesche $
+ * $Revision: 333 $
  */
 package net.sf.regain.search.sharedlib.hit;
 
@@ -54,6 +54,7 @@ public abstract class AbstractHitTag extends SharedTag
    * @param response The page response.
    * @throws RegainException If there was an exception.
    */
+  @Override
   public void printEndTag(PageRequest request, PageResponse response)
     throws RegainException
   {

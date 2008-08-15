@@ -102,3 +102,11 @@ input.editlist {
 .highlight {
   font-weight: bold;
 }
+
+input.button {
+  color: #000000; background: #7DA7D9;
+  font-size: .8em;
+  font-weight:normal;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  border: solid 1px #004A80;width:120px;
+}

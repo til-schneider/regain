@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-07 16:06:38 +0200 (Do, 07 Aug 2008) $
+ *     $Date: 2008-08-14 17:36:39 +0200 (Do, 14 Aug 2008) $
  *   $Author: thtesche $
- * $Revision: 331 $
+ * $Revision: 333 $
  */
 package net.sf.regain;
 
@@ -72,7 +72,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;
 
 /**
- * Enth�lt Hilfsmethoden, die sowohl vom Crawler als auch von der Suchmaske
+ * Enthält Hilfsmethoden, die sowohl vom Crawler als auch von der Suchmaske
  * genutzt werden.
  *
  * @author Til Schneider, www.murfman.de
@@ -106,11 +106,11 @@ public class RegainToolkit {
 
 
   /**
-   * L�scht ein Verzeichnis mit allen Unterverzeichnissen und -dateien.
+   * Löscht ein Verzeichnis mit allen Unterverzeichnissen und -dateien.
    *
-   * @param dir Das zu l�schende Verzeichnis.
+   * @param dir Das zu löschende Verzeichnis.
    *
-   * @throws RegainException Wenn das L�schen fehl schlug.
+   * @throws RegainException Wenn das Lï¿½schen fehl schlug.
    */
   public static void deleteDirectory(File dir) throws RegainException {
     if (! dir.exists()) {
@@ -166,7 +166,7 @@ public class RegainToolkit {
    * Schreibt alle Daten, die der InputStream liefert in den OutputStream.
    * <p>
    * Weder der InputStream noch der OutputStream werden dabei geschlossen. Dies
-   * muss die aufrufende Methode �bernehmen!
+   * muss die aufrufende Methode ï¿½bernehmen!
    *
    * @param in Der InputStream, der die Daten liefert.
    * @param out Der OutputStream auf den die Daten geschrieben werden sollen.
@@ -687,7 +687,7 @@ public class RegainToolkit {
    * Erzeugt einen Analyzer, der die Aufrufe an einen eingebetteten Analyzer
    * analysiert.
    * <p>
-   * Dies ist beim Debugging hilfreich, wenn man pr�fen will, was ein Analyzer
+   * Dies ist beim Debugging hilfreich, wenn man prï¿½fen will, was ein Analyzer
    * bei bestimmten Anfragen ausgibt.
    *
    * @param nestedAnalyzer The nested Analyzer that should
@@ -841,7 +841,7 @@ public class RegainToolkit {
 
 
   /**
-   * Gibt einen Wert in Prozent mit zwei Nachkommastellen zur�ck.
+   * Gibt einen Wert in Prozent mit zwei Nachkommastellen zurï¿½ck.
    *
    * @param value Der Wert. (Zwischen 0 und 1)
    * @return Der Wert in Prozent.
@@ -855,8 +855,8 @@ public class RegainToolkit {
 
   
   /**
-   * Gibt einen f�r den Menschen gut lesbaren String f�r eine Anzahl Bytes
-   * zur�ck.
+   * Gibt einen fï¿½r den Menschen gut lesbaren String fï¿½r eine Anzahl Bytes
+   * zurï¿½ck.
    *
    * @param bytes Die Anzahl Bytes
    * @return Ein String, der sie Anzahl Bytes wiedergibt
@@ -867,8 +867,8 @@ public class RegainToolkit {
 
 
   /**
-   * Gibt einen f�r den Menschen gut lesbaren String f�r eine Anzahl Bytes
-   * zur�ck.
+   * Gibt einen fï¿½r den Menschen gut lesbaren String fï¿½r eine Anzahl Bytes
+   * zurï¿½ck.
    *
    * @param bytes Die Anzahl Bytes
    * @param locale The locale to use for formatting the numbers.
@@ -880,8 +880,8 @@ public class RegainToolkit {
 
 
   /**
-   * Gibt einen f�r den Menschen gut lesbaren String f�r eine Anzahl Bytes
-   * zur�ck.
+   * Gibt einen fï¿½r den Menschen gut lesbaren String fï¿½r eine Anzahl Bytes
+   * zurï¿½ck.
    *
    * @param bytes Die Anzahl Bytes
    * @param fractionDigits Die Anzahl der Nachkommastellen
@@ -893,8 +893,8 @@ public class RegainToolkit {
   
 
   /**
-   * Gibt einen f�r den Menschen gut lesbaren String f�r eine Anzahl Bytes
-   * zur�ck.
+   * Gibt einen fï¿½r den Menschen gut lesbaren String fï¿½r eine Anzahl Bytes
+   * zurï¿½ck.
    *
    * @param bytes Die Anzahl Bytes
    * @param fractionDigits Die Anzahl der Nachkommastellen
@@ -977,11 +977,11 @@ public class RegainToolkit {
 
   /**
    * Konvertiert ein Date-Objekt in einen String mit dem Format
-   * "YYYY-MM-DD HH:MM". Das ist n�tig, um ein eindeutiges und vom Menschen
+   * "YYYY-MM-DD HH:MM". Das ist nötig, um ein eindeutiges und vom Menschen
    * lesbares Format zu haben.
    * <p>
    * Dieses Format ist mit Absicht nicht lokalisiert, um die Eindeutigkeit zu
-   * gew�hrleisten. Die Lokalisierung muss die Suchmaske �bernehmen.
+   * gewï¿½hrleisten. Die Lokalisierung muss die Suchmaske ï¿½bernehmen.
    *
    * @param lastModified Das zu konvertiernende Date-Objekt
    * @return Ein String mit dem Format "YYYY-MM-DD HH:MM"
@@ -1035,49 +1035,8 @@ public class RegainToolkit {
   }
 
 
-/**
-   * Konvertiert ein Date-Objekt in einen String mit dem Format
-   * "YYYYMMDD". Das ist n�tig f�r einer Rangesuche.
-   * <p>
-   * Dieses Format ist mit Absicht nicht lokalisiert, um die Eindeutigkeit zu
-   * gew�hrleisten. Die Lokalisierung muss die Suchmaske �bernehmen.
-   *
-   * @param lastModified Das zu konvertiernende Date-Objekt
-   * @return Ein String mit dem Format "YYYYMMDD"
-   * @see #indexStringToLastModified(String)
-   */
-  public static String lastModifiedToIndexString(Date lastModified) {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(lastModified);
-
-    int year = cal.get(Calendar.YEAR);
-    int month = cal.get(Calendar.MONTH) + 1; // +1: In the Date class january is 0
-    int day = cal.get(Calendar.DAY_OF_MONTH);
-
-    StringBuffer buffer = new StringBuffer(8);
-
-    // "YYYY"
-    buffer.append(year);
-
-    // "MM"
-    if (month < 10) {
-      buffer.append('0');
-    }
-    buffer.append(month);
-
-    // "DD"
-    if (day < 10) {
-      buffer.append('0');
-    }
-    buffer.append(day);
-
-    return buffer.toString();
-  }
-
-
   /**
-   * Konvertiert einen String mit dem Format "YYYY-MM-DD HH:MM" in ein
-   * Date-Objekt.
+   * Konvertiert einen String mit dem Format "YYYY-MM-DD HH:MM" in ein Date-Objekt.
    *
    * @param asString Der zu konvertierende String
    * @return Das konvertierte Date-Objekt.
@@ -1112,40 +1071,6 @@ public class RegainToolkit {
 
     return cal.getTime();
   }
-
-
-/**
-   * Konvertiert einen String mit dem Format "YYYYMMDD" in ein
-   * Date-Objekt.
-   *
-   * @param asString Der zu konvertierende String
-   * @return Das konvertierte Date-Objekt.
-   * @throws RegainException Wenn der String ein falsches Format hat.
-   * @see #lastModifiedToIndexString(Date)
-   */
-  public static Date indexStringToLastModified(String asString)
-    throws RegainException
-  {
-    Calendar cal = Calendar.getInstance();
-
-    try {
-      // Format: "YYYY-MM-DD HH:MM"
-
-      int year   = Integer.parseInt(asString.substring(0, 4));
-      cal.set(Calendar.YEAR, year);
-      int month  = Integer.parseInt(asString.substring(4, 6));
-      cal.set(Calendar.MONTH, month - 1); // -1: In the Date class january is 0
-      int day    = Integer.parseInt(asString.substring(6, 8));
-      cal.set(Calendar.DAY_OF_MONTH, day);
-    }
-    catch (Throwable thr) {
-      throw new RegainException("Last-modified-string has not the format" +
-        "'YYYYMMDD': " + asString, thr);
-    }
-
-    return cal.getTime();
-  }
-
 
   /**
    * Splits a String into a string array.
@@ -1182,7 +1107,7 @@ public class RegainToolkit {
 
 
   /**
-   * Gibt den systemspeziefischen Zeilenumbruch zur�ck.
+   * Gibt den systemspeziefischen Zeilenumbruch zurï¿½ck.
    *
    * @return Der Zeilenumbruch.
    */
@@ -1664,7 +1589,7 @@ public class RegainToolkit {
 
 
     /**
-     * Schlie�t den eingebetteten Reader.
+     * Schlieï¿½t den eingebetteten Reader.
      *
      * @throws IOException Wenn der eingebettete Reader nicht geschlossen werden
      *         konnte.
@@ -1681,8 +1606,8 @@ public class RegainToolkit {
      *        sollen
      * @param off Der Offset im Puffer, ab dem geschreiben werden soll.
      * @param len Die max. Anzahl von Zeichen, die geschrieben werden soll.
-     * @return Die Anzahl von Zeichen, die tats�chlich geschrieben wurde, bzw.
-     *         <code>-1</code>, wenn keine Daten mehr verf�gbar sind.
+     * @return Die Anzahl von Zeichen, die tatsï¿½chlich geschrieben wurde, bzw.
+     *         <code>-1</code>, wenn keine Daten mehr verfï¿½gbar sind.
      * @throws IOException Wenn nicht vom eingebetteten Reader gelesen werden
      *         konnte.
      */
