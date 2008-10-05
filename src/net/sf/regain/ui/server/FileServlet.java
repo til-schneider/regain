@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2007-11-01 12:36:15 +0100 (Do, 01 Nov 2007) $
- *   $Author: til132 $
- * $Revision: 257 $
+ *     $Date: 2008-10-05 16:21:50 +0200 (So, 05 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 341 $
  */
 package net.sf.regain.ui.server;
 
@@ -67,6 +67,7 @@ public class FileServlet extends HttpServlet {
     boolean autoFlush = true;
     PageContext pageContext = null;
     try {
+      req.setCharacterEncoding("UTF-8");
       pageContext = factory.getPageContext(this, req, resp,
         errorPageURL, needsSession, bufferSize, autoFlush);
     

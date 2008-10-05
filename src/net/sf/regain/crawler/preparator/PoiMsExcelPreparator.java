@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2008-10-05 18:40:10 +0200 (So, 05 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 344 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -39,6 +39,7 @@ import net.sf.regain.crawler.document.AbstractPreparator;
 import net.sf.regain.crawler.document.RawDocument;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.extractor.ExcelExtractor;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -76,7 +77,33 @@ public class PoiMsExcelPreparator extends AbstractPreparator {
   public PoiMsExcelPreparator() throws RegainException {
     super( new String[] {"application/msexcel","application/vnd.ms-excel"} );
   }
-
+  
+	/**
+	 * Präpariert ein Dokument für die Indizierung.
+	 * 
+	 * @param rawDocument
+	 *            Das zu präpariernde Dokument.
+	 * 
+	 * @throws RegainException
+	 *             Wenn die Präparation fehl schlug.
+	 */
+	public void prepare(RawDocument rawDocument) throws RegainException {
+		InputStream stream = null;
+		try {
+			stream = rawDocument.getContentAsStream();
+			ExcelExtractor extractor = new ExcelExtractor(new HSSFWorkbook(stream));
+			setCleanedContent(extractor.getText());
+		} catch (IOException exc) {
+			throw new RegainException("Reading MS Excel dokument failed: " + rawDocument.getUrl(), exc);
+		} finally {
+			if (stream != null) {
+				try {
+					stream.close();
+				} catch (Exception exc) {
+				}
+			}
+		}
+	}
 
   /**
    * Präpariert ein Dokument für die Indizierung.
@@ -85,7 +112,7 @@ public class PoiMsExcelPreparator extends AbstractPreparator {
    *
    * @throws RegainException Wenn die Präparation fehl schlug.
    */
-  public void prepare(RawDocument rawDocument) throws RegainException {
+  public void prepareUsingHSSFSheet(RawDocument rawDocument) throws RegainException {
     InputStream stream = null;
     try {
       stream = rawDocument.getContentAsStream();

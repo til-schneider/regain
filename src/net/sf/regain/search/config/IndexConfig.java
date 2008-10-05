@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2008-10-05 18:37:42 +0200 (So, 05 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 343 $
  */
 package net.sf.regain.search.config;
 
@@ -23,8 +23,8 @@ public class IndexConfig {
 
   /** Default list of index fields to search in. */
   protected static final String[] DEFAULT_SEARCH_FIELD_LIST
-    = { "content", "title", "headlines" };
-  
+    = { "content", "title", "headlines", "location", "filename" };
+
   /** The name of the index. */
   private String mName;
   
@@ -72,6 +72,15 @@ public class IndexConfig {
   /** Flag for highlighting of the search terms in the results */
   private boolean mShouldHighlight;
   
+  /** Index is used as parent cover */
+	private boolean mParent;
+
+	/** Index has a parent */
+	private boolean mHasParent;
+
+	/** Name of the parent (only used if mHasParent is true) */
+	private String mParentName;
+
   /**
    * Creates a new instance of IndexConfig.
    * 
@@ -105,6 +114,8 @@ public class IndexConfig {
     mUseFileToHttpBridge = useFileToHttpBridge;
     mSearchFieldList = searchFieldList;
     mRewriteRules = rewriteRules;
+ 		mParent = true;
+		mHasParent = false;
     
     if (searchAccessControllerClass != null) {
       mSearchAccessController = (SearchAccessController)
@@ -227,5 +238,58 @@ public class IndexConfig {
   public boolean getShouldHighlight() {
     return mShouldHighlight;
   }
+
+  /**
+	 * Is index has a parent index?
+	 *  
+	 * @return true if index has a parent
+	 * 		   false if index has no parent
+	 */
+	public boolean hasParent() {
+		return mHasParent;
+	}
+
+	/**
+	 * Is index a child of a parent index?
+	 *   
+	 * @return true if index is a parent index
+	 * 		   false if index is not a parent index
+	 */
+	public boolean isParent() {
+		return mParent;
+	}
+
+	/**
+	 * Set index as parent if parent is "true" otherwise 
+	 * set false
+	 * 
+	 * @param parent is index a parent index?
+	 */
+	public void setParent(String parent) {
+		if ("true".equals(parent)) {
+			this.mParent = true;
+		} else {
+			this.mParent = false;
+		}
+	}
+
+	/**
+	 * Gets the name of the parent index.
+	 * 
+	 * @return The name of the parent index.
+	 */
+	public String getParentName() {
+		return mParentName;
+	}
+
+	/**
+	 * Set the name of the parent index
+	 * 
+	 * @param parentName Name of the parent index
+	 */
+	public void setParentName(String parentName) {
+		this.mParentName = parentName;
+		this.mHasParent = true;
+	}
 
 }

@@ -104,6 +104,16 @@ Ca. 28.07.04:
     BouncyCastle for PDFBox 1.39 for JDK 1.6
     Aperture 1.0.1-beta --> 1.1.0-beta
 
+19.09.08
+========
+    Jochen Stiepel
+    Poi 3.0.1 --> 3.1 FINAL
+
+05.10.08
+========
+    servlet.jar entfernt
+    servlet-api.jar und jsp-api.jar aus Tomcat 6.0.16 hinzugefügt
+
 Websites:
 =========
   jakarta regexp: http://jakarta.apache.org/site/downloads/downloads_regexp.cgi

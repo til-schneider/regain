@@ -75,10 +75,18 @@
     </defaultSettings>
     
     <!-- The search index 'main' -->
-    <index name="main" default="true">
+    <index name="main" default="true" isparent="true">
       <!-- The directory where the index is located -->
       <dir>searchindex</dir>
     </index>
+    <!-- 
+     | A child index of 'main' 
+     +-->
+    <!-- 
+    <index name="main1" default="true" isparent="false" parent="main">
+      <dir>searchindex_1</dir>
+    </index>
+    -->
     
     <!-- The search index 'example' -->
     <index name="example">

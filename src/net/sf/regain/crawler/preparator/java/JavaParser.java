@@ -34,6 +34,7 @@ import net.sf.regain.RegainException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.Comment;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.Javadoc;
@@ -103,7 +104,10 @@ public class JavaParser {
       Object object = iterator.next();
       if (object instanceof Javadoc) {
         String comment = ((Javadoc) object).getComment();
-
+				// ((Javadoc)object).isDocComment();
+				// if (object instanceof Comment){
+				// comment = ((Comment)object).toString();
+				// }
         javaDocComments.add(comment);
       }
     }

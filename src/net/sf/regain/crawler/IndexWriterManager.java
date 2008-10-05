@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-14 17:36:39 +0200 (Do, 14 Aug 2008) $
+ *     $Date: 2008-10-05 17:12:08 +0200 (So, 05 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 333 $
+ * $Revision: 342 $
  */
 package net.sf.regain.crawler;
 
@@ -412,7 +412,7 @@ public class IndexWriterManager {
         mErrorLogWriter = new PrintWriter(mErrorLogStream);
       }
       catch (IOException exc) {
-        throw new RegainException("Opening error log file of the index failed");
+        throw new RegainException("Opening error log file of the index failed", exc);
       }
     }
     
@@ -655,8 +655,8 @@ public class IndexWriterManager {
             }
             if (diff > 86400000L) {
               // -> The index entry is not up-to-date -> Delete the old entry
-              mLog.info("Index entry is outdated. Creating a new one (" +
-                  docLastModified + " > " + indexLastModified + "): " +
+              mLog.info("Index entry is outdated. Creating a new one (index=" +
+                  docLastModified + "), (source=" + indexLastModified + "): " +
                   rawDocument.getUrl());
               removeOldEntry = true;
             } else {
@@ -679,7 +679,8 @@ public class IndexWriterManager {
                 }
               } else {
                 // The entry is up-to-date and contains text -> We are done
-                mLog.info("Index entry is already up to date: " + rawDocument.getUrl());
+                mLog.info("Index entry is already up to date (index="+indexLastModified+"), " +
+                  "(source=" + docLastModified + "): " +  rawDocument.getUrl());
                 return;
               }
             }

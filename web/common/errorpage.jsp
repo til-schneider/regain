@@ -4,6 +4,7 @@
 <html>
 <head>
   <title><search:msg key="errorSearchingFor"/> <search:stats_query/></title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">  
   <link href="regain.css" rel="stylesheet" type="text/css">
   <status:autoupdate_meta/>
 </head>

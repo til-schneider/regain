@@ -21,19 +21,21 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-10 16:00:46 +0200 (Mi, 10 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 155 $
+ *     $Date: 2008-10-05 16:21:50 +0200 (So, 05 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 341 $
  */
 package net.sf.regain.util.sharedtag.taglib;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Locale;
 
+import org.apache.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 
@@ -56,14 +58,21 @@ public class JspPageRequest extends PageRequest {
   /** The working directory of the web server. */
   private static File mWorkingDir;
   
-
+  /** The logger for this class. */
+  private static Logger mLog = Logger.getLogger(JspPageRequest.class);
+  
   /**
    * Creates a new instance of JspPageRequest.
    * 
    * @param pageContext The JSP page context to adapt.
    */
   public JspPageRequest(PageContext pageContext) {
-    mPageContext = pageContext;
+    try {
+      mPageContext = pageContext;
+      mPageContext.getRequest().setCharacterEncoding("UTF-8");
+    } catch (UnsupportedEncodingException ex) {
+      mLog.error(null, ex);
+    }
   }
 
 

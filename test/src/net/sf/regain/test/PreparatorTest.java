@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-10-11 18:08:34 +0200 (Mi, 11 Okt 2006) $
- *   $Author: til132 $
- * $Revision: 237 $
+ *     $Date: 2008-09-19 20:29:55 +0200 (Fr, 19 Sep 2008) $
+ *   $Author: thtesche $
+ * $Revision: 340 $
  */
 package net.sf.regain.test;
 
@@ -46,6 +46,7 @@ import net.sf.regain.crawler.preparator.PdfBoxPreparator;
 import net.sf.regain.crawler.preparator.PlainTextPreparator;
 import net.sf.regain.crawler.preparator.PoiMsExcelPreparator;
 import net.sf.regain.crawler.preparator.PoiMsPowerPointPreparator;
+import net.sf.regain.crawler.preparator.PoiMsVisioPreparator;
 import net.sf.regain.crawler.preparator.PoiMsWordPreparator;
 import net.sf.regain.crawler.preparator.SimpleRtfPreparator;
 import net.sf.regain.crawler.preparator.SwingRtfPreparator;
@@ -136,6 +137,7 @@ public class PreparatorTest {
       testPreparator(docDir, outputDir, "txt", new PlainTextPreparator());
       testPreparator(docDir, outputDir, "xls", new PoiMsExcelPreparator());
       testPreparator(docDir, outputDir, "xml", new XmlPreparator());
+      testPreparator(docDir, outputDir, "vsd", new PoiMsVisioPreparator());
     }
     catch (RegainException exc) {
       mLog.error("Creating preparator failed", exc);

@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-18 10:01:39 +0200 (Do, 18 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 172 $
+ *     $Date: 2008-09-17 22:15:48 +0200 (Mi, 17 Sep 2008) $
+ *   $Author: thtesche $
+ * $Revision: 337 $
  */
 package net.sf.regain.search.config;
 
@@ -31,4 +31,12 @@ public interface SearchConfig {
    */
   public String[] getDefaultIndexNameArr();
   
+   /**
+   * Gets the names of all indexes in the Configuration file.
+   * 
+   * @return The names of the indexes or an empty array if no
+   *         index was specified in the configuration file.
+   */
+  public String[] getAllIndexNameArr();  
+
 }

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2008-10-05 16:21:50 +0200 (So, 05 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 341 $
  */
 package net.sf.regain.crawler;
 
@@ -31,7 +31,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.String;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -55,7 +54,7 @@ import org.apache.regexp.RESyntaxException;
  * werden je nach Einstellung nur geladen, in den Suchindex aufgenommen oder
  * wiederum nach URLs durchsucht.
  * <p>
- * Für jede URL wird Anhand der Schwarzen und der Weißen Liste entschieden, ob sie
+ * Fï¿½r jede URL wird Anhand der Schwarzen und der Weiï¿½en Liste entschieden, ob sie
  * ignoriert oder bearbeitet wird. Wenn <CODE>loadUnparsedUrls</CODE> auf
  * <CODE>false</CODE> gesetzt wurde, dann werden auch URLs ignoriert, die weder
  * durchsucht noch indiziert werden.
@@ -259,16 +258,16 @@ public class Crawler implements ErrorLogger {
   /**
    * Analysiert die URL und entscheidet, ob sie bearbeitet werden soll oder nicht.
    * <p>
-   * Wenn ja, dann wird ein neuer Job erzeugt und der Job-Liste hinzugefügt.
+   * Wenn ja, dann wird ein neuer Job erzeugt und der Job-Liste hinzugefï¿½gt.
    *
-   * @param url Die URL des zu prüfenden Jobs.
-   * @param sourceUrl Die URL des Dokuments in der die URL des zu prüfenden Jobs
+   * @param url Die URL des zu prï¿½fenden Jobs.
+   * @param sourceUrl Die URL des Dokuments in der die URL des zu prï¿½fenden Jobs
    *        gefunden wurde.
    * @param shouldBeParsed Gibt an, ob die URL geparst werden soll.
    * @param shouldBeIndexed Gibt an, ob die URL indiziert werden soll.
    * @param sourceLinkText Der Text des Links in dem die URL gefunden wurde. Ist
    *        <code>null</code>, falls die URL nicht in einem Link (also einem
-   *        a-Tag) gefunden wurde oder wenn aus sonstigen Gründen kein Link-Text
+   *        a-Tag) gefunden wurde oder wenn aus sonstigen Grï¿½nden kein Link-Text
    *        vorhanden ist.
    */
   private void addJob(String url, String sourceUrl, boolean shouldBeParsed,
@@ -420,7 +419,9 @@ public class Crawler implements ErrorLogger {
           }
         }
         catch (Throwable thr) {
+          mCrawlerJobProfiler.abortMeasuring();
           logError("Invalid URL: '" + url + "'", thr, false);
+          continue;
         }
       } else if(url.startsWith("smb://")){
         // Windows share: Check whether this is a directory
@@ -444,7 +445,9 @@ public class Crawler implements ErrorLogger {
             
         }
         catch (Throwable thr) {
+          mCrawlerJobProfiler.abortMeasuring();
           logError("Invalid URL: '" + url + "'", thr, false);
+          continue;
         }
       }
 
@@ -538,7 +541,7 @@ public class Crawler implements ErrorLogger {
       }
     } // while (! mJobList.isEmpty())
 
-    // Nicht mehr vorhandene Dokumente aus dem Index löschen
+    // Nicht mehr vorhandene Dokumente aus dem Index lï¿½schen
     if (mConfiguration.getBuildIndex()) {
       mLog.info("Removing index entries of documents that do not exist any more...");
       try {
@@ -549,7 +552,7 @@ public class Crawler implements ErrorLogger {
       }
     }
 
-    // Prüfen, ob Index leer ist
+    // Prï¿½fen, ob Index leer ist
     int entryCount = 0;
     try {
       entryCount = mIndexWriterManager.getIndexEntryCount();
@@ -569,7 +572,7 @@ public class Crawler implements ErrorLogger {
       logError("The index is empty.", null, true);
       failedPercent = 1;
     } else {
-      // Prüfen, ob die Anzahl der abgebrochenen Dokumenteüber der Toleranzgrenze
+      // Prï¿½fen, ob die Anzahl der abgebrochenen Dokumenteï¿½ber der Toleranzgrenze
       // ist.
       double failedDocCount = mDeadlinkList.size() + mErrorCount;
       double totalDocCount = failedDocCount + entryCount;
@@ -798,10 +801,10 @@ public class Crawler implements ErrorLogger {
 
 
   /**
-   * Prüft, ob die Exception von einem Dead-Link herrührt.
+   * Prï¿½ft, ob die Exception von einem Dead-Link herrï¿½hrt.
    *
-   * @param thr Die zu prüfende Exception
-   * @return Ob die Exception von einem Dead-Link herrührt.
+   * @param thr Die zu prï¿½fende Exception
+   * @return Ob die Exception von einem Dead-Link herrï¿½hrt.
    */
   private boolean isExceptionFromDeadLink(Throwable thr) {
     if (thr instanceof HttpStreamException) {
@@ -831,6 +834,16 @@ public class Crawler implements ErrorLogger {
 
     // Parse the directory
     File[] childArr = dir.listFiles();
+
+    // dir.listFiles() can return null, because of "(Access denied)" / "(Zugriff verweigert)"
+	if (childArr == null) {
+		if (dir.canRead() == false) {
+			throw new RegainException("canRead() on file returned: false. Maybe no access rights for sourceURL: " + sourceUrl);
+		} else {
+			throw new RegainException("listFiles() returned: null array. Maybe no access rights for sourceURL: " + sourceUrl);
+		}
+	}
+
     for (int childIdx = 0; childIdx < childArr.length; childIdx++) {
       // Get the URL for the current child file
       String url = RegainToolkit.fileToUrl(childArr[childIdx]);
@@ -875,7 +888,7 @@ public class Crawler implements ErrorLogger {
         }
       }
     } catch( Exception ex ) {
-      throw new RegainException(ex.getMessage());
+      throw new RegainException(ex.getMessage(), ex);
     }
          
   }
@@ -901,7 +914,7 @@ public class Crawler implements ErrorLogger {
   }
 
   /**
-   * Durchsucht den Inhalt eines HTML-Dokuments nach URLs und erzeugt für jeden
+   * Durchsucht den Inhalt eines HTML-Dokuments nach URLs und erzeugt fï¿½r jeden
    * Treffer einen neuen Job.
    *
    * @param rawDocument Das zu durchsuchende Dokument.
@@ -990,7 +1003,7 @@ public class Crawler implements ErrorLogger {
 
 
   /**
-   * Gibt die Anzahl der Fehler zurück (das beinhaltet fatale und nicht fatale
+   * Gibt die Anzahl der Fehler zurï¿½ck (das beinhaltet fatale und nicht fatale
    * Fehler).
    *
    * @return Die Anzahl der Fehler.
@@ -1002,7 +1015,7 @@ public class Crawler implements ErrorLogger {
 
 
   /**
-   * Gibt Die Anzahl der fatalen Fehler zurück.
+   * Gibt Die Anzahl der fatalen Fehler zurï¿½ck.
    * <p>
    * Fatale Fehler sind Fehler, durch die eine Erstellung oder Aktualisierung
    * des Index verhindert wurde.

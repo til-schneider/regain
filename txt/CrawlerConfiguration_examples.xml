@@ -303,6 +303,10 @@
       </section>
     </config>    
   </preparator>
+  
+  <preparator>
+    <class>.PoiMsVisioPreparator</class>
+  </preparator>
 
   <preparator enabled="false">
       <class>.IfilterPreparator</class>

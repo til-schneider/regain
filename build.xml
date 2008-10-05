@@ -22,9 +22,9 @@
  | CVS information:
  |  $RCSfile$
  |   $Source$
- |     $Date: 2008-08-06 16:29:52 +0200 (Mi, 06 Aug 2008) $
+ |     $Date: 2008-09-19 20:29:55 +0200 (Fr, 19 Sep 2008) $
  |   $Author: thtesche $
- | $Revision: 326 $
+ | $Revision: 340 $
  |
  | Author: Til Schneider, www.murfman.de
  +-->
@@ -347,7 +347,7 @@
     <jar jarfile="build/preparator/PoiMsOfficePreparators.jar"
          compress="false" index="true">
       <manifest>
-        <attribute name="Preparator-Classes" value=".PoiMsExcelPreparator;.PoiMsWordPreparator;.PoiMsPowerPointPreparator"/>
+        <attribute name="Preparator-Classes" value=".PoiMsExcelPreparator;.PoiMsWordPreparator;.PoiMsPowerPointPreparator;.PoiMsVisioPreparator"/>
       </manifest>
       <fileset dir="build/included-lib-classes/common">
         <include name="font_metrics.properties"/>
@@ -798,7 +798,7 @@
    +-->
   <target name="installer" depends="jsmoothgen">
     <mkdir dir="build/public"/>
-    <exec executable="C:\Dokumente und Einstellungen\thtesche\Eigene Dateien\NetBeansProjects\regain\installer\makensis.exe"
+    <exec executable="installer\makensis.exe"
           failonerror="true">
       <arg value="/NOCD"/>
       <arg value="/DVERSION=${version}"/>

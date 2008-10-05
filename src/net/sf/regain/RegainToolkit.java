@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-14 17:36:39 +0200 (Do, 14 Aug 2008) $
+ *     $Date: 2008-09-19 20:29:55 +0200 (Fr, 19 Sep 2008) $
  *   $Author: thtesche $
- * $Revision: 333 $
+ * $Revision: 340 $
  */
 package net.sf.regain;
 
@@ -1295,7 +1295,7 @@ public class RegainToolkit {
    *
    * @param url The URL to get the file name for.
    * @return The file name that matches the URL.
-   * @throws RegainException If the URL's protocol isn't <code>file://</code>.
+   * @throws RegainException.
    */
   public static String urlToWhitespacedFileName(String url) throws RegainException {
     int lastSlash = url.lastIndexOf("/");
@@ -1304,12 +1304,15 @@ public class RegainToolkit {
       String fileName = url.substring(lastSlash+1);
       int lastDot = fileName.lastIndexOf(".");
       // Remove the extension
+      String fileNameWithoutExtension ="";
       if( lastDot>0 && lastDot < fileName.length() ) {
-        fileName = fileName.substring(0,lastDot);
+        fileNameWithoutExtension = fileName.substring(0,lastDot);
       }
-      fileName = fileName.replaceAll("\\.", " ").replaceAll("-", " ").replaceAll("_"," ");
+      String fileNameWhitespaced = fileNameWithoutExtension.replaceAll("\\.", " ").replaceAll("-", " ").replaceAll("_"," ");
       // Replace URL-encoded special characters
-      return urlDecode(fileName, INDEX_ENCODING);
+      return urlDecode(fileName + " " + 
+        fileNameWithoutExtension + " " +
+        fileNameWhitespaced, INDEX_ENCODING);
     } else {
         return "";
     }
@@ -1340,7 +1343,7 @@ public class RegainToolkit {
     try {
       return new SmbFile(urlToSmbFileName(url));
     } catch (MalformedURLException urlEx) {
-      throw new RegainException(urlEx.getMessage());
+      throw new RegainException(urlEx.getMessage(), urlEx);
     }
   }
 

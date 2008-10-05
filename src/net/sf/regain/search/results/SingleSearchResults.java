@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2008-10-05 18:37:42 +0200 (So, 05 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 343 $
  */
 package net.sf.regain.search.results;
 
@@ -147,7 +147,7 @@ public class SingleSearchResults implements SearchResults {
         mQuery = mainQuery;
       }
 
-      // System.out.println("Query: '" + queryText + "' -> '" + query.toString() + "'");
+      //System.out.println("Query: '" + queryText + "' -> '" + mQuery.toString() + "'");
       
       try {
         mHits = manager.search(mQuery);

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2008-09-19 20:29:55 +0200 (Fr, 19 Sep 2008) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 340 $
  */
 package net.sf.regain.crawler;
 
@@ -102,7 +102,7 @@ public class Main {
       return; // Abort
     }
 
-    PropertyConfigurator.configure(logConfigFile.getAbsolutePath());
+    PropertyConfigurator.configureAndWatch(logConfigFile.getAbsolutePath(), 10 * 1000);
     mLog.info("Logging initialized");
 
     // Load crawler configuration

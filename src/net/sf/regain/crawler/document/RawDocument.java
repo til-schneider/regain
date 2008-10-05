@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2008-09-19 20:29:55 +0200 (Fr, 19 Sep 2008) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 340 $
  */
 package net.sf.regain.crawler.document;
 
@@ -194,7 +194,7 @@ public class RawDocument {
       }
       
     } catch (Throwable thr) {
-      throw new RegainException( thr.getMessage() );
+      throw new RegainException( thr.getMessage(), thr );
       
     } finally {
        if (in != null) {

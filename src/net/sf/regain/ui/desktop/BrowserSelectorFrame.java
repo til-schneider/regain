@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-04 15:52:50 +0200 (Do, 04 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 143 $
+ *     $Date: 2008-09-19 20:29:55 +0200 (Fr, 19 Sep 2008) $
+ *   $Author: thtesche $
+ * $Revision: 340 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -142,7 +142,8 @@ public class BrowserSelectorFrame implements DesktopConstants {
     mFrame.setLocation(wPos);
     
     // Show the frame
-    mFrame.show();
+    // mFrame.show();
+    mFrame.setVisible(true);
   }
 
 

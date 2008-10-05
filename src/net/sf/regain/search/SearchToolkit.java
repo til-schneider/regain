@@ -24,8 +24,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
@@ -63,7 +65,13 @@ public class SearchToolkit {
   
   /** The prefix for request parameters that contain additional field values. */
   private static final String FIELD_PREFIX = "field.";
-  
+
+	/**
+	 * The prefix for request parameters that contain additional field values
+	 * that is not a string.
+	 */
+	 private static final String FIELD_PREFIX_NOSTRING = "fieldNoString.";
+	   
   /** The configuration of the search mask. */
   private static SearchConfig mConfig;
   
@@ -121,6 +129,103 @@ public class SearchToolkit {
   
   
   /**
+	 * Gets the IndexConfig array from the PageContext. It contains the
+	 * configurations of all indexes the search query is searching on.
+	 * <p>
+	 * If there is no IndexConfig array in the PageContext it is put in the
+	 * PageContext, so the next call will find it.
+	 * 
+	 * @param request
+	 *            The page request where the IndexConfig array will be taken
+	 *            from or put to.
+	 * @return The IndexConfig array for the page the context is for.
+	 * @throws RegainException
+	 *             If there is no IndexConfig for the specified index.
+	 */
+	public static IndexConfig[] getIndexConfigArrWithParent(PageRequest request) throws RegainException {
+		IndexConfig[] configArr = (IndexConfig[]) request.getContextAttribute(INDEX_CONFIG_CONTEXT_ARRAY_ATTR_NAME);
+		if (configArr == null) {
+			// Load the config (if not yet done)
+			loadConfiguration(request);
+
+			// Get the names of the indexes
+			String[] indexNameArr = request.getParameters("index");
+			if (indexNameArr == null) {
+				// There was no index specified -> Check whether we have default
+				// indexes
+				// defined
+				indexNameArr = mConfig.getDefaultIndexNameArr();
+				if (indexNameArr == null) {
+					throw new RegainException("Request parameter 'index' not specified and "
+							+ "no default index configured");
+				}
+			}
+
+			// Get the configurations for these indexes
+			List configList = new ArrayList();
+			for (int i = 0; i < indexNameArr.length; i++) {
+				IndexConfig index = mConfig.getIndexConfig(indexNameArr[i]);
+				if (index == null) {
+					throw new RegainException("The configuration does not contain the index '" + indexNameArr[i] + "'");
+
+				}
+				// If index is a parent index -> get all childs
+				if (index.isParent()) {
+					String[] allIndexName = mConfig.getAllIndexNameArr();
+					for (int j = 0; j < allIndexName.length; j++) {
+						IndexConfig indexParent = mConfig.getIndexConfig(allIndexName[j]);
+						if (indexParent.hasParent() && indexNameArr[i].equals(indexParent.getParentName())) {
+							configList.add(indexParent);
+						}
+					}
+				} else {
+					configList.add(index);
+				}
+			}
+			// Rebuild array from list
+			configArr = new IndexConfig[configList.size()];
+			for (int i = 0; i < configList.size(); i++) {
+				configArr[i] = (IndexConfig) configList.get(i);
+			}
+			// Store the IndexConfig in the page context
+			request.setContextAttribute(INDEX_CONFIG_CONTEXT_ARRAY_ATTR_NAME, configArr);
+		}
+		return configArr;
+	}
+	
+	
+  /**
+	 * Gets the IndexConfig array from the configurationn. It contains the
+	 * configurations of all indexes in the configuration file.
+	 * <p>
+	 * 
+	 * @return The IndexConfig array for all indizes.
+	 * @throws RegainException
+	 *             If there is no IndexConfig for the specified index.
+	 */
+
+	public static IndexConfig[] getAllIndexConfigArr(PageRequest request) throws RegainException {
+		loadConfiguration(request);
+		String[] indexNameArr;
+		indexNameArr = mConfig.getAllIndexNameArr();
+		if (indexNameArr == null) {
+			throw new RegainException("There are no Indizes defined in the search configuration  "
+					+ "no index configured");
+		}
+
+		// Get the configurations for these indexes
+		IndexConfig[] configArr = new IndexConfig[indexNameArr.length];
+		for (int i = 0; i < indexNameArr.length; i++) {
+			configArr[i] = mConfig.getIndexConfig(indexNameArr[i]);
+			if (configArr[i] == null) {
+				throw new RegainException("The configuration does not contain the index '" + indexNameArr[i] + "'");
+			}
+		}
+		return configArr;
+	}
+
+
+  /**
    * Gets the search query.
    * 
    * @param request The request to get the query from.
@@ -160,6 +265,18 @@ public class SearchToolkit {
             }
           }
         }
+        if (paramName.startsWith(FIELD_PREFIX_NOSTRING)) {
+					// This is an additional field -> Append it to the query
+					String fieldName = paramName.substring(FIELD_PREFIX_NOSTRING.length());
+					String fieldValue = request.getParameter(paramName);
+
+					if (fieldValue != null) {
+						fieldValue = fieldValue.trim();
+						if (fieldValue.length() != 0) {
+							query.append(" " + fieldName + ":" + fieldValue);
+						}
+					}
+				}
       }
       
       queryString = query.toString().trim();
@@ -188,7 +305,8 @@ public class SearchToolkit {
     SearchResults results = (SearchResults) request.getContextAttribute(SEARCH_RESULTS_ATTR_NAME);
     if (results == null) {
       // Get the index configurations
-      IndexConfig[] indexConfigArr = getIndexConfigArr(request);
+      // bis 1.5.1 getIndexConfigArr(request);
+      IndexConfig[] indexConfigArr = getIndexConfigArrWithParent(request);
 
       if (indexConfigArr.length == 1) {
         results = createSingleSearchResults(indexConfigArr[0], request);

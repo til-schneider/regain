@@ -4,6 +4,7 @@
 <html>
   <head>
     <title>regain - <search:msg key="searchFor"/> <search:stats_query/></title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <link href="regain.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" language="JavaScript">
       <!--
