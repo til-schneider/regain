@@ -22,9 +22,9 @@
  | CVS information:
  |  $RCSfile$
  |   $Source$
- |     $Date: 2008-09-19 20:29:55 +0200 (Fr, 19 Sep 2008) $
+ |     $Date: 2008-11-15 23:03:53 +0100 (Sa, 15 Nov 2008) $
  |   $Author: thtesche $
- | $Revision: 340 $
+ | $Revision: 357 $
  |
  | Author: Til Schneider, www.murfman.de
  +-->
@@ -35,26 +35,21 @@
    +-->
   <property file="build.properties"/>
   <property environment="env"/>
-  
   <tstamp>
     <format property="timestamp" pattern="yyMMdd-HHmm"/>
-  </tstamp>  
-
+  </tstamp>
   <condition property="version" value="${version.prefix}-preview-${timestamp}">
     <istrue value="${is-preview}"/>
   </condition>
   <condition property="version" value="${version.prefix}">
     <isfalse value="${is-preview}"/>
   </condition>
-
   <property name="version.file" value="${version}"/>
   <property name="programname" value="Regain"/>
   <property name="programname.file" value="regain"/>
-
   <property name="doc.header" value="${programname} ${version} API"/>
   <property name="doc.title" value="API documentation for ${programname} ${version}"/>
   <property name="doc.bottom" value="${programname} ${version}, Copyright (C) 2004 Til Schneider, www.murfman.de, 2008 Thomas Tesche, www.thtesche.com"/>
-
   <property name="jacobgen-src.dir" value="build/jacobgen/generated-src"/>
   <property name="jacobgen-classes.dir" value="build/jacobgen/classes"/>
   <property name="jacobgen-packed.dir" value="jacobgen/packed"/>
@@ -67,11 +62,9 @@
   <condition property="platform" value="win">
     <os family="windows"/>
   </condition>
-
   <path id="sourcepath">
     <pathelement location="src"/>
   </path>
-
   <path id="classpath">
     <pathelement location="build/classes"/>
     <fileset dir="lib">
@@ -84,14 +77,12 @@
       <include name="jacob*.jar"/>
     </fileset>
   </path>
-
   <path id="jacobgen-classpath">
     <pathelement location="build/classes"/>
     <fileset dir="lib">
       <include name="jacob.jar"/>
     </fileset>
   </path>
-
   <path id="docpath">
     <path refid="sourcepath"/>
   </path>
@@ -265,12 +256,11 @@
             href="${java-api-location}"
             packagelistLoc="txt/dummy-jdk-api-doc"/>
     </javadoc>
-
     <mkdir dir="build/doc/tlddoc"/>
     <java fork="true" jar="lib/ant/tlddoc.jar"
           failonerror="true">
-        <arg line="-d build/doc/tlddoc"/>
-        <arg value="web/server/regain-search.tld"/>
+      <arg line="-d build/doc/tlddoc"/>
+      <arg value="web/server/regain-search.tld"/>
     </java>
   </target>
 
@@ -296,7 +286,6 @@
         <path refid="classpath"/>
       </classpath>
     </javac>
-
     <copy todir="build/classes">
       <fileset dir="src" includes="**/*.gif"/>
       <fileset dir="src" includes="**/*.jpg"/>
@@ -343,7 +332,6 @@
    +-->
   <target name="preparators" depends="make, prepare-once">
     <mkdir dir="build/preparator"/>
-    
     <jar jarfile="build/preparator/PoiMsOfficePreparators.jar"
          compress="false" index="true">
       <manifest>
@@ -357,7 +345,6 @@
         <include name="net/sf/regain/crawler/preparator/PoiMs*"/>
       </fileset>
     </jar>
-
     <jar jarfile="build/preparator/JacobMsOfficePreparators.jar"
          compress="false" index="true">
       <manifest>
@@ -372,7 +359,6 @@
         <include name="net/sf/regain/crawler/preparator/JacobMs*"/>
       </fileset>
     </jar>
-
     <jar jarfile="build/preparator/HtmlPreparator.jar"
          compress="false" index="true">
       <manifest>
@@ -387,7 +373,6 @@
         <include name="org/htmlparser/**"/>
       </fileset>
     </jar>
-
     <jar jarfile="build/preparator/SimpleRtfPreparator.jar"
          compress="false" index="true">
       <manifest>
@@ -398,7 +383,6 @@
         <include name="net/sf/regain/crawler/preparator/rtf/**"/>
       </fileset>
     </jar>
-
     <jar jarfile="build/preparator/PdfBoxPreparator.jar"
          compress="false" index="true">
       <manifest>
@@ -414,7 +398,6 @@
         <include name="net/sf/regain/crawler/preparator/PdfBoxPreparator.*"/>
       </fileset>
     </jar>
-
     <jar jarfile="build/preparator/MP3Preparator.jar"
          compress="false" index="true">
       <manifest>
@@ -427,7 +410,6 @@
         <include name="net/sf/regain/crawler/preparator/MP3Preparator.*"/>
       </fileset>
     </jar>
-
     <jar jarfile="build/preparator/GenericAudioPreparator.jar"
          compress="false" index="true">
       <manifest>
@@ -440,7 +422,6 @@
         <include name="net/sf/regain/crawler/preparator/GenericAudioPreparator.*"/>
       </fileset>
     </jar>
-
     <jar jarfile="build/preparator/JavaPreparator.jar"
          compress="false" index="true">
       <manifest>
@@ -455,7 +436,6 @@
         <include name="net/sf/regain/crawler/preparator/JavaPreparator.*"/>
       </fileset>
     </jar>
-
     <jar jarfile="build/preparator/IfilterPreparator.jar"
          compress="false" index="true">
       <manifest>
@@ -466,30 +446,24 @@
         <include name="net/sf/regain/crawler/preparator/ifilter/**"/>
       </fileset>
     </jar>
-
     <antcall target="-simple-preparator">
       <param name="classname" value="OpenOfficePreparator"/>
-    </antcall>      
-    
+    </antcall>
     <antcall target="-simple-preparator">
       <param name="classname" value="PlainTextPreparator"/>
-    </antcall>      
-
+    </antcall>
     <antcall target="-simple-preparator">
       <param name="classname" value="SwingRtfPreparator"/>
-    </antcall>      
-
+    </antcall>
     <antcall target="-simple-preparator">
       <param name="classname" value="XmlPreparator"/>
-    </antcall>      
-
+    </antcall>
     <antcall target="-simple-preparator">
       <param name="classname" value="EmptyPreparator"/>
-    </antcall>      
-
+    </antcall>
     <antcall target="-simple-preparator">
       <param name="classname" value="ExternalPreparator"/>
-    </antcall>      
+    </antcall>
   </target>
 
 
@@ -545,7 +519,7 @@
       <param name="path-1" value="web/common"/>
       <param name="path-2" value="web/desktop"/>
       <param name="target" value="build/runtime/desktop/win/web"/>
-    </antcall>      
+    </antcall>
     <echo message="${version}" file="build/runtime/desktop/win/web/version"/>
     <copy todir="build/runtime/desktop/linux/web">
       <fileset dir="build/runtime/desktop/win/web"/>
@@ -579,11 +553,9 @@
     <loadfile property="msg-1" srcFile="${path-1}/msg.properties"/>
     <loadfile property="msg-2" srcFile="${path-2}/msg.properties"/>
     <echo file="${target}/msg.properties" message="${msg-1}${msg-2}"/>
-
     <loadfile property="msg_de-1" srcFile="${path-1}/msg_de.properties"/>
     <loadfile property="msg_de-2" srcFile="${path-2}/msg_de.properties"/>
     <echo file="${target}/msg_de.properties" message="${msg_de-1}${msg_de-2}"/>
-
     <loadfile property="msg_it-1" srcFile="${path-1}/msg_it.properties"/>
     <loadfile property="msg_it-2" srcFile="${path-2}/msg_it.properties"/>
     <echo file="${target}/msg_it.properties" message="${msg_it-1}${msg_it-2}"/>
@@ -602,7 +574,6 @@
       <fileset dir="txt" includes="CrawlerConfiguration*.xml"/>
       <fileset dir="txt" includes="log4j.properties"/>
     </copy>
-
     <mkdir dir="build/runtime/search/conf/regain"/>
     <copy todir="build/runtime/search/conf/regain">
       <fileset dir="txt" includes="SearchConfiguration.xml"/>
@@ -657,7 +628,6 @@
       <exclude name="net/sf/regain/ui/server/**"/>
       <exclude name="net/sf/regain/util/sharedtag/taglib/**"/>
     </fileset>
-    
     <jar jarfile="build/runtime/desktop/win/${programname.file}.jar"
          compress="false"
          index="true">
@@ -691,12 +661,12 @@
    | Creates files that are included in the regain.war.
    +-->
   <target name="-web-temps">
-	  <mkdir dir="build/web-temps"/>
-	  <antcall target="-merge-messages">
-	    <param name="path-1" value="web/common"/>
-	    <param name="path-2" value="web/server"/>
-	    <param name="target" value="build/web-temps"/>
-	  </antcall>
+    <mkdir dir="build/web-temps"/>
+    <antcall target="-merge-messages">
+      <param name="path-1" value="web/common"/>
+      <param name="path-2" value="web/server"/>
+      <param name="target" value="build/web-temps"/>
+    </antcall>
     <echo message="${version}" file="build/web-temps/version"/>
   </target>
 
@@ -739,7 +709,6 @@
         <exclude name="net/sf/regain/util/ui/**"/>
       </fileset>
     </jar>
-    
     <mkdir dir="build/runtime/search/webapps"/>
     <war destfile="build/runtime/search/webapps/${programname.file}.war"
          webxml="web/server/web-inf/web.xml">
@@ -754,16 +723,16 @@
         <include name="jakarta-regexp-*.jar"/>
         <include name="log4j-*.jar"/>
       </lib>
-	    <fileset dir="web/common">
-	      <exclude name="msg*.properties"/>
-	      <exclude name="**/CVS/*"/>
-	    </fileset>
-	    <fileset dir="web/server">
+      <fileset dir="web/common">
+        <exclude name="msg*.properties"/>
+        <exclude name="**/CVS/*"/>
+      </fileset>
+      <fileset dir="web/server">
         <exclude name="web-inf"/>
         <exclude name="web-inf/**"/>
-	      <exclude name="msg*.properties"/>
-	      <exclude name="**/CVS/*"/>
-	    </fileset>
+        <exclude name="msg*.properties"/>
+        <exclude name="**/CVS/*"/>
+      </fileset>
       <fileset dir="build/web-temps"/>
     </war>
   </target>
@@ -789,7 +758,7 @@
    +-->
   <target name="jsmoothgen" depends="clean-all, runtime">
     <echo message="Creating the exe file ..." />
-    <jsmoothgen project="jsmooth/exe-creation.jsmooth" skeletonroot="jsmooth/skeletons"/> 
+    <jsmoothgen project="jsmooth/exe-creation.jsmooth" skeletonroot="jsmooth/skeletons"/>
   </target>
 
 
@@ -798,7 +767,7 @@
    +-->
   <target name="installer" depends="jsmoothgen">
     <mkdir dir="build/public"/>
-    <exec executable="installer\makensis.exe"
+    <exec executable="${installer.executable}"
           failonerror="true">
       <arg value="/NOCD"/>
       <arg value="/DVERSION=${version}"/>
@@ -821,7 +790,6 @@
   <target name="test-preparators" depends="make-test, runtime-server-fast">
     <delete dir="build/test/docs"/>
     <mkdir dir="build/test/docs"/>
-    
     <java classname="net.sf.regain.test.PreparatorTest"
           dir="build/runtime/crawler"
           failonerror="true"
@@ -838,7 +806,7 @@
           <include name="log4j-*.jar"/>
         </fileset>
         <pathelement path="build/classes"/>
-      </classpath>      
+      </classpath>
     </java>
   </target>
 
@@ -854,10 +822,12 @@
     <junit haltonfailure="true" fork="true"> <!-- showoutput="true" -->
       <classpath>
         <path refid="classpath"/>
+         <fileset dir="lib">
+          <include name="*.jar"/>
+          <include name="ant/*.jar"/>
+        </fileset>
       </classpath>
-      
       <formatter type="plain" usefile="false"/>
-      
       <batchtest>
         <fileset dir="test/src">
           <include name="**/*Test.java"/>
@@ -885,7 +855,7 @@
   <!--
    | Runs the project.
    +-->
-   <target name="run-crawler-fast" depends="runtime-fast">
+  <target name="run-crawler-fast" depends="runtime-fast">
     <java classname="net.sf.regain.crawler.Main"
           dir="build/runtime/crawler"
           fork="true">
@@ -952,7 +922,6 @@
    +-->
   <target name="public-no-installer" depends="clean-all, runtime, doc">
     <mkdir dir="build/public"/>
-
     <zip destfile="build/public/${programname.file}_v${version}_server.zip">
       <zipfileset prefix="${programname.file}/runtime/crawler"
                   dir="build/runtime/crawler"/>
@@ -965,7 +934,6 @@
         <include name="WasIstNeu.txt"/>
       </zipfileset>
     </zip>
-
     <zip destfile="build/public/${programname.file}_v${version}_desktop_win.zip">
       <zipfileset prefix="${programname.file}/"
                   dir="build/runtime/desktop/win"/>
@@ -976,7 +944,6 @@
         <include name="WasIstNeu.txt"/>
       </zipfileset>
     </zip>
-
     <zip destfile="build/public/${programname.file}_v${version}_desktop_linux.zip">
       <zipfileset prefix="${programname.file}/"
                   dir="build/runtime/desktop/linux"/>
@@ -987,12 +954,10 @@
         <include name="WasIstNeu.txt"/>
       </zipfileset>
     </zip>
-    
     <zip destfile="build/public/${programname.file}_v${version}_doc.zip">
       <zipfileset prefix="${programname.file}/doc"
                   dir="build/doc"/>
     </zip>
-
     <zip destfile="build/public/${programname.file}_v${version}_src.zip">
       <zipfileset prefix="${programname.file}"
                   dir="">
@@ -1066,15 +1031,14 @@
         <exclude name="net/sf/regain/util/ui/**"/>
       </fileset>
     </copy>
-
     <mkdir dir="${deploy-target.dir}/${programname.file}/WEB-INF/lib"/>
-	<copy todir="${deploy-target.dir}/${programname.file}/WEB-INF/lib">
-	  <fileset dir="lib">
+    <copy todir="${deploy-target.dir}/${programname.file}/WEB-INF/lib">
+      <fileset dir="lib">
         <include name="lucene-*.jar"/>
         <include name="jakarta-regexp-*.jar"/>
         <include name="log4j-*.jar"/>
- 	  </fileset>
-	</copy>
+      </fileset>
+    </copy>
   </target>
 
   
@@ -1149,5 +1113,4 @@
       <mapper type="package" from="*.properties" to="*.properties"/>
     </copy>
   </target>
-
 </project>

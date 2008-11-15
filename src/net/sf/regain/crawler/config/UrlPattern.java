@@ -21,14 +21,14 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2004-11-10 16:08:52 +0100 (Mi, 10 Nov 2004) $
- *   $Author: til132 $
- * $Revision: 10 $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 349 $
  */
 package net.sf.regain.crawler.config;
 
 /**
- * Enthält alle Daten eines URL-Pattern.
+ * enthÃ¤lt alle Daten eines URL-Pattern.
  * <p>
  * Ein URL-Pattern wird beim Durchsuchen von Dokumenten nach URLs dazu verwendet,
  * URLs eines bestimmten Typs zu identifizieren.
@@ -37,9 +37,9 @@ package net.sf.regain.crawler.config;
  */
 public class UrlPattern {
 
-  /** Der Reguläre Ausdruck, die eine URL findet. */
+  /** Der Regulï¿½re Ausdruck, die eine URL findet. */
   private String mRegexPattern;
-  /** Die Gruppe des Regulären Ausdrucks, die die URL enthält. */
+  /** Die Gruppe des Regulï¿½ren Ausdrucks, die die URL enthÃ¤lt. */
   private int mRegexUrlGroup;
   /** Gibt an, ob eine gefundene URL nach weiteren URLs durchsucht werden soll. */
   private boolean mShouldBeParsed;
@@ -51,9 +51,9 @@ public class UrlPattern {
   /**
    * Erzeugt eine neue UrlPattern-Instanz.
    *
-   * @param regexPattern Der Reguläre Ausdruck, die eine URL findet.
-   * @param regexUrlGroup Die Gruppe des Regulären Ausdrucks, die die URL
-   *        enthält.
+   * @param regexPattern Der Regulï¿½re Ausdruck, die eine URL findet.
+   * @param regexUrlGroup Die Gruppe des Regulï¿½ren Ausdrucks, die die URL
+   *        enthÃ¤lt.
    * @param shouldBeParsed Gibt an, ob eine gefundene URL nach weiteren URLs
    *        durchsucht werden soll.
    * @param shouldBeIndexed Gibt an, ob eine gefundene URL indiziert werden soll.
@@ -70,9 +70,9 @@ public class UrlPattern {
 
 
   /**
-   * Gibt den Reguläre Ausdruck zurück, die eine URL findet.
+   * Gibt den Regulï¿½re Ausdruck zurÃ¼ck, die eine URL findet.
    *
-   * @return Der Reguläre Ausdruck, die eine URL findet.
+   * @return Der Regulï¿½re Ausdruck, die eine URL findet.
    */
   public String getRegexPattern() {
     return mRegexPattern;
@@ -81,9 +81,9 @@ public class UrlPattern {
 
 
   /**
-   * Gibt die Gruppe des Regulären Ausdrucks zurück, die die URL enthält.
+   * Gibt die Gruppe des Regulï¿½ren Ausdrucks zurÃ¼ck, die die URL enthÃ¤lt.
    *
-   * @return Die Gruppe des Regulären Ausdrucks, die die URL enthält.
+   * @return Die Gruppe des Regulï¿½ren Ausdrucks, die die URL enthÃ¤lt.
    */
   public int getRegexUrlGroup() {
     return mRegexUrlGroup;
@@ -92,7 +92,7 @@ public class UrlPattern {
 
 
   /**
-   * Gibt zurück, ob eine gefundene URL nach weiteren URLs durchsucht werden soll.
+   * Gibt zurÃ¼ck, ob eine gefundene URL nach weiteren URLs durchsucht werden soll.
    *
    * @return Ob eine gefundene URL nach weiteren URLs durchsucht werden soll.
    */
@@ -103,7 +103,7 @@ public class UrlPattern {
 
 
   /**
-   * Gibt zurück, ob eine gefundene URL indiziert werden soll.
+   * Gibt zurÃ¼ck, ob eine gefundene URL indiziert werden soll.
    *
    * @return Ob eine gefundene URL indiziert werden soll.
    */

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2004-11-10 16:08:52 +0100 (Mi, 10 Nov 2004) $
- *   $Author: til132 $
- * $Revision: 10 $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 349 $
  */
 package net.sf.regain.crawler.preparator.html;
 
@@ -37,7 +37,7 @@ import org.apache.regexp.RESyntaxException;
 /**
  * Extrahiert aus einem HTML-Dokument den eigentlichen Inhalt.
  * <p>
- * Dazu werden zwei reguläre Ausdrücke verwendet, die jeweils den Anfang und das
+ * Dazu werden zwei regulï¿½re Ausdrï¿½cke verwendet, die jeweils den Anfang und das
  * Ende des Inhalts erkennen. Alles was dazwischen liegt wird ausgeschnitten.
  *
  * @author Til Schneider, www.murfman.de
@@ -45,15 +45,15 @@ import org.apache.regexp.RESyntaxException;
 public class HtmlContentExtractor extends AbstractExtractor {
 
   /**
-   * Der Reguläre Ausdruck, der eine Überschrift findet.
+   * Der Regulï¿½re Ausdruck, der eine Ã¼berschrift findet.
    * <p>
-   * Ist <code>null</code>, wenn das HTML-Dokuments nicht auf Überschriften
+   * Ist <code>null</code>, wenn das HTML-Dokuments nicht auf Ã¼berschriften
    * durchsucht werden soll.
    */
   private RE mHeadlineRE;
 
   /**
-   * Die Gruppe des Reguläre Ausdrucks, der eine Überschrift findet.
+   * Die Gruppe des Regulï¿½re Ausdrucks, der eine Ã¼berschrift findet.
    */
   private int mHeadlineRegexGroup = -1;
 
@@ -62,26 +62,26 @@ public class HtmlContentExtractor extends AbstractExtractor {
   /**
    * Erzeugt eine neue HtmlContentExtractor-Instanz.
    *
-   * @param prefix Der Präfix den eine URL haben muss, damit das zugehörige
+   * @param prefix Der PrÃ¤fix den eine URL haben muss, damit das zugehï¿½rige
    *        Dokument von diesem HtmlContentExtractor bearbeitet wird.
-   * @param contentStartRegex Der Reguläre Ausdruck, der die Stelle findet,
+   * @param contentStartRegex Der Regulï¿½re Ausdruck, der die Stelle findet,
    *        wo der zu indizierende Inhalt von HTML-Dokumenten beginnt.
    *        <p>
    *        Ist <code>null</code> oder Leerstring, wenn der gesamte Anfang des
    *        HTML-Dokuments indiziert werden soll.
-   * @param contentEndRegex Der Reguläre Ausdruck, der die Stelle findet,
+   * @param contentEndRegex Der Regulï¿½re Ausdruck, der die Stelle findet,
    *        wo der zu indizierende Inhalt von HTML-Dokumenten endet.
    *        <p>
    *        Ist <code>null</code> oder Leerstring, wenn das gesamte Ende des
    *        HTML-Dokuments indiziert werden soll.
-   * @param headlineRegex Der Reguläre Ausdruck, der eine Überschrift findet.
+   * @param headlineRegex Der Regulï¿½re Ausdruck, der eine Ã¼berschrift findet.
    *        <p>
    *        Ist <code>null</code>, wenn das HTML-Dokuments nicht auf
-   *        Überschriften durchsucht werden soll.
-   * @param headlineRegexGroup Die Gruppe des Reguläre Ausdrucks, der eine
-   *        Überschrift findet.
-   * @throws RegainException Wenn ein Regulärer Ausdruck einen Syntaxfehler
-   *         enthält.
+   *        Ã¼berschriften durchsucht werden soll.
+   * @param headlineRegexGroup Die Gruppe des Regulï¿½re Ausdrucks, der eine
+   *        Ã¼berschrift findet.
+   * @throws RegainException Wenn ein Regulï¿½rer Ausdruck einen Syntaxfehler
+   *         enthÃ¤lt.
    */
   public HtmlContentExtractor(String prefix, String contentStartRegex,
     String contentEndRegex, String headlineRegex, int headlineRegexGroup)
@@ -116,18 +116,18 @@ public class HtmlContentExtractor extends AbstractExtractor {
 
 
   /**
-   * Extrahiert die Überschrifen aus einem HTML-Dokuments.
+   * Extrahiert die Ã¼berschrifen aus einem HTML-Dokuments.
    * <p>
-   * Es handelt sich dabei nicht um die Überschrift des Dokuments selbst,
-   * sondern lediglich um Unter-Überschriften, die in dem Dokument verwendendet
-   * werden. Mit Hilfe dieser Überschriften läßt sich eine bessere Relevanz
+   * Es handelt sich dabei nicht um die Ã¼berschrift des Dokuments selbst,
+   * sondern lediglich um Unter-Ã¼berschriften, die in dem Dokument verwendendet
+   * werden. Mit Hilfe dieser Ã¼berschriften lï¿½ï¿½t sich eine bessere Relevanz
    * berechnen.
    *
-   * @param content Der Inhalt, aus dem die Überschriften extrahiert werden
+   * @param content Der Inhalt, aus dem die Ã¼berschriften extrahiert werden
    *        sollen.
-   * @return Die Überschriften, die im Dokument gefunden wurden, durch \n
-   *         getrennt, oder <code>null</code>, wenn keine Überschrift gefunden
-   *         wurde oder wenn gar nicht nach Überschriften gesucht werden soll.
+   * @return Die Ã¼berschriften, die im Dokument gefunden wurden, durch \n
+   *         getrennt, oder <code>null</code>, wenn keine Ã¼berschrift gefunden
+   *         wurde oder wenn gar nicht nach Ã¼berschriften gesucht werden soll.
    * @see #extractContent(RawDocument)
    */
   public String extractHeadlines(String content) {

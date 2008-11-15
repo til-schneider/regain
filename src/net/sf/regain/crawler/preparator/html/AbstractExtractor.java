@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 349 $
  */
 package net.sf.regain.crawler.preparator.html;
 
@@ -36,9 +36,9 @@ import org.apache.regexp.RESyntaxException;
 
 
 /**
- * Extrahiert mit Hilfe von Regulären Ausdrücken ein Fragment eines Dokuments.
+ * Extrahiert mit Hilfe von Regulï¿½ren Ausdrï¿½cken ein Fragment eines Dokuments.
  * <p>
- * Mit Hilfe eines URL-Präfixes wird bestimmt, ob dieser Extrahierer ein
+ * Mit Hilfe eines URL-PrÃ¤fixes wird bestimmt, ob dieser Extrahierer ein
  * konkretes Dokument bearbeiten kann oder nicht.
  *
  * @author Til Schneider, www.murfman.de
@@ -49,13 +49,13 @@ public class AbstractExtractor {
   private static Logger mLog = Logger.getLogger(AbstractExtractor.class);
 
   /**
-   * Der Präfix, den eine URL haben muss, um von diesem Extrahierer bearbeitet
+   * Der PrÃ¤fix, den eine URL haben muss, um von diesem Extrahierer bearbeitet
    * zu werden.
    */
   private String mPrefix;
 
   /**
-   * Der compilierte Reguläre Ausdruck, der die Stelle findet, wo das zu
+   * Der compilierte Regulï¿½re Ausdruck, der die Stelle findet, wo das zu
    * extrahierende Fragment eines Dokuments beginnt.
    * <p>
    * Ist <code>null</code>, wenn der gesamte Anfang des Dokuments extrahiert
@@ -64,7 +64,7 @@ public class AbstractExtractor {
   private RE mFragmentStartRE;
 
   /**
-   * Der Reguläre Ausdruck, der die Stelle findet, wo das zu extrahierende
+   * Der Regulï¿½re Ausdruck, der die Stelle findet, wo das zu extrahierende
    * Fragment eines Dokuments beginnt.
    * <p>
    * Ist <code>null</code>, wenn der gesamte Anfang des Dokuments extrahiert
@@ -73,7 +73,7 @@ public class AbstractExtractor {
   private String mFragmentStartRegex;
 
   /**
-   * Der compilierte Reguläre Ausdruck, der die Stelle findet, wo das zu
+   * Der compilierte Regulï¿½re Ausdruck, der die Stelle findet, wo das zu
    * extrahierende Fragment eines Dokuments endet.
    * <p>
    * Ist <code>null</code>, wenn das gesamte Ende des Dokuments extrahiert
@@ -82,7 +82,7 @@ public class AbstractExtractor {
   private RE mFragmentEndRE;
 
   /**
-   * Der Reguläre Ausdruck, der die Stelle findet, wo das zu extrahierende
+   * Der Regulï¿½re Ausdruck, der die Stelle findet, wo das zu extrahierende
    * Fragment eines Dokuments endet.
    * <p>
    * Ist <code>null</code>, wenn das gesamte Ende des Dokuments extrahiert
@@ -95,20 +95,20 @@ public class AbstractExtractor {
   /**
    * Erzeugt eine neue AbstractExtractor-Instanz.
    *
-   * @param prefix Der Präfix den eine URL haben muss, damit das zugehörige
+   * @param prefix Der PrÃ¤fix den eine URL haben muss, damit das zugehï¿½rige
    *        Dokument von diesem HtmlContentExtractor bearbeitet wird.
-   * @param fragmentStartRegex Der Reguläre Ausdruck, der die Stelle findet, wo
+   * @param fragmentStartRegex Der Regulï¿½re Ausdruck, der die Stelle findet, wo
    *        das zu extrahierende Fragment eines Dokuments beginnt.
    *        <p>
    *        Ist <code>null</code> oder Leerstring, wenn der gesamte Anfang des
    *        Dokuments extrahiert werden soll.
-   * @param fragmentEndRegex Der Reguläre Ausdruck, der die Stelle findet, wo
+   * @param fragmentEndRegex Der Regulï¿½re Ausdruck, der die Stelle findet, wo
    *        das zu extrahierende Fragment eines Dokuments endet.
    *        <p>
    *        Ist <code>null</code> oder Leerstring, wenn das gesamte Ende des
    *        Dokuments extrahiert werden soll.
-   * @throws RegainException Wenn ein Regulärer Ausdruck einen Syntaxfehler
-   *         enthält.
+   * @throws RegainException Wenn ein Regulï¿½rer Ausdruck einen Syntaxfehler
+   *         enthÃ¤lt.
    */
   public AbstractExtractor(String prefix, String fragmentStartRegex,
     String fragmentEndRegex)
@@ -134,11 +134,11 @@ public class AbstractExtractor {
 
 
   /**
-   * Gibt zurück, ob der Extrahierer das gegebene Dokument bearbeiten kann.
+   * Gibt zurÃ¼ck, ob der Extrahierer das gegebene Dokument bearbeiten kann.
    * <p>
-   * Dies ist der Fall, wenn die URL mit dem Präfix dieses Extrahierer beginnt.
+   * Dies ist der Fall, wenn die URL mit dem PrÃ¤fix dieses Extrahierer beginnt.
    *
-   * @param rawDocument Das zu prüfenden Dokuments.
+   * @param rawDocument Das zu prÃ¼fenden Dokuments.
    *
    * @return Ob der Extrahierer das gegebene Dokument bearbeiten kann.
    */

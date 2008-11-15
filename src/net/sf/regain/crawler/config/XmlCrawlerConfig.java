@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-07 11:35:53 +0200 (Do, 07 Aug 2008) $
+ *     $Date: 2008-10-25 18:29:59 +0200 (Sa, 25 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 328 $
+ * $Revision: 348 $
  */
 package net.sf.regain.crawler.config;
 
@@ -42,7 +42,7 @@ import org.w3c.dom.Node;
 
 /**
  * Liest die konfigurierenden Einstellungen aus einer XML-Datei und stellt sie
- * zur Verf�gung.
+ * zur Verfï¿œgung.
  *
  * @author Til Schneider, www.murfman.de
  */
@@ -52,9 +52,9 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   private String mProxyHost;
   /** Der Port des Proxy-Servers. */
   private String mProxyPort;
-  /** Der Benutzernamen f�r die Anmeldung beim Proxy-Server. */
+  /** Der Benutzernamen fï¿œr die Anmeldung beim Proxy-Server. */
   private String mProxyUser;
-  /** Das Passwort f�r die Anmeldung beim Proxy-Server. */
+  /** Das Passwort fï¿œr die Anmeldung beim Proxy-Server. */
   private String mProxyPassword;
   /** The user agent the crawler should in order to identify at the HTTP server(s). */
   private String mUserAgent;
@@ -66,7 +66,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   /** Gibt an, ob ein Suchindex erstellt werden soll. */
   private boolean mBuildIndex;
   /**
-   * Der Timeout f�r HTTP-Downloads. Dieser Wert bestimmt die maximale Zeit
+   * Der Timeout fï¿œr HTTP-Downloads. Dieser Wert bestimmt die maximale Zeit
    * in Sekunden, die ein HTTP-Download insgesamt dauern darf.
    */
   private int mHttpTimeoutSecs;
@@ -82,10 +82,10 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   /** Der zu verwendende Analyzer-Typ. */
   private String mAnalyzerType;
 
-  /** Enth�lt alle Worte, die nicht indiziert werden sollen. */
+  /** Enthï¿œlt alle Worte, die nicht indiziert werden sollen. */
   private String[] mStopWordList;
   /**
-   * Enth�lt alle Worte, die bei der Indizierung nicht vom Analyzer ver�ndert
+   * Enthï¿œlt alle Worte, die bei der Indizierung nicht vom Analyzer verändert
    * werden sollen.
    */
   private String[] mExclusionList;
@@ -95,14 +95,14 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   /** The interval between two breakpoint in minutes. */
   private int mBreakpointInterval;
   /**
-   * Der maximale Prozentsatz von gescheiterten Dokumenten (0..100), der f�r
+   * Der maximale Prozentsatz von gescheiterten Dokumenten (0..100), der fï¿œr
    * die Freigabe eines Index toleriert wird.
    */
   private double mMaxFailedDocuments;
 
-  /** Der Nam der Kontrolldatei f�r erfolgreiche Indexerstellung. */
+  /** Der Nam der Kontrolldatei fï¿œr erfolgreiche Indexerstellung. */
   private String mFinishedWithoutFatalsFileName;
-  /** Der Name der Kontrolldatei f�r fehlerhafte Indexerstellung. */
+  /** Der Name der Kontrolldatei fï¿œr fehlerhafte Indexerstellung. */
   private String mFinishedWithFatalsFileName;
 
   /** Die StartUrls. */
@@ -120,7 +120,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   private String[] mValuePrefetchFields;
 
   /**
-   * Die regul�ren Ausdr�cke, auf die die URL eines Dokuments passen muss,
+   * Die regulï¿œren Ausdrï¿œcke, auf die die URL eines Dokuments passen muss,
    * damit anstatt des wirklichen Dokumententitels der Text des Links, der auf
    * das Dokument gezeigt hat, als Dokumententitel genutzt wird.
    */
@@ -141,6 +141,9 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   
   /** The maximum amount of characters which will be copied from content to summary */
   private int mMaxSummaryLength;
+  
+  /** Flag for enabling/disabling content for a preview in the result page */
+  private boolean storeContentForPreview;
 
 
   /**
@@ -170,7 +173,9 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     readAuxiliaryFieldList(config);
     readCrawlerAccessController(config);
     readMaxCycleCount(config);
-    readMaxSummaryLength(config);  }
+    readMaxSummaryLength(config); 
+  }
+    
 
  /**
    * Read the value for the cycle detection.
@@ -197,7 +202,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Liest den Timeout f�r HTTP-Downloads aus der Konfiguration.
+   * Liest den Timeout fï¿œr HTTP-Downloads aus der Konfiguration.
    *
    * @param config Die Konfiguration, aus der gelesen werden soll.
    * @throws RegainException Wenn die Konfiguration fehlerhaft ist.
@@ -288,6 +293,10 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
     node = XmlToolkit.getChild(indexNode, "valuePrefetchFields", false);
     mValuePrefetchFields = (node == null) ? null : XmlToolkit.getTextAsWordList(node, false);
+
+    node = XmlToolkit.getChild(indexNode, "storeContentForPreview");
+    this.storeContentForPreview = (node == null) ? false : XmlToolkit.getTextAsBoolean(node) ;
+
   }
 
 
@@ -426,7 +435,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Liest die Liste der regul�ren Ausdr�cke aus der Konfiguration, auf die die
+   * Liest die Liste der regulï¿œren Ausdrï¿œcke aus der Konfiguration, auf die die
    * URL eines Dokuments passen muss, damit anstatt des wirklichen
    * Dokumententitels der Text des Links, der auf das Dokument gezeigt hat, als
    * Dokumententitel genutzt wird.
@@ -642,8 +651,8 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt den Host-Namen des Proxy-Servers zur�ck. Wenn kein Host konfiguriert
-   * wurde, wird <CODE>null</CODE> zur�ckgegeben.
+   * Gibt den Host-Namen des Proxy-Servers zurück. Wenn kein Host konfiguriert
+   * wurde, wird <CODE>null</CODE> zurückgegeben.
    *
    * @return Der Host-Namen des Proxy-Servers.
    */
@@ -654,8 +663,8 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt den Port des Proxy-Servers zur�ck. Wenn kein Port konfiguriert wurde,
-   * wird <CODE>null</CODE> zur�ckgegeben.
+   * Gibt den Port des Proxy-Servers zurück. Wenn kein Port konfiguriert wurde,
+   * wird <CODE>null</CODE> zurückgegeben.
    *
    * @return Der Port des Proxy-Servers.
    */
@@ -666,10 +675,10 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt den Benutzernamen f�r die Anmeldung beim Proxy-Server zur�ck. Wenn
-   * kein Benutzernamen konfiguriert wurde, wird <CODE>null</CODE> zur�ckgegeben.
+   * Gibt den Benutzernamen fï¿œr die Anmeldung beim Proxy-Server zurück. Wenn
+   * kein Benutzernamen konfiguriert wurde, wird <CODE>null</CODE> zurückgegeben.
    *
-   * @return Der Benutzernamen f�r die Anmeldung beim Proxy-Server.
+   * @return Der Benutzernamen fï¿œr die Anmeldung beim Proxy-Server.
    */
   public String getProxyUser() {
     return mProxyUser;
@@ -678,10 +687,10 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt das Passwort f�r die Anmeldung beim Proxy-Server zur�ck. Wenn kein
-   * Passwort konfiguriert wurde, wird <CODE>null</CODE> zur�ckgegeben.
+   * Gibt das Passwort fï¿œr die Anmeldung beim Proxy-Server zurück. Wenn kein
+   * Passwort konfiguriert wurde, wird <CODE>null</CODE> zurückgegeben.
    *
-   * @return Das Passwort f�r die Anmeldung beim Proxy-Server.
+   * @return Das Passwort fï¿œr die Anmeldung beim Proxy-Server.
    */
   public String getProxyPassword() {
     return mProxyPassword;
@@ -695,10 +704,10 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt den Timeout f�r HTTP-Downloads zur�ck. Dieser Wert bestimmt die
+   * Gibt den Timeout fï¿œr HTTP-Downloads zurück. Dieser Wert bestimmt die
    * maximale Zeit in Sekunden, die ein HTTP-Download insgesamt dauern darf.
    *
-   * @return Den Timeout f�r HTTP-Downloads
+   * @return Den Timeout fï¿œr HTTP-Downloads
    */
   public int getHttpTimeoutSecs() {
     return mHttpTimeoutSecs;
@@ -706,7 +715,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt zur�ck, ob URLs geladen werden sollen, die weder durchsucht noch
+   * Gibt zurück, ob URLs geladen werden sollen, die weder durchsucht noch
    * indiziert werden.
    *
    * @return Ob URLs geladen werden sollen, die weder durchsucht noch indiziert
@@ -719,7 +728,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt zur�ck, ob ein Suchindex erstellt werden soll.
+   * Gibt zurück, ob ein Suchindex erstellt werden soll.
    *
    * @return Ob ein Suchindex erstellt werden soll.
    */
@@ -729,7 +738,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt das Verzeichnis zur�ck, in dem der Suchindex am Ende stehen soll.
+   * Gibt das Verzeichnis zurück, in dem der Suchindex am Ende stehen soll.
    *
    * @return Das Verzeichnis, in dem der Suchindex am Ende stehen soll.
    */
@@ -739,7 +748,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt den zu verwendenden Analyzer-Typ zur�ck.
+   * Gibt den zu verwendenden Analyzer-Typ zurück.
    *
    * @return en zu verwendenden Analyzer-Typ
    */
@@ -755,7 +764,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt alle Worte zur�ck, die nicht indiziert werden sollen.
+   * Gibt alle Worte zurück, die nicht indiziert werden sollen.
    *
    * @return Alle Worte, die nicht indiziert werden sollen.
    */
@@ -766,11 +775,11 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt alle Worte zur�ck, die bei der Indizierung nicht vom Analyzer
-   * ver�ndert werden sollen.
+   * Gibt alle Worte zurück, die bei der Indizierung nicht vom Analyzer
+   * verändert werden sollen.
    *
    * @return Alle Worte, die bei der Indizierung nicht vom Analyzer
-   *         ver�ndert werden sollen.
+   *         verändert werden sollen.
    */
   public String[] getExclusionList() {
     return mExclusionList;
@@ -779,9 +788,9 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt zur�ck, ob Analyse-Deteien geschrieben werden sollen.
+   * Gibt zurück, ob Analyse-Deteien geschrieben werden sollen.
    * <p>
-   * Diese Dateien helfen, die Qualit�t der Index-Erstellung zu pr�fen und
+   * Diese Dateien helfen, die Qualitï¿œt der Index-Erstellung zu prüfen und
    * werden in einem Unterverzeichnis im Index-Verzeichnis angelegt.
    *
    * @return Ob Analyse-Deteien geschrieben werden sollen.
@@ -803,15 +812,15 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt den maximalen Prozentsatz von gescheiterten Dokumenten zur�ck. (0..1)
+   * Gibt den maximalen Prozentsatz von gescheiterten Dokumenten zurück. (0..1)
    * <p>
-   * Ist das Verh�lnis von gescheiterten Dokumenten zur Gesamtzahl von
-   * Dokumenten gr��er als dieser Prozentsatz, so wird der Index verworfen.
+   * Ist das Verhï¿œlnis von gescheiterten Dokumenten zur Gesamtzahl von
+   * Dokumenten grï¿œï¿œer als dieser Prozentsatz, so wird der Index verworfen.
    * <p>
    * Gescheiterte Dokumente sind Dokumente die es entweder nicht gibt (Deadlink)
    * oder die nicht ausgelesen werden konnten.
    *
-   * @return Den maximalen Prozentsatz von gescheiterten Dokumenten zur�ck.
+   * @return Den maximalen Prozentsatz von gescheiterten Dokumenten zurück.
    */
   public double getMaxFailedDocuments() {
     return mMaxFailedDocuments;
@@ -819,15 +828,15 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt den Namen der Kontrolldatei f�r erfolgreiche Indexerstellung zur�ck.
+   * Gibt den Namen der Kontrolldatei fï¿œr erfolgreiche Indexerstellung zurück.
    * <p>
    * Diese Datei wird erzeugt, wenn der Index erstellt wurde, ohne dass
    * fatale Fehler aufgetreten sind.
    * <p>
    * Wenn keine Kontrolldatei erzeugt werden soll, dann wird <code>null</code>
-   * zur�ckgegeben.
+   * zurückgegeben.
    *
-   * @return Der Name der Kontrolldatei f�r erfolgreiche Indexerstellung
+   * @return Der Name der Kontrolldatei fï¿œr erfolgreiche Indexerstellung
    */
   public String getFinishedWithoutFatalsFileName() {
     return mFinishedWithoutFatalsFileName;
@@ -835,23 +844,32 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt den Namen der Kontrolldatei f�r fehlerhafte Indexerstellung zur�ck.
+   * Gibt den Namen der Kontrolldatei fï¿œr fehlerhafte Indexerstellung zurück.
    * <p>
    * Diese Datei wird erzeugt, wenn der Index erstellt wurde, wobei
    * fatale Fehler aufgetreten sind.
    * <p>
    * Wenn keine Kontrolldatei erzeugt werden soll, dann wird <code>null</code>
-   * zur�ckgegeben.
+   * zurückgegeben.
    *
-   * @return Der Name der Kontrolldatei f�r fehlerhafte Indexerstellung
+   * @return Der Name der Kontrolldatei fï¿œr fehlerhafte Indexerstellung
    */
   public String getFinishedWithFatalsFileName() {
     return mFinishedWithFatalsFileName;
   }
 
-
+ /**
+   * Returns the flag for enabling/disabling the content-preview
+   *
+   * @return boolean true if content preview is enabled and the whole content should be
+   * stored in the index
+   */
+  public boolean getStoreContentForPreview(){
+    return this.storeContentForPreview;
+  }
+  
   /**
-   * Gibt die StartUrls zur�ck, bei denen der Crawler-Proze� beginnen soll.
+   * Gibt die StartUrls zurück, bei denen der Crawler-Prozeß beginnen soll.
    *
    * @return Die StartUrls.
    */
@@ -862,10 +880,10 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt die UrlPattern zur�ck, die der HTML-Parser nutzen soll, um URLs zu
+   * Gibt die UrlPattern zurück, die der HTML-Parser nutzen soll, um URLs zu
    * identifizieren.
    *
-   * @return Die UrlPattern f�r den HTML-Parser.
+   * @return Die UrlPattern fï¿œr den HTML-Parser.
    */
   public UrlPattern[] getHtmlParserUrlPatterns() {
     return mHtmlParserUrlPatterns;
@@ -905,11 +923,11 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
 
   /**
-   * Gibt die regul�ren Ausdr�cke zur�ck, auf die die URL eines Dokuments passen
+   * Gibt die regulï¿œren Ausdrï¿œcke zurück, auf die die URL eines Dokuments passen
    * muss, damit anstatt des wirklichen Dokumententitels der Text des Links, der
    * auf das Dokument gezeigt hat, als Dokumententitel genutzt wird.
    *
-   * @return Die regul�ren Ausdr�cke, die Dokumente bestimmen, f�r die der
+   * @return Die regulï¿œren Ausdrï¿œcke, die Dokumente bestimmen, fï¿œr die der
    *         Linktext als Titel genommen werden soll.
    */
   public String[] getUseLinkTextAsTitleRegexList() {

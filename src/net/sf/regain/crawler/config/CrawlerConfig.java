@@ -21,32 +21,32 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-07 11:35:53 +0200 (Do, 07 Aug 2008) $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 328 $
+ * $Revision: 349 $
  */
 package net.sf.regain.crawler.config;
 
 import java.util.Properties;
 
 /**
- * Stellt alle zu konfigurierenden Einstellungen zur Verf�gung.
+ * Stellt alle zu konfigurierenden Einstellungen zur Verfï¿œgung.
  *
  * @author Til Schneider, www.murfman.de
  */
 public interface CrawlerConfig {
 
   /**
-   * Gibt den Host-Namen des Proxy-Servers zur�ck. Wenn kein Host konfiguriert
-   * wurde, wird <CODE>null</CODE> zur�ckgegeben.
+   * Gibt den Host-Namen des Proxy-Servers zurï¿œck. Wenn kein Host konfiguriert
+   * wurde, wird <CODE>null</CODE> zurï¿œckgegeben.
    *
    * @return Der Host-Namen des Proxy-Servers.
    */
   public String getProxyHost();
 
   /**
-   * Gibt den Port des Proxy-Servers zur�ck. Wenn kein Port konfiguriert wurde,
-   * wird <CODE>null</CODE> zur�ckgegeben.
+   * Gibt den Port des Proxy-Servers zurï¿œck. Wenn kein Port konfiguriert wurde,
+   * wird <CODE>null</CODE> zurï¿œckgegeben.
    *
    * @return Der Port des Proxy-Servers.
    */
@@ -60,26 +60,26 @@ public interface CrawlerConfig {
   public int getMaxCycleCount();
 
   /**
-   * Gibt den Benutzernamen f�r die Anmeldung beim Proxy-Server zur�ck. Wenn
-   * kein Benutzernamen konfiguriert wurde, wird <CODE>null</CODE> zur�ckgegeben.
+   * Gibt den Benutzernamen fï¿œr die Anmeldung beim Proxy-Server zurï¿œck. Wenn
+   * kein Benutzernamen konfiguriert wurde, wird <CODE>null</CODE> zurï¿œckgegeben.
    *
-   * @return Der Benutzernamen f�r die Anmeldung beim Proxy-Server.
+   * @return Der Benutzernamen fï¿œr die Anmeldung beim Proxy-Server.
    */
   public String getProxyUser();
 
   /**
-   * Gibt das Passwort f�r die Anmeldung beim Proxy-Server zur�ck. Wenn kein
-   * Passwort konfiguriert wurde, wird <CODE>null</CODE> zur�ckgegeben.
+   * Gibt das Passwort fï¿œr die Anmeldung beim Proxy-Server zurï¿œck. Wenn kein
+   * Passwort konfiguriert wurde, wird <CODE>null</CODE> zurï¿œckgegeben.
    *
-   * @return Das Passwort f�r die Anmeldung beim Proxy-Server.
+   * @return Das Passwort fï¿œr die Anmeldung beim Proxy-Server.
    */
   public String getProxyPassword();
 
   /**
-   * Gibt den Timeout f�r HTTP-Downloads zur�ck. Dieser Wert bestimmt die
+   * Gibt den Timeout fï¿œr HTTP-Downloads zurï¿œck. Dieser Wert bestimmt die
    * maximale Zeit in Sekunden, die ein HTTP-Download insgesamt dauern darf.
    *
-   * @return Den Timeout f�r HTTP-Downloads
+   * @return Den Timeout fï¿œr HTTP-Downloads
    */
   public int getHttpTimeoutSecs();
 
@@ -92,7 +92,7 @@ public interface CrawlerConfig {
   public String getUserAgent();
 
   /**
-   * Gibt zur�ck, ob URLs geladen werden sollen, die weder durchsucht noch
+   * Gibt zurï¿œck, ob URLs geladen werden sollen, die weder durchsucht noch
    * indiziert werden.
    *
    * @return Ob URLs geladen werden sollen, die weder durchsucht noch indiziert
@@ -101,21 +101,21 @@ public interface CrawlerConfig {
   public boolean getLoadUnparsedUrls();
 
   /**
-   * Gibt zur�ck, ob ein Suchindex erstellt werden soll.
+   * Gibt zurï¿œck, ob ein Suchindex erstellt werden soll.
    *
    * @return Ob ein Suchindex erstellt werden soll.
    */
   public boolean getBuildIndex();
 
   /**
-   * Gibt das Verzeichnis zur�ck, in dem der Suchindex stehen soll.
+   * Gibt das Verzeichnis zurï¿œck, in dem der Suchindex stehen soll.
    *
    * @return Das Verzeichnis, in dem der Suchindex stehen soll.
    */
   public String getIndexDir();
 
   /**
-   * Gibt den zu verwendenden Analyzer-Typ zur�ck.
+   * Gibt den zu verwendenden Analyzer-Typ zurï¿œck.
    *
    * @return en zu verwendenden Analyzer-Typ
    */
@@ -132,25 +132,25 @@ public interface CrawlerConfig {
   public int getMaxFieldLength();
 
   /**
-   * Gibt alle Worte zur�ck, die nicht indiziert werden sollen.
+   * Gibt alle Worte zurï¿œck, die nicht indiziert werden sollen.
    *
    * @return Alle Worte, die nicht indiziert werden sollen.
    */
   public String[] getStopWordList();
 
   /**
-   * Gibt alle Worte zur�ck, die bei der Indizierung nicht vom Analyzer
-   * ver�ndert werden sollen.
+   * Gibt alle Worte zurï¿œck, die bei der Indizierung nicht vom Analyzer
+   * verändert werden sollen.
    *
    * @return Alle Worte, die bei der Indizierung nicht vom Analyzer
-   *         ver�ndert werden sollen.
+   *         verändert werden sollen.
    */
   public String[] getExclusionList();
 
   /**
-   * Gibt zur�ck, ob Analyse-Deteien geschrieben werden sollen.
+   * Gibt zurï¿œck, ob Analyse-Deteien geschrieben werden sollen.
    * <p>
-   * Diese Dateien helfen, die Qualit�t der Index-Erstellung zu pr�fen und
+   * Diese Dateien helfen, die Qualitï¿œt der Index-Erstellung zu prüfen und
    * werden in einem Unterverzeichnis im Index-Verzeichnis angelegt.
    *
    * @return Ob Analyse-Deteien geschrieben werden sollen.
@@ -166,56 +166,64 @@ public interface CrawlerConfig {
   public int getBreakpointInterval();
 
   /**
-   * Gibt den maximalen Prozentsatz von gescheiterten Dokumenten zur�ck. (0..1)
+   * Gibt den maximalen Prozentsatz von gescheiterten Dokumenten zurï¿œck. (0..1)
    * <p>
-   * Ist das Verh�lnis von gescheiterten Dokumenten zur Gesamtzahl von
-   * Dokumenten gr��er als dieser Prozentsatz, so wird der Index verworfen.
+   * Ist das Verhï¿œlnis von gescheiterten Dokumenten zur Gesamtzahl von
+   * Dokumenten grï¿œï¿œer als dieser Prozentsatz, so wird der Index verworfen.
    * <p>
    * Gescheiterte Dokumente sind Dokumente die es entweder nicht gibt (Deadlink)
    * oder die nicht ausgelesen werden konnten.
    *
-   * @return Den maximalen Prozentsatz von gescheiterten Dokumenten zur�ck.
+   * @return Den maximalen Prozentsatz von gescheiterten Dokumenten zurï¿œck.
    */
   public double getMaxFailedDocuments();
 
   /**
-   * Gibt den Namen der Kontrolldatei f�r erfolgreiche Indexerstellung zur�ck.
+   * Gibt den Namen der Kontrolldatei fï¿œr erfolgreiche Indexerstellung zurï¿œck.
    * <p>
    * Diese Datei wird erzeugt, wenn der Index erstellt wurde, ohne dass
    * fatale Fehler aufgetreten sind.
    * <p>
    * Wenn keine Kontrolldatei erzeugt werden soll, dann wird <code>null</code>
-   * zur�ckgegeben.
+   * zurï¿œckgegeben.
    *
-   * @return Der Name der Kontrolldatei f�r erfolgreiche Indexerstellung
+   * @return Der Name der Kontrolldatei fï¿œr erfolgreiche Indexerstellung
    */
   public String getFinishedWithoutFatalsFileName();
 
   /**
-   * Gibt den Namen der Kontrolldatei f�r fehlerhafte Indexerstellung zur�ck.
+   * Gibt den Namen der Kontrolldatei fï¿œr fehlerhafte Indexerstellung zurï¿œck.
    * <p>
    * Diese Datei wird erzeugt, wenn der Index erstellt wurde, wobei
    * fatale Fehler aufgetreten sind.
    * <p>
    * Wenn keine Kontrolldatei erzeugt werden soll, dann wird <code>null</code>
-   * zur�ckgegeben.
+   * zurï¿œckgegeben.
    *
-   * @return Der Name der Kontrolldatei f�r fehlerhafte Indexerstellung
+   * @return Der Name der Kontrolldatei fï¿œr fehlerhafte Indexerstellung
    */
   public String getFinishedWithFatalsFileName();
 
   /**
-   * Gibt die StartUrls zur�ck, bei denen der Crawler-Proze� beginnen soll.
+   * Returns the flag for enabling/disabling the content-preview
+   *
+   * @return boolean true if content preview is enabled and the whole content should be
+   * stored in the index
+   */
+  public boolean getStoreContentForPreview();
+
+  /**
+   * Gibt die StartUrls zurück, bei denen der Crawler-Prozeß beginnen soll.
    *
    * @return Die StartUrls.
    */
   public StartUrl[] getStartUrls();
 
   /**
-   * Gibt die UrlPattern zur�ck, die der HTML-Parser nutzen soll, um URLs zu
+   * Gibt die UrlPattern zurück, die der HTML-Parser nutzen soll, um URLs zu
    * identifizieren.
    *
-   * @return Die UrlPattern f�r den HTML-Parser.
+   * @return Die UrlPattern für den HTML-Parser.
    */
   public UrlPattern[] getHtmlParserUrlPatterns();
 
@@ -235,7 +243,7 @@ public interface CrawlerConfig {
    * The black list is an array of WhiteListEntry, a URLs <i>must</i> match to,
    * in order to be processed.
    *
-   * @return Die Wei�e Liste
+   * @return Die Weiï¿œe Liste
    */
   public WhiteListEntry[] getWhiteList();
 
@@ -250,11 +258,11 @@ public interface CrawlerConfig {
   public String[] getValuePrefetchFields();
 
   /**
-   * Gibt die regul�ren Ausdr�cke zur�ck, auf die die URL eines Dokuments passen
+   * Gibt die regulï¿œren Ausdrï¿œcke zurï¿œck, auf die die URL eines Dokuments passen
    * muss, damit anstatt des wirklichen Dokumententitels der Text des Links, der
    * auf das Dokument gezeigt hat, als Dokumententitel genutzt wird.
    *
-   * @return Die regul�ren Ausdr�cke, die Dokumente bestimmen, f�r die der
+   * @return Die regulï¿œren Ausdrï¿œcke, die Dokumente bestimmen, fï¿œr die der
    *         Linktext als Titel genommen werden soll.
    */
   public String[] getUseLinkTextAsTitleRegexList();

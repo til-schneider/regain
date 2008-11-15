@@ -56,31 +56,31 @@ package net.sf.regain.util.io;
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-14 16:04:35 +0100 (Mo, 14 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 82 $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 349 $
  */
 
 import java.util.Hashtable;
 
 /**
- * Diese Klasse habe ich (praktisch) unverändert aus der Lucene Demo übernommen.
+ * Diese Klasse habe ich (praktisch) unverï¿½ndert aus der Lucene Demo Ã¼bernommen.
  * <p>
- * Sie kann HTML-Entitäten in ihre Entsprechungen übersetzten und umgekehrt.
+ * Sie kann HTML-Entitï¿½ten in ihre Entsprechungen Ã¼bersetzten und umgekehrt.
  * <p>
- * Für's Hinterköpfchen: Eine HTML-Entität ist z.B. '&amp;' oder '&Uuml;', diese
- * wird dann vom Browser in z.B. '&' oder 'Ü' übersetzt.
+ * fÃ¼r's Hinterkï¿½pfchen: Eine HTML-Entitï¿½t ist z.B. '&amp;' oder '&Uuml;', diese
+ * wird dann vom Browser in z.B. '&' oder 'ï¿½' Ã¼bersetzt.
  */
 public class HtmlEntities {
   
   /**
-   * Enthält für eine Entität (key als String) seine Entsprechung (value als
+   * enthÃ¤lt fÃ¼r eine Entitï¿½t (key als String) seine Entsprechung (value als
    * Character).
    */  
   static final Hashtable decoder = new Hashtable(300);
   
   /**
-   * Enthält für einen char-Wert (index) eine Entität (als String) oder
+   * enthÃ¤lt fÃ¼r einen char-Wert (index) eine Entitï¿½t (als String) oder
    * <CODE>null</CODE>.
    */
   static final String[]  encoder = new String[0x100];
@@ -88,13 +88,13 @@ public class HtmlEntities {
   
   
   /**
-   * Dekodiert eine Entität in seine Klartext-Entsprechung.
+   * Dekodiert eine Entitï¿½t in seine Klartext-Entsprechung.
    * <p>
    * Im Gegensatz zur Methode {@link #encode(String)}, nimmt diese Methode nur
-   * <I>eine</I> Entität entgegen. Der gegebene String darf keinen weiteren Text
+   * <I>eine</I> Entitï¿½t entgegen. Der gegebene String darf keinen weiteren Text
    * enthalten.
    *
-   * @param entity Die zu übersetzende Entität.
+   * @param entity Die zu Ã¼bersetzende Entitï¿½t.
    *
    * @return Die Klartext-Entsprechung.
    */  
@@ -122,15 +122,15 @@ public class HtmlEntities {
   
   
   /**
-   * Kodiert alle Sonderzeichen in einem String zu HTML-Entitäten.
+   * Kodiert alle Sonderzeichen in einem String zu HTML-Entitï¿½ten.
    * <p>
-   * Im Gegensatz zur Methode {@link #decode(String)}, dürfen im gegebenen String
+   * Im Gegensatz zur Methode {@link #decode(String)}, dï¿½rfen im gegebenen String
    * Klartext und Sonderzeichen beliebig gemischt und beliebig oft vorhanden sein.
    *
    * @param s Der zu kodierende String.
    *
    * @return Die Entsprechung zum gegebenen String, wobei alle Sonderzeichen
-   *         durch entsprechende HTML-Entitäten ersetzt wurden.
+   *         durch entsprechende HTML-Entitï¿½ten ersetzt wurden.
    */  
   static final public String encode(String s) {
     int length = s.length();
@@ -155,9 +155,9 @@ public class HtmlEntities {
   
   
   /**
-   * Fügt eine Entität der internen Datenstruktur hinzu.
+   * Fï¿½gt eine Entitï¿½t der internen Datenstruktur hinzu.
    *
-   * @param entity Die Entität.
+   * @param entity Die Entitï¿½t.
    * @param value Der Unicode-Wert ihrer Klartext-Entsprechung.
    */  
   static final void add(String entity, int value) {

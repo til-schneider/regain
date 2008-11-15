@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2008-10-25 18:41:44 +0200 (Sa, 25 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 350 $
  */
 package net.sf.regain.crawler.document;
 
@@ -60,9 +60,9 @@ public abstract class AbstractPreparator implements Preparator {
   private String mCleanedContent;
   /** Die Zusammenfassung des Dokuments. */
   private String mSummary;
-  /** Die extrahierten �berschriften. Kann <code>null</code> sein */
+  /** Die extrahierten überschriften. Kann <code>null</code> sein */
   private String mHeadlines;
-  /** Der Pfad, �ber den das Dokument zu erreichen ist. */
+  /** Der Pfad, über den das Dokument zu erreichen ist. */
   private PathElement[] mPath;
   /** The additional fields that should be indexed. */
   private HashMap mAdditionalFieldMap;
@@ -253,10 +253,10 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Gibt den Titel des Dokuments zur�ck.
+   * Gibt den Titel des Dokuments zurück.
    * <p>
    * Falls kein Titel extrahiert werden konnte, wird <CODE>null</CODE>
-   * zur�ckgegeben.
+   * zurückgegeben.
    *
    * @return Der Titel des Dokuments.
    */
@@ -267,7 +267,7 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Setzt den Titel des Dokuments, das gerade pr�pariert wird.
+   * Setzt den Titel des Dokuments, das gerade Präpariert wird.
    *
    * @param title Der Titel.
    */
@@ -278,7 +278,7 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Gibt den von Formatierungsinformation befreiten Inhalt des Dokuments zur�ck.
+   * Gibt den von Formatierungsinformation befreiten Inhalt des Dokuments zurück.
    *
    * @return Der ges�uberte Inhalt.
    */
@@ -290,7 +290,7 @@ public abstract class AbstractPreparator implements Preparator {
 
   /**
    * Setzt von Formatierungsinformation befreiten Inhalt des Dokuments, das
-   * gerade pr�pariert wird.
+   * gerade Präpariert wird.
    *
    * @param cleanedContent Der ges�uberte Inhalt.
    */
@@ -301,12 +301,12 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Gibt eine Zusammenfassung f�r das Dokument zur�ck.
+   * Gibt eine Zusammenfassung für das Dokument zurück.
    * <p>
    * Da eine Zusammenfassung nicht einfach m�glich ist, wird <CODE>null</CODE>
-   * zur�ckgegeben.
+   * zurückgegeben.
    *
-   * @return Eine Zusammenfassung f�r das Dokument
+   * @return Eine Zusammenfassung für das Dokument
    */
   public String getSummary() {
     return mSummary;
@@ -315,7 +315,7 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Setzt die Zusammenfassung des Dokuments, das gerade pr�pariert wird.
+   * Setzt die Zusammenfassung des Dokuments, das gerade Präpariert wird.
    *
    * @param summary Die Zusammenfassung
    */
@@ -326,17 +326,17 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Gibt die �berschriften des Dokuments zur�ck.
+   * Gibt die überschriften des Dokuments zurück.
    * <p>
-   * Es handelt sich dabei nicht um die �berschrift des Dokuments selbst,
-   * sondern lediglich um Unter-�berschriften, die in dem Dokument verwendendet
-   * werden. Mit Hilfe dieser �berschriften l��t sich eine bessere Relevanz
+   * Es handelt sich dabei nicht um die überschrift des Dokuments selbst,
+   * sondern lediglich um Unter-überschriften, die in dem Dokument verwendendet
+   * werden. Mit Hilfe dieser überschriften l��t sich eine bessere Relevanz
    * berechnen.
    * <p>
-   * Wenn keine �berschriften gefunden wurden, dann wird <code>null</code>
-   * zur�ckgegeben.
+   * Wenn keine überschriften gefunden wurden, dann wird <code>null</code>
+   * zurückgegeben.
    *
-   * @return Die �berschriften des Dokuments.
+   * @return Die überschriften des Dokuments.
    */
   public String getHeadlines() {
     return mHeadlines;
@@ -345,7 +345,7 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Setzt die �berschriften, in im Dokument, das gerade pr�pariert wird,
+   * Setzt die überschriften, in im Dokument, das gerade Präpariert wird,
    * gefunden wurden.
    *
    * @param headlines Die Zusammenfassung
@@ -357,11 +357,11 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Gibt den Pfad zur�ck, �ber den das Dokument zu erreichen ist.
+   * Gibt den Pfad zurück, über den das Dokument zu erreichen ist.
    * <p>
-   * Falls kein Pfad verf�gbar ist, wird <code>null</code> zur�ckgegeben.
+   * Falls kein Pfad verfügbar ist, wird <code>null</code> zurückgegeben.
    *
-   * @return Der Pfad, �ber den das Dokument zu erreichen ist.
+   * @return Der Pfad, über den das Dokument zu erreichen ist.
    */
   public PathElement[] getPath() {
     return mPath;
@@ -370,9 +370,9 @@ public abstract class AbstractPreparator implements Preparator {
 
 
   /**
-   * Setzt den Pfad, �ber den das Dokument zu erreichen ist.
+   * Setzt den Pfad, über den das Dokument zu erreichen ist.
    *
-   * @param path Der Pfad, �ber den das Dokument zu erreichen ist.
+   * @param path Der Pfad, über den das Dokument zu erreichen ist.
    */
   public void setPath(PathElement[] path) {
     mPath = path;

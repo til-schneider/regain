@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-01-21 12:53:30 +0100 (Sa, 21 Jan 2006) $
- *   $Author: til132 $
- * $Revision: 194 $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 349 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -40,7 +40,7 @@ import com.jacob.com.Variant;
 import de.filiadata.lucene.spider.generated.msoffice2000.excel.*;
 
 /**
- * Präpariert ein Microsoft-Excel-Dokument für die Indizierung mit Hilfe der
+ * PrÃ¤pariert ein Microsoft-Excel-Dokument fÃ¼r die Indizierung mit Hilfe der
  * <a href="http://danadler.com/jacob/">Jacob-API</a>, wobei
  * <a href="http://www.bigatti.it/projects/jacobgen/">Jacobgen</a>
  * genutzt wurde, um den Zugriff zu erleichtern.
@@ -98,11 +98,11 @@ public class JacobMsExcelPreparator extends AbstractJacobMsOfficePreparator {
 
 
   /**
-   * Präpariert ein Dokument für die Indizierung.
+   * PrÃ¤pariert ein Dokument fÃ¼r die Indizierung.
    *
-   * @param rawDocument Das zu präpariernde Dokument.
+   * @param rawDocument Das zu prï¿½pariernde Dokument.
    *
-   * @throws RegainException Wenn die Präparation fehl schlug.
+   * @throws RegainException Wenn die Prï¿½paration fehl schlug.
    */
   public void prepare(RawDocument rawDocument) throws RegainException {
     if (mExcelApplication == null) {
@@ -216,7 +216,7 @@ public class JacobMsExcelPreparator extends AbstractJacobMsOfficePreparator {
    */
   public void close() throws RegainException {
     if (mExcelApplication != null) {
-      // Excel schließen
+      // Excel schlieï¿½en
       try {
         mExcelApplication.quit();
       }

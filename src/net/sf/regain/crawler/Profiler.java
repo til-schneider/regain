@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-13 11:22:50 +0200 (Sa, 13 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 156 $
+ *     $Date: 2008-10-25 18:41:44 +0200 (Sa, 25 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 350 $
  */
 package net.sf.regain.crawler;
 
@@ -36,7 +36,7 @@ import net.sf.regain.RegainToolkit;
 import org.apache.log4j.Logger;
 
 /**
- * Misst die Zeit und den Datendurchsatz f�r einen Verarbeitungsschritt.
+ * Misst die Zeit und den Datendurchsatz für einen Verarbeitungsschritt.
  *
  * @author Til Schneider, www.murfman.de
  */
@@ -62,7 +62,7 @@ public class Profiler {
   private int mAbortedMeasureCount;
   /**
    * Die Zeit, zu der die laufende Messung begonnen hat. Ist -1, wenn keine
-   * Messung l�uft.
+   * Messung läuft.
    */
   private long mMeasureStart = -1;
 
@@ -195,7 +195,7 @@ public class Profiler {
 
 
   /**
-   * Gibt das Resultat der Messungen als String zur�ck.
+   * Gibt das Resultat der Messungen als String zurück.
    *
    * @return Das Resultat der Messungen
    */
@@ -312,7 +312,7 @@ public class Profiler {
 
 
   /**
-   * Gibt zur�ck, ob dieser Profiler genutzt wurde. Das ist der Fall, wenn
+   * Gibt zurück, ob dieser Profiler genutzt wurde. Das ist der Fall, wenn
    * mindestens eine Messung durchgef�hrt wurde.
    *
    * @return Ob dieser Profiler genutzt wurde.
@@ -324,7 +324,7 @@ public class Profiler {
 
 
   /**
-   * Gibt die Resultate s�mtlicher genutzter Profiler zur�ck.
+   * Gibt die Resultate s�mtlicher genutzter Profiler zurück.
    *
    * @return Die Resultate s�mtlicher genutzter Profiler.
    */

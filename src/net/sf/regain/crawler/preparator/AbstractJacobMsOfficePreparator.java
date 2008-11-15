@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-11-21 11:20:09 +0100 (Mo, 21 Nov 2005) $
- *   $Author: til132 $
- * $Revision: 180 $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 349 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -92,7 +92,7 @@ public abstract class AbstractJacobMsOfficePreparator extends AbstractPreparator
     mPropertyMap.put("company",         new Variant(21)); // german: Firma
     mPropertyMap.put("bytes",           new Variant(22)); // german: Bytes
     mPropertyMap.put("lines",           new Variant(23)); // german: Zeilen
-    mPropertyMap.put("paras",           new Variant(24)); // german: Abs‰tze
+    mPropertyMap.put("paras",           new Variant(24)); // german: Abs√§tze
     mPropertyMap.put("slides",          new Variant(25)); // N/A (MS PowerPoint)
     mPropertyMap.put("notes",           new Variant(26)); // N/A (MS PowerPoint)
     mPropertyMap.put("hiddenSlides",    new Variant(27)); // N/A (MS PowerPoint)

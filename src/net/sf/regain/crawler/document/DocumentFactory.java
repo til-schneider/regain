@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-05 18:40:10 +0200 (So, 05 Okt 2008) $
+ *     $Date: 2008-10-27 08:37:25 +0100 (Mo, 27 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 344 $
+ * $Revision: 353 $
  */
 package net.sf.regain.crawler.document;
 
@@ -62,8 +62,8 @@ import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
 /**
  * Fabrik, die aus der URL und den Rohdaten eines Dokuments ein Lucene-Ducument
- * erzeugt, das nur noch den, von Formatierungen ges�uberten, Text des Dokuments,
- * sowie seine URL und seinen Titel enth�lt.
+ * erzeugt, das nur noch den, von Formatierungen gesäuberten, Text des Dokuments,
+ * sowie seine URL und seinen Titel enthält.
  *
  * @see Document
  * @author Til Schneider, www.murfman.de
@@ -79,6 +79,9 @@ public class DocumentFactory {
   /** The maximum amount of characters which will be copied from content to summary */
   private int mMaxSummaryLength;
   
+  /** should the whole content stored in the index for a preview on the result page */
+  private boolean storeContentForPreview;
+  
   /**
    * Das Verzeichnis, in dem Analyse-Dateien erzeugt werden sollen. Ist
    * <CODE>null</CODE>, wenn keine Analyse-Dateien erzeugt werden sollen.
@@ -88,7 +91,7 @@ public class DocumentFactory {
   /** The preparators. */
   private Preparator[] mPreparatorArr;
 
-  /** Die Profiler, die die Bearbeitung durch die Pr�paratoren messen. */
+  /** Die Profiler, die die Bearbeitung durch die Präparatoren messen. */
   private Profiler[] mPreparatorProfilerArr;
   
   /**
@@ -176,7 +179,8 @@ public class DocumentFactory {
       }
     }
     // Read some more configuration entries from the config
-    mMaxSummaryLength = mConfig.getMaxSummaryLength();
+    this.mMaxSummaryLength = this.mConfig.getMaxSummaryLength();
+    this.storeContentForPreview = this.mConfig.getStoreContentForPreview();
   }
 
 
@@ -492,8 +496,8 @@ public class DocumentFactory {
       writeAnalysisFile(url, "clean", cleanedContent);
 
       // Add the cleaned content of the document
-      doc.add(new Field("content", cleanedContent, Field.Store.YES,
-          Field.Index.TOKENIZED));
+      doc.add(new Field("content", cleanedContent, 
+        this.storeContentForPreview ? Field.Store.YES : Field.Store.NO, Field.Index.TOKENIZED));
     } else {
       // We have no content! This is a substitude document
       // -> Add a "preparation-error"-field
@@ -545,7 +549,7 @@ public class DocumentFactory {
 
 
   /**
-   * Gibt zur�ck, ob der String einen Inhalt hat. Dies ist der Fall, wenn er
+   * Gibt zurück, ob der String einen Inhalt hat. Dies ist der Fall, wenn er
    * weder <code>null</code> noch ein Leerstring ist.
    *
    * @param str Der zu untersuchende String
@@ -561,9 +565,9 @@ public class DocumentFactory {
    * Erzeugt eine Zusammenfassung aus dem Inhalt eines Dokuments.
    * <p>
    * Wenn keine Zusammenfassung m�glich ist, wird <code>null</code>
-   * zur�ckgegeben.
+   * zurückgegeben.
    *
-   * @param content Der Inhalt f�r den die Zusammenfassung erstellt werden soll.
+   * @param content Der Inhalt für den die Zusammenfassung erstellt werden soll.
    * @return Eine Zusammenfassung des Dokuments oder <code>null</code>, wenn
    *         keine erzeugt werden konnte.
    */
@@ -632,9 +636,9 @@ public class DocumentFactory {
   /**
    * Schreibt eine Analyse-Datei.
    * <p>
-   * Eine Analyse-Datei enth�lt die Daten des Dokuments bei jedem
+   * Eine Analyse-Datei enthält die Daten des Dokuments bei jedem
    * Zwischenschritt der Aufbereitung. Sie hilft die Qualit�t der
-   * Index-Erstellung zu pr�fen und wird in einem Unterverzeichnis im
+   * Index-Erstellung zu Prüfen und wird in einem Unterverzeichnis im
    * Index-Verzeichnis angelegt.
    *
    * @param url Die URL des Dokuments.
@@ -708,7 +712,7 @@ public class DocumentFactory {
 
 
   /**
-   * Gibt alle Ressourcen frei, die von den Pr�paratoren genutzt wurden.
+   * Gibt alle Ressourcen frei, die von den Präparatoren genutzt wurden.
    * <p>
    * Wird ganz am Ende des Crawler-Prozesses aufgerufen, nachdem alle Dokumente
    * bearbeitet wurden.

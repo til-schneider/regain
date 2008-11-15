@@ -21,21 +21,35 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-05 16:21:50 +0200 (So, 05 Okt 2008) $
+ *     $Date: 2008-11-15 23:03:53 +0100 (Sa, 15 Nov 2008) $
  *   $Author: thtesche $
- * $Revision: 341 $
+ * $Revision: 357 $
  */
 package net.sf.regain.crawler;
 
+import com.sun.mail.imap.IMAPFolder;
+import com.sun.mail.imap.IMAPSSLStore;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.URLName;
+import javax.mail.internet.MimeMessage;
 import jcifs.smb.SmbFile;
+import net.sf.regain.ImapToolkit;
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.crawler.config.CrawlerConfig;
@@ -54,7 +68,7 @@ import org.apache.regexp.RESyntaxException;
  * werden je nach Einstellung nur geladen, in den Suchindex aufgenommen oder
  * wiederum nach URLs durchsucht.
  * <p>
- * F�r jede URL wird Anhand der Schwarzen und der Wei�en Liste entschieden, ob sie
+ * für jede URL wird Anhand der Schwarzen und der Weißen Liste entschieden, ob sie
  * ignoriert oder bearbeitet wird. Wenn <CODE>loadUnparsedUrls</CODE> auf
  * <CODE>false</CODE> gesetzt wurde, dann werden auch URLs ignoriert, die weder
  * durchsucht noch indiziert werden.
@@ -260,8 +274,8 @@ public class Crawler implements ErrorLogger {
    * <p>
    * Wenn ja, dann wird ein neuer Job erzeugt und der Job-Liste hinzugef�gt.
    *
-   * @param url Die URL des zu pr�fenden Jobs.
-   * @param sourceUrl Die URL des Dokuments in der die URL des zu pr�fenden Jobs
+   * @param url Die URL des zu prüfenden Jobs.
+   * @param sourceUrl Die URL des Dokuments in der die URL des zu prüfenden Jobs
    *        gefunden wurde.
    * @param shouldBeParsed Gibt an, ob die URL geparst werden soll.
    * @param shouldBeIndexed Gibt an, ob die URL indiziert werden soll.
@@ -413,7 +427,7 @@ public class Crawler implements ErrorLogger {
               parseDirectory(file);
             }
             
-            // A directory can't be parsed or indexed -> continue
+            // A directory can't be indexed -> continue
             mCrawlerJobProfiler.stopMeasuring(0);
             continue;
           }
@@ -438,11 +452,37 @@ public class Crawler implements ErrorLogger {
               parseSmbDirectory(smbFile);
             }
             
-            // A directory can't be parsed or indexed -> continue
+            // A directory can't be indexed -> continue
             mCrawlerJobProfiler.stopMeasuring(0);
             continue;
           }
             
+        }
+        catch (Throwable thr) {
+          mCrawlerJobProfiler.abortMeasuring();
+          logError("Invalid URL: '" + url + "'", thr, false);
+          continue;
+        }
+        
+      }else if(url.startsWith("imap://") || url.startsWith("imaps://")){
+        // IMAP mail box: Check whether this is a folder or an e-mail url
+        try {
+          if( ImapToolkit.isMessageURL( url) == true) {
+            // This is an URL wich describes an a-mail like 
+            // imap://user:password@mail.mailhost.com/INBOX/message_23(_attachment_1)
+            // We do not check here for the accessibility, so nothing to do
+          } else {
+            // If the URL is not an e-mail it have to be folder. Add all subfolders and 
+            // messages as jobs
+            if (shouldBeParsed) {
+              parseIMAPFolder(url);
+            }
+            
+            // A folder can't be indexed -> continue
+            mCrawlerJobProfiler.stopMeasuring(0);
+            continue;
+          }
+
         }
         catch (Throwable thr) {
           mCrawlerJobProfiler.abortMeasuring();
@@ -541,7 +581,7 @@ public class Crawler implements ErrorLogger {
       }
     } // while (! mJobList.isEmpty())
 
-    // Nicht mehr vorhandene Dokumente aus dem Index l�schen
+    // Remove documents from the index which no longer exists
     if (mConfiguration.getBuildIndex()) {
       mLog.info("Removing index entries of documents that do not exist any more...");
       try {
@@ -552,7 +592,7 @@ public class Crawler implements ErrorLogger {
       }
     }
 
-    // Pr�fen, ob Index leer ist
+    // Check wether the index is empty
     int entryCount = 0;
     try {
       entryCount = mIndexWriterManager.getIndexEntryCount();
@@ -572,8 +612,7 @@ public class Crawler implements ErrorLogger {
       logError("The index is empty.", null, true);
       failedPercent = 1;
     } else {
-      // Pr�fen, ob die Anzahl der abgebrochenen Dokumente�ber der Toleranzgrenze
-      // ist.
+      // Check wether the count of dead/errror links reached the limit
       double failedDocCount = mDeadlinkList.size() + mErrorCount;
       double totalDocCount = failedDocCount + entryCount;
       failedPercent = failedDocCount / totalDocCount;
@@ -801,9 +840,9 @@ public class Crawler implements ErrorLogger {
 
 
   /**
-   * Pr�ft, ob die Exception von einem Dead-Link herr�hrt.
+   * Prüft, ob die Exception von einem Dead-Link herr�hrt.
    *
-   * @param thr Die zu pr�fende Exception
+   * @param thr Die zu prüfende Exception
    * @return Ob die Exception von einem Dead-Link herr�hrt.
    */
   private boolean isExceptionFromDeadLink(Throwable thr) {
@@ -894,6 +933,73 @@ public class Crawler implements ErrorLogger {
   }
 
   /**
+   * Searches a imap directory for folder an counts the containing messages
+   * The method creates a new job for every not empty folder
+   *
+   * @param folder the folder to parse
+   * @throws RegainException If encoding of the found URLs failed. 
+   */
+  private void parseIMAPFolder(String folderUrl) throws RegainException {
+  
+    mLog.debug("Determine IMAP subfolder for: " + folderUrl);
+    Session session = Session.getInstance(new Properties());
+    
+    URLName originURLName = new URLName(folderUrl);
+    // Replace all %20 with whitespace in folder pathes
+    String folder = "";
+    if(originURLName.getFile()!=null){
+      folder = originURLName.getFile().replaceAll("%20", " ");
+    }
+    URLName urlName = new URLName(originURLName.getProtocol(), originURLName.getHost(), 
+      originURLName.getPort(), folder , originURLName.getUsername(), originURLName.getPassword());
+    
+    Map<String, Integer> folderList = new Hashtable<String, Integer>();
+
+    try {
+      IMAPSSLStore imapStore = new IMAPSSLStore(session, urlName);
+
+      imapStore.connect();
+      IMAPFolder startFolder;
+
+      if (urlName.getFile() == null) {
+        // There is no folder given
+        startFolder = (IMAPFolder) imapStore.getDefaultFolder();
+      } else {
+        startFolder = (IMAPFolder) imapStore.getFolder(urlName.getFile());
+      }
+
+      // Find messages (if folder exist and could be openend)
+      if( startFolder.exists()){
+        try {
+          startFolder.open(Folder.READ_ONLY);
+          Message[] msgs = startFolder.getMessages();
+          for (int i = 0; i < msgs.length; i++) {
+            MimeMessage message = (MimeMessage) msgs[i];
+            // It's a message -> Add a index job
+            addJob(folderUrl + "/message_"+startFolder.getUID(message), folderUrl, false, true, null);
+          }
+          startFolder.close(false);
+
+        } catch (MessagingException messageEx) {
+          mLog.debug("Could not open folder for reading but this is not an errror. Folder URL is " + folderUrl);
+        }        
+      }
+      // Find all subfolder 
+      folderList = ImapToolkit.getAllFolders(startFolder, false);
+
+      // Iterate over all subfolders
+      for (Map.Entry<String, Integer> entry : folderList.entrySet()) {
+        // It's a directory -> Add a parse job
+        addJob(folderUrl + "/"+(String) entry.getKey(), folderUrl, true, false, null);
+      }
+      imapStore.close();
+    
+    } catch (Exception ex) {
+      throw new RegainException("Couldn't determine IMAP entries.", ex);
+    }
+  }
+  
+  /**
    * Creates crawler jobs from inclosed links. Every link is checked against the white-/black list.
    * 
    * @param rawDocument A document with or without links
@@ -914,7 +1020,7 @@ public class Crawler implements ErrorLogger {
   }
 
   /**
-   * Durchsucht den Inhalt eines HTML-Dokuments nach URLs und erzeugt f�r jeden
+   * Durchsucht den Inhalt eines HTML-Dokuments nach URLs und erzeugt für jeden
    * Treffer einen neuen Job.
    *
    * @param rawDocument Das zu durchsuchende Dokument.
@@ -1003,7 +1109,7 @@ public class Crawler implements ErrorLogger {
 
 
   /**
-   * Gibt die Anzahl der Fehler zur�ck (das beinhaltet fatale und nicht fatale
+   * Gibt die Anzahl der Fehler zurück (das beinhaltet fatale und nicht fatale
    * Fehler).
    *
    * @return Die Anzahl der Fehler.
@@ -1015,7 +1121,7 @@ public class Crawler implements ErrorLogger {
 
 
   /**
-   * Gibt Die Anzahl der fatalen Fehler zur�ck.
+   * Gibt Die Anzahl der fatalen Fehler zurück.
    * <p>
    * Fatale Fehler sind Fehler, durch die eine Erstellung oder Aktualisierung
    * des Index verhindert wurde.

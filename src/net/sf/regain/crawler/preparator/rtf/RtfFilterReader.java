@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2004-11-10 16:08:52 +0100 (Mi, 10 Nov 2004) $
- *   $Author: til132 $
- * $Revision: 10 $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 349 $
  */
 package net.sf.regain.crawler.preparator.rtf;
 
@@ -47,7 +47,7 @@ public class RtfFilterReader extends FilterReader {
   /**
    * Gibt an, ob das zuletzt gelesene Zeichen in der Schachtelungstiefe war,
    * in der der Text liegt. Dieser Flag wird genutzt, um jedesmal ein
-   * Leerzeichen einzufügen, wenn die Schachtelungstiefe verlassen wurde.
+   * Leerzeichen einzufï¿½gen, wenn die Schachtelungstiefe verlassen wurde.
    * Dadurch wird das 'Zusammenkleben' von Worten vermieden.
    */
   private boolean mLastCharWasInTextDepth;
@@ -67,9 +67,9 @@ public class RtfFilterReader extends FilterReader {
 
 
   /**
-   * Gibt an, ob die {@link #mark(int)}-Methode unterstützt wird.
+   * Gibt an, ob die {@link #mark(int)}-Methode unterstï¿½tzt wird.
    * <p>
-   * Dieser Reader unterstützt das nicht.
+   * Dieser Reader unterstï¿½tzt das nicht.
    *
    * @return <code>false</code>
    */
@@ -84,7 +84,7 @@ public class RtfFilterReader extends FilterReader {
    * @param cbuf Der Puffer, in den die Zeichen geschrieben werden sollen.
    * @param off Der Offset im Puffer, ab dem geschrieben werden darf.
    * @param len Die max. Anzahl Zeichen, die geschrieben werden darf.
-   * @return Die Anzahl Zeichen, die tatsächlich geschrieben wurde oder
+   * @return Die Anzahl Zeichen, die tatsï¿½chlich geschrieben wurde oder
    *         <code>-1</code>, wenn das Ende erreicht wurde.
    * @throws IOException Wenn vom Quell-Reader nicht gelesen werden konnte.
    */
@@ -106,9 +106,9 @@ public class RtfFilterReader extends FilterReader {
 
 
   /**
-   * Liest das nächste Zeichen.
+   * Liest das nÃ¤chste Zeichen.
    *
-   * @return Das nächste Zeichen oder <code>-1</code>, wenn das Ende erreicht
+   * @return Das nÃ¤chste Zeichen oder <code>-1</code>, wenn das Ende erreicht
    *         wurde.
    * @throws IOException Wenn vom Quell-Reader nicht gelesen werden konnte.
    */
@@ -182,7 +182,7 @@ public class RtfFilterReader extends FilterReader {
   /**
    * Wandelt ein RTF-control-word in das entsprechende char um.
    * <p>
-   * Falls es keine Entsprechung gibt, wird <code>0</code> zurückgegeben.
+   * Falls es keine Entsprechung gibt, wird <code>0</code> zurÃ¼ckgegeben.
    *
    * @param controlWord Das umzuwandelnde RTF-control-word
    * @return Die Entsprechung zu <code>controlWord</code> oder <code>0</code>,

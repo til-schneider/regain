@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 349 $
  */
 package net.sf.regain.crawler;
 
@@ -203,13 +203,13 @@ public class UrlChecker {
    }
 
   /**
-   * Pr¸ft ob die URL von der Schwarzen und Weiﬂen Liste akzeptiert wird.
+   * Pr√ºft ob die URL von der Schwarzen und Wei√üen Liste akzeptiert wird.
    * <p>
-   * Dies ist der Fall, wenn sie keinem Pr‰fix aus der Schwarzen Liste und
-   * mindestens einem aus der Weiﬂen Liste entspricht.
+   * Dies ist der Fall, wenn sie keinem Pr√§fix aus der Schwarzen Liste und
+   * mindestens einem aus der Wei√üen Liste entspricht.
    *
-   * @param url Die zu pr¸fende URL.
-   * @return Ob die URL von der Schwarzen und Weiﬂen Liste akzeptiert wird.
+   * @param url Die zu pr√ºfende URL.
+   * @return Ob die URL von der Schwarzen und Wei√üen Liste akzeptiert wird.
    */
   public UrlMatcher isUrlAccepted(String url) {
     

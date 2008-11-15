@@ -1,3 +1,12 @@
+Version 1.5.3 on 05.10.08 PREVIEW
+---------------------------------
+* POI update to version 3.1, changed word- and excel text extraktion (contribution J.Stiepel)
+* new Visio preparator (experimental) (contribution J.Stiepel)
+* Bugfix: fixed exception handling for file permission problems (contribution J.Stiepel)
+* Feature: sub indices. This feature allows the aggregation of single indices into one. (experimental) (contribution filiadata)
+* Bugfix: 'encoding preservation' of search term (regain server frontend in application container)
+* updatet servlet api
+
 Version 1.5.2 on 15.08.08 PREVIEW
 ---------------------------------
 * The whole extracted content will be stored in the index. This feature allows the creation 

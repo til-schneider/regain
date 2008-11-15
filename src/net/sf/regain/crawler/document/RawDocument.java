@@ -21,13 +21,16 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-09-19 20:29:55 +0200 (Fr, 19 Sep 2008) $
+ *     $Date: 2008-11-15 23:12:40 +0100 (Sa, 15 Nov 2008) $
  *   $Author: thtesche $
- * $Revision: 340 $
+ * $Revision: 358 $
  */
 package net.sf.regain.crawler.document;
 
+import com.sun.mail.imap.IMAPFolder;
+import com.sun.mail.imap.IMAPSSLStore;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -37,7 +40,16 @@ import java.net.URL;
 import java.util.Date;
 
 import java.util.HashMap;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.mail.Flags;
+import javax.mail.Folder;
+import javax.mail.Session;
+import javax.mail.URLName;
+import javax.mail.internet.MimeMessage;
 import jcifs.smb.SmbFile;
+import net.sf.regain.ImapToolkit;
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.crawler.CrawlerToolkit;
@@ -48,7 +60,7 @@ import org.apache.log4j.Logger;
 
 
 /**
- * Enth�lt alle Rohdaten eines Dokuments.
+ * enthält alle Rohdaten eines Dokuments.
  * <p>
  * Falls der Inhalt des Dokuments zur besseren Bearbeitung in Form eines Strings
  * gebraucht wird, dann wird dieser zum sp�test m�glichen Zeitpunkt erstellt.
@@ -60,16 +72,19 @@ public class RawDocument {
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(RawDocument.class);
 
-  /** Der Profiler der das Laden via HTTP mi�t. */
+  /** Der Profiler der das Laden via HTTP misst. */
   private static final Profiler HTTP_LOADING_PROFILER
     = new Profiler("Documents loaded with HTTP", "docs");
 
-  /** Der Profiler der das Laden vom Dateisystem mi�t. */
+  /** Der Profiler der das Laden vom Dateisystem misst. */
   private static final Profiler FILE_LOADING_PROFILER
     = new Profiler("Documents loaded from the file system", "docs");
+  
+  /** The pattern which matches for imap-urls (folder, message and attachment) */
+  //Pattern imapPattern = Pattern.compile(".*(message_([0-9]+))(_attachment_([0-9]+))$");
 
   /**
-   * Der Timeout f�r HTTP-Downloads. Dieser Wert bestimmt die maximale Zeit
+   * Der Timeout für HTTP-Downloads. Dieser Wert bestimmt die maximale Zeit
    * in Sekunden, die ein HTTP-Download insgesamt dauern darf.
    */
   private static int mHttpTimeoutSecs = 180;
@@ -102,7 +117,7 @@ public class RawDocument {
 
   /**
    * Die Datei, in der sich der Inhalt des Dokuments befindet.
-   * Ist <CODE>null</CODE>, wenn das Dokument �ber HTTP bezogen wird und noch
+   * Ist <CODE>null</CODE>, wenn das Dokument über HTTP bezogen wird und noch
    * nicht angefragt wurde.
    */
   private File mContentAsFile;
@@ -151,6 +166,9 @@ public class RawDocument {
     } else if( url.startsWith("smb://" )) {
       mContent = null;
       mContentAsFile = null;
+   } else if( url.startsWith("imap://") || url.startsWith("imaps://")) {
+      mContent = null;
+      mContentAsFile = null;
     } else {
       mContent = loadContent(url);
       mContentAsFile = null;
@@ -159,7 +177,7 @@ public class RawDocument {
 
 
   /**
-   * Setzt den Timeout f�r HTTP-Downloads.
+   * Setzt den Timeout für HTTP-Downloads.
    * <p>
    * Dieser Wert bestimmt die maximale Zeit, die ein HTTP-Download insgesamt
    * dauern darf.
@@ -170,6 +188,69 @@ public class RawDocument {
     mHttpTimeoutSecs = httpTimeoutSecs;
   }
 
+  /**
+   * Loads a mime message from an IMAP server.
+   * 
+   * @param url the URL of the mime message
+   * @return content of the message
+   * @throws RegainException if loading fails
+   */
+  
+  private byte[] loadIMAPMessage(String url) throws RegainException {
+    
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    byte[] bytearrayMessage = null;
+
+    try {
+      Matcher matcher = ImapToolkit.getMessagePattern().matcher(url);
+      matcher.find();
+      if( matcher.groupCount()>0 ) {
+        // We found a message url. Determine the message UID from the url.
+        int messageUID = Integer.parseInt(matcher.group(3));
+        mLog.debug("Read mime message uid: " + messageUID + " for IMAP url: " + url);
+        Session session = Session.getInstance(new Properties());
+    
+        URLName originURLName = new URLName(ImapToolkit.cutMessageIdentifier(url));
+        // Replace all %20 with whitespace in folder pathes
+        String folder = "";
+        if(originURLName.getFile()!=null){
+          folder = originURLName.getFile().replaceAll("%20", " ");
+        }
+        URLName urlName = new URLName(originURLName.getProtocol(), originURLName.getHost(), 
+          originURLName.getPort(), folder, originURLName.getUsername(), originURLName.getPassword());
+    
+        IMAPSSLStore imapStore = new IMAPSSLStore(session, urlName);
+        imapStore.connect();
+        IMAPFolder currentFolder;
+
+        if (urlName.getFile() == null) {
+          // There is no folder given
+          currentFolder = (IMAPFolder) imapStore.getDefaultFolder();
+        } else {
+          currentFolder = (IMAPFolder) imapStore.getFolder(urlName.getFile());
+        }
+
+        currentFolder.open(Folder.READ_WRITE);
+        MimeMessage cplMessage = (MimeMessage) currentFolder.getMessageByUID(messageUID);
+    
+        if (cplMessage != null) {
+          cplMessage.setFlag(Flags.Flag.SEEN, true);
+          cplMessage.writeTo(baos);
+          bytearrayMessage = baos.toByteArray();
+        }
+
+        currentFolder.close(false);
+        imapStore.close();       
+        
+      }
+
+    } catch (Throwable thr) {
+      throw new RegainException( thr.getMessage(), thr );
+    }  
+    
+    return bytearrayMessage;
+  }
+  
   /**
    * Loads the content from a smb file
    * 
@@ -217,14 +298,14 @@ public class RawDocument {
       = new HttpDownloadThread(url, Thread.currentThread());
     loaderThread.start();
 
-    // Warten bis entweder der Timeout abl�uft, oder bis dieser Thread vom
+    // Warten bis entweder der Timeout abläuft, oder bis dieser Thread vom
     // HttpContentLoaderThread unterbrochen wird.
     try {
       Thread.sleep(mHttpTimeoutSecs * 1000);
     }
     catch (InterruptedException exc) {}
 
-    // Pr�fen, ob wir mittlerweile den Inhalt haben
+    // Prüfen, ob wir mittlerweile den Inhalt haben
     byte[] content = loaderThread.getContent();
     if (content != null) {
       HTTP_LOADING_PROFILER.stopMeasuring(content.length);
@@ -244,7 +325,7 @@ public class RawDocument {
       }
 
       // Wir haben weder einen Inhalt noch einen Fehler
-      // -> Der Download l�uft noch
+      // -> Der Download läuft noch
       // -> Da jedoch mittlerweile der Timeout abgelaufen ist -> Exception werfen
       throw new RegainException("Loading Document by HTTP timed out after " +
           mHttpTimeoutSecs + " seconds: " + url);
@@ -282,12 +363,12 @@ public class RawDocument {
 
 
   /**
-   * Gibt zur�ck, wann das Dokument zuletzt ge�ndert wurde.
+   * Gibt zurück, wann das Dokument zuletzt geändert wurde.
    * <p>
-   * Wenn die letzte �nderung nicht ermittelt werden kann (z.B. bei
-   * HTTP-Dokumenten), dann wird <code>null</code> zur�ckgegeben.
+   * Wenn die letzte Änderung nicht ermittelt werden kann (z.B. bei
+   * HTTP-Dokumenten), dann wird <code>null</code> zurückgegeben.
    *
-   * @return Wann das Dokument zuletzt ge�ndert wurde.
+   * @return Wann das Dokument zuletzt geändert wurde.
    */
   public Date getLastModified() {
     Date date = null;
@@ -306,7 +387,7 @@ public class RawDocument {
 
 
   /**
-   * Gibt die URL des Dokuments zur�ck.
+   * Gibt die URL des Dokuments zurück.
    *
    * @return Die URL des Dokuments.
    */
@@ -317,7 +398,7 @@ public class RawDocument {
 
 
   /**
-   * Gibt die URL jenen Dokuments zur�ck, in dem die URL dieses Dokuments
+   * Gibt die URL jenen Dokuments zurück, in dem die URL dieses Dokuments
    * gefunden wurde.
    *
    * @return Die URL jenen Dokuments, in dem die URL dieses Dokuments gefunden
@@ -330,12 +411,12 @@ public class RawDocument {
 
 
   /**
-   * Gibt den Text des Links zur�ck in dem die URL gefunden wurde.
+   * Gibt den Text des Links zurück in dem die URL gefunden wurde.
    * <p>
    * Ist <code>null</code>, falls die URL nicht in einem Link (also einem a-Tag)
    * gefunden wurde oder wenn aus sonstigen Gr�nden kein Link-Text vorhanden ist.
    *
-   * @return Der Text des Links zur�ck in dem die URL gefunden wurde.
+   * @return Der Text des Links zurück in dem die URL gefunden wurde.
    */
   public String getSourceLinkText() {
     return mSourceLinkText;
@@ -344,7 +425,7 @@ public class RawDocument {
 
 
   /**
-   * Gibt den Inhalt des Dokuments zur�ck.
+   * Gibt den Inhalt des Dokuments zurück.
    *
    * @return Der Inhalt des Dokuments.
    * @throws RegainException Wenn das Dokument nicht geladen werden konnte.
@@ -359,13 +440,15 @@ public class RawDocument {
           content = CrawlerToolkit.loadFile(mContentAsFile);
         } else if( mUrl.startsWith("smb://")) {
           content =  loadSmbFile(mUrl); 
+        } else if( mUrl.startsWith("imap://") || mUrl.startsWith("imaps://")) {
+          content =  loadIMAPMessage(mUrl); 
         }
         FILE_LOADING_PROFILER.stopMeasuring(content.length);
         return content;
       }
       catch (RegainException exc) {
         FILE_LOADING_PROFILER.abortMeasuring();
-        throw new RegainException("Loading Document from file failed: "
+        throw new RegainException("Loading Document for url: " + mUrl + " failed: "
           + mContentAsFile, exc);
       }
     }
@@ -376,7 +459,7 @@ public class RawDocument {
 
 
   /**
-   * Gibt den Inhalt des Dokuments als String zur�ck.
+   * Gibt den Inhalt des Dokuments als String zurück.
    * <p>
    * Dieser String wird erst bei der ersten Abfrage erzeugt und dann gecached.
    *
@@ -455,7 +538,7 @@ public class RawDocument {
 
 
   /**
-   * Gibt den Datei des Dokuments zur�ck. Falls das Dokument nicht als Datei
+   * Gibt den Datei des Dokuments zurück. Falls das Dokument nicht als Datei
    * existiert, wird eine tempor�re Datei erzeugt.
    *
    * @return Die Datei des Dokuments.
@@ -469,7 +552,7 @@ public class RawDocument {
 
 
   /**
-   * Gibt den Datei des Dokuments zur�ck. Falls das Dokument nicht als Datei
+   * Gibt den Datei des Dokuments zurück. Falls das Dokument nicht als Datei
    * existiert, wird eine tempor�re Datei erzeugt.
    *
    * @param forceTempFile Bigt an, ob erzwungen werden soll, dass eine
@@ -481,36 +564,39 @@ public class RawDocument {
    *         konnte.
    */
   public File getContentAsFile(boolean forceTempFile) throws RegainException {
-    if ((mContentAsFile == null)
-      || (forceTempFile && ! mContentAsFileIsTemporary))
-    {
+    if ((mContentAsFile == null) || (forceTempFile && ! mContentAsFileIsTemporary)) {
       // Das Dokument wurde via HTTP geladen
       // -> Inhalt in eine Datei schreiben
 
-      // Get the file extension
+      // Determine the file extension
+      String extension = "";
       URL url;
       String path;
-      try {
-        url = new URL(mUrl);
-        path = url.getPath();
-        // Handles urls like http://www.thtesche.com/ an http://www.thtesche.com/blog/
-        if( (path.length()==0 
-                && (url.getProtocol().equalsIgnoreCase("http") || url.getProtocol().equalsIgnoreCase("https") ))
-                || path.endsWith("/")) {
-          path = "index.html";
+      if( mUrl.toLowerCase().startsWith("http") | mUrl.toLowerCase().startsWith("https") ) {
+        try {
+          url = new URL(mUrl);
+          path = url.getPath();
+          // Handles urls like http://www.thtesche.com/ an http://www.thtesche.com/blog/
+          if( (path.length()==0 
+                  && (url.getProtocol().equalsIgnoreCase("http") || url.getProtocol().equalsIgnoreCase("https") ))
+                  || path.endsWith("/")) {
+            path = "index.html";
+          }
+        } catch (MalformedURLException ex) {
+           mLog.debug("Couldn't create URL", ex);
+           path = mUrl;
         }
-      } catch (MalformedURLException ex) {
-         mLog.debug("Couldn't create URL", ex);
-         path = mUrl;
-      }
-      String extension;
-      int lastDot = path.lastIndexOf('.');
-      if (lastDot == -1 || path.length()-lastDot>=6 ) {
-        extension = "";
-      } else {
-        extension = path.substring(lastDot);
-      }
 
+        int lastDot = path.lastIndexOf('.');
+        if (lastDot == -1 || path.length()-lastDot>=6 ) {
+          extension = "";
+        } else {
+          extension = path.substring(lastDot);
+        }
+      } else if( mUrl.toLowerCase().startsWith("imap") | mUrl.toLowerCase().startsWith("imaps") ) {
+        extension = ".mht";
+      }
+      
       // Get an unused file
       File tmpFile;
       try {

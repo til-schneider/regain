@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2008-10-25 18:41:44 +0200 (Sa, 25 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 350 $
  */
 package net.sf.regain.crawler.document;
 
@@ -108,53 +108,53 @@ public interface Preparator {
   public void prepare(RawDocument rawDocument) throws RegainException;
 
   /**
-   * Gibt den Titel des Dokuments zurück.
+   * Gibt den Titel des Dokuments zurÃ¼ck.
    * <p>
    * Falls kein Titel extrahiert werden konnte, wird <CODE>null</CODE>
-   * zurückgegeben.
+   * zurÃ¼ckgegeben.
    *
    * @return Der Titel des Dokuments.
    */
   public String getTitle();
 
   /**
-   * Gibt den von Formatierungsinformation befreiten Inhalt des Dokuments zurück.
+   * Gibt den von Formatierungsinformation befreiten Inhalt des Dokuments zurÃ¼ck.
    *
-   * @return Der gesäuberte Inhalt.
+   * @return Der gesï¿½uberte Inhalt.
    */
   public String getCleanedContent();
 
   /**
-   * Gibt eine Zusammenfassung für das Dokument zurück.
+   * Gibt eine Zusammenfassung fÃ¼r das Dokument zurÃ¼ck.
    * <p>
-   * Falls es keine Zusammenfassung möglich ist, wird <CODE>null</CODE>
-   * zurückgegeben.
+   * Falls es keine Zusammenfassung mï¿½glich ist, wird <CODE>null</CODE>
+   * zurÃ¼ckgegeben.
    *
-   * @return Eine Zusammenfassung für das Dokument zurück.
+   * @return Eine Zusammenfassung fÃ¼r das Dokument zurÃ¼ck.
    */
   public String getSummary();
 
   /**
-   * Gibt die Überschriften des Dokuments zurück.
+   * Gibt die Ã¼berschriften des Dokuments zurÃ¼ck.
    * <p>
-   * Es handelt sich dabei nicht um die Überschrift des Dokuments selbst,
-   * sondern lediglich um Unter-Überschriften, die in dem Dokument verwendendet
-   * werden. Mit Hilfe dieser Überschriften läßt sich eine bessere Relevanz
+   * Es handelt sich dabei nicht um die Ã¼berschrift des Dokuments selbst,
+   * sondern lediglich um Unter-Ã¼berschriften, die in dem Dokument verwendendet
+   * werden. Mit Hilfe dieser Ã¼berschriften lï¿½ï¿½t sich eine bessere Relevanz
    * berechnen.
    * <p>
-   * Wenn keine Überschriften gefunden wurden, dann wird <code>null</code>
-   * zurückgegeben.
+   * Wenn keine Ã¼berschriften gefunden wurden, dann wird <code>null</code>
+   * zurÃ¼ckgegeben.
    *
-   * @return Die Überschriften des Dokuments.
+   * @return Die Ã¼berschriften des Dokuments.
    */
   public String getHeadlines();
 
   /**
-   * Gibt den Pfad zurück, über den das Dokument zu erreichen ist.
+   * Gibt den Pfad zurÃ¼ck, Ã¼ber den das Dokument zu erreichen ist.
    * <p>
-   * Falls kein Pfad verfügbar ist, wird <code>null</code> zurückgegeben.
+   * Falls kein Pfad verfÃ¼gbar ist, wird <code>null</code> zurÃ¼ckgegeben.
    *
-   * @return Der Pfad, über den das Dokument zu erreichen ist.
+   * @return Der Pfad, Ã¼ber den das Dokument zu erreichen ist.
    */
   public PathElement[] getPath();
 
@@ -168,21 +168,21 @@ public interface Preparator {
   public Map getAdditionalFields();
 
   /**
-   * Gibt alle Ressourcen frei, die für die Informationen über das Dokument
+   * Gibt alle Ressourcen frei, die fÃ¼r die Informationen Ã¼ber das Dokument
    * reserviert wurden.
    * <p>
-   * Wird am Ende der Bearbeitung eines Dokumebts aufgerufen, also nachdem die
+   * Wird am Ende der Bearbeitung eines Dokuments aufgerufen, also nachdem die
    * Getter abgefragt wurden.
    */
   public void cleanUp();
 
   /**
-   * Gibt alle Ressourcen frei, die von diesem Präparator genutzt wurden.
+   * Gibt alle Ressourcen frei, die von diesem PrÃ¤parator genutzt wurden.
    * <p>
    * Wird ganz am Ende des Crawler-Prozesses aufgerufen, nachdem alle Dokumente
    * bearbeitet wurden.
    *
-   * @throws RegainException Wenn der Präparator nicht geschlossen werden konnte.
+   * @throws RegainException Wenn der PrÃ¤parator nicht geschlossen werden konnte.
    */
   public void close() throws RegainException;
 

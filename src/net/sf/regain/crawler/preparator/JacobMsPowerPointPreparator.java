@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-01-21 12:53:30 +0100 (Sa, 21 Jan 2006) $
- *   $Author: til132 $
- * $Revision: 194 $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 349 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -36,7 +36,7 @@ import com.jacob.com.*;
 import de.filiadata.lucene.spider.generated.msoffice2000.powerpoint.*;
 
 /**
- * Präpariert ein Microsoft-Powerpoint-Dokument für die Indizierung mit Hilfe der
+ * PrÃ¤pariert ein Microsoft-Powerpoint-Dokument fÃ¼r die Indizierung mit Hilfe der
  * <a href="http://danadler.com/jacob/">Jacob-API</a>, wobei
  * <a href="http://www.bigatti.it/projects/jacobgen/">Jacobgen</a>
  * genutzt wurde, um den Zugriff zu erleichtern.
@@ -83,11 +83,11 @@ public class JacobMsPowerPointPreparator extends AbstractJacobMsOfficePreparator
 
 
   /**
-   * Präpariert ein Dokument für die Indizierung.
+   * PrÃ¤pariert ein Dokument fÃ¼r die Indizierung.
    *
-   * @param rawDocument Das zu präpariernde Dokument.
+   * @param rawDocument Das zu prï¿½pariernde Dokument.
    *
-   * @throws RegainException Wenn die Präparation fehl schlug.
+   * @throws RegainException Wenn die Prï¿½paration fehl schlug.
    */
   public void prepare(RawDocument rawDocument) throws RegainException {
     if (mPowerPointApplication == null) {
@@ -97,18 +97,18 @@ public class JacobMsPowerPointPreparator extends AbstractJacobMsOfficePreparator
       // Neue PowerPoint-Applikation erstellen
       mPowerPointApplication = new Application();
 
-      // Applikation öffnen
+      // Applikation ï¿½ffnen
       // mPowerPointApplication.activate();
-      // -> Bei der Nutzung von .activate() lässt sich Powerpoint auf dem
+      // -> Bei der Nutzung von .activate() lï¿½sst sich Powerpoint auf dem
       //    Win2000-Server nicht durch .quit() beenden.
 
       // Workaround: Man muss das Powerpoint-Fenster erst aktivieren, sonst
-      //             schlägt das Öffnen eines Powerpoint-Dokuments fehl.
-      //             Wenn man .activate() nutzt, so wird die Oberfläche
+      //             schlï¿½gt das ï¿½ffnen eines Powerpoint-Dokuments fehl.
+      //             Wenn man .activate() nutzt, so wird die Oberflï¿½che
       //             sichtbar und Powerpoint beendet sich am Ende trotz
       //             eines .quit() Aufrufs nicht.
       //             Einzig der Aufruf von .setVisible(true) zeigt bei einem
-      //             abschließenden .quit() Aufruf Wirkung.
+      //             abschlieï¿½enden .quit() Aufruf Wirkung.
       Dispatch.put(mPowerPointApplication, "Visible", new Variant(true));
 
       // PowerPoint unsichtbar machen
@@ -119,13 +119,13 @@ public class JacobMsPowerPointPreparator extends AbstractJacobMsOfficePreparator
 
       // Workaround: Da unsichtbar machen nicht funktioniert (zumindest bei
       //             PowerPoint 2000), wenigstens das Fenster minimieren, damit
-      //             möglichst wenig Zeit mit malen verbracht wird.
+      //             mï¿½glichst wenig Zeit mit malen verbracht wird.
       // mPowerPointApplication.setWindowState(PpWindowState.ppWindowMinimized);
       // -> Funktioniert leider auch nicht
     }
 
     try {
-      // Präsentation öffnen
+      // Prï¿½sentation ï¿½ffnen
       String fileName = rawDocument.getContentAsFile().getAbsolutePath();
       Presentation pres = mPowerPointApplication.getPresentations().open(fileName);
 
@@ -173,7 +173,7 @@ public class JacobMsPowerPointPreparator extends AbstractJacobMsOfficePreparator
       // Set the content
       setCleanedContent(contentBuf.toString());
 
-      // Präsentation ohne zu speichern schließen
+      // Prï¿½sentation ohne zu speichern schlieï¿½en
       pres.close();
     }
     catch (ComFailException exc) {
@@ -183,7 +183,7 @@ public class JacobMsPowerPointPreparator extends AbstractJacobMsOfficePreparator
 
 
   /**
-   * Extrahiert den Text aus einem Powerpoint-Form-Objekt und trägt ihn in den
+   * Extrahiert den Text aus einem Powerpoint-Form-Objekt und trï¿½gt ihn in den
    * StringBuffer ein.
    *
    * @param shape Das zu durchsuchende Powerpoint-Form-Objekt.
@@ -240,7 +240,7 @@ public class JacobMsPowerPointPreparator extends AbstractJacobMsOfficePreparator
    */
   public void close() throws RegainException {
     if (mPowerPointApplication != null) {
-      // PowerPoint schließen
+      // PowerPoint schlieï¿½en
       try {
         System.out.println("quitting Powerpoint");
         mPowerPointApplication.quit();

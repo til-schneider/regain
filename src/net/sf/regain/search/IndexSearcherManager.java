@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-08-21 11:37:35 +0200 (Mo, 21 Aug 2006) $
- *   $Author: til132 $
- * $Revision: 232 $
+ *     $Date: 2008-10-25 18:41:44 +0200 (Sa, 25 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 350 $
  */
 package net.sf.regain.search;
 
@@ -43,9 +43,9 @@ import org.apache.lucene.search.Query;
 /**
  * Kapselt die Suche auf dem Suchindex.
  * <p>
- * Alle Suchanfragen werden synchronisiert. Außerdem wird im 10-Sekunden-Takt
- * geprüft, ob ein neuer Index verfügbar ist. Wenn ja, dann wird der neue Index
- * übernommen und der alte in einem Backup gesichert.
+ * Alle Suchanfragen werden synchronisiert. Auï¿½erdem wird im 10-Sekunden-Takt
+ * gePrÃ¼ft, ob ein neuer Index verfÃ¼gbar ist. Wenn ja, dann wird der neue Index
+ * Ã¼bernommen und der alte in einem Backup gesichert.
  *
  * @author Til Schneider, www.murfman.de
  */
@@ -53,7 +53,7 @@ public class IndexSearcherManager {
 
   /**
    * Die Zeit in Millisekunden in der der Update-Thread zwischen zwei
-   * Update-Prüfungen schlafen soll.
+   * Update-Prï¿½fungen schlafen soll.
    */
   private static final int INDEX_UPDATE_THREAD_SLEEPTIME = 10000;
 
@@ -74,7 +74,7 @@ public class IndexSearcherManager {
   private static final String BACKUP_INDEX_SUBDIR = "backup";
 
   /**
-   * Enthält für ein Index-Verzeichnis (key) den zuständigen
+   * enthÃ¤lt fÃ¼r ein Index-Verzeichnis (key) den zustï¿½ndigen
    * IndexWriterManager (value).
    */
   private static HashMap mIndexManagerHash;
@@ -96,17 +96,17 @@ public class IndexSearcherManager {
    * <p>
    * Die Klasse IndexSearcher ist zwar thread-sicher, aber wir synchronisieren
    * trotzdem alle Suchanfragen selbst, damit ein Austausch des Suchindex im
-   * laufenden Betrieb möglich ist.
+   * laufenden Betrieb mï¿½glich ist.
    */
   private IndexSearcher mIndexSearcher;
 
   /** The IndexReader to use for reading information from an index. */
   private IndexReader mIndexReader;
   
-  /** Der Analyzer, der für Suchen verwendet werden soll. */
+  /** Der Analyzer, der fÃ¼r Suchen verwendet werden soll. */
   private Analyzer mAnalyzer;
 
-  /** Der Thread, der alle 10 Sekunden prüft, ob ein neuer Suchindex vorhanden ist. */
+  /** Der Thread, der alle 10 Sekunden PrÃ¼ft, ob ein neuer Suchindex vorhanden ist. */
   private Thread mIndexUpdateThread;
   
   /**
@@ -138,21 +138,21 @@ public class IndexSearcherManager {
 
 
   /**
-   * Gibt den IndexWriterManager für das gegebene Index-Verzeichnis zurück.
+   * Gibt den IndexWriterManager fÃ¼r das gegebene Index-Verzeichnis zurÃ¼ck.
    *
    * @param indexDir Das Verzeichnis, in dem der Index steht.
    *
-   * @return Der IndexWriterManager für das Index-Verzeichnis.
+   * @return Der IndexWriterManager fÃ¼r das Index-Verzeichnis.
    */
   public static synchronized IndexSearcherManager getInstance(String indexDir) {
     if (mIndexManagerHash == null) {
       mIndexManagerHash = new HashMap();
     }
 
-    // Zuständigen IndexWriterManager aus der Hash zu holen
+    // Zustï¿½ndigen IndexWriterManager aus der Hash zu holen
     IndexSearcherManager manager = (IndexSearcherManager) mIndexManagerHash.get(indexDir);
     if (manager == null) {
-      // Für diesen Index gibt es noch keinen Manager -> einen anlegen
+      // fÃ¼r diesen Index gibt es noch keinen Manager -> einen anlegen
       manager = new IndexSearcherManager(indexDir);
       mIndexManagerHash.put(indexDir, manager);
     }
@@ -262,7 +262,7 @@ public class IndexSearcherManager {
 
 
   /**
-   * Gibt den Analyzer zurück, der für die Suche genutzt werden soll.
+   * Gibt den Analyzer zurÃ¼ck, der fÃ¼r die Suche genutzt werden soll.
    *
    * @return Der Analyzer.
    * @throws RegainException Wenn die Erzeugung des Analyzers fehl schlug.
@@ -329,7 +329,7 @@ public class IndexSearcherManager {
 
 
   /**
-   * Prüft, ob ein neuer Index vorhanden ist. Wenn ja, dann wird die Suche auf den
+   * PrÃ¼ft, ob ein neuer Index vorhanden ist. Wenn ja, dann wird die Suche auf den
    * neuen Index umgestellt.
    * <p>
    * Hinweis: Suchen und Update-Checks laufen synchronisiert ab (also niemals

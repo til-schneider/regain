@@ -1,23 +1,28 @@
-Version 1.5.3 am XXXXXXXX PREVIEW
--------------------------
+Version 1.5.4 am 25.10.08 PREVIEW
+---------------------------------
+* Per Konfigurationseintrag in der CrawlerConfig.xml <storeContentForPreview/> {true,false}
+  kann man das Ablegen des gesamten Contents im Index ein-/ausschalten.
+
+Version 1.5.3 am 05.10.08 PREVIEW
+---------------------------------
 * POI von Version 3.0.1 auf 3.1, Contribution J.Stiepel
 * MS-Visio Preparator (experimentell), Contribution J.Stiepel
 * einige Bugfixe betreffs Schreibrechten und Fehlerbehandlung, Contribution J.Stiepel
-* Verschachtelte Indexe für die Suche, Contribution filiadata
+* Verschachtelte Indexe fÃ¼r die Suche, Contribution filiadata
 * Achtung Fehlerbehaftet: verschachtelte Indices !!!
-* Bugfix: Umlaute werden nicht durch Suchmaske 'zerstört'
+* Bugfix: Umlaute werden nicht durch Suchmaske 'zerstÃ¶rt'
 * neue Servletversion
 
 Version 1.5.2 am 15.08.08 PREVIEW
 ---------------------------------
 * Per Default wird der gesamte Content im Index gespeichert. Mittels <search:hit_content/> aus der
   Taglib kann man eine ausklappbare Contentansicht in die Ergebnisliste einbauen. 
-  ACHTUNG: Experimentelles Fe01ature. Die Indexe können sehr groß werden.
+  ACHTUNG: Experimentelles Feature. Die Indexe kÃ¶nnen sehr groÃŸ werden.
 
 Version 1.5.1 am 07.08.08 
 -------------------------
 * Dateiname wird korrekt indiziert
-* Datumsformat 'last-modified' auf "YYYYMMDD" geändert. Damit kann man die RangeSearch auf
+* Datumsformat 'last-modified' auf "YYYYMMDD" geÃ¤ndert. Damit kann man die RangeSearch auf
   das Feld anwenden (Code-Contribution)
 * locale-Handling im SharedTag verbessert (Code-Contribution)
 
@@ -25,16 +30,16 @@ Version 1.5.0 am 10.07.08 Preview
 ---------------------------------
 * Linkextraktion von Regexp auf HTMLParser umgestellt
 * HTMLParser jetzt komplett integriert
-* -notrayicon - Kommandozeilenparameter für Desktopsuche (TrayIcon wird nicht angezeigt)
+* -notrayicon - Kommandozeilenparameter fÃ¼r Desktopsuche (TrayIcon wird nicht angezeigt)
 * Lucene auf 2.3.2 geupdated
 * Anchors werden von URLs entfernt (http://forum.murfman.de/index.html#bottom --> http://forum.murfman.de/index.html)
 * Definition eines default Indexupdate-Intervalles
-* Änderung Löschvorgang temporäre Dateien
+* Ã„nderung LÃ¶schvorgang temporÃ¤re Dateien
 * Verbesserte Mimetype-Detection (Update Aperture, URL-Bestimmung)
 
 Version 1.4.2 am 04.06.08 Preview
 ---------------------------------
-* http://-Links, welche mit einem / enden, können extrahiert und indiziert werden
+* http://-Links, welche mit einem / enden, kÃ¶nnen extrahiert und indiziert werden
 
 Version 1.4.1 am 27.04.08 Preview
 ---------------------------------
@@ -56,11 +61,11 @@ Version 1.3.0/1 am 16.03.08
 * Zugriff auf Windows-Shares (ohne Authentifizierung) (Samba/CIFS)
 * HTML-Parser zum Extrahieren des Contents
 * Bugfix Mimetypdetection, wenn das File keine Dateinendung besitzt
-* Priorität für Preparatoren. Default Prio ist 0. Damit lässt sich mittels
+* PrioritÃ¤t fÃ¼r Preparatoren. Default Prio ist 0. Damit lÃ¤sst sich mittels
   URLRegEx .* in einem beliebigen Preparator (vorzugsweise EmptyPreparator)
   und priority=-1 ein CatchAll-Preparator konfigurieren
-* Highlighting für Content und Titel
-* Preparatorselektion anhand des Mimetypes (früher Dateiendung)
+* Highlighting fÃ¼r Content und Titel
+* Preparatorselektion anhand des Mimetypes (frÃ¼her Dateiendung)
 * Mimetype-detection (Dateiendung und MagicMime) 
 * Umstellung Erweiterte Suche auf Auswahl Mimetype anstelle Dateiendung
 
@@ -68,7 +73,7 @@ Version 1.3.0/1 am 16.03.08
 Version 1.2.3 am 01.12.07
 -------------------------
 
-* Bugfix: In manchen Fällen wurden keine Dateiinhalte indexiert.
+* Bugfix: In manchen Fï¿½llen wurden keine Dateiinhalte indexiert.
 
 
 Version 1.2.2 am 01.11.07
@@ -92,16 +97,16 @@ Version 1.2 am 20.10.07
 * In den Suchergebnissen werden nun Icons gezeigt, die den Typ einer Datei
   kennzeichnen. 
 * Die Index-Felder "size" und "last-modified" sind nun suchbar.
-* Neuer Präparator: EmptyPreparator (Beigesteuert von Gerhard Olsson). Dieser
-  Präparator extrahiert keinen Inhalt aus den ihm zugeordneten Dateien. Dadurch
-  landet im Index nur der Pfad und Dateiname (hilfreich für alle Dateitypen, für
-  die es keinen Präparator gibt).
-* Die maximale Anzahl von Termen pro Dokument ist nun einstellbar und zwar über
+* Neuer PrÃ¤parator: EmptyPreparator (Beigesteuert von Gerhard Olsson). Dieser
+  PrÃ¤parator extrahiert keinen Inhalt aus den ihm zugeordneten Dateien. Dadurch
+  landet im Index nur der Pfad und Dateiname (hilfreich fÃ¼r alle Dateitypen, fÃ¼r
+  die es keinen PrÃ¤parator gibt).
+* Die maximale Anzahl von Termen pro Dokument ist nun einstellbar und zwar Ã¼ber
   das <maxFieldLength>-Tag in der CrawlerConfiguration.xml. Default ist 10000.
 * Der IfilterPreparator funktioniert jetzt auch unter Windows Server 2003.
-* Die Werte für das <search:input_fieldlist>-Tag können nun beim Indexieren
-  ermittelt werden. Dadurch muss diese bei großen Indexen langsame Operation
-  nicht mehr bei der ersten Suche gemacht werden. Dies kann über das
+* Die Werte fÃ¼r das <search:input_fieldlist>-Tag kÃ¶nnen nun beim Indexieren
+  ermittelt werden. Dadurch muss diese bei groï¿½en Indexen langsame Operation
+  nicht mehr bei der ersten Suche gemacht werden. Dies kann Ã¼ber das
   <valuePrefetchFields>-Tag in der CrawlerConfiguration.xml eingestellt werden.
 * Mehrere Bugfixes
 
@@ -121,9 +126,9 @@ Version 1.1 am 26.02.06
 * Zusatzfelder haben nun die Optionen "tokenize", "store" und "index".
 * Die Tag Library ist nun dokumentiert.
 * Die Suchmaske akzeptiert nun mehrere "query" Parameter
-  (diese werden einfach aneinandergehängt)
-* Die Jacob-Präparatoren wurden verbessert. (Danke an Reinhard Balling)
-* Neuer Präparator ExternalPrepartor: Dieser Präparator ruft externe Programme
+  (diese werden einfach aneinandergehï¿½ngt)
+* Die Jacob-PrÃ¤paratoren wurden verbessert. (Danke an Reinhard Balling)
+* Neuer PrÃ¤parator ExternalPrepartor: Dieser PrÃ¤parator ruft externe Programme
   oder Skripte auf, um den Text aus Dokumenten zu extrahieren.
   (Danke an Paul Ortyl)
 * Italienische Lokalisierung fertiggestellt. (Danke an Franco Lombardo)
@@ -133,14 +138,14 @@ Version 1.1 am 26.02.06
 Version 1.1 Beta 6 am 05.12.05
 ------------------------------
 
-* Neuer Präparator: Mit dem PoiMsPowerPointPreparator steht nun auch ein
-  plattformunabhängiger Präparator für Powerpoint zur Verfügung.
+* Neuer PrÃ¤parator: Mit dem PoiMsPowerPointPreparator steht nun auch ein
+  plattformunabhÃ¤ngiger PrÃ¤parator fÃ¼r Powerpoint zur VerfÃ¼gung.
   (Vielen Dank an Gerhard Olsson)
-* Neuer Präparator: Der IfilterPreparator nutzt die I-Filter-Schnittstelle von
-  Microsoft um etliche Dateiformate zu lesen. Leider läuft er nur unter Windows.
-* Multiindexsuche: In der SearchConfiguration.xml können nun auch mehrere
+* Neuer PrÃ¤parator: Der IfilterPreparator nutzt die I-Filter-Schnittstelle von
+  Microsoft um etliche Dateiformate zu lesen. Leider lÃ¤uft er nur unter Windows.
+* Multiindexsuche: In der SearchConfiguration.xml kÃ¶nnen nun auch mehrere
   Indizes als Default angegeben werden.
-* Die Zusatzfelder (Auxiliary Fields) können nun besser mit Groß-/Kleinschreibung
+* Die Zusatzfelder (Auxiliary Fields) kÃ¶nnen nun besser mit GroÃŸ-/Kleinschreibung
   umgehen.
 * Der vom Crawler an die Webserver gesendete HTTP-Agent ist nun in der
   CrawlerConfiguration.xml konfigurierbar. So kann sich der Crawler
@@ -151,25 +156,25 @@ Version 1.1 Beta 6 am 05.12.05
 Version 1.1 Beta 5 am 13.08.05
 ------------------------------
 
-* Multiindex-Suche: Es können nun mehrere Suchindizes über eine Suchmaske
+* Multiindex-Suche: Es kÃ¶nnen nun mehrere Suchindizes Ã¼ber eine Suchmaske
   durchsucht werden. Die Suchanfragen werden dabei auf jeden Index losgelassen
-  und anschließend vereint.
-* In der Weißen und der Schwarzen Liste können jetzt auch reguläre Ausdrücke
+  und anschlieï¿½end vereint.
+* In der WeiÃŸen und der Schwarzen Liste kÃ¶nnen jetzt auch regulï¿½re Ausdrï¿½cke
   angegeben werden.
 * Suchmaske: Der Ort der Ressourcen und der Konfiguration wird jetzt besser
   erkannt, so dass regain auch dann korrekt funktioniert, wenn Tomcat als
-  Service läuft.
-* Suchmaske: Die File-zu-Http-Brücke ist nun abschaltbar.
+  Service lÃ¤uft.
+* Suchmaske: Die File-zu-Http-Brï¿½cke ist nun abschaltbar.
 * Crawler: Der Crawler braucht nun beim Durchsuchen von Verzeichnissen weniger
   Arbeitsspeicher
 * Crawler: Der Crawler nimmt nun auch fehlgeschlagene Dokumente in den Index
   auf, so dass diese bei einem erneuten Durchlauf nicht noch einmal probiert
   werden. Wird der Crawler jedoch mit der Option "-retryFailedDocs" aufgerufen,
   werden alle fehlgeschlagenen erneut probiert.
-* Der Html-Präparator übernimmt nun auch die Endungen .jsp, .php, .php3, .php4
+* Der Html-PrÃ¤parator Ã¼bernimmt nun auch die Endungen .jsp, .php, .php3, .php4
   und .asp.
-* In der CrawlerConfiguration.xml kann nun bei einem Präparator angegeben
-  werden, welche Dokumente er präparieren soll.
+* In der CrawlerConfiguration.xml kann nun bei einem PrÃ¤parator angegeben
+  werden, welche Dokumente er prï¿½parieren soll.
 * Mehrere Bugfixes
 
 
@@ -177,8 +182,8 @@ Version 1.1 Beta 4 am 13.04.05
 ------------------------------
 
 * Zugriffsrechte-Management: Es kann nun ein Rechte-Management eingebunden
-  werden, das dafuer sorgt, dass ein Benutzer nur Treffer für Dokumente erhaelt,
-  für die er Leserechte hat.
+  werden, das dafuer sorgt, dass ein Benutzer nur Treffer fÃ¼r Dokumente erhaelt,
+  fÃ¼r die er Leserechte hat.
 * Suche: Die search-Taglib hat nun ein Tag "hit_field", das ein beliebiges
   Indexfeld ausgibt. Das Tag "hit_summary" wurde in diesem Zuge entfernt.
 * Suche: Wenn Sie die Konfiguration der Suche nicht von einer XML-Datei laden
@@ -216,7 +221,7 @@ Version 1.1 Beta 3 am 17.03.05
 Version 1.1 Beta 2 am 12.03.05
 ------------------------------
 
-* Crawler: Der Crawler erstellt nun regelmäßig sog. Breakpoints. Dabei wird
+* Crawler: Der Crawler erstellt nun regelmï¿½ï¿½ig sog. Breakpoints. Dabei wird
   der aktuellen Stand der Suchindex in ein gesondertes Verzeichnis kopiert.
   Falls die Indexierung abgebrochen wurde (Z.B. weil der Rechner
   heruntergefahren wurde), wird beim naechsten mal auf dem letzten Breakpoint

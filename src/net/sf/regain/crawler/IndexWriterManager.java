@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-05 17:12:08 +0200 (So, 05 Okt 2008) $
+ *     $Date: 2008-10-27 08:37:25 +0100 (Mo, 27 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 342 $
+ * $Revision: 353 $
  */
 package net.sf.regain.crawler;
 
@@ -61,7 +61,7 @@ import org.apache.lucene.search.TermQuery;
  * Kontrolliert und kapselt die Erstellung des Suchindex.
  * <p>
  * <b>Anwendung:</b><br>
- * Rufen Sie f�r jedes Dokument {@link #addToIndex(RawDocument, ErrorLogger)}
+ * Rufen Sie für jedes Dokument {@link #addToIndex(RawDocument, ErrorLogger)}
  * auf. Rufen Sie am Ende {@link #close(boolean)} auf, um den Index zu
  * schlie�en. Danach sind keine weiteren Aufrufe von
  * {@link #addToIndex(RawDocument, ErrorLogger)} erlaubt.
@@ -180,7 +180,7 @@ public class IndexWriterManager {
    */
   private boolean mRetryFailedDocs;
   
-  /** Die DocumentFactory, die die Inhalte f�r die Indizierung aufbereitet. */
+  /** Die DocumentFactory, die die Inhalte für die Indizierung aufbereitet. */
   private DocumentFactory mDocumentFactory;
 
   /**
@@ -232,7 +232,7 @@ public class IndexWriterManager {
   private Profiler mBreakpointProfiler = new Profiler("Created breakpoints", "breakpoints");
 
   /**
-   * Enth�lt die URL und den LastUpdated-String aller Dokumente, deren Eintr�ge
+   * enthält die URL und den LastUpdated-String aller Dokumente, deren Eintr�ge
    * beim Abschlie�en des Index entfernt werden m�ssen.
    * <p>
    * Die URL bildet den key, der LastUpdated-String die value.
@@ -352,7 +352,7 @@ public class IndexWriterManager {
 
 
   /**
-   * Gibt zur�ck, ob ein bestehender Index aktualisiert wird.
+   * Gibt zurück, ob ein bestehender Index aktualisiert wird.
    * <p>
    * Anderenfalls wird ein komplett neuer Index angelegt.
    *
@@ -544,7 +544,7 @@ public class IndexWriterManager {
    *
    * @param indexDir Das Verzeichnis, in dem der Index liegt.
    * @param analyzerType Der Analyzer-Typ, den der alte Index haben muss, um
-   *        �bernommen zu werden.
+   *        übernommen zu werden.
    * @return Ob ein alter Index gefunden wurde.
    * @throws RegainException Wenn das Kopieren fehl schlug.
    */
@@ -801,10 +801,10 @@ public class IndexWriterManager {
         String url = doc.get("url");
         String lastModified = doc.get("last-modified");
 
-        // Pr�fen, ob die URL gel�scht werden soll
+        // Prüfen, ob die URL gel�scht werden soll
         boolean shouldBeDeleted;
         if (url != null) {
-          // Pr�fen, ob dieser Eintrag zum L�schen vorgesehen ist
+          // Prüfen, ob dieser Eintrag zum L�schen vorgesehen ist
           if (isMarkedForDeletion(doc)) {
             shouldBeDeleted = true;
           }
@@ -816,7 +816,7 @@ public class IndexWriterManager {
           else if (urlChecker.shouldBeKeptInIndex(url)) {
             shouldBeDeleted = false;
           }
-          // Pr�fen, ob die URL zu einem zu-verschonen-Pr�fix passt
+          // Prüfen, ob die URL zu einem zu-verschonen-Präfix passt
           else {
             shouldBeDeleted = true;
             for (int i = 0; i < preserveUrlMatcherArr.length; i++) {
@@ -861,7 +861,7 @@ public class IndexWriterManager {
   
 
   /**
-   * Merkt ein Dokument f�r die sp�tere L�schung vor.
+   * Merkt ein Dokument für die sp�tere L�schung vor.
    * <p>
    * Diese Methode ist Teil eines Workaround: Ein alter Eintrag, der durch einen
    * neuen ersetzt wird, wird nicht sofort gel�scht, sondern nur zur L�schung
@@ -887,10 +887,10 @@ public class IndexWriterManager {
 
 
   /**
-   * Gibt zur�ck, ob ein Dokument f�r die L�schung vorgemerkt wurde.
+   * Gibt zurück, ob ein Dokument für die L�schung vorgemerkt wurde.
    *
-   * @param doc Das zu pr�fende Dokument.
-   * @return Ob das Dokument f�r die L�schung vorgemerkt wurde.
+   * @param doc Das zu prüfende Dokument.
+   * @return Ob das Dokument für die L�schung vorgemerkt wurde.
    */
   private boolean isMarkedForDeletion(Document doc) {
     String url = doc.get("url");
@@ -907,7 +907,7 @@ public class IndexWriterManager {
       return false;
     }
 
-    // Pr�fen, ob es einen Eintrag f�r diese URL gibt und ob er dem
+    // Prüfen, ob es einen Eintrag für diese URL gibt und ob er dem
     // last-modified des Dokuments entspricht
     String lastModifiedToDelete = (String) mUrlsToDeleteHash.get(url);
     return lastModified.equals(lastModifiedToDelete);
@@ -915,7 +915,7 @@ public class IndexWriterManager {
 
 
   /**
-   * Gibt die Anzahl der Eintr�ge im Index zur�ck.
+   * Gibt die Anzahl der Eintr�ge im Index zurück.
    *
    * @return Die Anzahl der Eintr�ge im Index.
    * @throws RegainException Wenn die Anzahl nicht ermittelt werden konnte.
@@ -936,7 +936,7 @@ public class IndexWriterManager {
    * @throws RegainException If preparing the breakpoint failed.
    */
   private void prepareBreakpoint() throws RegainException {
-    // Testen, ob noch Eintr�ge f�r die L�schung vorgesehen sind
+    // Testen, ob noch Eintr�ge für die L�schung vorgesehen sind
     if (mUrlsToDeleteHash != null) {
       throw new RegainException("There are still documents marked for deletion."
         + " The method removeObsoleteEntires(...) has to be called first.");
@@ -1105,7 +1105,7 @@ public class IndexWriterManager {
 
 
   /**
-   * Erzeugt eine Datei, die alle Terme (also alle erlaubten Suchtexte) enth�lt.
+   * Erzeugt eine Datei, die alle Terme (also alle erlaubten Suchtexte) enthält.
    *
    * @param indexDir Das Verzeichnis, in dem der Index steht.
    * @param termFile Der Ort, wo die Datei erstellt werden soll.
@@ -1187,7 +1187,7 @@ public class IndexWriterManager {
   /**
    * Schreibt die Terme vom IndexReader sortiert in den Writer.
    * <p>
-   * Um die Terme sortieren zu k�nnen, m�ssen sie zwischengespeichert werden. Falls
+   * Um die Terme sortieren zu können, m�ssen sie zwischengespeichert werden. Falls
    * es zu viele sind, k�nnte das schief gehen. In diesem Fall sollte man auf simples
    * Schreiben umstellen.
    *

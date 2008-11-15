@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-05 18:37:42 +0200 (So, 05 Okt 2008) $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 343 $
+ * $Revision: 349 $
  */
 package net.sf.regain.search.results;
 
@@ -74,8 +74,8 @@ public class SingleSearchResults implements SearchResults {
   private int mSearchTime;
 
   /**
-   * Der Reguläre Ausdruck, zu dem eine URL passen muss, damit sie in einem
-   * neuen Fenster geöffnet wird.
+   * Der RegulÃ¤re Ausdruck, zu dem eine URL passen muss, damit sie in einem
+   * neuen Fenster geÃ¶ffnet wird.
    */
   private RE mOpenInNewWindowRegex;
 

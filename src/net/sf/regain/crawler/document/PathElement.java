@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2004-11-10 16:08:52 +0100 (Mi, 10 Nov 2004) $
- *   $Author: til132 $
- * $Revision: 10 $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 349 $
  */
 package net.sf.regain.crawler.document;
 
@@ -57,7 +57,7 @@ public class PathElement {
 
 
   /**
-   * Gibt die URL zurück.
+   * Gibt die URL zurÃ¼ck.
    *
    * @return Die URL.
    */
@@ -68,7 +68,7 @@ public class PathElement {
 
 
   /**
-   * Gibt den Titel zurück.
+   * Gibt den Titel zurÃ¼ck.
    *
    * @return Der Titel.
    */

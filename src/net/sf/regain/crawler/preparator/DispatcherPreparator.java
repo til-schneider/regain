@@ -62,14 +62,14 @@ public class DispatcherPreparator extends AbstractPreparator {
 	}
 
 	/**
-	 * Liest die Konfiguration des Präpartors aus.
+	 * Liest die Konfiguration des Prï¿½partors aus.
 	 * 
 	 * @param config
-	 *            Präparator-Konfiguration, d.h. der Abschnitt zum
+	 *            PrÃ¤parator-Konfiguration, d.h. der Abschnitt zum
 	 *            DispatcherPreprarator
 	 * 
 	 * @throws RegainException
-	 *             Wenn die Präparation fehl schlug.
+	 *             Wenn die Prï¿½paration fehl schlug.
 	 */
 	public void init(PreparatorConfig config) throws RegainException {
 		// Read the different Preparator sections of config
@@ -93,13 +93,13 @@ public class DispatcherPreparator extends AbstractPreparator {
 	}
 
 	/**
-	 * Präpariert ein Dokument für die Indizierung.
+	 * PrÃ¤pariert ein Dokument fÃ¼r die Indizierung.
 	 * 
 	 * @param rawDocument
-	 *            Das zu präpariernde Dokument.
+	 *            Das zu prï¿½pariernde Dokument.
 	 * 
 	 * @throws RegainException
-	 *             Wenn die Präparation fehl schlug.
+	 *             Wenn die Prï¿½paration fehl schlug.
 	 */
 	public void prepare(RawDocument rawDocument) throws RegainException {
 		InputStream stream = null;

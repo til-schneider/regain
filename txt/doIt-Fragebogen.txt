@@ -1,9 +1,9 @@
 Kurzbeschreibung
 ----------------
 
-regain ist eine Suchmaschine, die sowohl Dateisysteme als auch Webseiten in einen Suchindex aufnehmen kann. Mit Hilfe dieses Suchindex können - ähnlich wie bei anderen Suchmaschinen z.B. Google - über ein Webinterface Volltextsuchen in großen Datenmengen in Sekundenbruchteilen durchgeführt werden.
+regain ist eine Suchmaschine, die sowohl Dateisysteme als auch Webseiten in einen Suchindex aufnehmen kann. Mit Hilfe dieses Suchindex kÃ¶nnen - ï¿½hnlich wie bei anderen Suchmaschinen z.B. Google - Ã¼ber ein Webinterface Volltextsuchen in groï¿½en Datenmengen in Sekundenbruchteilen durchgefï¿½hrt werden.
 
-regain kann auf Servlet/JSP-fähigen Webservern eingesetzt werden und auch als sog. Desktop-Suchmaschine. Die Server-Variante ist eher für den professionellen Bereich interessant und wird bereits von dm-drogerie markt produktiv eingesetzt. Die Desktop-Suchmaschine ist die neueste Entwicklung im regain-Projekt und zielt auf den Einsatz durch Privatpersonen.
+regain kann auf Servlet/JSP-fï¿½higen Webservern eingesetzt werden und auch als sog. Desktop-Suchmaschine. Die Server-Variante ist eher fÃ¼r den professionellen Bereich interessant und wird bereits von dm-drogerie markt produktiv eingesetzt. Die Desktop-Suchmaschine ist die neueste Entwicklung im regain-Projekt und zielt auf den Einsatz durch Privatpersonen.
 
 Siehe http://regain.sf.net
 
@@ -12,53 +12,53 @@ Innovationsgrad
 ===============
 
 
-Worin besteht Ihrer Meinung nach die besondere Originalität der von Ihnen untersuchten Fragestellung?
+Worin besteht Ihrer Meinung nach die besondere Originalitï¿½t der von Ihnen untersuchten Fragestellung?
 -----------------------------------------------------------------------------------------------------
 
-Das Thema 'Desktop-Suchmaschine' ist in letzter Zeit immer mehr in den Blickpunkt vieler Firmen und Anwender gerückt.
+Das Thema 'Desktop-Suchmaschine' ist in letzter Zeit immer mehr in den Blickpunkt vieler Firmen und Anwender gerï¿½ckt.
 
-Mit regain existiert nun eine Desktop-Suchmaschine als Open-Source-Projekt. Der Vorteil gegenüber kommerziellen Produkten liegt darin, dass die Suchmaschine von jedem kostenfrei eingesetzt und darüber hinaus an dessen Bedürfnisse angepasst werden kann.
+Mit regain existiert nun eine Desktop-Suchmaschine als Open-Source-Projekt. Der Vorteil gegenÃ¼ber kommerziellen Produkten liegt darin, dass die Suchmaschine von jedem kostenfrei eingesetzt und darÃ¼ber hinaus an dessen Bedï¿½rfnisse angepasst werden kann.
 
-Darüber hinaus kann regain durch ein Plugin-System sehr einfach um weitere Dateiformate erweitert werden, da die Extraktion der Meta- und Textinformation aus den einzelnen Dateiformaten von sog. Präparatoren gekapselt wird. 
+DarÃ¼ber hinaus kann regain durch ein Plugin-System sehr einfach um weitere Dateiformate erweitert werden, da die Extraktion der Meta- und Textinformation aus den einzelnen Dateiformaten von sog. PrÃ¤paratoren gekapselt wird. 
 
 
 Was ist nach Ihrer Meinung die besondere Neuerung Ihrer Idee/Ihres Verfahrens/Ihres Produkts?
 ---------------------------------------------------------------------------------------------
 
-Das Besondere bei regain ist die Tatsache, dass es sich sowohl als Desktop-Suchmaschine als auch im Server-Einsatz nutzen lässt. Bei der Entwicklung der Architektur wurde sehr stark darauf geachtet, dass möglichst weite Teile des Systems für beide Varianten genutzt werden können. Eine Firma, die plant regain serverseitig einzusetzen, kann daher regain beispielsweise zunächst in der Desktop-Variante ohne großen Aufwand evaluieren, um dann regain mit derselben Konfiguration in der Server-Variante einzusetzen. 
+Das Besondere bei regain ist die Tatsache, dass es sich sowohl als Desktop-Suchmaschine als auch im Server-Einsatz nutzen lï¿½sst. Bei der Entwicklung der Architektur wurde sehr stark darauf geachtet, dass mï¿½glichst weite Teile des Systems fÃ¼r beide Varianten genutzt werden kÃ¶nnen. Eine Firma, die plant regain serverseitig einzusetzen, kann daher regain beispielsweise zunï¿½chst in der Desktop-Variante ohne groï¿½en Aufwand evaluieren, um dann regain mit derselben Konfiguration in der Server-Variante einzusetzen. 
 
 
 Existiert aus Ihrer Sicht aufgrund der Entwicklung Ihrer Idee/Ihres Verfahrens/Ihres Produkts bei Ihnen ein Vorsprung vor dem aktuellen Stand der Technik?
 -------------------------------------------------
 
-Der Hauptvorteil von regain gegenüber Produkten aus der kommerziellen Welt ist - neben der Tatsache, dass regain ein Open-Source-Projekt ist - seine Plattformunabhängigkeit. regain ist als Java-Anwendungen im Gegensatz zu den kommerziellen Pendants auch auf anderen Plattformen als MS Windows einsetzbar, wie beispielsweise Linux, Mac OS oder Solaris.
+Der Hauptvorteil von regain gegenÃ¼ber Produkten aus der kommerziellen Welt ist - neben der Tatsache, dass regain ein Open-Source-Projekt ist - seine Plattformunabhï¿½ngigkeit. regain ist als Java-Anwendungen im Gegensatz zu den kommerziellen Pendants auch auf anderen Plattformen als MS Windows einsetzbar, wie beispielsweise Linux, Mac OS oder Solaris.
 
 
-Wie beurteilen Sie Ihren möglichen Vorsprung vor den Entwicklungen Ihrer Mitbewerber (sowohl national wie auch international)?
+Wie beurteilen Sie Ihren mï¿½glichen Vorsprung vor den Entwicklungen Ihrer Mitbewerber (sowohl national wie auch international)?
 -------------------------------------------------
 
-Die Server-Variante von regain ist mit ihrem Funktionsumfang derzeit einzigartig auf dem Markt der kostenlosen, serverseitigen Suchmaschinen. Da die Anschaffungs- und Lizenzkosten der kommerziellen Konkurrenten sehr hoch sind, ist zu erwarten, dass Firmen sich langfristig gesehen auch nach kostengünstigeren Varianten umsehen werden. Als kostenloses und erweiterbares Open-Source-Projekt hat regain in dieser Hinsicht sehr gute Entwicklungschancen.
+Die Server-Variante von regain ist mit ihrem Funktionsumfang derzeit einzigartig auf dem Markt der kostenlosen, serverseitigen Suchmaschinen. Da die Anschaffungs- und Lizenzkosten der kommerziellen Konkurrenten sehr hoch sind, ist zu erwarten, dass Firmen sich langfristig gesehen auch nach kostengï¿½nstigeren Varianten umsehen werden. Als kostenloses und erweiterbares Open-Source-Projekt hat regain in dieser Hinsicht sehr gute Entwicklungschancen.
 
-Angesichts von so großen Namen wie Google, kann die Desktop-Variante regain langfristig wohl nicht gegen die kommerziellen Konkurrenten ankommen. Allerdings bleibt abzuwarten, ob die Konkurrenzprodukte auch in Zukunft kostenlos bleiben werden. Abgesehen davon hat regain das Potential sich auf alternativen Plattformen einerseits und in der Open-Source-Welt andererseits durchzusetzen.
+Angesichts von so groï¿½en Namen wie Google, kann die Desktop-Variante regain langfristig wohl nicht gegen die kommerziellen Konkurrenten ankommen. Allerdings bleibt abzuwarten, ob die Konkurrenzprodukte auch in Zukunft kostenlos bleiben werden. Abgesehen davon hat regain das Potential sich auf alternativen Plattformen einerseits und in der Open-Source-Welt andererseits durchzusetzen.
 
 
-Haben Sie für Ihre Idee/Ihr Verfahren/Ihr Produkt gewerbliche Schutzrechte (z.B. Patente) angemeldet?
+Haben Sie fÃ¼r Ihre Idee/Ihr Verfahren/Ihr Produkt gewerbliche Schutzrechte (z.B. Patente) angemeldet?
 -------------------------------------------------
 
-Patente wurden nicht angemeldet. regain ist unter der Open-Source-Lizenz LGPL (Lesser General Public License) freigegeben. Das heißt, regain darf zeitlich unbegrenzt und kostenlos genutzt werden. Man darf regain weiterentwickeln oder anpassen, muss aber jedem, der die geänderte Version erhält, auch den geänderten Quellcode zur Verfügung stellen. regain darf in andere Projekte eingebunden werden, ohne dass deren Quellcode veröffentlicht werden muss.
+Patente wurden nicht angemeldet. regain ist unter der Open-Source-Lizenz LGPL (Lesser General Public License) freigegeben. Das heiï¿½t, regain darf zeitlich unbegrenzt und kostenlos genutzt werden. Man darf regain weiterentwickeln oder anpassen, muss aber jedem, der die geï¿½nderte Version erhï¿½lt, auch den geï¿½nderten Quellcode zur VerfÃ¼gung stellen. regain darf in andere Projekte eingebunden werden, ohne dass deren Quellcode verï¿½ffentlicht werden muss.
 
 
-Welche Zielgruppe möchten Sie erreichen?
+Welche Zielgruppe mï¿½chten Sie erreichen?
 ----------------------------------------
 
-regain ist für zwei Zielgruppen interessant:
+regain ist fÃ¼r zwei Zielgruppen interessant:
 
-* Die Firma, die für Ihren Webauftritt eine Suche bereitstellen will bzw. ihre Intranet-Seiten um eine Suchmöglichkeit für Dokumente auf internen Dateiservern erweitern will.
+* Die Firma, die fÃ¼r Ihren Webauftritt eine Suche bereitstellen will bzw. ihre Intranet-Seiten um eine Suchmï¿½glichkeit fÃ¼r Dokumente auf internen Dateiservern erweitern will.
 
-* Der private Endanwender, der die Vorzüge von Suchmaschinen auch bei seinen privaten Dokumente nutzen können möchte.
+* Der private Endanwender, der die Vorzï¿½ge von Suchmaschinen auch bei seinen privaten Dokumente nutzen kÃ¶nnen mï¿½chte.
 
 
-Kreativität
+Kreativitï¿½t
 ===========
 
 
@@ -68,27 +68,27 @@ Welches sind Ihrer Meinung nach die besonderen Highlights ihrer Umsetzung?
 regain ist auf starke Anpassbarkeit und Erweiterbarkeit ausgelegt.
 
 Dies wird erreicht durch:
-* Den Einsatz der bereits genannten Präparatoren, durch welche regain sehr leicht weitere Dateiformate unterstützen kann.
-* Sehr weitreichende Konfigurationsmöglichkeiten: Man kann beispielsweise bestimmen, was genau in den Index kommt, wie die einzelnen Dateiformate aufbereitet werden sollen und man kann Einfluss auf den Indexierungsprozess nehmen und vieles mehr.
-* Den Einsatz der JSP/Taglib-Technologie für die Gestaltung der Benutzeroberfläche.
+* Den Einsatz der bereits genannten PrÃ¤paratoren, durch welche regain sehr leicht weitere Dateiformate unterstï¿½tzen kann.
+* Sehr weitreichende Konfigurationsmï¿½glichkeiten: Man kann beispielsweise bestimmen, was genau in den Index kommt, wie die einzelnen Dateiformate aufbereitet werden sollen und man kann Einfluss auf den Indexierungsprozess nehmen und vieles mehr.
+* Den Einsatz der JSP/Taglib-Technologie fÃ¼r die Gestaltung der Benutzeroberflï¿½che.
 
-Da eine komplette Installation einer Servlet-Engine wie Tomcat für die Desktop-Suche zu umfangreich gewesen wäre, nutzt regain hier eine eigene Adaption der Taglib-Technologie. Dadurch wird es möglich, dass die Desktop-Suche eine sehr schlanke Webserver-Implementierung einsetzt, die trotzdem JSP-Seiten in Taglib-Syntax verarbeiten kann. Die Desktop-Suche ist dadurch ressourcenschonend und bietet dennoch die gute Anpassbarkeit von JSP-Seiten.
+Da eine komplette Installation einer Servlet-Engine wie Tomcat fÃ¼r die Desktop-Suche zu umfangreich gewesen wï¿½re, nutzt regain hier eine eigene Adaption der Taglib-Technologie. Dadurch wird es mï¿½glich, dass die Desktop-Suche eine sehr schlanke Webserver-Implementierung einsetzt, die trotzdem JSP-Seiten in Taglib-Syntax verarbeiten kann. Die Desktop-Suche ist dadurch ressourcenschonend und bietet dennoch die gute Anpassbarkeit von JSP-Seiten.
 
 
-Haben Sie für die Entwicklung Standards und Normen verwendet? Wenn ja, so geben Sie diese bitte nachfolgend an.
+Haben Sie fÃ¼r die Entwicklung Standards und Normen verwendet? Wenn ja, so geben Sie diese bitte nachfolgend an.
 -------------------------------------------------
 
 regain setzt mehrere etablierte Standards ein:
-* Die Konfiguration wird durchgängig in XML-Dateien vorgenommen.
-* In der Konfiguration wird sehr viel mit Regulären Ausdrücken gearbeitet.
-* Für das Logging wird log4j eingesetzt.
-* Unit-Tests werden mit Hilfe von JUnit durchgeführt.
-* Für die Gestaltung der Benutzeroberfläche wurde die JSP/Taglib-Technologie eingesetzt.
-* Für die reine Verwaltung des Suchindex kommt Jakarta Lucene zum Einsatz.
-* Für das Auslesen der verschiedenen Dateiformate nutzt regain die folgenden Projekte: PdfBox, Jakarta POI sowie jacob (Java-COM-Bridge).
+* Die Konfiguration wird durchgï¿½ngig in XML-Dateien vorgenommen.
+* In der Konfiguration wird sehr viel mit Regulï¿½ren Ausdrï¿½cken gearbeitet.
+* fÃ¼r das Logging wird log4j eingesetzt.
+* Unit-Tests werden mit Hilfe von JUnit durchgefï¿½hrt.
+* fÃ¼r die Gestaltung der Benutzeroberflï¿½che wurde die JSP/Taglib-Technologie eingesetzt.
+* fÃ¼r die reine Verwaltung des Suchindex kommt Jakarta Lucene zum Einsatz.
+* fÃ¼r das Auslesen der verschiedenen Dateiformate nutzt regain die folgenden Projekte: PdfBox, Jakarta POI sowie jacob (Java-COM-Bridge).
 
 
-Wissenschaftliche Qualität
+Wissenschaftliche Qualitï¿½t
 ==========================
 
 
@@ -101,17 +101,17 @@ regain orientiert sich sehr stark am aktuellen Stand der Technik. Neue wissensch
 Welche Methodik lag dem Prozess der Entwicklung zu Grunde? Bitte skizzieren Sie kurz das Vorgehen.
 -------------------------------------------------
 
-Zunächst wurde die grundsätzliche Machbarkeit des Projekts anhand von Prototypen gezeigt. Daraufhin erfolgte die Entwicklung einer Architektur, die in einer ersten Version umgesetzt wurde. Der darauffolgende Entwicklungsprozess war iterativ und erfolgte in enger Zusammenarbeit mit dem Auftraggeber dm-drogerie markt.
+Zunï¿½chst wurde die grundsï¿½tzliche Machbarkeit des Projekts anhand von Prototypen gezeigt. Daraufhin erfolgte die Entwicklung einer Architektur, die in einer ersten Version umgesetzt wurde. Der darauffolgende Entwicklungsprozess war iterativ und erfolgte in enger Zusammenarbeit mit dem Auftraggeber dm-drogerie markt.
 
 
-Welche Bedeutung hat die vorgestellte Entwicklung für die weitere wissenschaftliche Arbeit Ihres Instituts/Unternehmens?
+Welche Bedeutung hat die vorgestellte Entwicklung fÃ¼r die weitere wissenschaftliche Arbeit Ihres Instituts/Unternehmens?
 -------------------------------------------------
 
 Die Entwicklung von regain wird auf die wissenschaftliche Arbeit am STZ-IDA keinen besonders wegweisenden Einfluss haben.
 
-Im STZ-IDA wurden bereits zuvor Erfahrungen mit Suchmaschinen in Projekten, u.a. für Siemens Business Service, gemacht.
+Im STZ-IDA wurden bereits zuvor Erfahrungen mit Suchmaschinen in Projekten, u.a. fÃ¼r Siemens Business Service, gemacht.
 
-Im Wesentlichen wurden durch regain Erfahrungen mit Basistechnologien und Open-Source-Projekten gesammelt, die zukünftigen Projekten zugute kommen werden.
+Im Wesentlichen wurden durch regain Erfahrungen mit Basistechnologien und Open-Source-Projekten gesammelt, die zukï¿½nftigen Projekten zugute kommen werden.
 
 
 Praxiseignung
@@ -121,56 +121,56 @@ Praxiseignung
 Wie bewerten Sie die Umsetzbarkeit Ihrer wissenschaftlichen Ergebnisse in die Praxis?
 -------------------------------------------------
 
-Bei der Entwicklung von regain wurde stets praxisnah gearbeitet, so dass bereits in einem sehr frühen Entwicklungsstadium praktische Tests durchgeführt werden konnten. Somit sollte eine Umsetzbarkeit in die Praxis von vornherein gewährleistet werden. Inzwischen wird das Projekt erfolgreich und produktiv auf dem Internetauftritt von dm-drogerie markt eingesetzt.
+Bei der Entwicklung von regain wurde stets praxisnah gearbeitet, so dass bereits in einem sehr frï¿½hen Entwicklungsstadium praktische Tests durchgefï¿½hrt werden konnten. Somit sollte eine Umsetzbarkeit in die Praxis von vornherein gewï¿½hrleistet werden. Inzwischen wird das Projekt erfolgreich und produktiv auf dem Internetauftritt von dm-drogerie markt eingesetzt.
 
 
 In welchem Stand der Entwicklung befindet sich Ihre Idee/Ihr Verfahren/Ihr Produkt?
 -------------------------------------------------
 
-Die Server-Variante ist bereits produktiv im Einsatz, die Desktop-Suche befindet sich zur Zeit noch im Teststadium. Bei der für den doIT Software-Award bereitgestellten Demo-Version handelt es sich um die neue Desktop-Suche.
+Die Server-Variante ist bereits produktiv im Einsatz, die Desktop-Suche befindet sich zur Zeit noch im Teststadium. Bei der fÃ¼r den doIT Software-Award bereitgestellten Demo-Version handelt es sich um die neue Desktop-Suche.
 
 
-Funktionalität
+Funktionalitï¿½t
 ==============
 
 
-Welche Funktionalität wurde in Ihrer Entwicklung umgesetzt? Bitte berücksichtigen Sie dabei den Aspekt der Aufgabenangemessenheit und der Abdeckung der von der geplanten Zielgruppe gestellten Anforderungen.
+Welche Funktionalitï¿½t wurde in Ihrer Entwicklung umgesetzt? Bitte berï¿½cksichtigen Sie dabei den Aspekt der Aufgabenangemessenheit und der Abdeckung der von der geplanten Zielgruppe gestellten Anforderungen.
 -------------------------------------------------
 
-Alle bisher genannten Funktionen von regain sind bereits vollständig umgesetzt.
+Alle bisher genannten Funktionen von regain sind bereits vollstï¿½ndig umgesetzt.
 
 Die wichtigsten Funktionen im einzelnen:
-* regain nutzt die mächtige Suchsyntax von Lucene. Damit lassen sich sehr gezielte Suchanfragen formulieren. Die wichtigsten Möglichkeiten sind: Bool'sche Operatoren, Wildcards, Phonetische Suche, Gruppierung
+* regain nutzt die mï¿½chtige Suchsyntax von Lucene. Damit lassen sich sehr gezielte Suchanfragen formulieren. Die wichtigsten Mï¿½glichkeiten sind: Bool'sche Operatoren, Wildcards, Phonetische Suche, Gruppierung
 
 * Mit regain kann sehr genau festgelegt werden, was in den Index kommen soll und was nicht.
-- Weiße und Schwarze Liste: Durch eine Weiße und eine Schwarze Liste läßt sich der aufzubereitende Suchraum genau eingrenzen. So kann z.B. alles von http://www.xy.de indexiert werden, außer http://www.xy.de/dynamic.
-- Mehrere Quellen in einem Index: Es können in denselben Suchindex Dokumente von verschiedenen Dateisystemen und/oder Webseiten indexiert werden.
-- Partielle Indexierung: Wenn in einem Suchindex z.B. Dokumente aus mehreren Netzlaufwerken und einer Webseite sind, dann kann man z.B. nur die Dokumente eines der Netzlaufwerke aktualisieren. So können manche Laufwerke stündlich aktualisiert werden, andere nur wöchentlich.
+- Weiï¿½e und Schwarze Liste: Durch eine Weiï¿½e und eine Schwarze Liste lï¿½ï¿½t sich der aufzubereitende Suchraum genau eingrenzen. So kann z.B. alles von http://www.xy.de indexiert werden, auï¿½er http://www.xy.de/dynamic.
+- Mehrere Quellen in einem Index: Es kÃ¶nnen in denselben Suchindex Dokumente von verschiedenen Dateisystemen und/oder Webseiten indexiert werden.
+- Partielle Indexierung: Wenn in einem Suchindex z.B. Dokumente aus mehreren Netzlaufwerken und einer Webseite sind, dann kann man z.B. nur die Dokumente eines der Netzlaufwerke aktualisieren. So kÃ¶nnen manche Laufwerke stï¿½ndlich aktualisiert werden, andere nur wï¿½chentlich.
 
 * Indexierung
 - Hot-Deployment: Auf einen neuen Suchindex wechseln, ohne die Servlet-Engine (z.B. Tomcat) neu zu starten.
 - Stopword-Liste: Worte bestimmen, die nicht indexiert werden sollen.
-- Analyse-Dateien: Auf Wunsch können alle Zwischenschritte der Indexierung als Dateien ausgegeben werden.
-- Content-Extraktion für HTML: Es ist möglich, lediglich den eigentlichen Inhalt von HTML-Dokumenten zu indexieren. regain klammert die Navigation und die Fußleiste aus.
-- Pfad-Extraktion für HTML: Den Navigationspfad von HTML-Dokumenten bei den Suchergebnissen anzeigen lassen.
+- Analyse-Dateien: Auf Wunsch kÃ¶nnen alle Zwischenschritte der Indexierung als Dateien ausgegeben werden.
+- Content-Extraktion fÃ¼r HTML: Es ist mï¿½glich, lediglich den eigentlichen Inhalt von HTML-Dokumenten zu indexieren. regain klammert die Navigation und die Fuï¿½leiste aus.
+- Pfad-Extraktion fÃ¼r HTML: Den Navigationspfad von HTML-Dokumenten bei den Suchergebnissen anzeigen lassen.
 - Erkennung von Dead Links: Quasi als Abfallprodukt werden alle gefundenen Dead Links (also Links auf nicht mehr vorhandene Dokumente) ausgegeben.
 
-* regain ist so angelegt, dass es sich ganz nach den jeweiligen Bedürfnissen anpassen und erweitern lässt.
-- Präparatoren: Die Aufbereitung eines bestimmten Dateiformats wird durch sogenannte Präparatoren übernommen. Dadurch kann man flexibel festlegen, welche Dateien mit welchem Präparator aufbereitet werden sollen und regain läßt sich leicht um weitere Dateiformate erweitern.
-- TagLibrary für die Suche: Für die Erstellung der Java Server Page für die Suche steht eine TagLibrary bereit. Dadurch ist die Anpassung der Suchmaske an ein bestimmtes Design besonders einfach.
+* regain ist so angelegt, dass es sich ganz nach den jeweiligen Bedï¿½rfnissen anpassen und erweitern lï¿½sst.
+- PrÃ¤paratoren: Die Aufbereitung eines bestimmten Dateiformats wird durch sogenannte PrÃ¤paratoren Ã¼bernommen. Dadurch kann man flexibel festlegen, welche Dateien mit welchem PrÃ¤parator aufbereitet werden sollen und regain lï¿½ï¿½t sich leicht um weitere Dateiformate erweitern.
+- TagLibrary fÃ¼r die Suche: fÃ¼r die Erstellung der Java Server Page fÃ¼r die Suche steht eine TagLibrary bereit. Dadurch ist die Anpassung der Suchmaske an ein bestimmtes Design besonders einfach.
 - Konfigurierbarkeit: regain ist stark anpassbar. Die gesamte Konfiguration des Crawlers befindet sich in einer XML-Datei.
 
 
-Beschreiben Sie bitte, wie in Ihrer Lösung der Aspekt der Benutzerfreundlichkeit umgesetzt wurde.
+Beschreiben Sie bitte, wie in Ihrer Lï¿½sung der Aspekt der Benutzerfreundlichkeit umgesetzt wurde.
 -------------------------------------------------
 
-Die meiste Zeit arbeitet regain im Hintergrund. Die Benutzeroberfläche beschränkt sich auf eine Suchmaske, eine Einstellungsseite und einen Installations-Wizard.
+Die meiste Zeit arbeitet regain im Hintergrund. Die Benutzeroberflï¿½che beschrï¿½nkt sich auf eine Suchmaske, eine Einstellungsseite und einen Installations-Wizard.
 
-Die Suchmaske orientiert sich am Aussehen bekannter Suchdienste wie Google, Yahoo, web.de oder altavista.com. Wie auch andere Suchdienste wird die Suchmaske über den Browser bedient. Sie entspricht damit den Usability-Prinzipien der Aufgabenangemessenheit, Selbstbeschreibungsfähigkeit, Erwartungskonformität und Lernförderlichkeit. Durch den Einsatz von JSP/Taglib-Technologie ist regain auch in hohem Maße individualisierbar.
+Die Suchmaske orientiert sich am Aussehen bekannter Suchdienste wie Google, Yahoo, web.de oder altavista.com. Wie auch andere Suchdienste wird die Suchmaske Ã¼ber den Browser bedient. Sie entspricht damit den Usability-Prinzipien der Aufgabenangemessenheit, Selbstbeschreibungsfï¿½higkeit, Erwartungskonformitï¿½t und LernfÃ¼rderlichkeit. Durch den Einsatz von JSP/Taglib-Technologie ist regain auch in hohem Maï¿½e individualisierbar.
 
 Die Einstellungsseite und der Installations-Wizard orientieren sich ebenfalls an bekannten Vorbildern, so dass sie von recht unerfahrenen Benutzern leicht zu bedienen sind.
 
-Nutzer mit fortgeschrittenen Kenntnissen haben zudem die Möglichkeit, weitergehende Konfigurationen direkt in den XML-Konfigurationsdateien vorzunehmen. Zu diesem Zweck ist eine ausführliche Dokumentation vorhanden (Siehe http://regain.sf.net ).
+Nutzer mit fortgeschrittenen Kenntnissen haben zudem die Mï¿½glichkeit, weitergehende Konfigurationen direkt in den XML-Konfigurationsdateien vorzunehmen. Zu diesem Zweck ist eine ausfï¿½hrliche Dokumentation vorhanden (Siehe http://regain.sf.net ).
 
 
 URL der Demo-Version:

@@ -156,6 +156,12 @@
    +-->
   <valuePrefetchFields>mimetype</valuePrefetchFields>
 
+  <!--
+   | Specifies wether the whole content should be stored in the index for the
+   | purpose of a content preview
+   +-->
+  <storeContentForPreview>true</storeContentForPreview>
+  
 </searchIndex>
 
 

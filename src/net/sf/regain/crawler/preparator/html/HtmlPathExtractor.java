@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-10 12:39:29 +0100 (Do, 10 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 67 $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 349 $
  */
 package net.sf.regain.crawler.preparator.html;
 
@@ -39,24 +39,24 @@ import org.apache.regexp.RESyntaxException;
 
 
 /**
- * Extrahiert aus einem HTML-Dokument den Pfad, über den es zu erreichen ist.
+ * Extrahiert aus einem HTML-Dokument den Pfad, Ã¼ber den es zu erreichen ist.
  *
  * @author Til Schneider, www.murfman.de
  */
 public class HtmlPathExtractor extends AbstractExtractor {
 
   /**
-   * Der Reguläre Ausdruck, der ein Pfadelement findet.
+   * Der Regulï¿½re Ausdruck, der ein Pfadelement findet.
    */
   private RE mPathNodeRE;
 
   /**
-   * Die Gruppe, die die URL im Reguläre Ausdruck findet.
+   * Die Gruppe, die die URL im Regulï¿½re Ausdruck findet.
    */
   private int mPathNodeUrlGroup;
 
   /**
-   * Die Gruppe, die den Titel im Reguläre Ausdruck findet.
+   * Die Gruppe, die den Titel im Regulï¿½re Ausdruck findet.
    */
   private int mPathNodeTitleGroup;
 
@@ -65,25 +65,25 @@ public class HtmlPathExtractor extends AbstractExtractor {
   /**
    * Erzeugt eine neue HtmlPathExtractor-Instanz.
    *
-   * @param prefix Der Präfix den eine URL haben muss, damit das zugehörige
+   * @param prefix Der PrÃ¤fix den eine URL haben muss, damit das zugehï¿½rige
    *        Dokument von diesem HtmlPathExtractor bearbeitet wird.
-   * @param pathStartRegex Der Reguläre Ausdruck, der die Stelle findet,
+   * @param pathStartRegex Der Regulï¿½re Ausdruck, der die Stelle findet,
    *        wo die Pfadangabe beginnt.
    *        <p>
    *        Ist <code>null</code> oder Leerstring, wenn der Pfad am Anfang des
    *        HTML-Dokuments beginnt.
-   * @param pathEndRegex Der Reguläre Ausdruck, der die Stelle findet,
+   * @param pathEndRegex Der Regulï¿½re Ausdruck, der die Stelle findet,
    *        wo die Pfadangabe endet.
    *        <p>
    *        Ist <code>null</code> oder Leerstring, wenn der Pfad am Ende des
    *        HTML-Dokuments endet.
-   * @param pathNodeRegex Der Reguläre Ausdruck, der ein Pfadelement findet.
-   * @param pathNodeUrlGroup Die Gruppe, die die URL im Reguläre Ausdruck
+   * @param pathNodeRegex Der Regulï¿½re Ausdruck, der ein Pfadelement findet.
+   * @param pathNodeUrlGroup Die Gruppe, die die URL im Regulï¿½re Ausdruck
    *        findet.
-   * @param pathNodeTitleGroup Die Gruppe, die den Titel im Reguläre Ausdruck
+   * @param pathNodeTitleGroup Die Gruppe, die den Titel im Regulï¿½re Ausdruck
    *        findet.
-   * @throws RegainException Wenn ein Regulärer Ausdruck einen Syntaxfehler
-   *         enthält.
+   * @throws RegainException Wenn ein Regulï¿½rer Ausdruck einen Syntaxfehler
+   *         enthÃ¤lt.
    */
   public HtmlPathExtractor(String prefix, String pathStartRegex,
     String pathEndRegex, String pathNodeRegex, int pathNodeUrlGroup,
@@ -106,11 +106,11 @@ public class HtmlPathExtractor extends AbstractExtractor {
 
 
   /**
-   * Extrahiert aus dem gegebenen HTML-Dokument den Pfad über den es zu
+   * Extrahiert aus dem gegebenen HTML-Dokument den Pfad Ã¼ber den es zu
    * erreichen ist.
    *
    * @param rawDocument Das Dokument, aus dem der Pfad extrahiert werden soll.
-   * @return Der Pfad über den das Dokument zu erreichen ist oder
+   * @return Der Pfad Ã¼ber den das Dokument zu erreichen ist oder
    *         <code>null</code>, wenn kein Pfad gefunden wurde.
    * @throws RegainException Wenn das Dokument nicht gelesen werden konnte.
    */

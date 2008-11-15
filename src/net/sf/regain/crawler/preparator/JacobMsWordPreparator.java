@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-01-21 12:53:30 +0100 (Sa, 21 Jan 2006) $
- *   $Author: til132 $
- * $Revision: 194 $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 349 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -57,7 +57,7 @@ import de.filiadata.lucene.spider.generated.msoffice2000.word.Shapes;
 import de.filiadata.lucene.spider.generated.msoffice2000.word.WdHeaderFooterIndex;
 
 /**
- * Präpariert ein Microsoft-Word-Dokument für die Indizierung mit Hilfe der
+ * PrÃ¤pariert ein Microsoft-Word-Dokument fÃ¼r die Indizierung mit Hilfe der
  * <a href="http://danadler.com/jacob/">Jacob-API</a>, wobei
  * <a href="http://www.bigatti.it/projects/jacobgen/">Jacobgen</a>
  * genutzt wurde, um den Zugriff zu erleichtern.
@@ -120,11 +120,11 @@ public class JacobMsWordPreparator extends AbstractJacobMsOfficePreparator {
 
 
   /**
-   * Präpariert ein Dokument für die Indizierung.
+   * PrÃ¤pariert ein Dokument fÃ¼r die Indizierung.
    *
-   * @param rawDocument Das zu präpariernde Dokument.
+   * @param rawDocument Das zu prï¿½pariernde Dokument.
    *
-   * @throws RegainException Wenn die Präparation fehl schlug.
+   * @throws RegainException Wenn die Prï¿½paration fehl schlug.
    */
   public void prepare(RawDocument rawDocument) throws RegainException {
     if (mWordApplication == null) {
@@ -141,12 +141,12 @@ public class JacobMsWordPreparator extends AbstractJacobMsOfficePreparator {
     }
 
     try {
-      // Dokument öffnen (Bei Konvertierung nicht fragen und Read only)
+      // Dokument ï¿½ffnen (Bei Konvertierung nicht fragen und Read only)
       // Workaround: Wenn das Dokument von einer anderen Person bearbeitet wird,
       //             dann erscheint ein Popup. Um das zu verhindern, wird in
       //             jedem Fall (auch bei file-Dokumenten) anstatt der
-      //             Originaldatei eine temporäre Kopie genutzt, da diese
-      //             unmöglich von jemandem bearbeitet werden kann.
+      //             Originaldatei eine temporï¿½re Kopie genutzt, da diese
+      //             unmï¿½glich von jemandem bearbeitet werden kann.
       String fileName = rawDocument.getContentAsFile(true).getAbsolutePath();
       Documents docs = mWordApplication.getDocuments();
       Document doc = docs.open(new Variant(fileName),
@@ -221,7 +221,7 @@ public class JacobMsWordPreparator extends AbstractJacobMsOfficePreparator {
         setHeadlines(headlines.toString());
       }
 
-      // Dokument schließen (ohne Speichern)
+      // Dokument schlieï¿½en (ohne Speichern)
       doc.close(new Variant(false));
     }
     catch (ComFailException exc) {
@@ -299,7 +299,7 @@ public class JacobMsWordPreparator extends AbstractJacobMsOfficePreparator {
   public void close() throws RegainException {
     if (mWordApplication != null) {
       try {
-        // Word schließen
+        // Word schlieï¿½en
         mWordApplication.quit();
         mLog.info("Closed MS Word");
       }
@@ -321,7 +321,7 @@ public class JacobMsWordPreparator extends AbstractJacobMsOfficePreparator {
     objWord = New Word.Application
   End If
 
-  'Wenn Du keinen With-Block machst mußt Du bei VB überall das objWord
+  'Wenn Du keinen With-Block machst muï¿½t Du bei VB Ã¼berall das objWord
   'vornedran schreiben! So reicht ein "."
   With objWord
 

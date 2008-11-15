@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-05 18:40:10 +0200 (So, 05 Okt 2008) $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 344 $
+ * $Revision: 349 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -50,7 +50,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 /**
- * Präpariert ein Microsoft-Excel-Dokument für die Indizierung mit Hilfe der
+ * PrÃ¤pariert ein Microsoft-Excel-Dokument fÃ¼r die Indizierung mit Hilfe der
  * <a href="http://jakarta.apache.org/poi/">POI-API</a>.
  * <p>
  * Dabei werden die Rohdaten des Dokuments von Formatierungsinformation befreit,
@@ -79,13 +79,13 @@ public class PoiMsExcelPreparator extends AbstractPreparator {
   }
   
 	/**
-	 * Präpariert ein Dokument für die Indizierung.
+	 * PrÃ¤pariert ein Dokument fÃ¼r die Indizierung.
 	 * 
 	 * @param rawDocument
-	 *            Das zu präpariernde Dokument.
+	 *            Das zu prï¿½pariernde Dokument.
 	 * 
 	 * @throws RegainException
-	 *             Wenn die Präparation fehl schlug.
+	 *             Wenn die Prï¿½paration fehl schlug.
 	 */
 	public void prepare(RawDocument rawDocument) throws RegainException {
 		InputStream stream = null;
@@ -106,11 +106,11 @@ public class PoiMsExcelPreparator extends AbstractPreparator {
 	}
 
   /**
-   * Präpariert ein Dokument für die Indizierung.
+   * PrÃ¤pariert ein Dokument fÃ¼r die Indizierung.
    *
-   * @param rawDocument Das zu präpariernde Dokument.
+   * @param rawDocument Das zu prï¿½pariernde Dokument.
    *
-   * @throws RegainException Wenn die Präparation fehl schlug.
+   * @throws RegainException Wenn die Prï¿½paration fehl schlug.
    */
   public void prepareUsingHSSFSheet(RawDocument rawDocument) throws RegainException {
     InputStream stream = null;
@@ -148,7 +148,7 @@ public class PoiMsExcelPreparator extends AbstractPreparator {
    * Durchsucht ein Excel-Sheet nach Text.
    *
    * @param sheet Das zu durchsuchende Excel-Sheet.
-   * @param cleanBuffer Der StringBuffer, an den der gefundene Text angefügt
+   * @param cleanBuffer Der StringBuffer, an den der gefundene Text angefï¿½gt
    *        werden soll.
    */
   private void parseSheet(HSSFSheet sheet, StringBuffer cleanBuffer) {
@@ -169,7 +169,7 @@ public class PoiMsExcelPreparator extends AbstractPreparator {
    * Durchsucht eine Excel-Zeile nach Text.
    *
    * @param row Das zu durchsuchende Excel-Zeile.
-   * @param cleanBuffer Der StringBuffer, an den der gefundene Text angefügt
+   * @param cleanBuffer Der StringBuffer, an den der gefundene Text angefï¿½gt
    *        werden soll.
    */
   private void parseRow(HSSFRow row, StringBuffer cleanBuffer) {
@@ -190,7 +190,7 @@ public class PoiMsExcelPreparator extends AbstractPreparator {
    * Durchsucht eine Excel-Zelle nach Text.
    *
    * @param cell Das zu durchsuchende Excel-Zelle.
-   * @param cleanBuffer Der StringBuffer, an den der gefundene Text angefügt
+   * @param cleanBuffer Der StringBuffer, an den der gefundene Text angefï¿½gt
    *        werden soll.
    */
   private void parseCell(HSSFCell cell, StringBuffer cleanBuffer) {
@@ -257,10 +257,10 @@ public class PoiMsExcelPreparator extends AbstractPreparator {
 
 
   /**
-   * Prüft, ob die gegebene Excel-Zelle ein Datum enthält.
+   * PrÃ¼ft, ob die gegebene Excel-Zelle ein Datum enthÃ¤lt.
    *
-   * @param cell Die zu prüfende Excel-Zelle.
-   * @return Ob die gegebene Excel-Zelle ein Datum enthält.
+   * @param cell Die zu prÃ¼fende Excel-Zelle.
+   * @return Ob die gegebene Excel-Zelle ein Datum enthÃ¤lt.
    */
   private boolean isCellDateFormatted(HSSFCell cell) {
     short format = cell.getCellStyle().getDataFormat();

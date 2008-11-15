@@ -21,18 +21,18 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-13 11:45:38 +0200 (Sa, 13 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 158 $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 349 $
  */
 package net.sf.regain.crawler.document;
 
 import net.sf.regain.crawler.CrawlerToolkit;
 
 /**
- * Thread, der einen HTTP-Download übernimmt.
+ * Thread, der einen HTTP-Download Ã¼bernimmt.
  * <p>
- * Hilfsklasse für {@link RawDocument}.
+ * Hilfsklasse fÃ¼r {@link RawDocument}.
  *
  * @author Til Schneider, www.murfman.de
  */
@@ -68,7 +68,7 @@ public class HttpDownloadThread extends Thread {
 
 
   /**
-   * Führt den Download aus.
+   * Fï¿½hrt den Download aus.
    * <p>
    * Am Ende ist entweder mDocContent oder mError gesetzt, bevor der wartende
    * Thread benachrichtigt wird.
@@ -101,10 +101,10 @@ public class HttpDownloadThread extends Thread {
 
 
   /**
-   * Gibt den Inhalt des heruntergeladenen Dokuments zurück.
+   * Gibt den Inhalt des heruntergeladenen Dokuments zurÃ¼ck.
    * <p>
-   * Falls das Dokument noch nicht vollständig heruntergeladen wurde, wird
-   * <code>null</code> zurückgegeben.
+   * Falls das Dokument noch nicht vollstï¿½ndig heruntergeladen wurde, wird
+   * <code>null</code> zurÃ¼ckgegeben.
    *
    * @return Der Inhalt des heruntergeladenen Dokuments
    */
@@ -114,9 +114,9 @@ public class HttpDownloadThread extends Thread {
 
 
   /**
-   * Gibt den Fehler zurück, der beim Download auftrat.
+   * Gibt den Fehler zurÃ¼ck, der beim Download auftrat.
    * <p>
-   * Falls noch kein Fehler auftrat, wird <code>null</code> zurückgegeben.
+   * Falls noch kein Fehler auftrat, wird <code>null</code> zurÃ¼ckgegeben.
    *
    * @return Der Fehler, der beim Download auftrat.
    */

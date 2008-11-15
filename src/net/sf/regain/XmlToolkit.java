@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-11-14 09:12:56 +0100 (Mo, 14 Nov 2005) $
- *   $Author: til132 $
- * $Revision: 178 $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 349 $
  */
 package net.sf.regain;
 
@@ -46,7 +46,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Enth�lt Hilfsmethoden f�r die Extraktion von Daten aus dem DOM-Dokument einer
+ * enthält Hilfsmethoden für die Extraktion von Daten aus dem DOM-Dokument einer
  * XML-Datei.
  *
  * @author Til Schneider, www.murfman.de
@@ -188,9 +188,9 @@ public class XmlToolkit {
 
   /**
    * Extrahiert den Text eines Knotens, wandelt ihn in einen boolean und gibt das
-   * Ergebnis zur�ck.
+   * Ergebnis zurück.
    *
-   * @param node Der Knoten, dessen Text zur�ckgeben werden soll.
+   * @param node Der Knoten, dessen Text zurückgeben werden soll.
    *
    * @return Der Text des Knotens als boolean.
    * @throws RegainException Falls der Knoten keinen Text hat oder falls der
@@ -211,9 +211,9 @@ public class XmlToolkit {
 
   /**
    * Extrahiert den Text eines Knotens, wandelt ihn in ein int und gibt das
-   * Ergebnis zur�ck.
+   * Ergebnis zurück.
    *
-   * @param node Der Knoten, dessen Text zur�ckgeben werden soll.
+   * @param node Der Knoten, dessen Text zurückgeben werden soll.
    *
    * @return Der Text des Knotens als int.
    * @throws RegainException Falls der Knoten keinen Text hat oder falls der
@@ -233,9 +233,9 @@ public class XmlToolkit {
 
   /**
    * Extrahiert den Text eines Knotens, wandelt ihn in ein double und gibt das
-   * Ergebnis zur�ck.
+   * Ergebnis zurück.
    *
-   * @param node Der Knoten, dessen Text zur�ckgeben werden soll.
+   * @param node Der Knoten, dessen Text zurückgeben werden soll.
    *
    * @return Der Text des Knotens als double.
    * @throws RegainException Falls der Knoten keinen Text hat oder falls der
@@ -255,9 +255,9 @@ public class XmlToolkit {
 
   /**
    * Extrahiert den Text eines Knotens, wandelt ihn in ein String-Array um, das
-   * alle durch Leerzeichen getrennte Worte enth�lt.
+   * alle durch Leerzeichen getrennte Worte enthält.
    *
-   * @param node Der Knoten, dessen Text zur�ckgeben werden soll.
+   * @param node Der Knoten, dessen Text zurückgeben werden soll.
    * @param mandatory Gibt an, ob eine Exception geworfen werden soll, falls der
    *        Text fehlt.
    *
@@ -284,11 +284,11 @@ public class XmlToolkit {
 
 
   /**
-   * Gibt den Text eines Knotens zur�ck und pr�ft, ob er eine g�ltige URL ist.
+   * Gibt den Text eines Knotens zurück und Prüft, ob er eine g�ltige URL ist.
    * <p>
-   * Der Text wird als g�ltige URL angesehen, wenn er keinen Backslash enth�lt.
+   * Der Text wird als g�ltige URL angesehen, wenn er keinen Backslash enthält.
    *
-   * @param node Der Knoten, dessen Text als URL zur�ckgeben werden soll.
+   * @param node Der Knoten, dessen Text als URL zurückgeben werden soll.
    *
    * @return Der Text des Knotens.
    * @throws RegainException Wenn der Knoten keinen Text hat oder wenn der Text
@@ -325,14 +325,14 @@ public class XmlToolkit {
 
   
   /**
-   * Gibt den Text eines Knotens zur�ck.
+   * Gibt den Text eines Knotens zurück.
    * <p>
-   * Wenn der Knoten keinen Text hat, dann entscheidet <CODE>mandatory</CODE> dar�ber,
+   * Wenn der Knoten keinen Text hat, dann entscheidet <CODE>mandatory</CODE> darüber,
    * ob eine Exception geworfen (<CODE>mandatory</CODE> ist <CODE>true</CODE>) oder
-   * ob <CODE>null</CODE> zur�ckgegeben werden soll (<CODE>mandatory</CODE> ist
+   * ob <CODE>null</CODE> zurückgegeben werden soll (<CODE>mandatory</CODE> ist
    * <CODE>false</CODE>)
    *
-   * @param node Der Knoten, dessen Text zur�ckgeben werden soll.
+   * @param node Der Knoten, dessen Text zurückgeben werden soll.
    * @param mandatory Gibt an, ob eine Exception geworfen werden soll, falls der
    *        Text fehlt.
    *
@@ -348,14 +348,14 @@ public class XmlToolkit {
   
 
   /**
-   * Gibt den Text eines Knotens zur�ck.
+   * Gibt den Text eines Knotens zurück.
    * <p>
-   * Wenn der Knoten keinen Text hat, dann entscheidet <CODE>mandatory</CODE> dar�ber,
+   * Wenn der Knoten keinen Text hat, dann entscheidet <CODE>mandatory</CODE> darüber,
    * ob eine Exception geworfen (<CODE>mandatory</CODE> ist <CODE>true</CODE>) oder
-   * ob <CODE>null</CODE> zur�ckgegeben werden soll (<CODE>mandatory</CODE> ist
+   * ob <CODE>null</CODE> zurückgegeben werden soll (<CODE>mandatory</CODE> ist
    * <CODE>false</CODE>)
    *
-   * @param node Der Knoten, dessen Text zur�ckgeben werden soll.
+   * @param node Der Knoten, dessen Text zurückgeben werden soll.
    * @param mandatory Gibt an, ob eine Exception geworfen werden soll, falls der
    *        Text fehlt.
    * @param trimmed Specifies whether the text should be trimmed.
@@ -406,17 +406,17 @@ public class XmlToolkit {
   
   
   /**
-   * Gibt den Kindknoten mit einem bestimmten Namen zur�ck.
+   * Gibt den Kindknoten mit einem bestimmten Namen zurück.
    * <p>
    * Falls der Knoten mehrere Kinder mit diesem Namen hat, so wird das erste Kind
-   * zur�ckgegeben.
+   * zurückgegeben.
    * <p>
    * Falls der Knoten kein Kind mit diesem Name hat, dann entscheidet
-   * <CODE>mandatory</CODE> dar�ber, ob eine Exception geworfen
+   * <CODE>mandatory</CODE> darüber, ob eine Exception geworfen
    * (<CODE>mandatory</CODE> ist <CODE>true</CODE>) oder ob <CODE>null</CODE>
-   * zur�ckgegeben werden soll (<CODE>mandatory</CODE> ist <CODE>false</CODE>)
+   * zurückgegeben werden soll (<CODE>mandatory</CODE> ist <CODE>false</CODE>)
    *
-   * @param node Der Knoten, dessen Kind zur�ckgegeben werden soll.
+   * @param node Der Knoten, dessen Kind zurückgegeben werden soll.
    * @param childNodeName Der Name des Kindknotens.
    * @param mandatory Gibt an, ob eine Exception geworfen werden soll, falls der
    *        Knoten kein Kind mit diesem Namen hat.
@@ -441,12 +441,12 @@ public class XmlToolkit {
 
 
   /**
-   * Gibt alle Kindknoten mit einem bestimmten Namen zur�ck.
+   * Gibt alle Kindknoten mit einem bestimmten Namen zurück.
    * <p>
    * Falls der Knoten kein Kind mit diesem Namen hat, so wird ein leeres Array
-   * zur�ckgegeben.
+   * zurückgegeben.
    *
-   * @param node Der Knoten, dessen Kinder zur�ckgegeben werden soll.
+   * @param node Der Knoten, dessen Kinder zurückgegeben werden soll.
    * @param childNodeName Der Name der Kindknoten.
    *
    * @return Die Kindknoten.
@@ -685,10 +685,10 @@ public class XmlToolkit {
 
 
   /**
-   * Gibt den Attributwert eines Knotens zur�ck.
+   * Gibt den Attributwert eines Knotens zurück.
    *
-   * @param node Der Knoten, dessen Attribut zur�ckgegeben werden soll.
-   * @param attributeName Der Name des Attributs, das zur�ckgegeben werden soll.
+   * @param node Der Knoten, dessen Attribut zurückgegeben werden soll.
+   * @param attributeName Der Name des Attributs, das zurückgegeben werden soll.
    * @param mandatory Gibt an, ob eine Exception geworfen werden soll, falls der
    *        Knoten kein solches Attribut hat.
    *

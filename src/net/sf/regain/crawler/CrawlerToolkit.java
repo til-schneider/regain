@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2008-10-27 08:37:25 +0100 (Mo, 27 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 353 $
  */
 package net.sf.regain.crawler;
 
@@ -50,7 +50,7 @@ public class CrawlerToolkit {
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(CrawlerToolkit.class);
 
-
+  
   /**
    * Returns a human readable command string for a command.
    *
@@ -218,7 +218,7 @@ public class CrawlerToolkit {
 
   /**
    * L�dt ein Dokument von einem HTTP-Server herunter und gibt seinen Inhalt
-   * zur�ck.
+   * zurück.
    *
    * @param url Die URL des zu ladenden Dokuments.
    *
@@ -322,7 +322,7 @@ public class CrawlerToolkit {
   /**
    * Wandelt die gegebene HTTP-URL in eine absolute URL um.
    * <p>
-   * Wenn die URL bereits absolut war, so wird sie unver�ndert zur�ckgegeben.
+   * Wenn die URL bereits absolut war, so wird sie unver�ndert zurückgegeben.
    *
    * @param url Die umzuwandelnde URL.
    * @param parentUrl Die URL auf die sich die umzuwandelnde URL bezieht. Diese
@@ -534,7 +534,7 @@ public class CrawlerToolkit {
    *
    * @param text Der zu s�ubernde HTML-Text.
    *
-   * @return Der von Tags ges�berte Text
+   * @return Der von Tags gesüberte Text
    */
   public static String cleanFromHtmlTags(String text) {
     StringBuffer clean = new StringBuffer(text.length());

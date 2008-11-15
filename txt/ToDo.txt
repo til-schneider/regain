@@ -124,7 +124,7 @@ X Suchmaske: Version anzeigen
 X Zugriffsrechte beachten: Ein Benutzer kann nur die Dokumente sehen, fuer die
     er auch Leserechte hat. (Aufwand: 2 Tage)
 X Taglib-Tag, das ein bestimmtes Indexfeld ausgibt.
-X Suche: SearchConfigFactory: Die SuchKonfiguration soll über eine Factory
+X Suche: SearchConfigFactory: Die SuchKonfiguration soll Ã¼ber eine Factory
     geladen werden. Welche Factory genutzt werden soll, wird in der web.xml
     festgelegt.
 
@@ -134,27 +134,27 @@ X Autodetektion des Ressourcenverzeichnisses
 X Bugfix: Zugriffsrechte-Management: Gruppennamen wurden auch bei
   nicht-Whitespace-Zeichen wie "/", "-", "\" getrennt.
 X Dateizugriffs-Servlet abschaltbar.
-X Blacklist und Whitelist: Reguläre Ausdrücke zulassen.
+X Blacklist und Whitelist: Regulï¿½re Ausdrï¿½cke zulassen.
 X Crawler: Arbeitspeicher sparen: Dateien vom Dateisystem nicht ins
     mFoundUrlSet oder mIgnoredUrlSet aufnehmen. Beim Dateisystem ist durch die
     klare Baumstruktur sowieso klar, welche Dokumente schon bearbeitet wurden.
     (Dazu muss Start-List muss untereinander praefixfrei sein!)
-X Crawler: Arbeitspeicher sparen: Dateien am Anfang der mJobList einfügen,
+X Crawler: Arbeitspeicher sparen: Dateien am Anfang der mJobList einfï¿½gen,
     Verzeichnisse am Ende. So wird die mJobList klein gehalten, weil erst
-    alle Dateien abgearbeitet werden, bevor neue Jobs hinzugefügt werden.
+    alle Dateien abgearbeitet werden, bevor neue Jobs hinzugefï¿½gt werden.
 X Crawler: Auch fehlerhafte Dokumente aufnehmen. Diese dann bei einem zweiten
     Durchlauf nicht erneut versuchen. Per Aufrufparameter jedoch trotzdem neu
     versuchen.
 X Multiindexsuche: Mit der selben Suchmaske mehrere Indizes durchsuchen.
 - Neuer MS Word-Praeparator: http://textmining.org
-    Habe ich gelassen, nachdem ich bemerkt habe, dass textmining.org für
+    Habe ich gelassen, nachdem ich bemerkt habe, dass textmining.org fÃ¼r
     Word-Versionen > 6.0 einfach POI nutzt.
 X HtmlPreparator-Regex korrigieren: Auch Endungen .jsp, .php, .php3, .php4, .asp
     zulassen.
 X Italienische Lokalisierung Teil I. Siehe Mail von Franco Lombardo vom 30.05.05.
-X Bugfix: CrawlerToolkit.toAbsoluteUrl(...) löst . und .. nicht auf.
+X Bugfix: CrawlerToolkit.toAbsoluteUrl(...) lï¿½st . und .. nicht auf.
     Siehe Mail von j1234 vom 30.05.05.
-X JUnit-Tests ermöglichen
+X JUnit-Tests ermï¿½glichen
 X Bugfix: System-Tray-Klasse fehlt in Linux zip
     Siehe Forum: http://forum.murfman.de/en/viewtopic.php?t=12
 X Bugfix: NullPointer in removeObsoleteEntries(...). Z.B. wenn ein Breakpoint
@@ -162,7 +162,7 @@ X Bugfix: NullPointer in removeObsoleteEntries(...). Z.B. wenn ein Breakpoint
     mFoundUrlSet oder mIgnoredUrlSet aufnehmen")
 X I18N-Files mit getResource() holen, so dass Tomcat auch als Service laufen kann.
     Das ganze sollte von Verzeichnis auf URL umgestellt werden, da nicht jede
-    Servlet-Engine ihre war-Dateien auspackt. Mit URL könnten auch Ressourcen
+    Servlet-Engine ihre war-Dateien auspackt. Mit URL kï¿½nnten auch Ressourcen
     direkt aus der war-Datei geladen werden.
 X Ausgangsverzeichnis zur Suche der Konfigurationsdatei bestimmen, so dass
     Tomcat auch als Service laufen kann.
@@ -171,12 +171,12 @@ X Bugfix: HTTP-Download hat volle Timeout-Zeit gewartet, wenn RuntimeException
     geworfen wurde.
 X Bessere Fehlermeldung, wenn Redirect keinen Location-Header hat.
 X Crawler: Logging: Anstatt "Adding to index" lieber "Preparation done"
-X Bei mißglücktem Dokument: Nicht "Adding to index" loggen, sondern
+X Bei miï¿½glï¿½cktem Dokument: Nicht "Adding to index" loggen, sondern
     "Created substitude document"
-X Breakpoints: Erst neuen breakpoint erstellen, dann den alten löschen.
+X Breakpoints: Erst neuen breakpoint erstellen, dann den alten lï¿½schen.
     Damit verhindern, dass es gar keinen breakpoint gibt, wenn regain beendet
     wird.
-X Optional erlauben, url-patterns für Präparatoren anzugeben.
+X Optional erlauben, url-patterns fÃ¼r PrÃ¤paratoren anzugeben.
     Siehe Forum: http://forum.murfman.de/en/viewtopic.php?t=9
 X Expertensuche: Fehlermeldung wird gezeigt, wenn noch kein Index vorhanden ist.
     Statt dessen: noindex.jsp zeigen.
@@ -198,17 +198,17 @@ X Attribut "noQueryUrl" des Check-Tag optional machen.
 ** Version 1.1 Beta 5a am 15.08.05 **
 
 X Added PoiMsPowerPointPreparator (Thanks to Gerhard Olsson)
-X Multiindexsuche: SearchConfiguration.xml: Möglichkeit bieten, mehrere Indizes
-    als default zu deklarieren. (Dann per default Multiindex-Suche durchführen)
+X Multiindexsuche: SearchConfiguration.xml: Mï¿½glichkeit bieten, mehrere Indizes
+    als default zu deklarieren. (Dann per default Multiindex-Suche durchfï¿½hren)
 X The fieldlistTag supports multiple indexes now.
 X Bugfix: file-to-http-bridge did create illegal URLs when multiple indexes
     were searched.
-X IfilterPreparator: Einen Präparator schreiben, der das IFilter-Interface
+X IfilterPreparator: Einen PrÃ¤parator schreiben, der das IFilter-Interface
     unter Windows nutzt.
-X Groß-/Kleinschreibung in Auxilliary Fields
+X Groï¿½-/Kleinschreibung in Auxilliary Fields
 X Zeit zwischen Breakpoints konfigurierbar
 X HTTP User agent konfigurierbar
-- Namen der verfügbaren Indizes von JSPs aus erreichbar machen
+- Namen der verfÃ¼gbaren Indizes von JSPs aus erreichbar machen
     Geht schon: SearchToolkit.getIndexConfigArr(...)
 
 ** Version 1.1 Beta 6 am 05.12.05 **
@@ -226,7 +226,7 @@ X TLD-Dokumentation generieren.
 X Search mask: Allow multiple query parameters (Just concatinate them)
 X Include improved Jacob preparators of Reinhard Balling. See mail from 17.11.05.
 X Include and improve ExternalPrepartor of Paul Ortyl. See mail from 10.12.05.
-X Prüfen, ob es mehrere Parameter gleichen Names in Präparator-Config gibt
+X PrÃ¼fen, ob es mehrere Parameter gleichen Names in PrÃ¤parator-Config gibt
     See http://forum.murfman.de/de/viewtopic.php?p=351
 X Fehlende Teile der italienischen Lokalisierung. (Danke an Franco Lombardo)
 X Delivering a simpler default CrawlerConfiguration.xml.
@@ -281,7 +281,7 @@ X Added support for using any analyzer class
 ** Version 1.2.2 am 01.11.07 rev 260 **
 
 X Bug: Manchmal werden keine Dateiinhalte indexiert: EmptyPreparator sollte per
-    Default keine Dokumente übernehmen.
+    Default keine Dokumente Ã¼bernehmen.
     Siehe http://forum.murfman.de/de/viewtopic.php?t=625
 
 ** Version 1.2.3 am 01.12.07 **
@@ -290,9 +290,9 @@ X Bug: Manchmal werden keine Dateiinhalte indexiert: EmptyPreparator sollte per
 Prio A:
 -------
 
-  Präparator-Logik überarbeiten:
-    * Definierte Reihenfolge für nicht konfigurierte Präparatoren
-    * Mehrere Instanzen eines Präparators erlauben
+  PrÃ¤parator-Logik Ã¼berarbeiten:
+    * Definierte Reihenfolge fÃ¼r nicht konfigurierte PrÃ¤paratoren
+    * Mehrere Instanzen eines PrÃ¤parators erlauben
   Parameter "parse" und "index" aus startlist entfernen.
     Siehe http://forum.murfman.de/de/viewtopic.php?p=1891#1891
   Bug: start URL check doesn't work properly. start URL "file://bla" is removed
@@ -308,7 +308,7 @@ Prio A:
   Give preparators the possibility to add index fields on their own.
     See mail of Daniel Varela Santoalla from 09.02.06.
   Bugfix: IfilterPreparator geht unter WinXP Home nicht.
-  Prüfen: Werden manche HTTP-URLs wirklich gelöscht?
+  PrÃ¼fen: Werden manche HTTP-URLs wirklich gelï¿½scht?
     Siehe: http://forum.murfman.de/de/viewtopic.php?p=417
 
   Desktop search: Status page: Add checkbox "Create completely new index" for
@@ -316,9 +316,9 @@ Prio A:
   Desktop search: Status page: Add checkbox "Stop reloading when index update is finished"
     for page reload button.
 
-  Handbuch: Installation: Was muss man konfigurieren, damit es läuft.
+  Handbuch: Installation: Was muss man konfigurieren, damit es lÃ¤uft.
   Desktopsuche: Mime-Types konfigurierbar (apache-Format)
-  Übersetzungen holen: lastLogMessages
+  Ã¼bersetzungen holen: lastLogMessages
 
 Prio B:
 -------
@@ -326,7 +326,7 @@ Prio B:
   Desktop search: Index path not hardcoded, but taken from CrawlerConfiguration.xml
     See forum: http://forum.murfman.de/de/viewtopic.php?t=204
   Desktopsuche: Kommandozeilen-Parameter, um ohne Tray-Icon zu starten.
-  Möglichkeit, Reguläre Ausdrücke auszuprobieren.
+  Mï¿½glichkeit, Regulï¿½re Ausdrï¿½cke auszuprobieren.
   Desktopsuche: Einstellungen: Verzeichnis-Selektor
   Suchmaske: Icons passend zu den Dateiendungen
   HtmlPreparator: Ignore text from script-Tags or tags with namespaces.
@@ -338,7 +338,7 @@ Prio B:
   Change whitelist / blacklist to one list of directives. This list should also
     decide whether a document is parsed. That is the attributes "parse" and
     "index" should be removed from htmlParserPatternList
-  Bugfix: Präparieren von Dokumenten mit Leerzeichen im Dateinamen wird bei jedem
+  Bugfix: Prï¿½parieren von Dokumenten mit Leerzeichen im Dateinamen wird bei jedem
     Lauf erneut probiert (Erkennung des vorhandenen Eintrags funktioniert nicht)
     Konnte ich nicht reproduzieren...
   Desktopsuche: Zugriff von aussen fuer einstellbare Benutzer/Passwort-Paare
@@ -373,7 +373,7 @@ Prio C:
 
 Release-Checkliste:
 -------------------
-* Lokalisierungen an Übersetzer geben
+* Lokalisierungen an Ã¼bersetzer geben
     * it -> Franco
 * WasIstNeu.txt und WhatIsNew.txt aktualisieren
 * Copyright-Jahr in footer.jsp anpassen

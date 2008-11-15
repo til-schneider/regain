@@ -21,18 +21,18 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2004-11-10 16:08:52 +0100 (Mi, 10 Nov 2004) $
- *   $Author: til132 $
- * $Revision: 10 $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *   $Author: thtesche $
+ * $Revision: 349 $
  */
 package net.sf.regain.crawler;
 
 /**
- * Hilfsklasse für den Crawler.
+ * Hilfsklasse fÃ¼r den Crawler.
  * <p>
- * Enthält alle Daten, die für die Bearbeitung einer URL nötig sind.
+ * enthÃ¤lt alle Daten, die fÃ¼r die Bearbeitung einer URL nï¿½tig sind.
  * <p>
- * Der Crawler erzeugt für jede akzeptierte URL eine CrawlerJob-Instanz, die dann
+ * Der Crawler erzeugt fÃ¼r jede akzeptierte URL eine CrawlerJob-Instanz, die dann
  * nacheinander abgearbeitet werden.
  *
  * @author Til Schneider, www.murfman.de
@@ -49,7 +49,7 @@ public class CrawlerJob {
   /**
    * Der Text des Links in dem die URL gefunden wurde. Ist <code>null</code>,
    * falls die URL nicht in einem Link (also einem a-Tag) gefunden wurde oder
-   * wenn aus sonstigen Gründen kein Link-Text vorhanden ist.
+   * wenn aus sonstigen Grï¿½nden kein Link-Text vorhanden ist.
    */
   private String mSourceLinkText;
   /** Gibt an, ob das Dokument nach weiteren URLs durchsucht werden soll. */
@@ -67,7 +67,7 @@ public class CrawlerJob {
    *        Dokuments gefunden wurde.
    * @param sourceLinkText Der Text des Links in dem die URL gefunden wurde. Ist
    *        <code>null</code>, falls die URL nicht in einem Link (also einem
-   *        a-Tag) gefunden wurde oder wenn aus sonstigen Gründen kein Link-Text
+   *        a-Tag) gefunden wurde oder wenn aus sonstigen Grï¿½nden kein Link-Text
    *        vorhanden ist.
    * @param shouldBeParsed Gibt an, ob das Dokument nach weiteren URLs
    *        durchsucht werden soll.
@@ -86,7 +86,7 @@ public class CrawlerJob {
 
 
   /**
-   * Gibt die URL des zu bearbeitenden Dokuments zurück.
+   * Gibt die URL des zu bearbeitenden Dokuments zurÃ¼ck.
    *
    * @return Die URL des zu bearbeitenden Dokuments.
    */
@@ -97,7 +97,7 @@ public class CrawlerJob {
 
 
   /**
-   * Gibt Die URL des Dokuments zurück, in dem die URL des zu bearbeitenden
+   * Gibt Die URL des Dokuments zurÃ¼ck, in dem die URL des zu bearbeitenden
    * Dokuments gefunden wurde.
    *
    * @return Die URL des Dokuments, in dem die URL des zu bearbeitenden
@@ -110,12 +110,12 @@ public class CrawlerJob {
 
 
   /**
-   * Gibt den Text des Links zurück in dem die URL gefunden wurde.
+   * Gibt den Text des Links zurÃ¼ck in dem die URL gefunden wurde.
    * <p>
    * Ist <code>null</code>, falls die URL nicht in einem Link (also einem a-Tag)
-   * gefunden wurde oder wenn aus sonstigen Gründen kein Link-Text vorhanden ist.
+   * gefunden wurde oder wenn aus sonstigen Grï¿½nden kein Link-Text vorhanden ist.
    *
-   * @return Der Text des Links zurück in dem die URL gefunden wurde.
+   * @return Der Text des Links zurÃ¼ck in dem die URL gefunden wurde.
    */
   public String getSourceLinkText() {
     return mSourceLinkText;
@@ -124,7 +124,7 @@ public class CrawlerJob {
 
 
   /**
-   * Gibt zurück, ob das Dokument nach weiteren URLs durchsucht werden soll.
+   * Gibt zurÃ¼ck, ob das Dokument nach weiteren URLs durchsucht werden soll.
    *
    * @return Ob das Dokument nach weiteren URLs durchsucht werden soll.
    */
@@ -135,7 +135,7 @@ public class CrawlerJob {
 
 
   /**
-   * Gibt zurück, ob das Dokument indiziert werden soll.
+   * Gibt zurÃ¼ck, ob das Dokument indiziert werden soll.
    *
    * @return Ob das Dokument indiziert werden soll.
    */

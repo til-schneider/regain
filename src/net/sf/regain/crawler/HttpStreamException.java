@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 349 $
  */
 package net.sf.regain.crawler;
 
@@ -72,7 +72,7 @@ public class HttpStreamException extends RegainException {
    *        <code>null</code> wenn dies der urspr�ngliche Fehler ist.
    * @param conn Die HTTP-Connection, bei der der Fehler auftrat.
    * @return Eine Ausnahme, die neben des urspr�nglichen Fehlers auch den
-   *         HTTP-Return-Code enth�lt.
+   *         HTTP-Return-Code enthält.
    */
   public static HttpStreamException createInstance(String message,
     Throwable cause, URLConnection conn)
@@ -96,7 +96,7 @@ public class HttpStreamException extends RegainException {
   
   
   /**
-   * Gibt den HTTP-Return-Code zur�ck.
+   * Gibt den HTTP-Return-Code zurück.
    * 
    * @return Der HTTP-Return-Code.
    */
@@ -107,7 +107,7 @@ public class HttpStreamException extends RegainException {
   
   
   /**
-   * Gibt zur�ck, ob der HTTP-Code con einem dead link stammt.
+   * Gibt zurück, ob der HTTP-Code con einem dead link stammt.
    * 
    * @return Ob der HTTP-Code con einem dead link stammt.
    */
