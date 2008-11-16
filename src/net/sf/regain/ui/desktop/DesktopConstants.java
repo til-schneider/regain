@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2008-11-16 22:23:54 +0100 (So, 16 Nov 2008) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 360 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -71,5 +71,9 @@ public interface DesktopConstants {
 
   /** The file that holds the crawler configuration. */
   public static final File DEFAULT_CRAWLER_CONFIG_FILE = new File(DEFAULT_CONFIG_DIR, "CrawlerConfiguration.xml");
+  
+  /** The authentication properties. */
+  public static final File AUTH_PROPS_FILE = new File(CONFIG_DIR, "authentication.properties");
+  
 
 }

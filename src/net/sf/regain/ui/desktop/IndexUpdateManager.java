@@ -21,16 +21,19 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-08-21 11:37:35 +0200 (Mo, 21 Aug 2006) $
- *   $Author: til132 $
- * $Revision: 232 $
+ *     $Date: 2008-11-16 22:23:54 +0100 (So, 16 Nov 2008) $
+ *   $Author: thtesche $
+ * $Revision: 360 $
  */
 package net.sf.regain.ui.desktop;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
+import java.util.Properties;
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.crawler.Crawler;
@@ -175,6 +178,15 @@ public class IndexUpdateManager implements DesktopConstants {
     if (indexNeedsUpdate()) {
       // The index must be updated
       CrawlerConfig config = new XmlCrawlerConfig(CRAWLER_CONFIG_FILE);
+    
+      Properties authProps = new Properties();
+      try {
+        authProps.load(new FileInputStream(AUTH_PROPS_FILE));
+    
+      } catch( Exception ex ) {
+        mLog.error("Couldn't load authentication.properties", ex);
+     
+      }
       
       // Check whether to show the welcome page
       if (config.getStartUrls().length == 0) {
@@ -191,7 +203,7 @@ public class IndexUpdateManager implements DesktopConstants {
         TrayIconManager.getInstance().setIndexUpdateRunning(true);
         try {
           mLog.info("Starting index update on " + new Date());
-          mCrawler = new Crawler(config);
+          mCrawler = new Crawler(config, authProps);
           mCrawler.run(true, false, null);
         }
         catch (RegainException exc) {

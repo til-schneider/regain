@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-15 23:12:40 +0100 (Sa, 15 Nov 2008) $
+ *     $Date: 2008-11-16 22:23:54 +0100 (So, 16 Nov 2008) $
  *   $Author: thtesche $
- * $Revision: 358 $
+ * $Revision: 360 $
  */
 package net.sf.regain.crawler.document;
 
@@ -382,6 +382,8 @@ public class RawDocument {
         //throw new RegainException("Detection of file length failed: ", ex);
       }
     }
+    // @todo: last modified date for messages
+    
     return date;
   }
 
@@ -594,7 +596,9 @@ public class RawDocument {
           extension = path.substring(lastDot);
         }
       } else if( mUrl.toLowerCase().startsWith("imap") | mUrl.toLowerCase().startsWith("imaps") ) {
+        // @todo: consider extensions for attachments too
         extension = ".mht";
+        
       }
       
       // Get an unused file

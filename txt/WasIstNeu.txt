@@ -1,4 +1,4 @@
-Version 1.5.4 am 25.10.08 PREVIEW
+Version 1.5.4 am 16.11.08 PREVIEW
 ---------------------------------
 * Per Konfigurationseintrag in der CrawlerConfig.xml <storeContentForPreview/> {true,false}
   kann man das Ablegen des gesamten Contents im Index ein-/ausschalten.

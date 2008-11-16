@@ -21,27 +21,27 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-15 23:03:53 +0100 (Sa, 15 Nov 2008) $
+ *     $Date: 2008-11-16 22:23:54 +0100 (So, 16 Nov 2008) $
  *   $Author: thtesche $
- * $Revision: 357 $
+ * $Revision: 360 $
  */
 package net.sf.regain.crawler;
 
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPSSLStore;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Vector;
+import java.util.Set;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -52,6 +52,7 @@ import jcifs.smb.SmbFile;
 import net.sf.regain.ImapToolkit;
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
+import net.sf.regain.crawler.access.AccountPasswordEntry;
 import net.sf.regain.crawler.config.CrawlerConfig;
 import net.sf.regain.crawler.config.StartUrl;
 import net.sf.regain.crawler.config.UrlMatcher;
@@ -133,7 +134,9 @@ public class Crawler implements ErrorLogger {
   /** Specifies whether the crawler should pause as soon as possible, */
   private boolean mShouldPause;
 
-
+  /** Username, password Map for configured hostnames. */
+  Map <String, AccountPasswordEntry> accountPasswordStore;
+  
   /**
    * Creates a new instance of Crawler.
    * 
@@ -141,7 +144,7 @@ public class Crawler implements ErrorLogger {
    *
    * @throws RegainException If the regular expressions have errors.
    */
-  public Crawler(CrawlerConfig config) throws RegainException {
+  public Crawler(CrawlerConfig config, Properties authProps) throws RegainException {
     Profiler.clearRegisteredProfilers();
     
     mCrawlerJobProfiler = new Profiler("Whole crawler jobs", "jobs");
@@ -173,6 +176,8 @@ public class Crawler implements ErrorLogger {
         }
       }
     }
+    
+    readAuthenticationProperties(authProps);
   }
   
   
@@ -464,7 +469,7 @@ public class Crawler implements ErrorLogger {
           continue;
         }
         
-      }else if(url.startsWith("imap://") || url.startsWith("imaps://")){
+      } else if(url.startsWith("imap://") || url.startsWith("imaps://")) {
         // IMAP mail box: Check whether this is a folder or an e-mail url
         try {
           if( ImapToolkit.isMessageURL( url) == true) {
@@ -703,6 +708,36 @@ public class Crawler implements ErrorLogger {
     }
   }
 
+  /**
+   * Reads the authentication properties of all entries.
+   */
+  private void readAuthenticationProperties(Properties authProps) {
+  
+    try {
+      mLog.info("Read authentication entries from authentication properties.");
+     
+      Set<String> keys = new HashSet<String>();
+      keys = authProps.stringPropertyNames();
+      Iterator iter = keys.iterator();
+      // Iterate over all keys
+      while (iter.hasNext()) {
+        String key = (String)iter.next();
+        String parts[] = key.split("\\.");
+        mLog.debug("Found auth entry and split to: " + key);
+        
+        String url = CrawlerToolkit.createURLFromProps(parts);
+        // Check for url in HashMap
+        mLog.debug("Create url from auth entry: " + url);
+        if( key.indexOf(".account")!=-1 ) {
+          
+        }
+      }
+
+    } catch (Exception e) {
+      mLog.error("Error handling authentication.properties. ", e);
+    }
+
+  }
 
   /**
    * Sets the "should be updated"-flag for each entry in the white list.
@@ -910,6 +945,7 @@ public class Crawler implements ErrorLogger {
     try {
       // Get the URL for the directory
       String sourceUrl = dir.getCanonicalPath();
+      // @todo: use userPasswordFactory for username
 
       // Parse the directory
       SmbFile[] childArr = dir.listFiles();
@@ -1010,7 +1046,7 @@ public class Crawler implements ErrorLogger {
       // Iterate over all found links in the document
       for (Iterator iter = rawDocument.getLinks().entrySet().iterator(); iter.hasNext();){ 
         Map.Entry entry = (Map.Entry)iter.next();
-        // The intention of this call is only to determine the linkextraction and indexing property
+        // The intention of this call is only to determine the link-extraction and indexing property
         UrlMatcher urlMatch = mUrlChecker.isUrlAccepted((String)entry.getKey());
         // Add the job
         addJob((String)entry.getKey(), rawDocument.getUrl(), 

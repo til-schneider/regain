@@ -1,3 +1,8 @@
+Version 1.5.4 on 16.11.08 PREVIEW
+---------------------------------
+* Content storage (for the new preview function from 1.5.2) could be disabled with <storeContentForPreview/> {true,false} in the 
+  Crawler configuration. See example config.
+
 Version 1.5.3 on 05.10.08 PREVIEW
 ---------------------------------
 * POI update to version 3.1, changed word- and excel text extraktion (contribution J.Stiepel)

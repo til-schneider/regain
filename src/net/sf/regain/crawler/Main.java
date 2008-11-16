@@ -21,25 +21,26 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-09-19 20:29:55 +0200 (Fr, 19 Sep 2008) $
+ *     $Date: 2008-11-16 22:23:54 +0100 (So, 16 Nov 2008) $
  *   $Author: thtesche $
- * $Revision: 340 $
+ * $Revision: 360 $
  */
 package net.sf.regain.crawler;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.util.Properties;
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.crawler.config.*;
 
 import org.apache.log4j.*;
 
-
 /**
- * Die Main-Klasse mit dem Programmeinstiegstpunkt. Sie lie�t die Konfiguration
+ * Die Main-Klasse mit dem Programmeinstiegstpunkt. Sie liest die Konfiguration
  * aus, stellt die Proxy-Einstellungen ein und startet den Crawler.
  *
  * @author Til Schneider, www.murfman.de
@@ -48,11 +49,8 @@ public class Main {
 
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(Main.class);
-
   /** Der Dateiname der Log4J-Properties-Datei. */
   private static final String LOG4J_PROP_FILE_NAME = "log4j.properties";
-
-
 
   /**
    * Der Programmeinstiegspunkt.
@@ -69,36 +67,29 @@ public class Main {
     for (int i = 0; i < args.length; i++) {
       if (args[i].equalsIgnoreCase("-forceNewIndex")) {
         updateIndex = false;
-      }
-      else if (args[i].equalsIgnoreCase("-retryFailedDocs")) {
+      } else if (args[i].equalsIgnoreCase("-retryFailedDocs")) {
         retryFailedDocs = true;
-      }
-      else if (args[i].equalsIgnoreCase("--help") || args[i].equalsIgnoreCase("/?")) {
+      } else if (args[i].equalsIgnoreCase("--help") || args[i].equalsIgnoreCase("/?")) {
         showHelp();
-      }
-      else if (args[i].equalsIgnoreCase("-onlyEntries")) {
+      } else if (args[i].equalsIgnoreCase("-onlyEntries")) {
         i++;
         String ssv = readParam(args, i);
         onlyEntriesArr = RegainToolkit.splitString(ssv, ",");
-      }
-      else if (args[i].equalsIgnoreCase("-config")) {
+      } else if (args[i].equalsIgnoreCase("-config")) {
         i++;
         crawlerConfigFileName = readParam(args, i);
-      }
-      else if (args[i].equalsIgnoreCase("-logConfig")) {
+      } else if (args[i].equalsIgnoreCase("-logConfig")) {
         i++;
         logConfigFileName = readParam(args, i);
-      }
-      else {
+      } else {
         showHelp();
       }
     }
 
     // Initialize Logging
     File logConfigFile = new File(logConfigFileName);
-    if (! logConfigFile.exists()) {
-      System.out.println("ERROR: Logging configuration file not found: "
-        + logConfigFile.getAbsolutePath());
+    if (!logConfigFile.exists()) {
+      System.out.println("ERROR: Logging configuration file not found: " + logConfigFile.getAbsolutePath());
       return; // Abort
     }
 
@@ -110,18 +101,29 @@ public class Main {
     CrawlerConfig config;
     try {
       config = new XmlCrawlerConfig(xmlFile);
-    }
-    catch (RegainException exc) {
+    } catch (RegainException exc) {
       mLog.error("Loading XML Configuration failed", exc);
       return; // Abort
+    }
+
+    Properties authProps = new Properties();
+
+    try {
+      File authPropsFile = new File(new File("conf"), "authentication.properties");
+      mLog.debug(authPropsFile.getAbsolutePath());
+      authProps.load(new FileInputStream(authPropsFile));
+    
+    } catch( Exception ex ) {
+      mLog.error("Couldn't load authentication.properties", ex);
+      return; // Abort
+      
     }
 
     // Create crawler
     Crawler crawler = null;
     try {
-      crawler = new Crawler(config);
-    }
-    catch (RegainException exc) {
+      crawler = new Crawler(config, authProps);
+    } catch (RegainException exc) {
       mLog.error("There was an error when initializing the crawler!", exc);
     }
 
@@ -162,7 +164,6 @@ public class Main {
     }
   }
 
-
   /**
    * Liest einen Parameter.
    * <p>
@@ -184,7 +185,6 @@ public class Main {
     }
   }
 
-
   /**
    * Schreibt einen Hilfetext nach System.out und endet mit dem Fehlercode 100.
    */
@@ -204,7 +204,6 @@ public class Main {
     System.exit(100);
   }
 
-
   /**
    * Erzeugt eine leere Datei.
    * <p>
@@ -218,18 +217,18 @@ public class Main {
       try {
         stream = new FileOutputStream(fileName);
         mLog.info("Created control file: '" + fileName + "'");
-      }
-      catch (IOException exc) {
+      } catch (IOException exc) {
         mLog.warn("Creating control file failed: '" + fileName + "'", exc);
-      }
-      finally {
+      } finally {
         if (stream != null) {
-          try { stream.close(); } catch (IOException exc) {}
+          try {
+            stream.close();
+          } catch (IOException exc) {
+          }
         }
       }
     }
   }
-
 
   /**
    * L�scht eine Datei.
@@ -242,11 +241,10 @@ public class Main {
     if (fileName != null) {
       File file = new File(fileName);
       if (file.exists()) {
-        if (! file.delete()) {
+        if (!file.delete()) {
           mLog.warn("Deleting old control file failed: '" + fileName + "'");
         }
       }
     }
   }
-
 }
