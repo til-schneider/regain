@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-27 08:37:25 +0100 (Mo, 27 Okt 2008) $
+ *     $Date: 2008-11-23 23:46:59 +0100 (So, 23 Nov 2008) $
  *   $Author: thtesche $
- * $Revision: 353 $
+ * $Revision: 364 $
  */
 package net.sf.regain.crawler.document;
 
@@ -564,7 +564,7 @@ public class DocumentFactory {
   /**
    * Erzeugt eine Zusammenfassung aus dem Inhalt eines Dokuments.
    * <p>
-   * Wenn keine Zusammenfassung m�glich ist, wird <code>null</code>
+   * Wenn keine Zusammenfassung möglich ist, wird <code>null</code>
    * zurückgegeben.
    *
    * @param content Der Inhalt für den die Zusammenfassung erstellt werden soll.

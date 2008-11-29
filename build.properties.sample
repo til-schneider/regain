@@ -17,5 +17,5 @@ java.dir=C:/Programme/Java/jdk1.6
 # The directory where the tomcat server is located
 deploy-target.dir=C:/Programme/jakarta-tomcat-6.0/webapps
 
-# The location of the installer
-installer.executable=C:\\.....fill_the_correct_path_in.....\\regain\\installer\\makensis.exe
+# The location of the installer creator program
+installer.executable=C:\\.....fill_in_the_correct_path.....\\regain\\installer\\makensis.exe

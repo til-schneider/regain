@@ -46,6 +46,12 @@
           <div class="hint"><search:msg key="website.hint"/></div>
           <config:editlist name="siteblacklist" class="editlist"/>
         </p>
+
+        <p>
+          <h4><search:msg key="imapserver"/></h4>
+          <div class="hint"><search:msg key="imapserver.hint"/></div>
+          <config:editlist name="imaplist" class="editlist"/>
+        </p>
         
         <p>
           <h4><search:msg key="webserver"/></h4>

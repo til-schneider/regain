@@ -1,4 +1,12 @@
-Version 1.5.4 on 16.11.08 PREVIEW
+Version 1.5.5 on xxxx PREVIEW
+---------------------------------
+* URL-Authentication for imap(s), http, smb according to the following schema  
+  protoc://username:password@host:port/a_path/. The account/password pair are stored together 
+  with the url-pattern in a properties-files. Main usage will be the crawling of imap mail stores.
+* New input field for imap(s) urls on the config page (desktop search).
+* BUGFIX: Whitelist entry for directories/files from file system not more any longer file:///
+  
+﻿Version 1.5.4 on 16.11.08 PREVIEW
 ---------------------------------
 * Content storage (for the new preview function from 1.5.2) could be disabled with <storeContentForPreview/> {true,false} in the 
   Crawler configuration. See example config.

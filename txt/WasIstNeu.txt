@@ -1,3 +1,11 @@
+Version 1.5.5 am xxxx PREVIEW
+---------------------------------
+* URL-Authentication für imap(s), http, smb in der Form protok://username:password@host:port/a_path/.
+  Die Einträge von Name/Password für das URL-Pattern erfolgen mittels einer properties-Datei. Haupt-
+  einsatzzweck wird das Crawlen von IMAP-Postfächern sein.
+* Neues Eingabefeld für imap(s) Url auf der Konfigurationsseite der Desktopsuche.
+* BUGFIX: Whitelist-Eintrag für Verzeichnisse/Datein von Festplatte nicht mehr nur file:///
+
 Version 1.5.4 am 16.11.08 PREVIEW
 ---------------------------------
 * Per Konfigurationseintrag in der CrawlerConfig.xml <storeContentForPreview/> {true,false}

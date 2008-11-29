@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *     $Date: 2008-11-23 16:28:00 +0100 (So, 23 Nov 2008) $
  *   $Author: thtesche $
- * $Revision: 349 $
+ * $Revision: 362 $
  */
 package net.sf.regain.crawler.document;
 
@@ -68,11 +68,12 @@ public class HttpDownloadThread extends Thread {
 
 
   /**
-   * F�hrt den Download aus.
+   * Führt den Download aus.
    * <p>
    * Am Ende ist entweder mDocContent oder mError gesetzt, bevor der wartende
    * Thread benachrichtigt wird.
    */
+  @Override
   public void run() {
     try {
       mDocContent = CrawlerToolkit.loadHttpDocument(mDocUrl);

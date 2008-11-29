@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-25 18:29:59 +0200 (Sa, 25 Okt 2008) $
+ *     $Date: 2008-11-23 23:46:59 +0100 (So, 23 Nov 2008) $
  *   $Author: thtesche $
- * $Revision: 348 $
+ * $Revision: 364 $
  */
 package net.sf.regain.crawler.config;
 
@@ -387,18 +387,18 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     Node node = XmlToolkit.getChild(config, "blacklist", true);
     Node[] prefixNodeArr = XmlToolkit.getChildArr(node, "prefix");
     Node[] regexNodeArr = XmlToolkit.getChildArr(node, "regex");
-    
+
     mBlackList = new UrlMatcher[prefixNodeArr.length + regexNodeArr.length];
     for (int i = 0; i < prefixNodeArr.length; i++) {
-      String prefix = XmlToolkit.getText(prefixNodeArr[i], true);
+      // Change all blanks to %20, since blanks are not allowed in URLs
+      String prefix = XmlToolkit.getText(prefixNodeArr[i], true).replaceAll(" ", "%20");
       mBlackList[i] = new PrefixUrlMatcher(prefix, false, false);
     }
     for (int i = 0; i < regexNodeArr.length; i++) {
       String regex = XmlToolkit.getText(regexNodeArr[i], true);
-      mBlackList[prefixNodeArr.length + i] = new RegexUrlMatcher(regex,false,false);
+      mBlackList[prefixNodeArr.length + i] = new RegexUrlMatcher(regex, false, false);
     }
   }
-
 
   /**
    * Reads the white list from the configuration.
@@ -416,7 +416,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
     mWhiteListEntryArr = new WhiteListEntry[prefixNodeArr.length + regexNodeArr.length];
     for (int i = 0; i < prefixNodeArr.length; i++) {
-      String prefix = XmlToolkit.getText(prefixNodeArr[i], true);
+      String prefix = XmlToolkit.getText(prefixNodeArr[i], true).replaceAll(" ", "%20");
       boolean parse = XmlToolkit.getAttributeAsBoolean(prefixNodeArr[i], "parse", true);
       boolean index = XmlToolkit.getAttributeAsBoolean(prefixNodeArr[i], "index", true);
       UrlMatcher matcher = new PrefixUrlMatcher(prefix, parse, index);

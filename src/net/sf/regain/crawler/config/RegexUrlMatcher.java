@@ -21,16 +21,17 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2008-11-23 23:46:59 +0100 (So, 23 Nov 2008) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 364 $
  */
 package net.sf.regain.crawler.config;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import net.sf.regain.RegainException;
+import org.apache.log4j.Logger;
 
-import org.apache.regexp.RE;
-import org.apache.regexp.RESyntaxException;
 
 /**
  * An UrlMatcher that matches URLs that match to a regular expression.
@@ -38,12 +39,14 @@ import org.apache.regexp.RESyntaxException;
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
 public class RegexUrlMatcher extends UrlMatcherImpl {
-
+  
+  /** The logger for this class. */
+  private static Logger mLog = Logger.getLogger(RegexUrlMatcher.class);
   /** The regex as String. */
   private String mUrlRegexAsString;
   
   /** The regex a URL must match to in order to be matched by this matcher. */
-  private RE mUrlRegex;
+  private Pattern mUrlRegex;
 
 
   /**
@@ -58,16 +61,14 @@ public class RegexUrlMatcher extends UrlMatcherImpl {
   {
     super(shouldBeParsed, shouldBeIndexed);
     mUrlRegexAsString = regex;
-    
+
     try {
-      mUrlRegex = new RE(regex);
-    }
-    catch (RESyntaxException exc) {
+      mUrlRegex = Pattern.compile(regex);
+    } catch (Exception ex) {
       throw new RegainException("Regular expression of URL matcher has a " +
-          "wrong syntax: '" + regex + "'", exc);
+          "wrong syntax: '" + regex + "'", ex);
     }
   }
-
 
   /**
    * Checks whether a URL matches to the rules of this matcher.
@@ -75,14 +76,19 @@ public class RegexUrlMatcher extends UrlMatcherImpl {
    * @param url The URL to check.
    * @return Whether the given URL matches to the rules of this matcher.
    */
+  @Override
   public boolean matches(String url) {
-    return mUrlRegex.match(url);
+    Matcher matcher = mUrlRegex.matcher(url);
+    mLog.debug("Matches with pattern: " + mUrlRegexAsString + ", " + mUrlRegex.pattern());
+    
+    return matcher.matches();
   }
 
 
   /**
    * Gets a String representation of this UrlMatcher.
    */
+  @Override
   public String toString() {
     return mUrlRegexAsString;
   }

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-17 19:05:18 +0100 (Do, 17 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 108 $
+ *     $Date: 2008-11-24 22:58:51 +0100 (Mo, 24 Nov 2008) $
+ *   $Author: thtesche $
+ * $Revision: 365 $
  */
 package net.sf.regain.ui.desktop.config.sharedlib;
 
@@ -32,6 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import javax.mail.URLName;
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.XmlToolkit;
@@ -61,6 +62,8 @@ public class FormTag extends SharedTag implements DesktopConstants {
   /** The URL prefix of http URLs. */
   private static final String HTTP_PROTOCOL = "http://";
 
+   /** The URL prefix of http URLs. */
+  private static final String IMAP_PROTOCOL = "imap";
 
   /**
    * Called when the parser reaches the start tag.
@@ -73,6 +76,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
    *         {@link #SKIP_TAG_BODY} if you want the tag body to be skipped.
    * @throws RegainException If there was an exception.
    */
+  @Override
   public int printStartTag(PageRequest request, PageResponse response)
     throws RegainException
   {
@@ -81,6 +85,8 @@ public class FormTag extends SharedTag implements DesktopConstants {
     String[] dirblacklist;
     String[] sitelist;
     String[] siteblacklist;
+    String[] imaplist;
+    
     int port;
     if (interval == -1) {
       // This is the first call -> Load the settings
@@ -92,6 +98,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
       dirblacklist  = getBlacklistEntries(crawlerDoc, FILE_PROTOCOL);
       sitelist      = getStartlistEntries(crawlerDoc, HTTP_PROTOCOL);
       siteblacklist = getBlacklistEntries(crawlerDoc, HTTP_PROTOCOL);
+      imaplist      = getCompleteStartlistEntries(crawlerDoc, IMAP_PROTOCOL);
       port          = desktopConfig.getPort();
     } else {
       // There were new settings sent -> Check the input
@@ -102,6 +109,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
       dirblacklist  = request.getParametersNotNull("dirblacklist");
       sitelist      = request.getParametersNotNull("sitelist");
       siteblacklist = request.getParametersNotNull("siteblacklist");
+      imaplist      = request.getParametersNotNull("imaplist");
       port          = request.getParameterAsInt("port", DEFAULT_PORT);
 
       // Check the input
@@ -109,10 +117,11 @@ public class FormTag extends SharedTag implements DesktopConstants {
       checkDirectoryList(errorList, dirblacklist);
       checkWebsiteList(errorList, sitelist);
       checkWebsiteList(errorList, siteblacklist);
+      checkImapList(errorList, imaplist);      
       
       if (errorList.isEmpty()) {
         // There were no errors -> Save the values
-        saveSettings(interval, dirlist, dirblacklist, sitelist, siteblacklist, port);
+        saveSettings(interval, dirlist, dirblacklist, sitelist, siteblacklist, imaplist, port);
         DesktopToolkit.checkWebserver();
         response.print("Ihre Einstellungen wurden gespeichert!");
       } else {
@@ -131,6 +140,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
     request.setContextAttribute("settings.dirblacklist", dirblacklist);
     request.setContextAttribute("settings.sitelist", sitelist);
     request.setContextAttribute("settings.siteblacklist", siteblacklist);
+    request.setContextAttribute("settings.imaplist", imaplist);
     request.setContextAttribute("settings.port", Integer.toString(port));
     
     String action = getParameter("action", true);
@@ -148,6 +158,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
    * @param response The page response.
    * @throws RegainException If there was an exception.
    */
+  @Override
   public void printEndTag(PageRequest request, PageResponse response)
     throws RegainException
   {
@@ -198,7 +209,24 @@ public class FormTag extends SharedTag implements DesktopConstants {
     }
   }
 
-  
+  /**
+   * Checks a list of Imap urls.
+   * 
+   * @param errorList The list where to store the error messages.
+   * @param imaplist The list to check.
+   */
+  private void checkImapList(ArrayList errorList, String[] imaplist) {
+    for (int i = 0; i < imaplist.length; i++) {
+      try {
+        String urlAsString = imaplist[i];
+        new URLName(urlAsString);
+
+      } catch (Exception exc) {
+        errorList.add("'" + imaplist[i] + "' ist keine IMAP URL");
+      }
+    }
+  }
+
   /**
    * Gets the startlist from the crawler configuration.
    * 
@@ -214,6 +242,25 @@ public class FormTag extends SharedTag implements DesktopConstants {
     return getListEntries(crawlerDoc, prefix, "startlist", "start");
   }
 
+  /**
+   * Gets the startlist with complete urls from the crawler configuration for the given prefix.
+   * 
+   * @param crawlerDoc The document that holds the crawler configuration.
+   * @param prefix The prefix of the wanted entries. Entries having another
+   *        prefix will be ignored.
+   * @return The startlist.
+   * @throws RegainException If reading the config failed.
+   */
+  private String[] getCompleteStartlistEntries(Document crawlerDoc, String prefix)
+    throws RegainException
+  {
+    String[] startList = getListEntries(crawlerDoc, prefix, "startlist", "start");
+    for( int i=0; i<startList.length; i++ ) {
+      startList[i] = prefix + startList[i];
+    }
+    
+    return startList;
+  }
   
   /**
    * Gets the blacklist from the crawler configuration.
@@ -276,7 +323,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
    * @throws RegainException If saving the config failed.
    */
   private void saveSettings(int interval, String[] dirlist,
-    String[] dirblacklist, String[] sitelist, String[] siteblacklist, int port)
+    String[] dirblacklist, String[] sitelist, String[] siteblacklist, String[] imaplist, int port)
     throws RegainException
   {
     Node node;
@@ -318,15 +365,27 @@ public class FormTag extends SharedTag implements DesktopConstants {
       XmlToolkit.setAttribute(crawlerDoc, node, "parse", "true");
       XmlToolkit.setAttribute(crawlerDoc, node, "index", "true");
     }
-    
+   for (int i = 0; i < imaplist.length; i++) {
+      node = XmlToolkit.addChildWithText(crawlerDoc, startlistNode, "start", imaplist[i]);
+      XmlToolkit.setAttribute(crawlerDoc, node, "parse", "true");
+      XmlToolkit.setAttribute(crawlerDoc, node, "index", "true");
+    }
+        
     // Add the file protocol to the whitelist
-    XmlToolkit.addChildWithText(crawlerDoc, whitelistNode, "prefix", FILE_PROTOCOL);
+    for (int i = 0; i < dirlist.length; i++) {
+      XmlToolkit.addChildWithText(crawlerDoc, whitelistNode, "prefix", FILE_PROTOCOL + dirlist[i]);
+    }
     
     // Add the sitelist to the whitelist
     for (int i = 0; i < sitelist.length; i++) {
       XmlToolkit.addChildWithText(crawlerDoc, whitelistNode, "prefix", HTTP_PROTOCOL + sitelist[i]);
     }
     
+    // Add the imaplist to the whitelist
+    for (int i = 0; i < imaplist.length; i++) {
+      XmlToolkit.addChildWithText(crawlerDoc, whitelistNode, "prefix", imaplist[i]);
+    }
+
     // Fill the blacklist
     for (int i = 0; i < dirblacklist.length; i++) {
       String url = FILE_PROTOCOL + dirblacklist[i];

@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-01-19 22:03:53 +0100 (Do, 19 Jan 2006) $
- *   $Author: til132 $
- * $Revision: 191 $
+ *     $Date: 2008-11-24 22:58:51 +0100 (Mo, 24 Nov 2008) $
+ *   $Author: thtesche $
+ * $Revision: 365 $
  */
 package net.sf.regain.search.sharedlib.input;
 
@@ -42,6 +42,7 @@ public class FieldlistTag extends SharedTag {
    * @param response The page response.
    * @throws RegainException If there was an exception.
    */
+  @Override
   public void printEndTag(PageRequest request, PageResponse response)
     throws RegainException
   {

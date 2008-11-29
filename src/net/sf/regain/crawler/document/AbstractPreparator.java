@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-25 18:41:44 +0200 (Sa, 25 Okt 2008) $
+ *     $Date: 2008-11-23 23:46:59 +0100 (So, 23 Nov 2008) $
  *   $Author: thtesche $
- * $Revision: 350 $
+ * $Revision: 364 $
  */
 package net.sf.regain.crawler.document;
 
@@ -56,11 +56,12 @@ public abstract class AbstractPreparator implements Preparator {
   private RE mUrlRegex;
   /** Der gefundene Titel. */
   private String mTitle;
-  /** Der ges�uberte Inhalt. */
+  /** Der gesä
+   * uberte Inhalt. */
   private String mCleanedContent;
   /** Die Zusammenfassung des Dokuments. */
   private String mSummary;
-  /** Die extrahierten überschriften. Kann <code>null</code> sein */
+  /** Die extrahierten Überschriften. Kann <code>null</code> sein */
   private String mHeadlines;
   /** Der Pfad, über den das Dokument zu erreichen ist. */
   private PathElement[] mPath;
@@ -330,7 +331,7 @@ public abstract class AbstractPreparator implements Preparator {
    * <p>
    * Es handelt sich dabei nicht um die überschrift des Dokuments selbst,
    * sondern lediglich um Unter-überschriften, die in dem Dokument verwendendet
-   * werden. Mit Hilfe dieser überschriften l��t sich eine bessere Relevanz
+   * werden. Mit Hilfe dieser überschriften läßt sich eine bessere Relevanz
    * berechnen.
    * <p>
    * Wenn keine überschriften gefunden wurden, dann wird <code>null</code>

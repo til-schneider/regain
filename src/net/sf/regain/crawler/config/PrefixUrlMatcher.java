@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2008-11-23 23:46:59 +0100 (So, 23 Nov 2008) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 364 $
  */
 package net.sf.regain.crawler.config;
 
@@ -56,6 +56,7 @@ public class PrefixUrlMatcher extends UrlMatcherImpl {
    * @param url The URL to check.
    * @return Whether the given URL matches to the rules of this matcher.
    */
+  @Override
   public boolean matches(String url) {
     return url.startsWith(mUrlPrefix);
   }
@@ -64,6 +65,7 @@ public class PrefixUrlMatcher extends UrlMatcherImpl {
   /**
    * Gets a String representation of this UrlMatcher.
    */
+  @Override
   public String toString() {
     return mUrlPrefix;
   }

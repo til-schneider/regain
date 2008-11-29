@@ -21,19 +21,20 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-16 22:23:54 +0100 (So, 16 Nov 2008) $
+ *     $Date: 2008-11-23 23:46:59 +0100 (So, 23 Nov 2008) $
  *   $Author: thtesche $
- * $Revision: 360 $
+ * $Revision: 364 $
  */
 package net.sf.regain.crawler;
 
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPSSLStore;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -63,6 +64,7 @@ import net.sf.regain.crawler.document.RawDocument;
 import org.apache.log4j.Logger;
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
+import sun.misc.BASE64Decoder;
 
 /**
  * Durchsucht alle konfigurierten Startseiten nach URLs. Die gefundenen Seiten
@@ -176,7 +178,7 @@ public class Crawler implements ErrorLogger {
         }
       }
     }
-    
+    accountPasswordStore = new HashMap<String, AccountPasswordEntry>();
     readAuthenticationProperties(authProps);
   }
   
@@ -442,12 +444,14 @@ public class Crawler implements ErrorLogger {
           logError("Invalid URL: '" + url + "'", thr, false);
           continue;
         }
-      } else if(url.startsWith("smb://")){
+      } else if (url.startsWith("smb://")) {
         // Windows share: Check whether this is a directory
         try {
-          SmbFile smbFile = RegainToolkit.urlToSmbFile(url);
+          SmbFile smbFile = RegainToolkit.urlToSmbFile(
+            CrawlerToolkit.replaceAuthenticationValuesInURL(url,
+            CrawlerToolkit.findAuthenticationValuesForURL(url, accountPasswordStore)));
           // Check whether the file is readable.
-          if( ! smbFile.canRead() ){
+          if (!smbFile.canRead()) {
             mCrawlerJobProfiler.abortMeasuring();
             logError("File is not readable: '" + url + "'", null, false);
             continue;
@@ -456,7 +460,7 @@ public class Crawler implements ErrorLogger {
             if (shouldBeParsed) {
               parseSmbDirectory(smbFile);
             }
-            
+
             // A directory can't be indexed -> continue
             mCrawlerJobProfiler.stopMeasuring(0);
             continue;
@@ -500,9 +504,10 @@ public class Crawler implements ErrorLogger {
       RawDocument rawDocument;
       try {
         rawDocument = new RawDocument(url, mCurrentJob.getSourceUrl(),
-                                      mCurrentJob.getSourceLinkText());
-      }
-      catch (RedirectException exc) {
+          mCurrentJob.getSourceLinkText(), 
+          CrawlerToolkit.findAuthenticationValuesForURL(url, accountPasswordStore));
+        
+      } catch (RedirectException exc) {
         String redirectUrl = exc.getRedirectUrl();
         mLog.info("Redirect '" + url +  "' -> '" + redirectUrl + "'");
         mUrlChecker.setIgnored(url);
@@ -712,25 +717,38 @@ public class Crawler implements ErrorLogger {
    * Reads the authentication properties of all entries.
    */
   private void readAuthenticationProperties(Properties authProps) {
-  
+
     try {
       mLog.info("Read authentication entries from authentication properties.");
-     
+
       Set<String> keys = new HashSet<String>();
       keys = authProps.stringPropertyNames();
       Iterator iter = keys.iterator();
       // Iterate over all keys
       while (iter.hasNext()) {
-        String key = (String)iter.next();
+        String key = (String) iter.next();
         String parts[] = key.split("\\.");
-        mLog.debug("Found auth entry and split to: " + key);
-        
+
         String url = CrawlerToolkit.createURLFromProps(parts);
         // Check for url in HashMap
-        mLog.debug("Create url from auth entry: " + url);
-        if( key.indexOf(".account")!=-1 ) {
-          
+        AccountPasswordEntry acPassEntry;
+        if (accountPasswordStore.containsKey(url)) {
+          acPassEntry = accountPasswordStore.get(url);
+        } else {
+          acPassEntry = new AccountPasswordEntry();
         }
+
+        if (key.indexOf(".account") != -1) {
+          acPassEntry.setAccountName(URLEncoder.encode(authProps.getProperty(key), "UTF-8"));
+          mLog.debug("Found account name: " + acPassEntry.getAccountName() + " for auth entry: " + url);
+        } else if (key.indexOf(".password") != -1) {
+          BASE64Decoder decoder = new BASE64Decoder();
+          acPassEntry.setPassword(new String(decoder.decodeBuffer(authProps.getProperty(key))));
+          mLog.debug("Found password for auth entry: " + url);
+        }
+        // write the updated entry back to hashtable
+        accountPasswordStore.put(url, acPassEntry);
+
       }
 
     } catch (Exception e) {
@@ -945,7 +963,6 @@ public class Crawler implements ErrorLogger {
     try {
       // Get the URL for the directory
       String sourceUrl = dir.getCanonicalPath();
-      // @todo: use userPasswordFactory for username
 
       // Parse the directory
       SmbFile[] childArr = dir.listFiles();
@@ -976,19 +993,21 @@ public class Crawler implements ErrorLogger {
    * @throws RegainException If encoding of the found URLs failed. 
    */
   private void parseIMAPFolder(String folderUrl) throws RegainException {
-  
+
     mLog.debug("Determine IMAP subfolder for: " + folderUrl);
     Session session = Session.getInstance(new Properties());
-    
-    URLName originURLName = new URLName(folderUrl);
+
+    URLName originURLName = new URLName(
+      CrawlerToolkit.replaceAuthenticationValuesInURL(folderUrl,
+      CrawlerToolkit.findAuthenticationValuesForURL(folderUrl, accountPasswordStore)));
     // Replace all %20 with whitespace in folder pathes
     String folder = "";
-    if(originURLName.getFile()!=null){
+    if (originURLName.getFile() != null) {
       folder = originURLName.getFile().replaceAll("%20", " ");
     }
-    URLName urlName = new URLName(originURLName.getProtocol(), originURLName.getHost(), 
-      originURLName.getPort(), folder , originURLName.getUsername(), originURLName.getPassword());
-    
+    URLName urlName = new URLName(originURLName.getProtocol(), originURLName.getHost(),
+      originURLName.getPort(), folder, originURLName.getUsername(), originURLName.getPassword());
+
     Map<String, Integer> folderList = new Hashtable<String, Integer>();
 
     try {
@@ -1005,20 +1024,20 @@ public class Crawler implements ErrorLogger {
       }
 
       // Find messages (if folder exist and could be openend)
-      if( startFolder.exists()){
+      if (startFolder.exists()) {
         try {
           startFolder.open(Folder.READ_ONLY);
           Message[] msgs = startFolder.getMessages();
           for (int i = 0; i < msgs.length; i++) {
             MimeMessage message = (MimeMessage) msgs[i];
             // It's a message -> Add a index job
-            addJob(folderUrl + "/message_"+startFolder.getUID(message), folderUrl, false, true, null);
+            addJob(folderUrl + "/message_" + startFolder.getUID(message), folderUrl, false, true, null);
           }
           startFolder.close(false);
 
         } catch (MessagingException messageEx) {
           mLog.debug("Could not open folder for reading but this is not an errror. Folder URL is " + folderUrl);
-        }        
+        }
       }
       // Find all subfolder 
       folderList = ImapToolkit.getAllFolders(startFolder, false);
@@ -1026,15 +1045,21 @@ public class Crawler implements ErrorLogger {
       // Iterate over all subfolders
       for (Map.Entry<String, Integer> entry : folderList.entrySet()) {
         // It's a directory -> Add a parse job
-        addJob(folderUrl + "/"+(String) entry.getKey(), folderUrl, true, false, null);
+        String newFolder;
+        if( folderUrl == null || folderUrl.length() == 0 || !folderUrl.endsWith("/")) {
+          newFolder =  "/" + (String) entry.getKey();
+        } else {
+          newFolder =  (String) entry.getKey();
+        }
+        addJob(folderUrl + newFolder, folderUrl, true, false, null);
       }
       imapStore.close();
-    
+
     } catch (Exception ex) {
       throw new RegainException("Couldn't determine IMAP entries.", ex);
     }
   }
-  
+
   /**
    * Creates crawler jobs from inclosed links. Every link is checked against the white-/black list.
    * 

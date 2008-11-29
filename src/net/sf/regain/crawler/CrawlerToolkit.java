@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-16 22:23:54 +0100 (So, 16 Nov 2008) $
+ *     $Date: 2008-11-24 22:58:51 +0100 (Mo, 24 Nov 2008) $
  *   $Author: thtesche $
- * $Revision: 360 $
+ * $Revision: 365 $
  */
 package net.sf.regain.crawler;
 
@@ -32,11 +32,14 @@ import java.net.*;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
+import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
+import net.sf.regain.crawler.access.AccountPasswordEntry;
 import net.sf.regain.crawler.config.CrawlerConfig;
 import net.sf.regain.util.io.HtmlEntities;
 
@@ -51,6 +54,7 @@ public class CrawlerToolkit {
 
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(CrawlerToolkit.class);
+  private static Pattern urlPatternLeft = Pattern.compile("([\\w]*://[\\w\\.:\\d-]*[^/]).*");
 
   public static String createURLFromProps(String[] parts) {
     
@@ -73,8 +77,7 @@ public class CrawlerToolkit {
         result += ".";
       }
       result += parts[parts.length-2] + "/";
-        mLog.debug("The result for url assambling is: " +  result );
-        System.out.println(result);
+
     } else {
       mLog.error("This is not a valid authentication entry: " + parts );
     }
@@ -248,7 +251,7 @@ public class CrawlerToolkit {
 
 
   /**
-   * L�dt ein Dokument von einem HTTP-Server herunter und gibt seinen Inhalt
+   * Lädt ein Dokument von einem HTTP-Server herunter und gibt seinen Inhalt
    * zurück.
    *
    * @param url Die URL des zu ladenden Dokuments.
@@ -353,7 +356,7 @@ public class CrawlerToolkit {
   /**
    * Wandelt die gegebene HTTP-URL in eine absolute URL um.
    * <p>
-   * Wenn die URL bereits absolut war, so wird sie unver�ndert zurückgegeben.
+   * Wenn die URL bereits absolut war, so wird sie unverändert zurückgegeben.
    *
    * @param url Die umzuwandelnde URL.
    * @param parentUrl Die URL auf die sich die umzuwandelnde URL bezieht. Diese
@@ -621,4 +624,70 @@ public class CrawlerToolkit {
     return clean.toString();
   }
   
+  /**
+   * Sets the account and password for a URL if there is a account/password entry matching to 
+   * the URL in the store.
+   * 
+   * @param url the url for enrichment
+   * @param authMap accountPasswordStore
+   * @return modified url
+   * @throws net.sf.regain.RegainException
+   */
+  public static AccountPasswordEntry findAuthenticationValuesForURL(String url,
+    Map<String, AccountPasswordEntry> authMap) throws RegainException {
+
+     String leftUrlPart = createURLWithoutPath(url);
+    // Lookup the key and in case of a match build the final url with account, password enrichment
+    if (authMap.containsKey(leftUrlPart)) {
+      return authMap.get(leftUrlPart);
+    } else {
+       return null;
+    }
+  }
+
+  /**
+   * Sets account and password for an URL
+   * 
+   * @param url the URL for enrichment
+   * @param entry the account password entry
+   * @return URL with replacement
+   * @throws net.sf.regain.RegainException
+   */
+  public static String replaceAuthenticationValuesInURL(String url, AccountPasswordEntry entry) {
+
+    String finalUrl = url;
+    if (entry != null) {
+      // Lookup the key and in case of a match build the final url with account, password enrichment
+      finalUrl = url.substring(0, url.indexOf("://"));
+      finalUrl += "://" + entry.getAccountName() + ":" +
+        entry.getPassword() + "@";
+      finalUrl += url.substring(url.indexOf("://") + 3);
+    }
+    return finalUrl;
+
+  }
+
+  /**
+   * Extract left part of URL (protocol, host, port).
+   * 
+   * @param completeUrl
+   * @return the resulting URL (e.g. http://bl.dfs.dk:8080/mypath/fil.jsp?query will be 
+   *         http://bl.dfs.dk:8080/)
+   */
+  public static String createURLWithoutPath(String completeUrl) throws RegainException {
+
+    String result = "";
+    Matcher matcher = urlPatternLeft.matcher(completeUrl);
+    matcher.find();
+    if (matcher.groupCount() > 0) {
+      try {
+        return matcher.group(1) + "/";
+      } catch (IllegalStateException ex) {
+        // No match found
+        return "";
+      }
+    } else {
+      throw new RegainException("URL is unparsable. url: " + completeUrl);
+    }
+  }
 }
