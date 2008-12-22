@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.zip.CRC32;
 import javax.mail.Address;
 import javax.mail.BodyPart;
 import org.apache.log4j.Logger;
@@ -94,6 +95,10 @@ public class MessagePreparator extends AbstractPreparator {
     StringBuffer keyText = new StringBuffer();
 
     try {
+      CRC32 crc = new CRC32();
+      crc.update(rawDocument.getContent());
+
+      mLog.debug("prepare MIME message crc: " + crc.getValue() + " for IMAP url: " + rawDocument.getUrl());
       MimeMessage message = new MimeMessage(session, mimeInput);
 
       resultText.append("Subject: " + message.getSubject()).append("\n");
@@ -147,7 +152,7 @@ public class MessagePreparator extends AbstractPreparator {
           String disposition = bp.getDisposition();
 
           if ((disposition != null) &&
-            ((disposition.equals(Part.ATTACHMENT)))) {
+                  ((disposition.equals(Part.ATTACHMENT)))) {
             attachments.add("attachment: " + bp.getFileName());
 
           } else if (disposition == null || disposition.equals(Part.INLINE)) {
@@ -155,7 +160,7 @@ public class MessagePreparator extends AbstractPreparator {
             // Plain Text oder HTML
             if (bp.isMimeType("text/*")) {
               textParts.add((String) bp.getContent());
-              //textParts.add( inputStreamAsString(bp.getInputStream()));
+            //textParts.add( inputStreamAsString(bp.getInputStream()));
 
             } else if (bp.isMimeType("multipart/*")) {
               // another bodypart container
@@ -185,11 +190,11 @@ public class MessagePreparator extends AbstractPreparator {
         // This is a plain text mail.
         //contentType = "text";
         Object content = message.getContent();
-        if( content instanceof String ){
+        if (content instanceof String) {
           textParts.add((String) content);
-        } else { 
+        } else {
           // This is an SharedByteArrayInputstream
-          textParts.add(RegainToolkit.readStringFromStream((SharedByteArrayInputStream)content));
+          textParts.add(RegainToolkit.readStringFromStream((SharedByteArrayInputStream) content));
         }
       }
 
@@ -232,7 +237,7 @@ public class MessagePreparator extends AbstractPreparator {
   }
 
   public static String inputStreamAsString(InputStream stream)
-    throws IOException {
+          throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(stream));
     StringBuilder sb = new StringBuilder();
     String line = null;

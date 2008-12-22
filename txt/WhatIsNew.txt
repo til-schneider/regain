@@ -1,12 +1,25 @@
-Version 1.5.5 on xxxx PREVIEW
+Version 1.5.6 on 22.12.08 PREVIEW
+---------------------------------
+* EXE-Version once again part of the distribution. There exists an unreproducible bug concerning
+  the parsing of a mime message. 
+* Mime messages will be fetched only once from the imap server. In the case of wanted reindexing 
+  the documents or the complete index have to be dropped.
+* Update of windows installer and jsmooth.
+
+Version 1.5.5 on 30.11.08 PREVIEW
 ---------------------------------
 * URL-Authentication for imap(s), http, smb according to the following schema  
   protoc://username:password@host:port/a_path/. The account/password pair are stored together 
   with the url-pattern in a properties-files. Main usage will be the crawling of imap mail stores.
 * New input field for imap(s) urls on the config page (desktop search).
 * BUGFIX: Whitelist entry for directories/files from file system not more any longer file:///
+* MISSING: Windows installer version. The Mailparsing doesn't work inside a wrapped Java program.
+  This bug will hopefully be fixed in a later release.
+* CONFIGURATION: There exists a new configuration .../my_installation_path/conf/authentication.properties.
+  The matching entries of account name/password for a specific host has to be provided before the start
+  of the crawler.
   
-﻿Version 1.5.4 on 16.11.08 PREVIEW
+Version 1.5.4 on 16.11.08 PREVIEW
 ---------------------------------
 * Content storage (for the new preview function from 1.5.2) could be disabled with <storeContentForPreview/> {true,false} in the 
   Crawler configuration. See example config.

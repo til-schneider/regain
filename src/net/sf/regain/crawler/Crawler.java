@@ -479,7 +479,12 @@ public class Crawler implements ErrorLogger {
           if( ImapToolkit.isMessageURL( url) == true) {
             // This is an URL wich describes an a-mail like 
             // imap://user:password@mail.mailhost.com/INBOX/message_23(_attachment_1)
-            // We do not check here for the accessibility, so nothing to do
+            // Mail are only indexed one times
+            if( mIndexWriterManager.isAlreadyIndexed(url)) {
+              // do not crawl the mail again
+              mCrawlerJobProfiler.stopMeasuring(0);
+              continue;
+            }
           } else {
             // If the URL is not an e-mail it have to be folder. Add all subfolders and 
             // messages as jobs

@@ -588,7 +588,37 @@ public class IndexWriterManager {
     return true;
   }
 
+  /**
+   * Lookup for a document matching to a given url.
+   * 
+   * @param url to check for
+   * @return true if there exist the document for the url in the index.
+   * 
+   * @throws RegainException if checking for url failed
+   */
+  public boolean isAlreadyIndexed(String url) throws RegainException {
+    boolean result = false;
+    
+      if (mUpdateIndex) {
+        // Search the entry for this URL
+        Term urlTerm = new Term("url", url);
+        Query query = new TermQuery(urlTerm);
 
+        try {
+          setIndexMode(SEARCHING_MODE);
+          Hits hits = mIndexSearcher.search(query);
+          if (hits.length() == 1) {
+            // we found one hit for our URL
+            result = true;
+          
+          }
+        } catch (IOException exc) {
+            throw new RegainException("Searching old index entry failed for " + url, exc);
+        }
+      }
+    return result;
+  }
+  
   /**
    * Adds a document to an index.<p>
    *
@@ -655,8 +685,8 @@ public class IndexWriterManager {
             }
             if (diff > 86400000L) {
               // -> The index entry is not up-to-date -> Delete the old entry
-              mLog.info("Index entry is outdated. Creating a new one (index=" +
-                  docLastModified + "), (source=" + indexLastModified + "): " +
+              mLog.info("Index entry is outdated. Creating a new one (source=" +
+                  docLastModified + "), (index=" + indexLastModified + "): " +
                   rawDocument.getUrl());
               removeOldEntry = true;
             } else {

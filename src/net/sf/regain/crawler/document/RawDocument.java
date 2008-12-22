@@ -38,6 +38,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.zip.CRC32;
 
 import java.util.HashMap;
 import java.util.Properties;
@@ -247,6 +248,7 @@ public class RawDocument {
           bytearrayMessage = baos.toByteArray();
           baos.close();
           mLastModifiedDate = cplMessage.getSentDate();
+
         }
 
         currentFolder.close(false);
@@ -257,7 +259,10 @@ public class RawDocument {
     } catch (Throwable thr) {
       throw new RegainException( thr.getMessage(), thr );
     }  
+    CRC32 crc = new CRC32();
+    crc.update(bytearrayMessage);
     
+    mLog.debug("loadIMAPMessage crc: " + crc.getValue() + " for IMAP url: " + url);
     return bytearrayMessage;
   }
   
