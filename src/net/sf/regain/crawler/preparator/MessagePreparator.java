@@ -28,7 +28,6 @@
 package net.sf.regain.crawler.preparator;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -83,10 +82,10 @@ public class MessagePreparator extends AbstractPreparator {
    */
   public void prepare(RawDocument rawDocument) throws RegainException {
 
-    Properties mailProperties = new Properties();
-    Session session = Session.getInstance(mailProperties);
-    ByteArrayInputStream mimeInput = new ByteArrayInputStream(rawDocument.getContent());
-
+    Properties mailProperties = System.getProperties();
+    Session session = Session.getInstance(mailProperties,null);
+    SharedByteArrayInputStream mimeInput = new SharedByteArrayInputStream(rawDocument.getContent());
+    
     Collection<String> textParts = new ArrayList<String>();
     Collection<String> attachments = new ArrayList<String>();
     SimpleDateFormat simpleFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-09-19 20:29:55 +0200 (Fr, 19 Sep 2008) $
+ *     $Date: 2009-01-04 22:09:48 +0100 (So, 04 Jan 2009) $
  *   $Author: thtesche $
- * $Revision: 340 $
+ * $Revision: 372 $
  */
 package net.sf.regain;
 
@@ -687,10 +687,10 @@ public class RegainToolkit {
    * Erzeugt einen Analyzer, der die Aufrufe an einen eingebetteten Analyzer
    * analysiert.
    * <p>
-   * Dies ist beim Debugging hilfreich, wenn man prï¿½fen will, was ein Analyzer
+   * Dies ist beim Debugging hilfreich, wenn man prüfen will, was ein Analyzer
    * bei bestimmten Anfragen ausgibt.
    *
-   * @param nestedAnalyzer The nested Analyzer that should
+   * @param nestedAnalyzer The nested Analyzer that should be analysed
    * @return Ein Analyzer, der die Aufrufe an einen eingebetteten Analyzer
    *         analysiert.
    */

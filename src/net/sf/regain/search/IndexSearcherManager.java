@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-25 18:41:44 +0200 (Sa, 25 Okt 2008) $
+ *     $Date: 2009-01-04 22:09:48 +0100 (So, 04 Jan 2009) $
  *   $Author: thtesche $
- * $Revision: 350 $
+ * $Revision: 372 $
  */
 package net.sf.regain.search;
 
@@ -102,13 +102,13 @@ public class IndexSearcherManager {
 
   /** The IndexReader to use for reading information from an index. */
   private IndexReader mIndexReader;
-  
+
   /** Der Analyzer, der für Suchen verwendet werden soll. */
   private Analyzer mAnalyzer;
 
   /** Der Thread, der alle 10 Sekunden Prüft, ob ein neuer Suchindex vorhanden ist. */
   private Thread mIndexUpdateThread;
-  
+
   /**
    * Holds for a field name (String) all distinct values the index has for that
    * field (String[]).
@@ -195,12 +195,12 @@ public class IndexSearcherManager {
     }
   }
 
-  
+
   /**
    * Gets an IndexReader for the index.
    * <p>
    * NOTE: Must be called in a synchronized block.
-   * 
+   *
    * @return An IndexReader for the index.
    * @throws RegainException If creating the IndexReader failed.
    */
@@ -217,7 +217,7 @@ public class IndexSearcherManager {
         throw new RegainException("Creating index reader failed", exc);
       }
     }
-    
+
     return mIndexReader;
   }
 
@@ -225,7 +225,7 @@ public class IndexSearcherManager {
   /**
    * Gets all distinct values a index has for a certain field. The values are
    * sorted alphabetically.
-   * 
+   *
    * @param field The field to get the values for.
    * @return All distinct values the index has for the field.
    * @throws RegainException If reading the values failed.
@@ -251,8 +251,8 @@ public class IndexSearcherManager {
 
 
   /**
-   * Gets the total number of documents in the index. 
-   *  
+   * Gets the total number of documents in the index.
+   *
    * @return The total number of documents in the index.
    * @throws RegainException If getting the document count failed.
    */
@@ -279,7 +279,7 @@ public class IndexSearcherManager {
         throw new RegainException("No index found in "
             + mWorkingIndexDir.getParentFile().getAbsolutePath());
       }
-      
+
       // Read the stopWordList and the exclusionList
       File analyzerTypeFile = new File(mWorkingIndexDir, "analyzerType.txt");
       String analyzerType = RegainToolkit.readStringFromFile(analyzerTypeFile);
@@ -291,7 +291,7 @@ public class IndexSearcherManager {
       File untokenizedFieldNamesFile = new File(mWorkingIndexDir, "untokenizedFieldNames.txt");
       String[] untokenizedFieldNames;
       if (untokenizedFieldNamesFile.exists()) {
-          untokenizedFieldNames = RegainToolkit.readListFromFile(untokenizedFieldNamesFile); 
+          untokenizedFieldNames = RegainToolkit.readListFromFile(untokenizedFieldNamesFile);
       } else {
           untokenizedFieldNames = new String[0];
       }
@@ -355,7 +355,7 @@ public class IndexSearcherManager {
         mIndexSearcher = null;
         mAnalyzer = null;
       }
-      
+
       // Close the IndexReader
       if (mIndexReader != null) {
         try {
@@ -392,4 +392,22 @@ public class IndexSearcherManager {
     }
   }
 
+  /**
+   * Rewrites the query for better highlighting of wildcard and fuzzy searches-
+   * Contribution: Anders Larsson, 2009
+   * @param query to be rewritten
+   * @return rewritten query
+   * @throws net.sf.regain.RegainException
+   */
+  public synchronized Query rewrite(Query query) throws RegainException {
+    Query rewittenQuery = query;
+    if (mIndexSearcher != null) {
+      try {
+        rewittenQuery = mIndexSearcher.rewrite(query);
+      } catch (IOException e) {
+        throw new RegainException("Rewriting of query: " + query.toString() + " failed. " + e.getMessage());
+      }
+    }
+    return rewittenQuery;
+  }
 }

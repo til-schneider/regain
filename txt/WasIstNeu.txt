@@ -1,3 +1,9 @@
+Version 1.5.7 am 24.01.09 (PREVIEW)
+-----------------------------------
+* Highlighting auch für Wildcard- und Fuzzysuchen (Contribution A.Larsson)
+* BUGFIX: Aufrufen von lokalen Dateien mittels Browser nach Anwendung von <rewriteRules/>
+* authentication.properties werden auch im Installationsroot gesucht (wichtig für Server-version)
+
 Version 1.5.6 am 22.12.08 PREVIEW
 ---------------------------------
 * EXE-Version nun wieder enthalten. Es gab ein merkwürdiges Verhalten bzgl. des Mailparsens. Fehler

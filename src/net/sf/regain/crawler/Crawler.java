@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-23 23:46:59 +0100 (So, 23 Nov 2008) $
+ *     $Date: 2008-12-26 20:45:23 +0100 (Fr, 26 Dez 2008) $
  *   $Author: thtesche $
- * $Revision: 364 $
+ * $Revision: 371 $
  */
 package net.sf.regain.crawler;
 
@@ -180,6 +180,7 @@ public class Crawler implements ErrorLogger {
     }
     accountPasswordStore = new HashMap<String, AccountPasswordEntry>();
     readAuthenticationProperties(authProps);
+    mLog.debug(System.getenv().toString());
   }
   
   

@@ -47,6 +47,10 @@
   <!--
   <start parse="true" index="true">http://www.mydomain.de/some/path/</start>
   -->
+  <!-- IMAP post box parsing -->
+  <!--
+	<start parse="true" index="true">imaps://imap.googlemail.com:993/</start>  
+  -->
   </startlist>
 
 
@@ -58,6 +62,7 @@
   <whitelist>
     <prefix name="file">file://</prefix>
     <prefix>http://www.mydomain.de</prefix>
+    <prefix>imaps://imap.googlemail.com</prefix>
   </whitelist>
 
 

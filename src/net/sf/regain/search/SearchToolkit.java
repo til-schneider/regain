@@ -42,10 +42,12 @@ import net.sf.regain.search.results.SingleSearchResults;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
 
-import org.apache.lucene.index.Term;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.WhitespaceAnalyzer;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
 
 /**
  * A toolkit for the search JSPs containing helper methods.
@@ -404,7 +406,8 @@ public class SearchToolkit {
     throws RegainException
   {
     IndexConfig[] configArr = getIndexConfigArr(request);
-    
+    Query query = null;
+        
     // Check whether one of the indexes contains the file
     for (int i = 0; i < configArr.length; i++) {
       // NOTE: We only allow the file access if there is no access controller
@@ -412,11 +415,33 @@ public class SearchToolkit {
         String dir = configArr[i].getDirectory();
         IndexSearcherManager manager = IndexSearcherManager.getInstance(dir);
         
+        String transformedFileUrl = fileUrl;
+        // back transform the file url according to given rewrite rules
+        String[][] rewriteRules = configArr[i].getRewriteRules();
+        if (rewriteRules != null) {
+          for (int ii = 0; ii < rewriteRules.length; ii++) {
+            String[] rule = rewriteRules[ii];
+            String prefix = rule[1];
+            if (fileUrl.startsWith(prefix)) {
+              String replacement = rule[0];
+              transformedFileUrl = replacement + fileUrl.substring(prefix.length());
+              break;
+            }
+          }
+        }
+  
         // Check whether the document is in the index
-        Term urlTerm = new Term("url", fileUrl);
-        Query query = new TermQuery(urlTerm);
-        Hits hits = manager.search(query);
+        Analyzer analyzer = new WhitespaceAnalyzer();
+        QueryParser parser = new QueryParser("url", analyzer);
+        String queryString = "\"" + transformedFileUrl + "\"";
         
+        try {
+          query = parser.parse(queryString);
+        } catch (ParseException ex) {
+          throw new RegainException("Parsing of url lookup-query failed.", ex);
+        }
+        
+        Hits hits = manager.search(query);
         // Allow the access if we found the file in the index
         if (hits.length() > 0) {
           return true;

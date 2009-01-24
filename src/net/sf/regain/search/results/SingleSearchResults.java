@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *     $Date: 2009-01-04 22:09:48 +0100 (So, 04 Jan 2009) $
  *   $Author: thtesche $
- * $Revision: 349 $
+ * $Revision: 372 $
  */
 package net.sf.regain.search.results;
 
@@ -346,11 +346,18 @@ public class SingleSearchResults implements SearchResults {
    * @throws RegainException If highlighting failed.
    */
   public void highlightHitDocument(int index) throws RegainException {
-    
-    Highlighter highlighter = new Highlighter(
-            new SimpleHTMLFormatter("<span class=\"highlight\">", "</span>"),
-            new QueryScorer(mQuery) );
+
     try {
+      // Lines added by Anders to make wildcard and fuzzy queries highlighted
+      IndexSearcherManager manager = IndexSearcherManager.getInstance(mIndexConfig.getDirectory());
+      // The highlighter needs a rewritten query to work with wildcard and fuzzy queries
+      Query rewrittenQuery = manager.rewrite(mQuery);
+      QueryScorer queryScorer = new QueryScorer(rewrittenQuery);
+      // End added by Anders
+
+      Highlighter highlighter = new Highlighter(
+        new SimpleHTMLFormatter("<span class=\"highlight\">", "</span>"), queryScorer);
+
       // Remark: the summary is at this point not a summary. It contains the 
       // first n characters from the document. n is configurable (default: 250000)
       // We transform this summary into 

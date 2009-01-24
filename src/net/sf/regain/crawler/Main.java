@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-16 22:23:54 +0100 (So, 16 Nov 2008) $
+ *     $Date: 2009-01-24 13:04:31 +0100 (Sa, 24 Jan 2009) $
  *   $Author: thtesche $
- * $Revision: 360 $
+ * $Revision: 373 $
  */
 package net.sf.regain.crawler;
 
@@ -109,7 +109,12 @@ public class Main {
     Properties authProps = new Properties();
 
     try {
+      // This is the default position (mainly used by the Desktop Search variant)
       File authPropsFile = new File(new File("conf"), "authentication.properties");
+      if(!authPropsFile.exists()) {
+        // try it in the installation root (mainly used by the Server Search variant)
+        authPropsFile = new File("authentication.properties");
+      }
       mLog.debug(authPropsFile.getAbsolutePath());
       authProps.load(new FileInputStream(authPropsFile));
     

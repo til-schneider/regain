@@ -1,3 +1,9 @@
+Version 1.6.0 on XX.XX (stable)
+* Highlighting for wildcard- and fuzzysearches (contribution: A.Larsson)
+* BUGFIX: local files couldn't executed after execution of rewriteRules
+* authentication.properties will be located in installation root too (usefull for server version 
+  which doesn't have a conf directory)
+
 Version 1.5.6 on 22.12.08 PREVIEW
 ---------------------------------
 * EXE-Version once again part of the distribution. There exists an unreproducible bug concerning
