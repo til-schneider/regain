@@ -1,4 +1,11 @@
-Version 1.6.0 on XX.XX (stable)
+Version 1.6.0 on 03/08/2009 STABLE
+----------------------------------
+* BUGFIX: Index update at the same day leads to parsing but the documents will not
+  be indexed.
+* left truncation of query terms *ack finds back, stack and so on
+
+Version 1.5.7 on 24.01.09 PREVIEW
+---------------------------------
 * Highlighting for wildcard- and fuzzysearches (contribution: A.Larsson)
 * BUGFIX: local files couldn't executed after execution of rewriteRules
 * authentication.properties will be located in installation root too (usefull for server version 

@@ -8,5 +8,5 @@
 
 <p class="footerLinks">
   <search:msg key="version"/> <%@include file="version" %> &middot;
-  &copy; 2005-2008 Til Schneider, Thomas Tesche (cluster:Consult)
+  &copy; 2005-2009 Til Schneider, Thomas Tesche (cluster:Consult)
 </p>

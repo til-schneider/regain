@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-01-22 13:08:20 +0100 (So, 22 Jan 2006) $
- *   $Author: til132 $
- * $Revision: 199 $
+ *     $Date: 2009-01-24 20:51:48 +0100 (Sa, 24 Jan 2009) $
+ *   $Author: thtesche $
+ * $Revision: 374 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -69,8 +69,7 @@ public class ExternalPreparator extends AbstractPreparator {
     super("");
   }
 
-
-  // overridden
+  @Override
   public void init(PreparatorConfig config) throws RegainException {
     Map[] commandArr = config.getSectionsWithName("command");
     mCommandLineArr = new String[commandArr.length];
@@ -104,7 +103,7 @@ public class ExternalPreparator extends AbstractPreparator {
   }
 
 
-  // overridden
+  @Override
   public boolean accepts(RawDocument rawDocument) {
     for (int i = 0; i < mUrlRegexArr.length; i++) {
       if (mUrlRegexArr[i].match(rawDocument.getUrl())) {
@@ -117,6 +116,7 @@ public class ExternalPreparator extends AbstractPreparator {
 
 
   // overridden
+  @Override
   public void prepare(RawDocument rawDocument) throws RegainException {
     // Get the right command line
     String commandLine = null;

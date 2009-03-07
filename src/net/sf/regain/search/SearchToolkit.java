@@ -387,7 +387,7 @@ public class SearchToolkit {
         new String[] {"/",   "$"});
 
     // Assemble the file URL
-    return RegainToolkit.fileNameToUrl(fileName); 
+    return RegainToolkit.fileNameToUrl(fileName);
   }
 
 

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-23 23:46:59 +0100 (So, 23 Nov 2008) $
+ *     $Date: 2009-03-08 18:45:00 +0100 (So, 08 Mrz 2009) $
  *   $Author: thtesche $
- * $Revision: 364 $
+ * $Revision: 382 $
  */
 package net.sf.regain.crawler;
 
@@ -37,7 +37,7 @@ import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.crawler.config.StartUrl;
 import net.sf.regain.crawler.config.UrlMatcher;
-import net.sf.regain.crawler.config.UrlMatcherImpl;
+import net.sf.regain.crawler.config.UrlMatcherResult;
 import net.sf.regain.crawler.config.WhiteListEntry;
 
 import org.apache.log4j.Logger;
@@ -213,7 +213,7 @@ public class UrlChecker {
    */
   public UrlMatcher isUrlAccepted(String url) {
     
-    UrlMatcher urlMatch = new UrlMatcherImpl(false, false);
+    UrlMatcher urlMatchResult = new UrlMatcherResult(false, false);
     mLog.debug("isUrlAccepted for url: " + url);
     // check whether this URL matches to a white list prefix
     for (int i = 0; i < mWhiteListEntryArr.length; i++) {
@@ -222,8 +222,8 @@ public class UrlChecker {
         if (matcher.matches(url)) {
           // get the values for link extraction and indexing 
           // from the current matcher hit
-          urlMatch.setShouldBeParsed(matcher.getShouldBeParsed());
-          urlMatch.setShouldBeIndexed(matcher.getShouldBeIndexed());
+          urlMatchResult.setShouldBeParsed(matcher.getShouldBeParsed());
+          urlMatchResult.setShouldBeIndexed(matcher.getShouldBeIndexed());
           mLog.debug("Whitelist matches for url: " + url);
           break;
         }
@@ -232,17 +232,17 @@ public class UrlChecker {
 
     // check whether this URL matches to a black list prefix
     // check only if there was a whitelist-hit
-    if( urlMatch.getShouldBeParsed() || urlMatch.getShouldBeIndexed() ) {
+    if( urlMatchResult.getShouldBeParsed() || urlMatchResult.getShouldBeIndexed() ) {
       for (int i = 0; i < mBlackListArr.length; i++) {
         if (mBlackListArr[i].matches(url)) {
-          urlMatch.setShouldBeParsed(false);
-          urlMatch.setShouldBeIndexed(false);
+          urlMatchResult.setShouldBeParsed(false);
+          urlMatchResult.setShouldBeIndexed(false);
           mLog.debug("Blacklist matches for url: " + url);
         }
       }
     }
 
-    return urlMatch;
+    return urlMatchResult;
   }
 
 

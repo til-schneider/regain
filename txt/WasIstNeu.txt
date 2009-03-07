@@ -1,3 +1,10 @@
+Version 1.6.0 am 08.03.2009 STABLE
+----------------------------------
+* BUGFIX: Alle Dokumente werden geparsed aber nicht indexiert,
+  wenn man am selben Tag den Index updatet.
+* Linkstrunkierung für Suchanfragen: z.B. *er hier, Wert, integriert, aber usw.
+  Achtung: es wird immer auf die gestemmte Form gematched.
+
 Version 1.5.7 am 24.01.09 (PREVIEW)
 -----------------------------------
 * Highlighting auch für Wildcard- und Fuzzysuchen (Contribution A.Larsson)

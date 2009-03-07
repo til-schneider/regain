@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-23 23:46:59 +0100 (So, 23 Nov 2008) $
+ *     $Date: 2009-03-08 18:45:00 +0100 (So, 08 Mrz 2009) $
  *   $Author: thtesche $
- * $Revision: 364 $
+ * $Revision: 382 $
  */
 package net.sf.regain.crawler.config;
 
@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
  *  
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
-public class RegexUrlMatcher extends UrlMatcherImpl {
+public class RegexUrlMatcher extends UrlMatcherResult {
   
   /** The logger for this class. */
   private static Logger mLog = Logger.getLogger(RegexUrlMatcher.class);

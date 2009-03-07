@@ -12,7 +12,7 @@ java-api-location=http://java.sun.com/javase/6/docs/api/
 
 # The location of the Java Standard Edition 6 
 #java.dir=/usr/local/lib/jdk1.6
-java.dir=C:/Programme/Java/jdk1.6
+java.dir=C:/Programme/Java/jdk1.6.0_12
 
 # The directory where the tomcat server is located
 deploy-target.dir=C:/Programme/jakarta-tomcat-6.0/webapps

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-01-04 22:09:48 +0100 (So, 04 Jan 2009) $
+ *     $Date: 2009-03-08 18:45:00 +0100 (So, 08 Mrz 2009) $
  *   $Author: thtesche $
- * $Revision: 372 $
+ * $Revision: 382 $
  */
 package net.sf.regain;
 
@@ -1381,6 +1381,7 @@ public class RegainToolkit {
     // NOTE: "/" is "%2F", "\" is "%5C"
     fileName = replace(fileName, "%2F", "/");
     fileName = replace(fileName, "%5C", "/"); // Yes: "\" should become "/"
+    fileName = replace(fileName, "\\", "/");
 
     return "file://" + fileName;
   }

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-01-04 22:09:48 +0100 (So, 04 Jan 2009) $
+ *     $Date: 2009-02-17 22:35:10 +0100 (Di, 17 Feb 2009) $
  *   $Author: thtesche $
- * $Revision: 372 $
+ * $Revision: 375 $
  */
 package net.sf.regain.search.results;
 
@@ -118,6 +118,7 @@ public class SingleSearchResults implements SearchResults {
         for (int i = 0; i < searchFieldArr.length; i++) {
           QueryParser parser = new QueryParser(searchFieldArr[i], mAnalyzer);
           parser.setDefaultOperator(QueryParser.AND_OPERATOR);
+          parser.setAllowLeadingWildcard(true);
           Query fieldQuery = parser.parse(queryText);
 
           // Add as OR

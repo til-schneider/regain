@@ -112,7 +112,7 @@ Ca. 28.07.04:
 05.10.08
 ========
     servlet.jar entfernt
-    servlet-api.jar und jsp-api.jar aus Tomcat 6.0.16 hinzugefügt
+    servlet-api.jar und jsp-api.jar aus Tomcat 6.0.16 hinzugefuegt
 
 Websites:
 =========

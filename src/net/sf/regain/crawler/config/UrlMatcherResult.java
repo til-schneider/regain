@@ -24,16 +24,19 @@
 package net.sf.regain.crawler.config;
 
 /**
- * An UrlMatcherImpl that implements the UrlMatcher interface.
+ * An UrlMatcherResult that implements the UrlMatcher interface.
+ * This URLMatcher holds only the result of another URLMatcher.
  *  
  * @author Thomas Tesche, cluster:Consult, http://www.thtesche.com/
  */
-public class UrlMatcherImpl implements UrlMatcher {
+public class UrlMatcherResult implements UrlMatcher {
 
   /** The link extraction flag */
   private boolean mShouldBeParsed;
   /** The content indexing flag */
   private boolean mShouldBeIndexed;
+  /** The result of the matching. */
+  private boolean mMatches;
 
   /**
    * Creates a new instance of UrlMatcher.
@@ -41,9 +44,10 @@ public class UrlMatcherImpl implements UrlMatcher {
    * @param shouldBeParsed, whether from a match for matches(url) possibly inclosed links should be extracted.
    * @param shouldBeIndexed, whether from a match for matches(url) the content from the URL should be indexed.
    */
-  public UrlMatcherImpl(boolean shouldBeParsed, boolean shouldBeIndexed) {
+  public UrlMatcherResult(boolean shouldBeParsed, boolean shouldBeIndexed) {
     mShouldBeParsed = shouldBeParsed;
     mShouldBeIndexed = shouldBeIndexed;
+    mMatches = false;
   }
 
   /**
@@ -52,8 +56,9 @@ public class UrlMatcherImpl implements UrlMatcher {
    * @param url The URL to check.
    * @return Whether the given URL matches to the rules of this matcher.
    */
+  @Override
   public boolean matches(String url) {
-    return false;
+    return mMatches;
   }
 
   /** 
@@ -61,6 +66,7 @@ public class UrlMatcherImpl implements UrlMatcher {
    * 
    * @return Whether from a match for matches(url) possibly inclosed links should be extracted.
    */
+  @Override
   public boolean getShouldBeParsed() {
     return mShouldBeParsed;
   }
@@ -70,6 +76,7 @@ public class UrlMatcherImpl implements UrlMatcher {
    * 
    * @return Whether from a match for matches(url) the content from the URL should be indexed.
    */
+  @Override
   public boolean getShouldBeIndexed() {
     return mShouldBeIndexed;
   }
@@ -77,6 +84,7 @@ public class UrlMatcherImpl implements UrlMatcher {
   /** 
    * Sets a flag whether links should be extracted from the content
    */
+  @Override
   public void setShouldBeParsed(boolean shouldBeParsed) {
     this.mShouldBeParsed = shouldBeParsed;
   }
@@ -84,6 +92,7 @@ public class UrlMatcherImpl implements UrlMatcher {
   /** 
    * Sets a flag whether the content should be indexed.
    */
+  @Override
   public void setShouldBeIndexed(boolean shouldBeIndexed) {
     this.mShouldBeIndexed = shouldBeIndexed;
   }

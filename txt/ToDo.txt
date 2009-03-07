@@ -172,7 +172,7 @@ X Bugfix: HTTP-Download hat volle Timeout-Zeit gewartet, wenn RuntimeException
 X Bessere Fehlermeldung, wenn Redirect keinen Location-Header hat.
 X Crawler: Logging: Anstatt "Adding to index" lieber "Preparation done"
 X Bei mi�gl�cktem Dokument: Nicht "Adding to index" loggen, sondern
-    "Created substitude document"
+    "Created substitute document"
 X Breakpoints: Erst neuen breakpoint erstellen, dann den alten l�schen.
     Damit verhindern, dass es gar keinen breakpoint gibt, wenn regain beendet
     wird.

@@ -21,19 +21,23 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-23 23:46:59 +0100 (So, 23 Nov 2008) $
+ *     $Date: 2009-03-08 18:45:00 +0100 (So, 08 Mrz 2009) $
  *   $Author: thtesche $
- * $Revision: 364 $
+ * $Revision: 382 $
  */
 package net.sf.regain.crawler.config;
+
+import org.apache.log4j.Logger;
 
 /**
  * A UrlMatcher that matches URLs that start with a certain prefix.
  * 
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
-public class PrefixUrlMatcher extends UrlMatcherImpl {
+public class PrefixUrlMatcher extends UrlMatcherResult {
 
+  /** The logger for this class. */
+  private static Logger mLog = Logger.getLogger(PrefixUrlMatcher.class);
   /** The prefix a URL must start with in order to be matched by this matcher. */
   private String mUrlPrefix;
  
@@ -58,6 +62,7 @@ public class PrefixUrlMatcher extends UrlMatcherImpl {
    */
   @Override
   public boolean matches(String url) {
+    mLog.debug("Matches with prefix: " + url + ", " + mUrlPrefix);
     return url.startsWith(mUrlPrefix);
   }
 

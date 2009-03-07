@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-12-26 20:45:23 +0100 (Fr, 26 Dez 2008) $
+ *     $Date: 2009-03-06 22:29:35 +0100 (Fr, 06 Mrz 2009) $
  *   $Author: thtesche $
- * $Revision: 371 $
+ * $Revision: 377 $
  */
 package net.sf.regain.crawler;
 
@@ -670,11 +670,12 @@ public class IndexWriterManager {
           mLog.info("Don't know when the document was last modified. " +
             "Creating a new index entry...");
           removeOldEntry = true;
+
         } else {
           // Compare the modification date with the one from the index entry
           String asString = doc.get("last-modified");
           if (asString != null) {
-            long diff = 8600001L;
+            long diff = 86400001L;
             Date indexLastModified = null;
             try {
               indexLastModified = DateTools.stringToDate(asString);
@@ -688,7 +689,19 @@ public class IndexWriterManager {
               mLog.info("Index entry is outdated. Creating a new one (source=" +
                   docLastModified + "), (index=" + indexLastModified + "): " +
                   rawDocument.getUrl());
-              removeOldEntry = true;
+
+            } else if( (new Date().getTime()) - indexLastModified.getTime() < 86400000L ) {
+              // Spidering at the same day
+              // Due to the fuzziness of the docLastModified.getTime() (day accuracy) 
+              // we can't be sure whether the document is up-to-date or not
+              mLog.info("Index entry is from the same day. Therefore we have to recrawl but do not index the document."+
+                "Creating a new one (source=" + docLastModified + "), (index=" + indexLastModified + "): " +
+                rawDocument.getUrl());
+              
+              parseDocument(rawDocument, errorLogger);
+
+              return;
+
             } else {
               // The index entry is up-to-date
 
@@ -743,7 +756,7 @@ public class IndexWriterManager {
    * @param rawDocument which will be parsed 
    * @param errorLogger The error logger to use for logging errors.
    * 
-   * @throws RegainException if indexing of the docuemnt failed
+   * @throws RegainException if indexing of the document failed
    */
   public void createNewIndexEntry(RawDocument rawDocument, ErrorLogger errorLogger)
     throws RegainException
@@ -767,6 +780,27 @@ public class IndexWriterManager {
         throw new RegainException("Adding document to index failed", exc);
       }
     }
+  }
+
+  /**
+   * Creates a  document but don't add  this to the index
+   *
+   * @param rawDocument which will be parsed
+   * @param errorLogger The error logger to use for logging errors.
+   *
+   * @throws RegainException if parsing of the document failed
+   */
+  public void parseDocument(RawDocument rawDocument, ErrorLogger errorLogger)
+    throws RegainException
+  {
+    // Dokument erzeugen
+    if (mLog.isDebugEnabled()) {
+      mLog.debug("Creating document: " + rawDocument.getUrl() +  " only for parsing.");
+    }
+
+    mDocumentFactory.createDocument(rawDocument, errorLogger);
+
+   
   }
 
   /** 
@@ -796,7 +830,7 @@ public class IndexWriterManager {
   {
     if (! mUpdateIndex) {
       // Wir haben einen komplett neuen Index erstellt
-      // -> Es kann keine Eintr�ge zu nicht vorhandenen Dokumenten geben
+      // -> Es kann keine Einträge zu nicht vorhandenen Dokumenten geben
       // -> Wir sind fertig
       return;
     }
@@ -831,10 +865,10 @@ public class IndexWriterManager {
         String url = doc.get("url");
         String lastModified = doc.get("last-modified");
 
-        // Prüfen, ob die URL gel�scht werden soll
+        // Prüfen, ob die URL gelöscht werden soll
         boolean shouldBeDeleted;
         if (url != null) {
-          // Prüfen, ob dieser Eintrag zum L�schen vorgesehen ist
+          // Prüfen, ob dieser Eintrag zum Löschen vorgesehen ist
           if (isMarkedForDeletion(doc)) {
             shouldBeDeleted = true;
           }

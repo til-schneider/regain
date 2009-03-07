@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-24 22:58:51 +0100 (Mo, 24 Nov 2008) $
+ *     $Date: 2009-03-08 18:45:00 +0100 (So, 08 Mrz 2009) $
  *   $Author: thtesche $
- * $Revision: 365 $
+ * $Revision: 382 $
  */
 package net.sf.regain.ui.desktop.config.sharedlib;
 
@@ -300,7 +300,13 @@ public class FormTag extends SharedTag implements DesktopConstants {
     for (int i = 0; i < startArr.length; i++) {
       String startUrl = XmlToolkit.getText(startArr[i], true);
       if (startUrl.startsWith(prefix)) {
-        entries.add(startUrl.substring(prefix.length()));
+        String entry = startUrl;
+        if( entry.startsWith(FILE_PROTOCOL)) {
+          entry = RegainToolkit.urlToFileName(entry);
+        }
+        //String entry = startUrl.substring(prefix.length());
+        
+        entries.add(entry);
       }
     }
     
@@ -354,8 +360,8 @@ public class FormTag extends SharedTag implements DesktopConstants {
     
     // Fill the startlist
     for (int i = 0; i < dirlist.length; i++) {
-      String url = FILE_PROTOCOL + dirlist[i];
-      node = XmlToolkit.addChildWithText(crawlerDoc, startlistNode, "start", url);
+      String url = RegainToolkit.fileNameToUrl(dirlist[i]);
+      node = XmlToolkit.addChildWithText(crawlerDoc, startlistNode, "start", url );
       XmlToolkit.setAttribute(crawlerDoc, node, "parse", "true");
       XmlToolkit.setAttribute(crawlerDoc, node, "index", "false");
     }
@@ -373,7 +379,8 @@ public class FormTag extends SharedTag implements DesktopConstants {
         
     // Add the file protocol to the whitelist
     for (int i = 0; i < dirlist.length; i++) {
-      XmlToolkit.addChildWithText(crawlerDoc, whitelistNode, "prefix", FILE_PROTOCOL + dirlist[i]);
+      String url = RegainToolkit.fileNameToUrl(dirlist[i]);
+      XmlToolkit.addChildWithText(crawlerDoc, whitelistNode, "prefix", url);
     }
     
     // Add the sitelist to the whitelist
@@ -388,7 +395,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
 
     // Fill the blacklist
     for (int i = 0; i < dirblacklist.length; i++) {
-      String url = FILE_PROTOCOL + dirblacklist[i];
+      String url = RegainToolkit.fileNameToUrl(dirblacklist[i]);
       node = XmlToolkit.addChildWithText(crawlerDoc, blacklistNode, "prefix", url);
     }
     for (int i = 0; i < siteblacklist.length; i++) {

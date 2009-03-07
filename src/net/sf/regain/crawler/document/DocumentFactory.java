@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-23 23:46:59 +0100 (So, 23 Nov 2008) $
+ *     $Date: 2009-01-24 20:51:48 +0100 (Sa, 24 Jan 2009) $
  *   $Author: thtesche $
- * $Revision: 364 $
+ * $Revision: 374 $
  */
 package net.sf.regain.crawler.document;
 
@@ -273,10 +273,10 @@ public class DocumentFactory {
       // tried to be processed the next time
       try {
         doc = createSubstituteDocument(rawDocument);
-        mLog.info("Created substitude document: " + rawDocument.getUrl());
+        mLog.info("Created substitute document: " + rawDocument.getUrl());
       }
       catch (RegainException exc) {
-        errorLogger.logError("Creating substitude document for "
+        errorLogger.logError("Creating substitute document for "
             + rawDocument.getUrl() + " failed", exc, false);
       }
     }
@@ -375,7 +375,7 @@ public class DocumentFactory {
    * @param rawDocument The raw document to create the lucene {@link Document}
    *        for.
    * @param cleanedContent The content of the document. (May be null, if the
-   *        content couldn't be extracted. In this case a substitude document is
+   *        content couldn't be extracted. In this case a substitute document is
    *        created)
    * @param title The title. May be null.
    * @param summary The summary. May be null.
@@ -499,7 +499,7 @@ public class DocumentFactory {
       doc.add(new Field("content", cleanedContent, 
         this.storeContentForPreview ? Field.Store.YES : Field.Store.NO, Field.Index.TOKENIZED));
     } else {
-      // We have no content! This is a substitude document
+      // We have no content! This is a substitute document
       // -> Add a "preparation-error"-field
       doc.add(new Field("preparation-error", "true", Field.Store.YES,
           Field.Index.NO));

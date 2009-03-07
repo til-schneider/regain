@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-12-26 20:45:23 +0100 (Fr, 26 Dez 2008) $
+ *     $Date: 2009-03-07 19:21:52 +0100 (Sa, 07 Mrz 2009) $
  *   $Author: thtesche $
- * $Revision: 371 $
+ * $Revision: 380 $
  */
 package net.sf.regain.crawler;
 
@@ -295,6 +295,8 @@ public class Crawler implements ErrorLogger {
   private void addJob(String url, String sourceUrl, boolean shouldBeParsed,
     boolean shouldBeIndexed, String sourceLinkText)
   {
+    mLog.debug("Try to add " + url + " referer " + sourceUrl + " as a new crawler job.");
+    
     if (! mConfiguration.getBuildIndex()) {
       // Indexing is disabled
       shouldBeIndexed = false;
@@ -377,7 +379,7 @@ public class Crawler implements ErrorLogger {
   public void run(boolean updateIndex, boolean retryFailedDocs,
     String[] onlyEntriesArr)
   {
-    mLog.info("Starting crawling...");
+    mLog.info("Starting crawling ...");
     mShouldPause = false;
 
     // Init the HTTP client
@@ -397,6 +399,7 @@ public class Crawler implements ErrorLogger {
       }
     }
 
+    mLog.debug("Read whitelist entries from config");
     // Get the white list and set the "should be updated"-flags
     WhiteListEntry[] whiteList = mConfiguration.getWhiteList();
     whiteList = useOnlyWhiteListEntries(whiteList, onlyEntriesArr, updateIndex);
@@ -404,7 +407,9 @@ public class Crawler implements ErrorLogger {
     // Create the UrlChecker
     mUrlChecker = new UrlChecker(whiteList, mConfiguration.getBlackList());
 
+
     // Add the start URLs
+    mLog.info("Read start-URLs from config");
     addStartUrls();
     
     // Remember the last time when a breakpoint was created
@@ -613,7 +618,7 @@ public class Crawler implements ErrorLogger {
     try {
       entryCount = mIndexWriterManager.getIndexEntryCount();
       // NOTE: We've got to substract the errors, because for each failed
-      //       document a substitude document is added to the index
+      //       document a substitute document is added to the index
       //       (which should not be counted).
       entryCount -= mErrorCount;
       if (entryCount < 0) {
@@ -707,6 +712,7 @@ public class Crawler implements ErrorLogger {
     
     // Normalize the start URLs
     startUrlArr = mUrlChecker.normalizeStartUrls(startUrlArr);
+    mLog.info("Found " + startUrlArr.length + " startURLs.");
     
     // Add the start URLs as jobs
     for (int i = 0; i < startUrlArr.length; i++) {
