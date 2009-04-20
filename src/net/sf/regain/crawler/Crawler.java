@@ -34,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URLEncoder;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -733,8 +734,14 @@ public class Crawler implements ErrorLogger {
     try {
       mLog.info("Read authentication entries from authentication properties.");
 
+      // Java 6
       Set<String> keys = new HashSet<String>();
-      keys = authProps.stringPropertyNames();
+      //keys = authProps.stringPropertyNames();
+      // Java 5
+      for (Enumeration e = authProps.propertyNames(); e.hasMoreElements();) {
+        keys.add((String) e.nextElement());
+      }
+
       Iterator iter = keys.iterator();
       // Iterate over all keys
       while (iter.hasNext()) {

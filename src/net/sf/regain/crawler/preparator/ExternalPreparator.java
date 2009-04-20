@@ -115,8 +115,8 @@ public class ExternalPreparator extends AbstractPreparator {
   }
 
 
-  // overridden
-  @Override
+  // overridden super().super().prepare
+  // @Override
   public void prepare(RawDocument rawDocument) throws RegainException {
     // Get the right command line
     String commandLine = null;

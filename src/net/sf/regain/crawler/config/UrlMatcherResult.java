@@ -56,7 +56,7 @@ public class UrlMatcherResult implements UrlMatcher {
    * @param url The URL to check.
    * @return Whether the given URL matches to the rules of this matcher.
    */
-  @Override
+  //@Override
   public boolean matches(String url) {
     return mMatches;
   }
@@ -66,7 +66,7 @@ public class UrlMatcherResult implements UrlMatcher {
    * 
    * @return Whether from a match for matches(url) possibly inclosed links should be extracted.
    */
-  @Override
+  //@Override
   public boolean getShouldBeParsed() {
     return mShouldBeParsed;
   }
@@ -76,7 +76,7 @@ public class UrlMatcherResult implements UrlMatcher {
    * 
    * @return Whether from a match for matches(url) the content from the URL should be indexed.
    */
-  @Override
+  //@Override
   public boolean getShouldBeIndexed() {
     return mShouldBeIndexed;
   }
@@ -84,7 +84,7 @@ public class UrlMatcherResult implements UrlMatcher {
   /** 
    * Sets a flag whether links should be extracted from the content
    */
-  @Override
+  //@Override
   public void setShouldBeParsed(boolean shouldBeParsed) {
     this.mShouldBeParsed = shouldBeParsed;
   }
@@ -92,7 +92,7 @@ public class UrlMatcherResult implements UrlMatcher {
   /** 
    * Sets a flag whether the content should be indexed.
    */
-  @Override
+  //@Override
   public void setShouldBeIndexed(boolean shouldBeIndexed) {
     this.mShouldBeIndexed = shouldBeIndexed;
   }

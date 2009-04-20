@@ -1,3 +1,7 @@
+Version 1.6.1 am 21.04.2009 STABLE
+----------------------------------
+* regain wurde mit Java 1.5 übersetzt.
+
 Version 1.6.0 am 08.03.2009 STABLE
 ----------------------------------
 * BUGFIX: Alle Dokumente werden geparsed aber nicht indexiert,
