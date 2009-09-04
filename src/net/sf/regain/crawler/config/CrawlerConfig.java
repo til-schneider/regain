@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *     $Date: 2009-04-30 08:59:19 +0200 (Do, 30 Apr 2009) $
  *   $Author: thtesche $
- * $Revision: 349 $
+ * $Revision: 387 $
  */
 package net.sf.regain.crawler.config;
 
@@ -324,5 +324,14 @@ public interface CrawlerConfig {
    */
   public String[] getUntokenizedFieldNames();
   
+  /**
+   * Returns the URLCleaners. URLCleaners are regex which replace
+   * parts of the URL with an empty string (in fact the remove the match
+   * from the URL.
+   * 
+   * @return the paramters
+   */
+  public String[] getURLCleaners();
+
 }
 

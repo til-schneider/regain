@@ -54,9 +54,9 @@
               (<search:msg key="relevance"/>: <search:hit_score/>)<br/>
               <search:hit_field field="summary"/><br/>
               <search:hit_content/>
-              <search:hit_path after="<br/>" createLinks="true"/>
-              <search:hit_field field="mimetype"/>&nbsp;
-              <span class="hitInfo"><search:hit_url beautified="true"/> - <search:hit_size/></span><br/>
+              <search:hit_path after="" createLinks="true"/><search:hit_field field="mimetype"/>&nbsp;
+              <span class="hitInfo"><search:hit_url beautified="true"/> - <search:hit_size/> - </span>
+              <search:hit_cached/><br/>
             <br/></span>
         </td></tr>
       </search:list>

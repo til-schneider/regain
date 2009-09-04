@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *     $Date: 2009-08-09 18:52:40 +0200 (So, 09 Aug 2009) $
  *   $Author: thtesche $
- * $Revision: 349 $
+ * $Revision: 394 $
  */
 package net.sf.regain;
 
@@ -39,6 +39,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Attr;
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -149,6 +150,7 @@ public class XmlToolkit {
     
     boolean isText = name.equals("#text");
     boolean isComment = name.equals("#comment");
+    boolean isCDATA = name.equals("#cdata-section");
     if (isText) {
       // This is a text tag
       String text = node.getNodeValue();
@@ -160,6 +162,9 @@ public class XmlToolkit {
       // This is a comment tag
       String comment = node.getNodeValue();
       out.print("<!--" + comment + "-->");
+    } else if (isCDATA) {
+      String text = node.getNodeValue();
+      out.print("<![CDATA[" + text + "]]>");
     } else {
       // This is a normal tag
       out.print(prefix + "<" + name);
@@ -294,14 +299,13 @@ public class XmlToolkit {
    * @throws RegainException Wenn der Knoten keinen Text hat oder wenn der Text
    *         keine g�ltige URL ist.
    */
-  public static String getTextAsUrl(Node node) throws RegainException {
-    String asString = getText(node, true);
+  public static String getTextOrCDataAsUrl(Node node) throws RegainException {
+    String asString = getTextOrCData(node, true);
 
     // Check whether the text contains a back slash
     if (asString.indexOf('\\') != -1) {
-      throw new RegainException("Text of node '" + node.getNodeName()
-              + "' is not a valid URL. Use normal slashes instead of backslashes: '"
-              + asString + "'");
+      throw new RegainException("Text of node '" + node.getNodeName() +
+              "' is not a valid URL. Use normal slashes instead of backslashes: '" + asString + "'");
     }
 
     return asString;
@@ -323,7 +327,82 @@ public class XmlToolkit {
     return textNode.getNodeValue();
   }
 
-  
+
+  /**
+   * Returns the CDATA value from an node.
+   *
+   * @param node from which the cdata will be read
+   * @param mandatory should an exception be thrown in case of an empty node
+   * @return value of cdata node
+   * @throws RegainException
+   */
+  public static String getCData(Node node, boolean mandatory)
+          throws RegainException {
+    return getCData(node, mandatory, false);
+  }
+
+ /**
+  * Returns the CDATA value from an node (optional trimmed).
+  *
+  * @param node from which the cdata will be read
+  * @param mandatory should an exception be thrown in case of an empty node
+  * @param trimmed should the value from the node be trimmed
+  * @return value of cdata node
+  * @throws RegainException
+  */
+  public static String getCData(Node node, boolean mandatory, boolean trimmed)
+    throws RegainException
+  {
+    String text = getCData(node);
+
+    if (trimmed && (text != null)) {
+      text = text.trim();
+    }
+
+    if (mandatory && ((text == null) || (text.length() == 0))) {
+      throw new RegainException("Node '" + node.getNodeName() + "' has no CDATA element.");
+    } else {
+      return text;
+    }
+  }
+
+  /**
+   * Gets the CDATA value of a node.
+   *
+   * @param node The node to get the CDATA value from.
+   * @return The text of the node or <code>null</code> if the node has no CDATA value.
+   */
+  public static String getCData(Node node) {
+    Node cDataNode = getChild(node, "#cdata-section");
+    if (cDataNode == null) {
+      return null;
+    }
+
+    return cDataNode.getNodeValue();
+  }
+
+  /**
+   * Returns text from a text or CDATA node.
+   *
+   * @param node The node from which to read.
+   * @param mandatory Sets whether the result ( a text with minimal 1 char) has to be present or not.
+   * @return the text value from the node.
+   * @throws RegainException
+   */
+  public static String getTextOrCData(Node node, boolean mandatory) throws RegainException {
+    String asString = getText(node, false);
+    // Check whether we've found a text node with at least 1 char
+    if (asString == null || asString.length() == 0) {
+      // Try to read CDATA content from the node
+      asString = getCData(node, false);
+    }
+    // Nothing found but this is a mandatory value
+    if ((asString == null || asString.length() == 0) && mandatory) {
+      throw new RegainException("Node '" + node.getNodeName() + "' contains no text/CDATA. This is a mandatory value.");
+    }
+    return asString;
+  }
+
   /**
    * Gibt den Text eines Knotens zurück.
    * <p>
@@ -732,6 +811,24 @@ public class XmlToolkit {
     }
   }
 
+  /**
+   * Set the text as a CDATA section of a node.
+   *
+   * @param doc The document the node comes from.
+   * @param node The node whichs CDATA section should be changed.
+   * @param text The text to set.
+   */
+  public static void setCData(Document doc, Node node, String text) {
+    Node cDataNode = getChild(node, "#cdata-section");
+
+    if (cDataNode == null) {
+      CDATASection cDataSection = doc.createCDATASection(text);
+      node.appendChild(cDataSection);
+
+    } else {
+      cDataNode.setNodeValue(text);
+    }
+  }
 
   /**
    * Removes all child nodes from a node. 
@@ -809,6 +906,22 @@ public class XmlToolkit {
     return childNode;
   }
   
+/**
+   * Adds a child node to a node and gives it a CDATA section.
+   *
+   * @param doc The document the node comes from.
+   * @param node The node where to add the child.
+   * @param childNodeName The name of the child node to add.
+   * @param text The text (as CDATA section) to set to the child.
+   * @return The added child node.
+   */
+  public static Node addChildWithCData(Document doc, Node node,
+    String childNodeName, String text)
+  {
+    Node childNode = addChild(doc, node, childNodeName);
+    setCData(doc, childNode, text);
+    return childNode;
+  }
   
   /**
    * Sets an attribute of a node.

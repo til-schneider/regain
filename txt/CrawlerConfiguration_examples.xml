@@ -45,6 +45,10 @@
   <!--
   <start parse="true" index="true">http://www.mydomain.de/some/path/</start>
   -->
+  <!-- Encapsulate & from query with <![CDATA[]]> -->
+  <!--
+  <start parse="true" index="true"><![CDATA[http://www.mydomain.de/some/path/print.do?id=1&pretty=no]]></start>
+  -->
 </startlist>
 
 
@@ -63,6 +67,10 @@
   -->
 </blacklist>
 
+<!-- URLCleaner: remove parts of the url. This is mostly used for remove a session id. -->
+ <UrlCleaner>
+   <regex>PHPSESSID=[0-9a-z]{5,}</regex>
+ </UrlCleaner>
 
 <!-- The preferences for the search index -->
 <searchIndex>
@@ -136,6 +144,17 @@
     nostro nostre nostri nostre vostro vostre vostri vostre il lo la i gli le un
     uno una degli delle alcuno alcuna alcune qualcuno qualcuna nessuno nessuna
     molto molte molti molte poco parecchio assai
+  </stopwordList>
+  </stopwordList> -->
+  <!-- french:
+  <stopwordList>
+    alors au aucuns aussi autre avant avec avoir bon car ce cela ces ceux chaque ci comme comment
+    dans des du dedans dehors depuis deux devrait doit donc dos droite début elle elles en encore essai est et eu
+    fait faites fois font force haut hors ici il ils je juste la le les leur là ma maintenant mais mes mine moins
+    mon mot même ni nommés notre nous nouveaux ou où par parce parole pas personnes peut peu pièce plupart
+    pour pourquoi quand que quel quelle quelles quels qui sa sans ses seulement si sien son sont sous soyez sujet
+    sur ta tandis tellement tels tes ton tous tout trop très tu valeur voie voient vont votre vous vu ça étaient
+    état étions été être
   </stopwordList>
   -->
 

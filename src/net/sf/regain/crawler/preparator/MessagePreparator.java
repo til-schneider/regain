@@ -83,9 +83,9 @@ public class MessagePreparator extends AbstractPreparator {
   public void prepare(RawDocument rawDocument) throws RegainException {
 
     Properties mailProperties = System.getProperties();
-    Session session = Session.getInstance(mailProperties,null);
+    Session session = Session.getInstance(mailProperties, null);
     SharedByteArrayInputStream mimeInput = new SharedByteArrayInputStream(rawDocument.getContent());
-    
+
     Collection<String> textParts = new ArrayList<String>();
     Collection<String> attachments = new ArrayList<String>();
     SimpleDateFormat simpleFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
@@ -151,7 +151,7 @@ public class MessagePreparator extends AbstractPreparator {
           String disposition = bp.getDisposition();
 
           if ((disposition != null) &&
-                  ((disposition.equals(Part.ATTACHMENT)))) {
+            ((disposition.equals(Part.ATTACHMENT)))) {
             attachments.add("attachment: " + bp.getFileName());
 
           } else if (disposition == null || disposition.equals(Part.INLINE)) {
@@ -169,7 +169,8 @@ public class MessagePreparator extends AbstractPreparator {
               for (int k = 0; k < mpInner.getCount(); k++) {
                 BodyPart bpInner = mpInner.getBodyPart(k);
 
-                if (bpInner.getDisposition() == null || disposition.equals(Part.INLINE)) {
+                if (bpInner != null && (bpInner.getDisposition() == null ||
+                  bpInner.getDisposition().equals(Part.INLINE))) {
 
                   if (bpInner.isMimeType("text/*")) {
                     textParts.add((String) bpInner.getContent());
@@ -236,7 +237,7 @@ public class MessagePreparator extends AbstractPreparator {
   }
 
   public static String inputStreamAsString(InputStream stream)
-          throws IOException {
+    throws IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(stream));
     StringBuilder sb = new StringBuilder();
     String line = null;

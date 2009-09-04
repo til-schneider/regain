@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-23 23:46:59 +0100 (So, 23 Nov 2008) $
+ *     $Date: 2009-08-09 18:52:40 +0200 (So, 09 Aug 2009) $
  *   $Author: thtesche $
- * $Revision: 364 $
+ * $Revision: 394 $
  */
 package net.sf.regain.crawler.config;
 
@@ -82,7 +82,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   /** Der zu verwendende Analyzer-Typ. */
   private String mAnalyzerType;
 
-  /** Enthï¿œlt alle Worte, die nicht indiziert werden sollen. */
+  /** List of all stop words (words which will not be indexed). */
   private String[] mStopWordList;
   /**
    * Enthï¿œlt alle Worte, die bei der Indizierung nicht vom Analyzer verändert
@@ -145,6 +145,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   /** Flag for enabling/disabling content for a preview in the result page */
   private boolean storeContentForPreview;
 
+  private String[] mURLCleaners;
 
   /**
    * Erzeugt eine neue XmlConfiguration-Instanz.
@@ -173,9 +174,30 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     readAuxiliaryFieldList(config);
     readCrawlerAccessController(config);
     readMaxCycleCount(config);
-    readMaxSummaryLength(config); 
+    readMaxSummaryLength(config);
+    readURLCleaner(config);
   }
-    
+
+  /**
+   * Read the URLCleaners from config. URLCleaners are regex which replace
+   * parts of the URL with an empty string (in fact the remove the match
+   * from the URL.
+   *
+   * @param config
+   * @throws net.sf.regain.RegainException
+   */
+  private void readURLCleaner(Element config) throws RegainException {
+    Node node = XmlToolkit.getChild(config, "UrlCleaner");
+    if (node == null) {
+      mURLCleaners = new String[]{};
+    } else {
+      Node[] nodeArr = XmlToolkit.getChildArr(node, "regex");
+      mURLCleaners = new String[nodeArr.length];
+      for (int i = 0; i < nodeArr.length; i++) {
+        mURLCleaners[i] = XmlToolkit.getText(nodeArr[i]);
+      }
+    }
+  }
 
  /**
    * Read the value for the cycle detection.
@@ -335,7 +357,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     Node[] nodeArr = XmlToolkit.getChildArr(node, "start");
     mStartUrls = new StartUrl[nodeArr.length];
     for (int i = 0; i < nodeArr.length; i++) {
-      String url = XmlToolkit.getTextAsUrl(nodeArr[i]);
+      String url = XmlToolkit.getTextOrCDataAsUrl(nodeArr[i]);
       boolean parse = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "parse");
       boolean index = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "index");
 
@@ -391,11 +413,11 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     mBlackList = new UrlMatcher[prefixNodeArr.length + regexNodeArr.length];
     for (int i = 0; i < prefixNodeArr.length; i++) {
       // Change all blanks to %20, since blanks are not allowed in URLs
-      String prefix = XmlToolkit.getText(prefixNodeArr[i], true).replaceAll(" ", "%20");
+      String prefix = XmlToolkit.getTextOrCData(prefixNodeArr[i], true).replaceAll(" ", "%20");
       mBlackList[i] = new PrefixUrlMatcher(prefix, false, false);
     }
     for (int i = 0; i < regexNodeArr.length; i++) {
-      String regex = XmlToolkit.getText(regexNodeArr[i], true);
+      String regex = XmlToolkit.getTextOrCData(regexNodeArr[i], true);
       mBlackList[prefixNodeArr.length + i] = new RegexUrlMatcher(regex, false, false);
     }
   }
@@ -416,7 +438,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
     mWhiteListEntryArr = new WhiteListEntry[prefixNodeArr.length + regexNodeArr.length];
     for (int i = 0; i < prefixNodeArr.length; i++) {
-      String prefix = XmlToolkit.getText(prefixNodeArr[i], true).replaceAll(" ", "%20");
+      String prefix = XmlToolkit.getTextOrCData(prefixNodeArr[i], true).replaceAll(" ", "%20");
       boolean parse = XmlToolkit.getAttributeAsBoolean(prefixNodeArr[i], "parse", true);
       boolean index = XmlToolkit.getAttributeAsBoolean(prefixNodeArr[i], "index", true);
       UrlMatcher matcher = new PrefixUrlMatcher(prefix, parse, index);
@@ -424,7 +446,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
       mWhiteListEntryArr[i] = new WhiteListEntry(matcher, name);
     }
     for (int i = 0; i < regexNodeArr.length; i++) {
-      String regex = XmlToolkit.getText(regexNodeArr[i], true);
+      String regex = XmlToolkit.getTextOrCData(regexNodeArr[i], true);
       boolean parse = XmlToolkit.getAttributeAsBoolean(regexNodeArr[i], "parse", true);
       boolean index = XmlToolkit.getAttributeAsBoolean(regexNodeArr[i], "index", true);
       UrlMatcher matcher = new RegexUrlMatcher(regex, parse, index);
@@ -1039,5 +1061,14 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     String[] asArr = new String[list.size()];
     list.toArray(asArr);
     return asArr;
-  }  
+  }
+
+  /**
+   * {@inheritDoc }
+   */
+  public String[] getURLCleaners() {
+    return mURLCleaners;
+  }
+
+  
 }

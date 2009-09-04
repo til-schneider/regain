@@ -38,7 +38,7 @@ import org.apache.lucene.document.Document;
  *
  * @author Thomas Tesche, www.thtesche.de
  */
-public class ContentTag extends AbstractHitTag {
+public class CachedTag extends AbstractHitTag {
 
   /**
    * Generates the tag.
@@ -57,20 +57,21 @@ public class ContentTag extends AbstractHitTag {
     content = hit.get("content");
     if (content != null) {
       String hitNumber = Integer.toString(hitIndex + 1);
-//      response.print("<input type=\"button\" class=\"button\" onclick=\"return toggleMe('hit_" +
-//              hitNumber + "')\" value=\"" + getLocalizer().msg("cached", "Cached") + "\">");
 
-      response.print("<div id=\"hit_" + hitNumber + "\" style=\"display:none\">" +
-              "<textarea name=\"area_" + hitNumber + "\" " +
-              "cols=\"120\" rows =\"13\" readonly =\"readonly\">");
+      response.print("<span class=\"cached\" onclick=\"return toggleMe('hit_" +
+              hitNumber + "')\">" + getLocalizer().msg("cached", "Cached") + "</span>");
+
+//      response.print("<div id=\"hit_" + hitNumber + "\" style=\"display:none\">" +
+//              "<textarea name=\"area_" + hitNumber + "\" " +
+//              "cols=\"150\" rows =\"13\" readonly =\"readonly\">");
 //      response.print("<input type=\"button\" class=\"button\" onclick=\"return toggleMe('hit_" +
 //              hitNumber + "')\" value=\"Treffer " + hitNumber + " komplett anzeigen\">");
 //      response.print("<div id=\"hit_" + hitNumber + "\" style=\"display:none\">" +
 //              "<textarea name=\"area_" + hitNumber + "\" " +
 //              "cols=\"150\" rows =\"13\" readonly =\"readonly\">");
 
-      response.printNoHtml(content);
-      response.print("</textarea></div>");
+//      response.printNoHtml(content);
+//      response.print("</textarea></div><br/>");
 
     }
   }

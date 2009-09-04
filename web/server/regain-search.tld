@@ -392,6 +392,15 @@
 
   <tag>
     <info>
+      Writes the text label for the cached content.
+    </info>
+    <name>hit_cached</name>
+    <tagclass>net.sf.regain.ui.server.taglib.hit.CachedTag</tagclass>
+    <bodycontent>empty</bodycontent>
+  </tag>
+
+  <tag>
+    <info>
       Writes the URL of the current hit's document.
       This tag must be inside a link tag.
     </info>

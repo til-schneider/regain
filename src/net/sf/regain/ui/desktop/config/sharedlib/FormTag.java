@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-03-08 18:45:00 +0100 (So, 08 Mrz 2009) $
+ *     $Date: 2009-08-09 18:52:40 +0200 (So, 09 Aug 2009) $
  *   $Author: thtesche $
- * $Revision: 382 $
+ * $Revision: 394 $
  */
 package net.sf.regain.ui.desktop.config.sharedlib;
 
@@ -298,7 +298,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
     Node[] startArr = XmlToolkit.getChildArr(startlist, entryNodeName);
     ArrayList entries = new ArrayList();
     for (int i = 0; i < startArr.length; i++) {
-      String startUrl = XmlToolkit.getText(startArr[i], true);
+      String startUrl = XmlToolkit.getTextOrCData(startArr[i], true);
       if (startUrl.startsWith(prefix)) {
         String entry = startUrl;
         if( entry.startsWith(FILE_PROTOCOL)) {
@@ -366,8 +366,15 @@ public class FormTag extends SharedTag implements DesktopConstants {
       XmlToolkit.setAttribute(crawlerDoc, node, "index", "false");
     }
     for (int i = 0; i < sitelist.length; i++) {
-      String url = HTTP_PROTOCOL + sitelist[i];
-      node = XmlToolkit.addChildWithText(crawlerDoc, startlistNode, "start", url);
+      String url = /*HTTP_PROTOCOL + */sitelist[i];
+      if (!url.startsWith(HTTP_PROTOCOL)) {
+        url = HTTP_PROTOCOL + url;
+      }
+      if (url.contains("&")) {
+        node = XmlToolkit.addChildWithCData(crawlerDoc, startlistNode, "start", url);
+      } else {
+        node = XmlToolkit.addChildWithText(crawlerDoc, startlistNode, "start", url);
+      }
       XmlToolkit.setAttribute(crawlerDoc, node, "parse", "true");
       XmlToolkit.setAttribute(crawlerDoc, node, "index", "true");
     }
@@ -385,7 +392,15 @@ public class FormTag extends SharedTag implements DesktopConstants {
     
     // Add the sitelist to the whitelist
     for (int i = 0; i < sitelist.length; i++) {
-      XmlToolkit.addChildWithText(crawlerDoc, whitelistNode, "prefix", HTTP_PROTOCOL + sitelist[i]);
+      String url = /*HTTP_PROTOCOL + */ sitelist[i];
+      if (!url.startsWith(HTTP_PROTOCOL)) {
+        url = HTTP_PROTOCOL +url;
+      }
+      if (url.contains("&")) {
+        XmlToolkit.addChildWithCData(crawlerDoc, whitelistNode, "prefix", url);
+      } else {
+        XmlToolkit.addChildWithText(crawlerDoc, whitelistNode, "prefix", url);
+      }
     }
     
     // Add the imaplist to the whitelist
@@ -396,11 +411,18 @@ public class FormTag extends SharedTag implements DesktopConstants {
     // Fill the blacklist
     for (int i = 0; i < dirblacklist.length; i++) {
       String url = RegainToolkit.fileNameToUrl(dirblacklist[i]);
-      node = XmlToolkit.addChildWithText(crawlerDoc, blacklistNode, "prefix", url);
+      XmlToolkit.addChildWithText(crawlerDoc, blacklistNode, "prefix", url);
     }
     for (int i = 0; i < siteblacklist.length; i++) {
-      String url = HTTP_PROTOCOL + siteblacklist[i];
-      node = XmlToolkit.addChildWithText(crawlerDoc, blacklistNode, "prefix", url);
+      String url = siteblacklist[i];
+      if (!url.startsWith(HTTP_PROTOCOL)) {
+        url = HTTP_PROTOCOL + url;
+      }
+      if (url.contains("&")) {
+        XmlToolkit.addChildWithCData(crawlerDoc, blacklistNode, "prefix", url);
+      } else {
+        XmlToolkit.addChildWithText(crawlerDoc, blacklistNode, "prefix", url);
+      }
     }
     
     // Set the port

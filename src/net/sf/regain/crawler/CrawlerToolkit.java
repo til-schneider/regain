@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-24 22:58:51 +0100 (Mo, 24 Nov 2008) $
+ *     $Date: 2009-08-12 22:48:39 +0200 (Mi, 12 Aug 2009) $
  *   $Author: thtesche $
- * $Revision: 365 $
+ * $Revision: 396 $
  */
 package net.sf.regain.crawler;
 
@@ -436,6 +436,40 @@ public class CrawlerToolkit {
   }
 
   /**
+   * Completes an url which denotes a directory but doesnt end with a slash.
+   * 
+   * @param url the URL to check and fix
+   * @return  fixed URL
+   */
+  public static String completeDirectory(String url) {
+
+    try {
+      URL parsedUrl = new URL(url);
+      String path = parsedUrl.getPath();
+      String query = parsedUrl.getQuery();
+
+      // Check for replacement only if this an URL without a query
+      if ((query == null || query.length() == 0) && path != null && path.length() > 0) {
+
+        if (!(path.contains(".")) && !path.endsWith("/")) {
+          // this is an directory and has to end with a slash
+          // remove an empty query
+          if (url.endsWith("?")) {
+            url = url.substring(0, url.length() - 1);
+          }
+
+          return url + "/";
+        }
+      }
+    } catch (MalformedURLException ex) {
+      // This should never happen. We assume all URL where checked before
+    }
+
+
+    return url;
+  }
+
+  /**
    * Removes anchors from URLs like http://mydomain.com/index.html#anchor
    * 
    * @param url an URL with or without an anchor
@@ -636,7 +670,8 @@ public class CrawlerToolkit {
   public static AccountPasswordEntry findAuthenticationValuesForURL(String url,
     Map<String, AccountPasswordEntry> authMap) throws RegainException {
 
-     String leftUrlPart = createURLWithoutPath(url);
+    String leftUrlPart = createURLWithoutPath(url);
+    mLog.debug("search for >" + leftUrlPart + "< in authentication store.");
     // Lookup the key and in case of a match build the final url with account, password enrichment
     if (authMap.containsKey(leftUrlPart)) {
       return authMap.get(leftUrlPart);
@@ -690,4 +725,34 @@ public class CrawlerToolkit {
       throw new RegainException("URL is unparsable. url: " + completeUrl);
     }
   }
+
+  /**
+   * Removes unwanted parts from the URL.
+   *
+   * @param url
+   * @param urlCleaners
+   * @return
+   */
+  public static String cleanURL(String url, String[] urlCleaners) {
+
+    String result = url;
+    for (String pattern : urlCleaners) {
+      result = result.replaceAll(pattern, "");
+      mLog.debug("Remove " + pattern + " from URL: " + url);
+    }
+
+    result = result.replaceAll("&&", "&");
+
+    if (result.endsWith("&")) {
+      result = result.substring(0, result.length() - 1);
+    }
+    if (result.endsWith("?")) {
+      result = result.substring(0, result.length() - 1);
+    }
+
+    mLog.debug("Resulting Url after replacement: " + result);
+
+    return result;
+  }
+  
 }

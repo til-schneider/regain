@@ -1,11 +1,24 @@
+Version 1.6.2 on ??/??/2009 PREVIEW
+-----------------------------------
+* URLCleaner for removing parts from the URL (e.g.session id)
+* regain is build again with Java 1.6 because some of the libs requires 1.6
+* BUGFIX: Rtf documents will be indexed correctly (replace wrong mimetype, disable SimpleRTFPreparator)
+* <starturls/>, <whitelist/> and <blacklist/> accepts <![CDATA[]]> sections. Usefull for
+  URLs which contains an &.
+* BUGFIX: Multiple protocols occurs some times when using the setup page of the desktop version.
+* BUGFIX: Update of samba lib (jcifs). Handling of smb-URL improved (username, password no longer
+  stored in index).
+* BUGFIX: 'Cached' text is no internationalized
+* Example of French stoppwords in CrawlerConfiguration.xml
+
 Version 1.6.1 on 04/21/2009 STABLE
 ----------------------------------
 * regain compiled with java 1.5
 
 Version 1.6.0 on 03/08/2009 STABLE
 ----------------------------------
-* BUGFIX: Index update at the same day leads to parsing but the documents will not
-  be indexed.
+* BUGFIX: Index update at the same day leads to parsing of the document but the documents
+  will not be indexed.
 * left truncation of query terms *ack finds back, stack and so on
 
 Version 1.5.7 on 24.01.09 PREVIEW

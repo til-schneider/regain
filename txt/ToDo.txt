@@ -357,11 +357,11 @@ Prio C:
         ...
   PlainTextPreparator: Add option to set the max. amount of text to extract.
     (avoid OutOfMemory)
-  Hit highlighting (done)
+
   Crawler: Abstraktion und nested Crawlers.
   Crawler: ZIP-Dateien durchsuchen
   Crawler: Mailboxen durchsuchen
-  Crawler: Anderen HTMLParser nutzen: http://htmlparser.sourceforge.net (done)
+  Metadaten aller Dokumente indexieren, ausgeben
   Neuer MS Word-Praeparator: OpenOffice
   Neuer PDF-Praeparator: PJX (http://www.etymon.com/epub.html) 
   Desktopsuche: Nach Speichern der Konfiguration nur dann neu indexieren, wenn

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-12-26 20:45:23 +0100 (Fr, 26 Dez 2008) $
+ *     $Date: 2009-05-17 21:20:00 +0200 (So, 17 Mai 2009) $
  *   $Author: thtesche $
- * $Revision: 371 $
+ * $Revision: 391 $
  */
 package net.sf.regain.crawler.document;
 
@@ -143,7 +143,7 @@ public class RawDocument {
   /** account-password entry for the url in processing. */
   AccountPasswordEntry mAccountPasswordEntry;
   
-  /** Last modified date. Will be changed for protocolls which can determine this date correctly. */
+  /** Last modified date. Will be changed by protocolls which can determine this date correctly. */
   Date mLastModifiedDate = new Date();
   
   /**

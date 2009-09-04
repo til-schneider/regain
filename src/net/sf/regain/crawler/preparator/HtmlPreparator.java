@@ -21,12 +21,14 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2009-05-21 16:29:23 +0200 (Do, 21 Mai 2009) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 392 $
  */
 package net.sf.regain.crawler.preparator;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -52,7 +54,6 @@ import org.htmlparser.lexer.Page;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.ParserException;
 
-
 /**
  * Prepares a HTML-document for indexing.
  * <p>
@@ -64,19 +65,16 @@ public class HtmlPreparator extends AbstractPreparator {
 
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(HtmlPreparator.class);
-
   /**
    * Die HtmlContentExtractor, die den jeweiligen zu indizierenden Inhalt aus
    * den HTML-Dokumenten schneiden.
    */
   private HtmlContentExtractor[] mContentExtractorArr;
-
   /**
    * Die HtmlPathExtractor, die den jeweiligen Pfad aus den HTML-Dokumenten
    * extrahieren.
    */
   private HtmlPathExtractor[] mPathExtractorArr;
-  
 
   /**
    * Creates a new instance of HtmlPreparator.
@@ -85,9 +83,8 @@ public class HtmlPreparator extends AbstractPreparator {
    */
   public HtmlPreparator() throws RegainException {
     super(new String[]{"text/html", "application/xhtml+xml"});
-    //super(createAcceptRegex());
+  //super(createAcceptRegex());
   }
-
 
   /**
    * Creates a regex that matches a URL that contains HTML.
@@ -100,11 +97,9 @@ public class HtmlPreparator extends AbstractPreparator {
     try {
       return new RE(regex, RE.MATCH_CASEINDEPENDENT);
     } catch (RESyntaxException exc) {
-      throw new RegainException("Creating accept regex for preparator failed: "
-          + regex, exc);
+      throw new RegainException("Creating accept regex for preparator failed: " + regex, exc);
     }
   }
-
 
   /**
    * Initializes the preparator.
@@ -118,34 +113,33 @@ public class HtmlPreparator extends AbstractPreparator {
     Map[] sectionArr = config.getSectionsWithName("contentExtractor");
     mContentExtractorArr = new HtmlContentExtractor[sectionArr.length];
     for (int i = 0; i < mContentExtractorArr.length; i++) {
-      String prefix            = (String) sectionArr[i].get("prefix");
+      String prefix = (String) sectionArr[i].get("prefix");
       String contentStartRegex = (String) sectionArr[i].get("startRegex");
-      String contentEndRegex   = (String) sectionArr[i].get("endRegex");
-      String headlineRegex     = (String) sectionArr[i].get("headlineRegex");
-      int headlineRegexGroup   = getIntParam(sectionArr[i], "headlineRegex.group");
-      
+      String contentEndRegex = (String) sectionArr[i].get("endRegex");
+      String headlineRegex = (String) sectionArr[i].get("headlineRegex");
+      int headlineRegexGroup = getIntParam(sectionArr[i], "headlineRegex.group");
+
       mContentExtractorArr[i] = new HtmlContentExtractor(prefix,
-          contentStartRegex, contentEndRegex, headlineRegex, headlineRegexGroup);
+        contentStartRegex, contentEndRegex, headlineRegex, headlineRegexGroup);
     }
-   
+
     // Read the path extractors
     sectionArr = config.getSectionsWithName("pathExtractor");
     mPathExtractorArr = new HtmlPathExtractor[sectionArr.length];
     for (int i = 0; i < mPathExtractorArr.length; i++) {
-      String prefix          = (String) sectionArr[i].get("prefix");
-      String pathStartRegex  = (String) sectionArr[i].get("startRegex");
-      String pathEndRegex    = (String) sectionArr[i].get("endRegex");
-      String pathNodeRegex   = (String) sectionArr[i].get("pathNodeRegex");
-      int pathNodeUrlGroup   = getIntParam(sectionArr[i], "pathNodeRegex.urlGroup");
+      String prefix = (String) sectionArr[i].get("prefix");
+      String pathStartRegex = (String) sectionArr[i].get("startRegex");
+      String pathEndRegex = (String) sectionArr[i].get("endRegex");
+      String pathNodeRegex = (String) sectionArr[i].get("pathNodeRegex");
+      int pathNodeUrlGroup = getIntParam(sectionArr[i], "pathNodeRegex.urlGroup");
       int pathNodeTitleGroup = getIntParam(sectionArr[i], "pathNodeRegex.titleGroup");
-      
+
       mPathExtractorArr[i] = new HtmlPathExtractor(prefix, pathStartRegex,
-          pathEndRegex, pathNodeRegex, pathNodeUrlGroup,
-          pathNodeTitleGroup);
+        pathEndRegex, pathNodeRegex, pathNodeUrlGroup,
+        pathNodeTitleGroup);
     }
   }
 
-  
   /**
    * Gets an int parameter from a configuration section
    * 
@@ -155,26 +149,19 @@ public class HtmlPreparator extends AbstractPreparator {
    * @throws RegainException If the parameter is not set or is not a number.
    */
   private int getIntParam(Map configSection, String paramName)
-    throws RegainException
-  {
+    throws RegainException {
     String asString = (String) configSection.get(paramName);
     if (asString == null) {
-      throw new RegainException("Error in configuration for "
-          + getClass().getName() + ": Preparator param '" + paramName
-          + "' is not set");
+      throw new RegainException("Error in configuration for " + getClass().getName() + ": Preparator param '" + paramName + "' is not set");
     }
-    
+
     asString = asString.trim();
     try {
       return Integer.parseInt(asString);
-    }
-    catch (NumberFormatException exc) {
-      throw new RegainException("Error in configuration for "
-          + getClass().getName() + ": Preparator param '" + paramName
-          + "' is not a number: '" + asString + "'", exc);
+    } catch (NumberFormatException exc) {
+      throw new RegainException("Error in configuration for " + getClass().getName() + ": Preparator param '" + paramName + "' is not a number: '" + asString + "'", exc);
     }
   }
-  
 
   /**
    * Prepares a document for indexing.
@@ -213,7 +200,7 @@ public class HtmlPreparator extends AbstractPreparator {
     } else {
       cuttedContent = contentExtractor.extractContent(rawDocument);
       headlines = contentExtractor.extractHeadlines(cuttedContent);
-      if( !cuttedContent.equals(rawDocument.getContentAsString()) ){
+      if (!cuttedContent.equals(rawDocument.getContentAsString())) {
         isContentCutted = true;
       }
     }
@@ -223,7 +210,7 @@ public class HtmlPreparator extends AbstractPreparator {
     Page htmlPage = new Page(cuttedContent, "UTF-8");
     Parser parser = new Parser(new Lexer(htmlPage));
     StringBean stringBean = new StringBean();
-    
+
     // replace multiple whitespace with one whitespace
     stringBean.setCollapse(true);
     // Do not extract URLs
@@ -235,48 +222,52 @@ public class HtmlPreparator extends AbstractPreparator {
       // Parse the content
       parser.visitAllNodesWith(stringBean);
       cleanedContent = stringBean.getStrings();
-     
+
     } catch (ParserException ex) {
-      throw new RegainException("Error while parsing content: ",ex);
+      throw new RegainException("Error while parsing content: ", ex);
     }
-    
+
     // The result of parsing the html-content
     setCleanedContent(cleanedContent);
 
     // Extract links
     LinkVisitor linkVisitor = new LinkVisitor();
-    if( isContentCutted ){
+    if (isContentCutted) {
       // This means a new parser run which is expensive but neccessary
       htmlPage = new Page(rawDocument.getContentAsString(), "UTF-8");
       parser = new Parser(new Lexer(htmlPage));
     } else {
       parser.reset();
     }
-    
+
     try {
       // Parse the content
       parser.visitAllNodesWith(linkVisitor);
       ArrayList<Tag> links = linkVisitor.getLinks();
       htmlPage.setBaseUrl(rawDocument.getUrl());
-      
+
       // Iterate over all links found
       Iterator linksIter = links.iterator();
       while (linksIter.hasNext()) {
         LinkTag currTag = ((LinkTag) linksIter.next());
         String link = CrawlerToolkit.removeAnchor(currTag.extractLink());
-        //String link = CrawlerToolkit.toAbsoluteUrl(currTag.extractLink(), rawDocument.getUrl());
+
+        // find urls which do not end with an '/' but are a directory
+        link = CrawlerToolkit.completeDirectory(link);
+
+        //link = CrawlerToolkit.toAbsoluteUrl(link, rawDocument.getUrl());
         String linkText = (currTag.getLinkText() == null) ? "" : currTag.getLinkText();
-       
+
         // store all http(s)-links the link
-        if(currTag.isHTTPLikeLink()){
+        if (currTag.isHTTPLikeLink()) {
           rawDocument.addLink(link, linkText);
         }
       }
-      
+
     } catch (ParserException ex) {
-      throw new RegainException("Error while extracting links: ",ex);
+      throw new RegainException("Error while extracting links: ", ex);
     }
-    
+
     if (headlines != null) {
       // Replace HTML Entities
       headlines = CrawlerToolkit.replaceHtmlEntities(headlines);
@@ -302,7 +293,6 @@ public class HtmlPreparator extends AbstractPreparator {
     }
   }
 
-
   /**
    * Extrahiert den Titel aus einem HTML-Dokument.
    *
@@ -313,33 +303,31 @@ public class HtmlPreparator extends AbstractPreparator {
    */
   private String extractHtmlTitle(String content) {
     final String TITLE_START_TAG = "<title>";
-    
+
     // NOTE: We don't use a regex here, beause it's far too slow and it doesn't
     //       stop when the body begins.
     int pos = -1;
     int startPos = -1;
-    while((pos = content.indexOf('<', pos + 1)) != -1) {
+    while ((pos = content.indexOf('<', pos + 1)) != -1) {
       // A tag starts here -> Check whether this is the title tag
       if (isIndexOf(content, TITLE_START_TAG, pos)) {
         // The title starts here -> Remember the start pos
         startPos = pos + TITLE_START_TAG.length();
         break;
-      }
-      else if (isIndexOf(content, "<body", pos)) {
+      } else if (isIndexOf(content, "<body", pos)) {
         // The body starts here -> Give up
         break;
       }
     }
-    
+
     // Scan until the end of the title
     if (startPos != -1) {
       pos = startPos - 1;
-      while((pos = content.indexOf('<', pos + 1)) != -1) {
+      while ((pos = content.indexOf('<', pos + 1)) != -1) {
         if (isIndexOf(content, "</title>", pos)) {
           // We found the title's end tag -> extract the title
           return content.substring(startPos, pos);
-        }
-        else if (pos > startPos + 1000) {
+        } else if (pos > startPos + 1000) {
           // This is too long -> There won't come a end tag -> Give up
           break;
         }
@@ -348,7 +336,6 @@ public class HtmlPreparator extends AbstractPreparator {
 
     return null;
   }
-
 
   /**
    * Checks whether an expected substring is at a certain position. 
@@ -363,9 +350,8 @@ public class HtmlPreparator extends AbstractPreparator {
       // The expected String doesn't match here
       return false;
     }
-    
+
     String substring = content.substring(pos, pos + expected.length());
     return expected.equalsIgnoreCase(substring);
   }
-
 }

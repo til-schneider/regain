@@ -10,7 +10,7 @@
 
 <body>
   <table class="top"><tr>
-    <td><img src="img/logo_regain.gif" width="201" height="66"></td>
+    <td><img src="img/logo_regain.gif" width="201" height="66" alt="regain logo"></td>
   </tr></table>
 
   <table class="content">

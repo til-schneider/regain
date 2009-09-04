@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-03-06 22:29:35 +0100 (Fr, 06 Mrz 2009) $
+ *     $Date: 2009-05-17 21:20:00 +0200 (So, 17 Mai 2009) $
  *   $Author: thtesche $
- * $Revision: 377 $
+ * $Revision: 391 $
  */
 package net.sf.regain.crawler;
 
@@ -643,10 +643,14 @@ public class IndexWriterManager {
         Hits hits = mIndexSearcher.search(query);
         if (hits.length() > 0) {
           if (hits.length() > 1) {
+            for (int i = 1; i < hits.length(); i++) {
+              markForDeletion(hits.doc(i));
+
+            }
             mLog.warn("There are duplicate entries (" + hits.length() + " in " +
               "total) for " + rawDocument.getUrl() + ". They will be removed.");
-            removeOldEntry = true;
           }
+
           doc = hits.doc(0);
         }
         else {
@@ -689,6 +693,7 @@ public class IndexWriterManager {
               mLog.info("Index entry is outdated. Creating a new one (source=" +
                   docLastModified + "), (index=" + indexLastModified + "): " +
                   rawDocument.getUrl());
+              removeOldEntry = true;
 
             } else if( (new Date().getTime()) - indexLastModified.getTime() < 86400000L ) {
               // Spidering at the same day
@@ -951,10 +956,10 @@ public class IndexWriterManager {
 
 
   /**
-   * Gibt zurück, ob ein Dokument für die L�schung vorgemerkt wurde.
+   * Gibt zurück, ob ein Dokument für die Löschung vorgemerkt wurde.
    *
    * @param doc Das zu prüfende Dokument.
-   * @return Ob das Dokument für die L�schung vorgemerkt wurde.
+   * @return Ob das Dokument für die Löschung vorgemerkt wurde.
    */
   private boolean isMarkedForDeletion(Document doc) {
     String url = doc.get("url");
@@ -967,7 +972,7 @@ public class IndexWriterManager {
     }
 
     if (mUrlsToDeleteHash == null) {
-      // Es sind gar keine Dokumente zum L�schen vorgemerkt
+      // Es sind gar keine Dokumente zum Löschen vorgemerkt
       return false;
     }
 

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-27 08:37:25 +0100 (Mo, 27 Okt 2008) $
+ *     $Date: 2009-04-30 08:59:19 +0200 (Do, 30 Apr 2009) $
  *   $Author: thtesche $
- * $Revision: 353 $
+ * $Revision: 387 $
  */
 package net.sf.regain.crawler.config;
 
@@ -425,6 +425,14 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    */
   public int getMaxSummaryLength(){
     return 250000;
+  }
+
+  /**
+   * {@inheritDoc }
+   *
+   */
+  public String[] getURLCleaners() {
+    return new String[]{"PHPSESSID=[0-9a-z]{5,}"};
   }
 }
 

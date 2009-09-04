@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *     $Date: 2009-05-17 21:20:00 +0200 (So, 17 Mai 2009) $
  *   $Author: thtesche $
- * $Revision: 349 $
+ * $Revision: 391 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -56,7 +56,7 @@ public class SwingRtfPreparator extends AbstractPreparator {
    * @throws RegainException If creating the preparator failed.
    */
   public SwingRtfPreparator() throws RegainException {
-    super("application/rtf");
+    super("text/rtf");
   }
 
 
@@ -101,6 +101,7 @@ public class SwingRtfPreparator extends AbstractPreparator {
    * 
    * @throws RegainException If freeing the resources failed.
    */
+  @Override
   public void close() throws RegainException {
     mRTFEditorKit = null;
   }

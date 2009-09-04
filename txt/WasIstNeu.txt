@@ -1,3 +1,16 @@
+Version 1.6.2 am ??.??.2009 STABLE
+----------------------------------
+* UrlCleaner um störende Teile aus einer Url zu entfernen (z.B. sessionID)
+* wieder mit Java 1.6 gebaut, da einige Bibliotheken Java 1.6 voraussetzen.
+* Bugfix: RTF wird wieder indexiert. Dazu wurde der SimpleRTFPreparator in der Konfig entfernt.
+* CDATA funktioniert in <starturls/>, <whitelist/> und <blacklist/>. Notwendig um eine URL mit
+  einem & in der Query eintragen zu können.
+* BUGFIX: Mehrfache Protokollangaben bei Benutzung der Einstellungseite Desktopsuche.
+* BUGFIX: Samba-Bibliothek ausgetauscht. smb-URL Handling nach Ersetzung von Domain, User und PW
+  geändert.
+* BUGFIX: Link-Text für 'Cached Version' ist internationalisiert
+* Französische Stoppwörter für die CrawlerConfiguration.xml
+
 Version 1.6.1 am 21.04.2009 STABLE
 ----------------------------------
 * regain wurde mit Java 1.5 übersetzt.

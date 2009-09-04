@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-03-07 19:21:52 +0100 (Sa, 07 Mrz 2009) $
+ *     $Date: 2009-08-12 22:48:39 +0200 (Mi, 12 Aug 2009) $
  *   $Author: thtesche $
- * $Revision: 380 $
+ * $Revision: 396 $
  */
 package net.sf.regain.crawler;
 
@@ -305,6 +305,12 @@ public class Crawler implements ErrorLogger {
 
     // Change all blanks to %20, since blanks are not allowed in URLs
     url = RegainToolkit.replace(url, " ", "%20");
+    // Change all &amp; to &
+    url = RegainToolkit.replace(url, "&amp;", "&");
+
+    // Replace parts of the URL with an empty string. The patterns are the 
+    // URLCleaners
+    url = CrawlerToolkit.cleanURL(url, mConfiguration.getURLCleaners());
 
     boolean alreadyAccepted = mUrlChecker.wasAlreadyAccepted(url);
     boolean alreadyIgnored = mUrlChecker.wasAlreadyIgnored(url);
@@ -416,7 +422,7 @@ public class Crawler implements ErrorLogger {
     // Remember the last time when a breakpoint was created
     long lastBreakpointTime = System.currentTimeMillis();
     
-    // Work in the job list
+    // Work on the job list
     while (! mJobList.isEmpty()) {
       mCrawlerJobProfiler.startMeasuring();
 
@@ -596,6 +602,7 @@ public class Crawler implements ErrorLogger {
         while (mShouldPause) {
           try {
             Thread.sleep(1000);
+            mLog.info("The crawler sleeps for 1 second.");
           } catch (InterruptedException exc) {}
         }
         
@@ -766,6 +773,7 @@ public class Crawler implements ErrorLogger {
           mLog.debug("Found password for auth entry: " + url);
         }
         // write the updated entry back to hashtable
+        mLog.debug("write entry for url >" + url + "<" + " with username/password into authentication store.");
         accountPasswordStore.put(url, acPassEntry);
 
       }
@@ -988,7 +996,10 @@ public class Crawler implements ErrorLogger {
       for (int childIdx = 0; childIdx < childArr.length; childIdx++) {
         // Get the URL for the current child file
         String url = childArr[childIdx].getCanonicalPath();
-
+        // Remove domain, username, password
+        if (url.contains("@")) {
+          url = "smb://" + url.substring(url.indexOf("@") + 1);
+        }
         // Check whether this is a directory
         if (childArr[childIdx].isDirectory()) {
           // It's a directory -> Add a parse job
