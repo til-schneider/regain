@@ -1,4 +1,11 @@
-Version 1.6.2 am ??.??.2009 STABLE
+Version 1.6.3 am 28.09.09 PREVIEW
+----------------------------------
+* POI-Extraktion für Officedokumente auf neueste Beta umgestellt. Damit lassen
+  sich jetzt auch die neuen XML-Dokumente (xlsx, docx, pptx) indizieren.
+* UPDATE: NSIS (installer tool)
+* BUGFIX: Austausch des JAR-EXE wrapper (alt jsmooth, neu launch4j)
+
+Version 1.6.2 am 05.09.2009 STABLE
 ----------------------------------
 * UrlCleaner um störende Teile aus einer Url zu entfernen (z.B. sessionID)
 * wieder mit Java 1.6 gebaut, da einige Bibliotheken Java 1.6 voraussetzen.

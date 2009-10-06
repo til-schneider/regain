@@ -22,9 +22,9 @@
  | CVS information:
  |  $RCSfile$
  |   $Source$
- |     $Date: 2009-05-07 19:54:11 +0200 (Do, 07 Mai 2009) $
+ |     $Date: 2009-10-04 23:24:24 +0200 (So, 04 Okt 2009) $
  |   $Author: thtesche $
- | $Revision: 390 $
+ | $Revision: 405 $
  |
  | Author: Til Schneider, www.murfman.de
  +-->
@@ -54,6 +54,7 @@
   <property name="jacobgen-classes.dir" value="build/jacobgen/classes"/>
   <property name="jacobgen-packed.dir" value="jacobgen/packed"/>
   <property name="package-lists.dir" value="txt/package-lists"/>
+  <property name="launch4j.dir" location="launch4j" />
 
   <!-- Autodetect the platform -->
   <condition property="platform" value="linux">
@@ -332,7 +333,7 @@
    +-->
   <target name="preparators" depends="make, prepare-once">
     <mkdir dir="build/preparator"/>
-    <jar jarfile="build/preparator/PoiMsOfficePreparators.jar"
+    <!--jar jarfile="build/preparator/PoiMsOfficePreparators.jar"
          compress="false" index="true">
       <manifest>
         <attribute name="Preparator-Classes" value=".PoiMsExcelPreparator;.PoiMsWordPreparator;.PoiMsPowerPointPreparator;.PoiMsVisioPreparator"/>
@@ -340,9 +341,36 @@
       <fileset dir="build/included-lib-classes/common">
         <include name="font_metrics.properties"/>
         <include name="org/apache/poi/**"/>
-      </fileset>
+        </fileset>
       <fileset dir="build/classes">
         <include name="net/sf/regain/crawler/preparator/PoiMs*"/>
+      </fileset>
+    </jar-->
+    <jar jarfile="build/preparator/PoiMsOfficePreparator.jar"
+         compress="false" index="true">
+      <manifest>
+        <attribute name="Preparator-Classes" value=".PoiMsOfficePreparator"/>
+      </manifest>
+      <fileset dir="build/included-lib-classes/common">
+        <include name="font_metrics.properties"/>
+        <include name="org/apache/poi/**"/>
+        <include name="org/apache/commons/logging/**"/>
+        <include name="org/dom4j/**"/>
+        <include name="javax/xml/namespace/**"/>
+        <include name="javax/xml/stream/**"/>
+        <include name="org/openxmlformats/**"/>
+        <include name="schemaorg_apache_xmlbeans/**"/>
+        <include name="schemasMicrosoftComOfficeExcel/**"/>
+        <include name="schemasMicrosoftComOfficeOffice/**"/>
+        <include name="schemasMicrosoftComOfficePowerpoint/**"/>
+        <include name="schemasMicrosoftComOfficeWord/**"/>
+        <include name="schemasMicrosoftComVml/**"/>
+        <include name="repackage/**"/>
+        <include name="org/apache/xmlbeans/**"/>
+        <include name="org/w3c/dom/**"/>
+      </fileset>
+      <fileset dir="build/classes">
+        <include name="net/sf/regain/crawler/preparator/PoiMsOfficePreparator*"/>
       </fileset>
     </jar>
     <jar jarfile="build/preparator/JacobMsOfficePreparators.jar"
@@ -791,11 +819,29 @@
     <jsmoothgen project="jsmooth/exe-creation.jsmooth" skeletonroot="jsmooth/skeletons"/>
   </target>
 
+  <!--
+   | Creates a windows executable using Launch4j
+   +-->
+  <taskdef name="launch4j"
+    classname="net.sf.launch4j.ant.Launch4jTask"
+    classpath="${launch4j.dir}/launch4j.jar
+        :${launch4j.dir}/lib/xstream.jar" />
+
+  <target name="launch4j" >
+    <echo message="Creating the exe file with launch4j ..." />
+    <launch4j configFile="launch4j/skeletons/regain_exe.xml"
+      outfile="build/runtime/desktop/win/regain.exe"
+      jar="build/runtime/desktop/win/regain.jar"
+      fileVersion="${version.prefix}.0"
+      productVersion="${version.prefix}.0" />
+
+  </target>
 
   <!--
    | Creates a Windows installer for the project.
    +-->
-  <target name="installer" depends="jsmoothgen">
+  <target name="installer" depends="launch4j">
+  <!--target name="installer" depends="jsmoothgen"-->
     <mkdir dir="build/public"/>
     <exec executable="${installer.executable}"
           failonerror="true">

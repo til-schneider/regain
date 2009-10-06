@@ -13,7 +13,8 @@
   <jarLocation>..\build\runtime\desktop\win\regain.jar</jarLocation>
   <initialMemoryHeap>268435456</initialMemoryHeap>
   <mainClassName>net.sf.regain.ui.desktop.Main</mainClassName>
-  <maximumMemoryHeap>792723456</maximumMemoryHeap>
+  <!--maximumMemoryHeap>792723456</maximumMemoryHeap-->
+  <maximumMemoryHeap>1592723456</maximumMemoryHeap>
   <maximumVersion></maximumVersion>
   <minimumVersion>1.5.0</minimumVersion>
   <skeletonName>Windowed Wrapper</skeletonName>

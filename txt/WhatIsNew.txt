@@ -1,4 +1,11 @@
-Version 1.6.2 on ??/??/2009 PREVIEW
+Version 1.6.3 on 2009/09/28 PREVIEW
+-----------------------------------
+* New POI-lib for extraction of Office-XML documents (xlsx, docx,pptx). All POI-
+  Extractors are merged to one POITextExtractor.
+* UPDATE: NSIS (installer tool)
+* BUGFIX: Replacement of JAR-EXE wrapper (old jsmooth, new launch4j)
+
+Version 1.6.2 on 2009/09/05 STABLE
 -----------------------------------
 * URLCleaner for removing parts from the URL (e.g.session id)
 * regain is build again with Java 1.6 because some of the libs requires 1.6
@@ -8,7 +15,7 @@ Version 1.6.2 on ??/??/2009 PREVIEW
 * BUGFIX: Multiple protocols occurs some times when using the setup page of the desktop version.
 * BUGFIX: Update of samba lib (jcifs). Handling of smb-URL improved (username, password no longer
   stored in index).
-* BUGFIX: 'Cached' text is no internationalized
+* BUGFIX: 'Cached' text is now internationalized
 * Example of French stoppwords in CrawlerConfiguration.xml
 
 Version 1.6.1 on 04/21/2009 STABLE

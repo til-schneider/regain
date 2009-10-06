@@ -114,6 +114,10 @@ Ca. 28.07.04:
     servlet.jar entfernt
     servlet-api.jar und jsp-api.jar aus Tomcat 6.0.16 hinzugefuegt
 
+06.10.09
+========
+    Thomas Tesche (thtesche), cluster:Consult
+    poi 3.1 --> 3.5 beta 
 Websites:
 =========
   jakarta regexp: http://jakarta.apache.org/site/downloads/downloads_regexp.cgi

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-01-24 20:51:48 +0100 (Sa, 24 Jan 2009) $
+ *     $Date: 2009-09-20 23:35:25 +0200 (So, 20 Sep 2009) $
  *   $Author: thtesche $
- * $Revision: 374 $
+ * $Revision: 402 $
  */
 package net.sf.regain.crawler.document;
 
@@ -49,11 +49,12 @@ import net.sf.regain.crawler.config.PreparatorSettings;
 import org.apache.log4j.Logger;
 import java.io.FileInputStream;
 import java.io.StringReader;
-import java.net.URL;
 import java.util.Vector;
 import org.apache.lucene.analysis.WhitespaceTokenizer;
 import org.apache.lucene.document.DateTools;
 import org.semanticdesktop.aperture.mime.identifier.magic.MagicMimeTypeIdentifier;
+import org.semanticdesktop.aperture.mime.identifier.MimeTypeIdentifier;
+import org.semanticdesktop.aperture.mime.identifier.magic.MagicMimeTypeIdentifierFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.regexp.RE;
@@ -111,7 +112,9 @@ public class DocumentFactory {
   private Profiler mWriteAnalysisProfiler
     = new Profiler("Writing Analysis files", "files");
 
-  
+  /** The mimetype mimeTypeIdentifier */
+  MimeTypeIdentifier mimeTypeIdentifier;
+
   /**
    * Creates a new instance of DocumentFactory.
    * 
@@ -181,6 +184,11 @@ public class DocumentFactory {
     // Read some more configuration entries from the config
     this.mMaxSummaryLength = this.mConfig.getMaxSummaryLength();
     this.storeContentForPreview = this.mConfig.getStoreContentForPreview();
+
+    // Set up the MimeTypeIdentifierFactory
+    MagicMimeTypeIdentifierFactory factory = new MagicMimeTypeIdentifierFactory();
+    mimeTypeIdentifier = factory.get();
+
   }
 
 
@@ -198,31 +206,40 @@ public class DocumentFactory {
 
     String mimeType;
     try {
-      MagicMimeTypeIdentifier mmti = new MagicMimeTypeIdentifier();
+      //MagicMimeTypeIdentifier mmti = new MagicMimeTypeIdentifier();
       File file = rawDocument.getContentAsFile();
       if (file.canRead() == false) {
         mLog.warn("canRead() on file return: false. Maybe no access rights for sourceURL: " + 
           RegainToolkit.fileToUrl(file));
     	  return null;
-        // throw new RegainException(); --> Proposal from J.Stiepel but here, we do need null
       } 
 
       FileInputStream fis = new FileInputStream(file);
-      byte[] bytes = new byte[mmti.getMinArrayLength()];
+      byte[] bytes = new byte[mimeTypeIdentifier.getMinArrayLength()];
       fis.read(bytes);
       //URL url;
       //url = new URL(rawDocument.getUrl());
-      mimeType = mmti.identify(bytes, file.getPath(), 
+      mimeType = mimeTypeIdentifier.identify(bytes, file.getPath(),
               //new URIImpl(url.getProtocol()+"://"+url.getHost()+url.getPath())) ;
               new URIImpl(rawDocument.getUrl(),false)) ;
-      if( mimeType == null || mimeType.length()==0 )
+      if (mimeType == null || mimeType.length() == 0) {
         mimeType = "application/x-unknown-mime-type";
-    }
-      catch (Exception exc) {
-        errorLogger.logError("Determine mime-type of " + rawDocument.getUrl() +
+      }
+
+      mLog.debug("Detected mimetype cylcle 1: " + mimeType + ". " + rawDocument.getUrl());
+      if (mimeType.equalsIgnoreCase("application/zip")) {
+        // some new files like MS Office documents are zip files
+        // so rewrite the URL for the correct mimetype detection
+        mimeType = mimeTypeIdentifier.identify(bytes, null,
+                new URIImpl("zip:mime:file:" + rawDocument.getUrl()));
+        mLog.debug("Detected mimetype cylcle 2: " + mimeType + ". " + "zip:mime:file:" + rawDocument.getUrl());
+      }
+    } catch (Exception exc) {
+      errorLogger.logError("Determine mime-type of " + rawDocument.getUrl() +
                               " failed", exc, false);
       mimeType = "application/x-unknown-mime-type";
     }
+
     rawDocument.setMimeType( mimeType );
     
     // Find the preparator that will prepare this URL
