@@ -258,10 +258,11 @@
       -->
     </config>
   </preparator>
-  
+
   <preparator>
-    <class>.PoiMsExcelPreparator</class>
+    <class>.PoiMsOfficePreparator</class>
   </preparator>
+
   <preparator enabled="false">
     <class>.JacobMsExcelPreparator</class>
     <config>
@@ -281,9 +282,6 @@
     </config>
   </preparator>
   
-  <preparator>
-    <class>.PoiMsWordPreparator</class>
-  </preparator>
   <preparator enabled="false">
     <class>.JacobMsWordPreparator</class>
     <config>
@@ -329,10 +327,6 @@
     </config>    
   </preparator>
   
-  <preparator>
-    <class>.PoiMsVisioPreparator</class>
-  </preparator>
-
   <preparator enabled="false">
       <class>.IfilterPreparator</class>
   </preparator>
@@ -415,10 +409,6 @@
   <auxiliaryField name="location" regexGroup="1" store="false" tokenize="true">
     <regex>^(.*)$</regex>
   </auxiliaryField>
-  <!-- The value would be filled while creating the document in the parser -->
-  <auxiliaryField name="mimetype" regexGroup="1" >
-    <regex>^()$</regex>
-  </auxiliaryField>
 </auxiliaryFieldList>
 
 
@@ -438,7 +428,7 @@
  | should be used as title instead of the document's real title.
  +-->
 <useLinkTextAsTitleList>
-  <urlPattern>^http://.*\.(pdf|xls|doc|rtf)$</urlPattern>
+  <urlPattern>^http://.*\.(pdf|xls|doc|rtf|docx|xlsx|pptx)$</urlPattern>
 </useLinkTextAsTitleList>
 
 

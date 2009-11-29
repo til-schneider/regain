@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-05 18:37:42 +0200 (So, 05 Okt 2008) $
+ *     $Date: 2009-11-28 15:29:30 +0100 (Sa, 28 Nov 2009) $
  *   $Author: thtesche $
- * $Revision: 343 $
+ * $Revision: 441 $
  */
 package net.sf.regain.search.config;
 
@@ -13,6 +13,7 @@ import java.util.Properties;
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.search.access.SearchAccessController;
+import net.sf.regain.search.results.SortingOption;
 
 /**
  * The configuration for one index.
@@ -81,6 +82,11 @@ public class IndexConfig {
 	/** Name of the parent (only used if mHasParent is true) */
 	private String mParentName;
 
+  /** The sorting options for the results. */
+  private SortingOption[] mSortingOptions;
+
+  private boolean mShowSortFieldContent;
+
   /**
    * Creates a new instance of IndexConfig.
    * 
@@ -105,20 +111,21 @@ public class IndexConfig {
   public IndexConfig(String name, String directory, String openInNewWindowRegex,
     boolean useFileToHttpBridge, String[] searchFieldList, String[][] rewriteRules,
     String searchAccessControllerClass, String searchAccessControllerJar,
-    Properties searchAccessControllerConfig, boolean shouldHighlight)
+    Properties searchAccessControllerConfig, boolean shouldHighlight,
+    SortingOption[] sortingOptions, boolean showSortFieldContent)
     throws RegainException
   {
-    mName = name;
-    mDirectory = directory;
-    mOpenInNewWindowRegex = openInNewWindowRegex;
-    mUseFileToHttpBridge = useFileToHttpBridge;
-    mSearchFieldList = searchFieldList;
-    mRewriteRules = rewriteRules;
- 		mParent = true;
-		mHasParent = false;
+    this.mName = name;
+    this.mDirectory = directory;
+    this.mOpenInNewWindowRegex = openInNewWindowRegex;
+    this.mUseFileToHttpBridge = useFileToHttpBridge;
+    this.mSearchFieldList = searchFieldList;
+    this.mRewriteRules = rewriteRules;
+ 		this.mParent = true;
+		this.mHasParent = false;
     
     if (searchAccessControllerClass != null) {
-      mSearchAccessController = (SearchAccessController)
+      this.mSearchAccessController = (SearchAccessController)
         RegainToolkit.createClassInstance(searchAccessControllerClass,
                                           SearchAccessController.class,
                                           searchAccessControllerJar);
@@ -126,9 +133,11 @@ public class IndexConfig {
       if (searchAccessControllerConfig == null) {
         searchAccessControllerConfig = new Properties();
       }
-      mSearchAccessController.init(searchAccessControllerConfig);
+      this.mSearchAccessController.init(searchAccessControllerConfig);
     }
-    mShouldHighlight = shouldHighlight;
+    this.mShouldHighlight = shouldHighlight;
+    this.mSortingOptions = sortingOptions;
+    this.mShowSortFieldContent = showSortFieldContent;
   }
 
 
@@ -291,5 +300,19 @@ public class IndexConfig {
 		this.mParentName = parentName;
 		this.mHasParent = true;
 	}
+
+  /**
+   * @return the sortingOptions
+   */
+  public SortingOption[] getSortingOptions() {
+    return mSortingOptions;
+  }
+
+  /**
+   * @return the mShowSortFieldContent
+   */
+  public boolean getShowSortFieldContent() {
+    return mShowSortFieldContent;
+  }
 
 }

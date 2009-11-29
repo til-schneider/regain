@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-01 17:04:30 +0100 (Di, 01 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 46 $
+ *     $Date: 2009-11-28 23:02:27 +0100 (Sa, 28 Nov 2009) $
+ *   $Author: thtesche $
+ * $Revision: 443 $
  */
 package net.sf.regain.search.sharedlib.hit;
 
@@ -47,6 +47,7 @@ public class ScoreTag extends SharedTag implements SearchConstants {
    * @param response The page response.
    * @throws RegainException If there was an exception.
    */
+  @Override
   public void printEndTag(PageRequest request, PageResponse response)
     throws RegainException
   {

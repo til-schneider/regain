@@ -22,9 +22,9 @@
  | CVS information:
  |  $RCSfile$
  |   $Source$
- |     $Date: 2009-10-04 23:24:24 +0200 (So, 04 Okt 2009) $
+ |     $Date: 2009-11-28 23:02:27 +0100 (Sa, 28 Nov 2009) $
  |   $Author: thtesche $
- | $Revision: 405 $
+ | $Revision: 443 $
  |
  | Author: Til Schneider, www.murfman.de
  +-->
@@ -333,19 +333,6 @@
    +-->
   <target name="preparators" depends="make, prepare-once">
     <mkdir dir="build/preparator"/>
-    <!--jar jarfile="build/preparator/PoiMsOfficePreparators.jar"
-         compress="false" index="true">
-      <manifest>
-        <attribute name="Preparator-Classes" value=".PoiMsExcelPreparator;.PoiMsWordPreparator;.PoiMsPowerPointPreparator;.PoiMsVisioPreparator"/>
-      </manifest>
-      <fileset dir="build/included-lib-classes/common">
-        <include name="font_metrics.properties"/>
-        <include name="org/apache/poi/**"/>
-        </fileset>
-      <fileset dir="build/classes">
-        <include name="net/sf/regain/crawler/preparator/PoiMs*"/>
-      </fileset>
-    </jar-->
     <jar jarfile="build/preparator/PoiMsOfficePreparator.jar"
          compress="false" index="true">
       <manifest>
@@ -433,9 +420,13 @@
         <attribute name="Preparator-Classes" value=".PdfBoxPreparator"/>
       </manifest>
       <fileset dir="build/included-lib-classes/common">
-        <include name="org/pdfbox/**"/>
-        <include name="org/fontbox/**"/>
+        <include name="org/apache/commons/logging/**"/>
+        <include name="org/apache/pdfbox/**"/>
+        <include name="org/apache/jempbox/**"/>
+        <include name="org/apache/fontbox/**"/>
+        <include name="org/apache/tools/**"/>
         <include name="org/bouncycastle/**"/>
+        <include name="com/ibm/icu/**"/>
         <include name="Resources/**"/>
       </fileset>
       <fileset dir="build/classes">
@@ -573,19 +564,19 @@
     <!-- Copy the preparator jars -->
     <copy todir="build/runtime/crawler/preparator">
       <fileset dir="build/preparator">
-        <exclude name="JavaPreparator.jar"/>
+        <!--exclude name="JavaPreparator.jar"/-->
       </fileset>
     </copy>
     <copy todir="build/runtime/desktop/win/preparator">
       <fileset dir="build/preparator">
-        <exclude name="JavaPreparator.jar"/>
+        <!--exclude name="JavaPreparator.jar"/-->
       </fileset>
     </copy>
     <copy todir="build/runtime/desktop/linux/preparator">
       <fileset dir="build/preparator">
         <exclude name="JacobMsOfficePreparators.jar"/>
         <exclude name="IfilterPreparator.jar"/>
-        <exclude name="JavaPreparator.jar"/>
+        <!--exclude name="JavaPreparator.jar"/-->
       </fileset>
     </copy>
   </target>
@@ -667,7 +658,7 @@
       <include name="javax/mail/**"/>
       <include name="javax/activation/**"/>
       <include name="com/sun/mail/**"/>
-      <include name="com/sun/activation/**"/>       
+      <include name="com/sun/activation/**"/>
       
       <!-- desktop specific stuff -->
       <include name="simple/**"/>
@@ -806,7 +797,7 @@
   <!--
    | Creates a windows executable using Jsmooth
    +-->
-  <taskdef name="jsmoothgen" 
+  <taskdef name="jsmoothgen"
      classname="net.charabia.jsmoothgen.ant.JSmoothGen" 
      classpath="jsmooth/lib/jsmoothgen-ant.jar"/> 
 

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2009-11-28 23:02:27 +0100 (Sa, 28 Nov 2009) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 443 $
  */
 package net.sf.regain.search.sharedlib;
 
@@ -31,11 +31,13 @@ import net.sf.regain.RegainException;
 import net.sf.regain.search.SearchConstants;
 import net.sf.regain.search.SearchToolkit;
 import net.sf.regain.search.results.SearchResults;
+import net.sf.regain.search.results.SortingOption;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
 import net.sf.regain.util.sharedtag.SharedTag;
 
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 
 /**
  * The list tag encloses the JSP code that should be repeated for every shown
@@ -75,6 +77,7 @@ public class ListTag extends SharedTag implements SearchConstants {
    *         {@link #SKIP_TAG_BODY} if you want the tag body to be skipped.
    * @throws RegainException If there was an exception.
    */
+  @Override
   public int printStartTag(PageRequest request, PageResponse response)
     throws RegainException
   {
@@ -121,13 +124,33 @@ public class ListTag extends SharedTag implements SearchConstants {
     
     try {
       Document hit = results.getHitDocument(hitIndex);
-      if( shouldHighlight ) {
-         results.highlightHitDocument(hitIndex);
+      if (shouldHighlight) {
+        results.highlightHitDocument(hitIndex);
+      } else {
+        results.shortenSummary(hitIndex);
       }
       request.setContextAttribute(ATTR_CURRENT_HIT, hit);
       float score = results.getHitScore(hitIndex);
       request.setContextAttribute(ATTR_CURRENT_HIT_SCORE, new Float(score));
       request.setContextAttribute(ATTR_CURRENT_HIT_INDEX, new Integer(hitIndex));
+
+      String order = request.getParameter("order");
+      //System.out.println("order: " + order);
+      if (!(order == null || order.length() == 0 || order.startsWith(SortingOption.RELEVANCE))) {
+        String fieldName = order.substring(0, order.lastIndexOf("_"));
+        //System.out.println("none standard order. fieldname: " + fieldName);
+        Field field = hit.getField(fieldName);
+        String fieldContent = null;
+        if (field != null) {
+          fieldContent = field.stringValue();
+        }
+        if (fieldContent == null) {
+          fieldContent = "not set";
+        }
+        request.setContextAttribute(ATTR_CURRENT_HIT_SORT_CONTENT,
+                new String(fieldContent));
+      }
+
     }
     catch (RegainException exc) {
       throw new RegainException("Getting hit #" + hitIndex + " failed", exc);
@@ -148,6 +171,7 @@ public class ListTag extends SharedTag implements SearchConstants {
    *         end tag.
    * @throws RegainException If there was an exception.
    */
+  @Override
   public int printAfterBody(PageRequest request, PageResponse response)
     throws RegainException
   {

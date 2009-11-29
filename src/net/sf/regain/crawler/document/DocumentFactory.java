@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-09-20 23:35:25 +0200 (So, 20 Sep 2009) $
+ *     $Date: 2009-11-26 18:14:25 +0100 (Do, 26 Nov 2009) $
  *   $Author: thtesche $
- * $Revision: 402 $
+ * $Revision: 430 $
  */
 package net.sf.regain.crawler.document;
 
@@ -48,11 +48,12 @@ import net.sf.regain.crawler.config.PreparatorSettings;
 
 import org.apache.log4j.Logger;
 import java.io.FileInputStream;
+import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.Vector;
 import org.apache.lucene.analysis.WhitespaceTokenizer;
+import org.apache.lucene.document.CompressionTools;
 import org.apache.lucene.document.DateTools;
-import org.semanticdesktop.aperture.mime.identifier.magic.MagicMimeTypeIdentifier;
 import org.semanticdesktop.aperture.mime.identifier.MimeTypeIdentifier;
 import org.semanticdesktop.aperture.mime.identifier.magic.MagicMimeTypeIdentifierFactory;
 import org.apache.lucene.document.Document;
@@ -202,11 +203,10 @@ public class DocumentFactory {
    *         the document couldn't be created.
    */
   public Document createDocument(RawDocument rawDocument, ErrorLogger errorLogger) {
-    // Determine the mime-type 
 
+    // Determine the mime-type 
     String mimeType;
     try {
-      //MagicMimeTypeIdentifier mmti = new MagicMimeTypeIdentifier();
       File file = rawDocument.getContentAsFile();
       if (file.canRead() == false) {
         mLog.warn("canRead() on file return: false. Maybe no access rights for sourceURL: " + 
@@ -446,7 +446,7 @@ public class DocumentFactory {
 
             doc.add(new Field(fieldName, value,
                 store ? Field.Store.YES : Field.Store.NO,
-                index ? (token ? Field.Index.TOKENIZED : Field.Index.UN_TOKENIZED) : Field.Index.NO));
+                index ? (token ? Field.Index.ANALYZED : Field.Index.NOT_ANALYZED) : Field.Index.NO));
           }
         }
       }
@@ -467,21 +467,35 @@ public class DocumentFactory {
     }
 
     // Add the URL of the document
-    doc.add(new Field("url", url, Field.Store.YES, Field.Index.UN_TOKENIZED));
+    doc.add(new Field("url", url, Field.Store.YES, Field.Index.NOT_ANALYZED));
     
-    // Add the file name (without protocol, drive-letter and path) 
-    doc.add(new Field("filename", new WhitespaceTokenizer(
-            new StringReader( RegainToolkit.urlToWhitespacedFileName(url)))));
-  
+    // Add the file name (without protocol, drive-letter and path)
+    String filenameWithVariants = RegainToolkit.urlToWhitespacedFileName(url);
+    doc.add(new Field("filename", new WhitespaceTokenizer(new StringReader(filenameWithVariants))));
+    StreamTokenizer filenameTokenizer = new StreamTokenizer(new StringReader(filenameWithVariants));
+    String filename = "";
+    try {
+      if (filenameTokenizer.nextToken() != StreamTokenizer.TT_EOF) {
+        // take only the first token: it's the filename
+        if (filenameTokenizer.sval != null) {
+          filename = filenameTokenizer.sval;
+        } else {
+          filename = "";
+        }
+      }
+    } catch (IOException ex) {
+      // do nothing.
+    }
+    // Add the filename field for sorting
+    doc.add(new Field("filename_sort", filename.toLowerCase(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+
     // Add the document's size
     int size = rawDocument.getLength();
-    doc.add(new Field("size", Integer.toString(size), Field.Store.YES,
-        Field.Index.UN_TOKENIZED));
+    doc.add(new Field("size", Integer.toString(size), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
     // Add the mime-type
     String mimeType = rawDocument.getMimeType();
-    doc.add(new Field("mimetype", mimeType, Field.Store.YES,
-        Field.Index.UN_TOKENIZED));
+    doc.add(new Field("mimetype", mimeType, Field.Store.YES, Field.Index.NOT_ANALYZED));
     
     // Add last modified
     Date lastModified = rawDocument.getLastModified();
@@ -492,7 +506,7 @@ public class DocumentFactory {
     }
     doc.add(new Field("last-modified", 
       DateTools.dateToString(lastModified, DateTools.Resolution.DAY), Field.Store.YES,
-        Field.Index.UN_TOKENIZED));
+        Field.Index.NOT_ANALYZED));
 
     // Write the raw content to an analysis file
     writeContentAnalysisFile(rawDocument);
@@ -503,8 +517,9 @@ public class DocumentFactory {
       while (iter.hasNext()) {
         String fieldName = (String) iter.next();
         String fieldValue = (String) additionalFieldMap.get(fieldName);
-        doc.add(new Field(fieldName, fieldValue, Field.Store.COMPRESS,
-            Field.Index.TOKENIZED));
+        //doc.add(new Field(fieldName, fieldValue, Field.Store.COMPRESS, Field.Index.ANALYZED));
+        doc.add(new Field(fieldName, fieldValue, Field.Store.NO, Field.Index.ANALYZED));
+        doc.add(new Field(fieldName, CompressionTools.compressString(fieldValue), Field.Store.YES));
       }
     }
 
@@ -514,7 +529,7 @@ public class DocumentFactory {
 
       // Add the cleaned content of the document
       doc.add(new Field("content", cleanedContent, 
-        this.storeContentForPreview ? Field.Store.YES : Field.Store.NO, Field.Index.TOKENIZED));
+        this.storeContentForPreview ? Field.Store.YES : Field.Store.NO, Field.Index.ANALYZED));
     } else {
       // We have no content! This is a substitute document
       // -> Add a "preparation-error"-field
@@ -535,7 +550,10 @@ public class DocumentFactory {
 
     // Add the document's title
     if (hasContent(title)) {
-      doc.add(new Field("title", title, Field.Store.YES, Field.Index.TOKENIZED));
+      doc.add(new Field("title", title, Field.Store.YES, Field.Index.ANALYZED));
+      doc.add(new Field("title_sort", title.toLowerCase(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+    } else {
+      doc.add(new Field("title_sort", "", Field.Store.YES, Field.Index.NOT_ANALYZED));
     }
 
     // Add the document's summary
@@ -543,24 +561,29 @@ public class DocumentFactory {
       summary = createSummaryFromContent(cleanedContent);
     }
     if (hasContent(summary)) {
-      doc.add(new Field("summary", summary, Field.Store.COMPRESS,
-          Field.Index.TOKENIZED));
+      //doc.add(new Field("summary", summary, Field.Store.COMPRESS, Field.Index.ANALYZED));
+      doc.add(new Field("summary", summary, Field.Store.NO, Field.Index.ANALYZED));
+      doc.add(new Field("summary", CompressionTools.compressString(summary), Field.Store.YES));
     }
 
     // Add the document's headlines
     if (hasContent(headlines)) {
       doc.add(new Field("headlines", headlines, Field.Store.NO,
-          Field.Index.TOKENIZED));
+          Field.Index.ANALYZED));
     }
 
     // Add the document's path
     if (path != null) {
       String asString = pathToString(path);
       doc.add(new Field("path", asString, Field.Store.YES, Field.Index.NO));
+      doc.add(new Field("path_sort", asString.toLowerCase(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
       // Write the path to an analysis file
       writeAnalysisFile(url, "path", asString);
+    } else {
+      doc.add(new Field("path_sort", "", Field.Store.YES, Field.Index.NOT_ANALYZED));
     }
+
     return doc;
   }
 

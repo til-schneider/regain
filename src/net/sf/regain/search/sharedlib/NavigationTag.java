@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-11-02 22:58:52 +0100 (Mi, 02 Nov 2005) $
- *   $Author: til132 $
- * $Revision: 177 $
+ *     $Date: 2009-11-26 18:14:25 +0100 (Do, 26 Nov 2009) $
+ *   $Author: thtesche $
+ * $Revision: 430 $
  */
 package net.sf.regain.search.sharedlib;
 
@@ -65,6 +65,7 @@ public class NavigationTag extends SharedTag implements SearchConstants {
    * @param response The page response.
    * @throws RegainException If there was an exception.
    */
+  @Override
   public void printEndTag(PageRequest request, PageResponse response)
     throws RegainException
   {
@@ -102,7 +103,7 @@ public class NavigationTag extends SharedTag implements SearchConstants {
     if (currButton > 0) {
       String msgBack = getParameter("msgBack", true);
       msgBack = RegainToolkit.replace(msgBack, "&quot;", "\"");
-      printLink(response, currButton - 1, query, maxResults, indexNameArr, msgBack);
+      printLink(request, response, currButton - 1, query, maxResults, indexNameArr, msgBack);
     }
     for (int i = fromButton; i <= toButton; i++) {
       if (i == currButton) {
@@ -110,13 +111,13 @@ public class NavigationTag extends SharedTag implements SearchConstants {
         response.print("<b>" + (i + 1) + "</b> ");
       } else {
         String linkText = Integer.toString(i + 1);
-        printLink(response, i, query, maxResults, indexNameArr, linkText);
+        printLink(request, response, i, query, maxResults, indexNameArr, linkText);
       }
     }
     if (currButton < (buttonCount -1)) {
       String msgForward = getParameter("msgForward", true);
       msgForward = RegainToolkit.replace(msgForward, "'", "\"");
-      printLink(response, currButton + 1, query, maxResults, indexNameArr, msgForward);
+      printLink(request, response, currButton + 1, query, maxResults, indexNameArr, msgForward);
     }
   }
 
@@ -132,7 +133,7 @@ public class NavigationTag extends SharedTag implements SearchConstants {
    * @param linkText The link text.
    * @throws RegainException If printing failed.
    */
-  private void printLink(PageResponse response, int button, String query,
+  private void printLink(PageRequest request, PageResponse response, int button, String query,
     int maxResults, String[] indexNameArr, String linkText)
     throws RegainException
   {
@@ -153,6 +154,10 @@ public class NavigationTag extends SharedTag implements SearchConstants {
     }
     if (button != 0) {
       response.print("&fromresult=" + (button * maxResults));
+    }
+    String order = request.getParameter("order");
+    if (order != null && order.length() > 0) {
+      response.print("&order=" + order);
     }
     response.print("\"");
     String styleSheetClass = getParameter("class");

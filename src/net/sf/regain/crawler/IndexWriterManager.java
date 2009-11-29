@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-05-17 21:20:00 +0200 (So, 17 Mai 2009) $
+ *     $Date: 2009-11-15 23:12:24 +0100 (So, 15 Nov 2009) $
  *   $Author: thtesche $
- * $Revision: 391 $
+ * $Revision: 424 $
  */
 package net.sf.regain.crawler;
 
@@ -52,10 +52,13 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 
 /**
  * Kontrolliert und kapselt die Erstellung des Suchindex.
@@ -72,7 +75,6 @@ public class IndexWriterManager {
 
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(IndexWriterManager.class);
-
   /**
    * Der Name des Index-Unterverzeichnisses, in das der neue Index gestellt
    * werden soll, sobald er fertig ist ohne dass fatale Fehler aufgetreten sind.
@@ -81,13 +83,11 @@ public class IndexWriterManager {
    * umstellen. Dabei wird es in "index" umbenannt.
    */
   private static final String NEW_INDEX_SUBDIR = "new";
-
   /**
    * Der Name des Index-Unterverzeichnisses, in das der neue Index gestellt
    * werden soll, sobald er fertig ist, wobei fatale Fehler sufgetreten sind.
    */
   private static final String QUARANTINE_INDEX_SUBDIR = "quarantine";
-
   /** Der Name des Index-Unterverzeichnisses, in dem der genutzte Index steht. */
   private static final String WORKING_INDEX_SUBDIR = "index";
   /**
@@ -95,7 +95,6 @@ public class IndexWriterManager {
    * werden soll.
    */
   private static final String TEMP_INDEX_SUBDIR = "temp";
-  
   /**
    * The name of the index sub directory that contains a breakpoint.
    * <p>
@@ -106,23 +105,20 @@ public class IndexWriterManager {
    * was fully created.
    */
   private static final String BREAKPOINT_INDEX_SUBDIR = "breakpoint";
-
   /**
    * Gibt an, ob die Terme sortiert in die Terme-Datei geschrieben werden soll.
    *
    * @see #writeTermFile(File, File)
    */
   private static final boolean WRITE_TERMS_SORTED = true;
-
   /**
    * Workaround: Unter Windows klappt das Umbenennen unmittelbar nach Schlie�en
    * des Index nicht. Wahrscheinlich sind die Filepointer auf die gerade
    * geschlossenen Dateien noch nicht richtig aufger�umt, so dass ein Umbenennen
    * des Indexverzeichnisses fehl schl�gt. Das Umbenennen wird daher regelm��ig
    * probiert, bis es entweder funktioniert oder bis der Timeout abgelaufen ist.
-   */ 
+   */
   private static final long RENAME_TIMEOUT = 60000; // 1 min
-
   /**
    * The writing mode.
    * @see #setIndexMode(int)
@@ -143,16 +139,12 @@ public class IndexWriterManager {
    * @see #setIndexMode(int)
    */
   private static final int ALL_CLOSED_MODE = 4;
-
   /** The crawler configuration. */
   private CrawlerConfig mConfig;
-
   /** Der Analyzer, der vom IndexWriter genutzt werden soll. */
   private Analyzer mAnalyzer;
-
   /** Der gekapselte IndexWriter, der den eigentlichen Index erstellt. */
   private IndexWriter mIndexWriter;
-
   /**
    * Der gekapselte IndexReader. Wird zum L�schen von Dokumenten aus dem Index
    * ben�tigt.
@@ -160,77 +152,63 @@ public class IndexWriterManager {
    * Ist <code>null</code>, wenn der Index nicht aktualisiert werden soll.
    */
   private IndexReader mIndexReader;
-
   /**
    * Der gekapselte IndexSearcher. Wird zum Finden von Dokumenten ben�tigt.
    * <p>
    * Ist <code>null</code>, wenn der Index nicht aktualisiert werden soll.
    */
   private IndexSearcher mIndexSearcher;
-
   /**
    * Gibt an, ob ein bestehender Index aktualisiert wird.
    * <p>
    * Anderenfalls wird ein komplett neuer Index angelegt.
    */
   private boolean mUpdateIndex;
-
   /**
    * Specifies whether a document that couldn't be prepared the last time should be retried.
    */
   private boolean mRetryFailedDocs;
-  
   /** Die DocumentFactory, die die Inhalte für die Indizierung aufbereitet. */
   private DocumentFactory mDocumentFactory;
-
   /**
    * Das Verzeichnis, in dem der Suchindex am Ende stehen soll, wenn es keine
    * fatalen Fehler gab.
    */
   private File mNewIndexDir;
-
   /**
    * Das Verzeichnis, in dem der Suchindex am Ende stehen soll, wenn es
    * fatale Fehler gab.
    */
   private File mQuarantineIndexDir;
-
   /** Das Verzeichnis, in dem der neue Suchindex aufgebaut werden soll. */
   private File mTempIndexDir;
-
+  /** The lucene representation of mTempIndexDir. */
+  private Directory mLuceneTempIndexDir;
   /** The directory to create breakpoint indices. */
   private File mBreakpointIndexDir;
-
   /** Das Verzeichnis, in dem die Analyse-Dateien erstellt werden soll. */
   private File mAnalysisDir;
-  
   /** The file where the error log should be stored. */
   private File mErrorLogFile;
-  
   /**
    * The stream used for writing errors to the error log of the index.
    * May be <code>null</code>.
    */
   private FileOutputStream mErrorLogStream;
-  
   /**
    * The print writer used for writing errors to the error log of the index.
    * May be <code>null</code>.
    */
   private PrintWriter mErrorLogWriter;
-  
   /**
    * The number of documents that were in the (old) index when the
    * IndexWriterManager was created.
    */
   private int mInitialDocCount;
-
-  /** Der Profiler der das Hinzuf�gen zum Index mi�t. */
+  /** Der Profiler der das Hinzufügen zum Index mißt. */
   private Profiler mAddToIndexProfiler = new Profiler("Indexed documents", "docs");
-
   /** The profiler for the breakpoint creation. */
   private Profiler mBreakpointProfiler = new Profiler("Created breakpoints", "breakpoints");
-
   /**
    * enthält die URL und den LastUpdated-String aller Dokumente, deren Eintr�ge
    * beim Abschlie�en des Index entfernt werden m�ssen.
@@ -238,8 +216,6 @@ public class IndexWriterManager {
    * Die URL bildet den key, der LastUpdated-String die value.
    */
   private HashMap mUrlsToDeleteHash;
-
-
 
   /**
    * Erzeugt eine neue IndexWriterManager-Instanz.
@@ -253,28 +229,32 @@ public class IndexWriterManager {
    * @throws RegainException Wenn der neue Index nicht vorbereitet werden konnte.
    */
   public IndexWriterManager(CrawlerConfig config, boolean updateIndex,
-    boolean retryFailedDocs)
-    throws RegainException
-  {
+          boolean retryFailedDocs)
+          throws RegainException {
     mConfig = config;
     mUpdateIndex = updateIndex;
     mRetryFailedDocs = retryFailedDocs;
-    
+
     mInitialDocCount = 0;
 
     File indexDir = new File(config.getIndexDir());
 
-    if (! indexDir.exists()) {
+    if (!indexDir.exists()) {
       // The index directory does not exist -> Create it
       mLog.info("Creating index directory " + indexDir.getAbsolutePath());
       indexDir.mkdirs();
     }
 
-    mNewIndexDir        = new File(indexDir, NEW_INDEX_SUBDIR);
+    mNewIndexDir = new File(indexDir, NEW_INDEX_SUBDIR);
     mQuarantineIndexDir = new File(indexDir, QUARANTINE_INDEX_SUBDIR);
-    mTempIndexDir       = new File(indexDir, TEMP_INDEX_SUBDIR);
+    mTempIndexDir = new File(indexDir, TEMP_INDEX_SUBDIR);
+    try {
+      mLuceneTempIndexDir = FSDirectory.open(mTempIndexDir);
+    } catch (IOException ioEx) {
+      throw new RegainException("Couldn't open tmpIndexDir", ioEx);
+    }
     mBreakpointIndexDir = new File(indexDir, BREAKPOINT_INDEX_SUBDIR);
-    
+
     mErrorLogFile = new File(mTempIndexDir, "log/error.log");
 
     // Delete the old temp index directory if it should still exist
@@ -282,9 +262,8 @@ public class IndexWriterManager {
       RegainToolkit.deleteDirectory(mTempIndexDir);
     }
     // and create a new, empty one
-    if (! mTempIndexDir.mkdir()) {
-      throw new RegainException("Creating working directory failed: "
-                                + mTempIndexDir.getAbsolutePath());
+    if (!mTempIndexDir.mkdir()) {
+      throw new RegainException("Creating working directory failed: " + mTempIndexDir.getAbsolutePath());
     }
 
     // Get the untokenized field names
@@ -296,21 +275,21 @@ public class IndexWriterManager {
     String[] stopWordList = config.getStopWordList();
     String[] exclusionList = config.getExclusionList();
     mAnalyzer = RegainToolkit.createAnalyzer(analyzerType, stopWordList,
-        exclusionList, untokenizedFieldNames);
+            exclusionList, untokenizedFieldNames);
 
     // Alten Index kopieren, wenn Index aktualisiert werden soll
     if (updateIndex) {
-      if (! copyExistingIndex(indexDir, analyzerType)) {
+      if (!copyExistingIndex(indexDir, analyzerType)) {
         mUpdateIndex = updateIndex = false;
       }
     }
 
     // Check whether we have to create a new index
-    boolean createNewIndex = ! updateIndex;
+    boolean createNewIndex = !updateIndex;
     if (createNewIndex) {
       // Create a new index
       try {
-        mIndexWriter = createIndexWriter(true); 
+        mIndexWriter = createIndexWriter(true);
       } catch (IOException exc) {
         throw new RegainException("Creating new index failed", exc);
       }
@@ -320,7 +299,8 @@ public class IndexWriterManager {
       // Force an unlock of the index (we just created a copy so this is save)
       setIndexMode(READING_MODE);
       try {
-        IndexReader.unlock(mIndexReader.directory());
+
+        IndexWriter.unlock(mIndexReader.directory());
         mInitialDocCount = mIndexReader.numDocs();
       } catch (IOException exc) {
         throw new RegainException("Forcing unlock failed", exc);
@@ -338,18 +318,15 @@ public class IndexWriterManager {
 
     // Prepare the analysis directory if wanted
     if (config.getWriteAnalysisFiles()) {
-      mAnalysisDir = new File(mTempIndexDir.getAbsolutePath() + File.separator
-                              + "analysis");
+      mAnalysisDir = new File(mTempIndexDir.getAbsolutePath() + File.separator + "analysis");
 
-      if (! mAnalysisDir.mkdir()) {
-        throw new RegainException("Creating analysis directory failed: "
-                                  + mAnalysisDir.getAbsolutePath());
+      if (!mAnalysisDir.mkdir()) {
+        throw new RegainException("Creating analysis directory failed: " + mAnalysisDir.getAbsolutePath());
       }
     }
 
     mDocumentFactory = new DocumentFactory(config, mAnalysisDir);
   }
-
 
   /**
    * Gibt zurück, ob ein bestehender Index aktualisiert wird.
@@ -361,8 +338,7 @@ public class IndexWriterManager {
   public boolean getUpdateIndex() {
     return mUpdateIndex;
   }
-  
-  
+
   /**
    * Gets the number of documents that were in the (old) index when the
    * IndexWriterManager was created.
@@ -373,7 +349,6 @@ public class IndexWriterManager {
     return mInitialDocCount;
   }
 
-
   /**
    * Gets the number of documents that were added to the index.
    * 
@@ -382,7 +357,6 @@ public class IndexWriterManager {
   public int getAddedDocCount() {
     return mAddToIndexProfiler.getMeasureCount();
   }
-
 
   /**
    * Gets the number of documents that will be removed from the index.
@@ -395,7 +369,6 @@ public class IndexWriterManager {
     HashMap hash = mUrlsToDeleteHash;
     return (hash == null) ? 0 : hash.size();
   }
-
 
   /**
    * Logs an error at the error log of the index.
@@ -410,12 +383,11 @@ public class IndexWriterManager {
         new File(mTempIndexDir, "log").mkdir();
         mErrorLogStream = new FileOutputStream(mErrorLogFile, true);
         mErrorLogWriter = new PrintWriter(mErrorLogStream);
-      }
-      catch (IOException exc) {
+      } catch (IOException exc) {
         throw new RegainException("Opening error log file of the index failed", exc);
       }
     }
-    
+
     if (thr == null) {
       mErrorLogWriter.println(msg);
     } else {
@@ -425,7 +397,6 @@ public class IndexWriterManager {
     }
     mErrorLogWriter.flush();
   }
-
 
   /**
    * Sets the current mode
@@ -502,17 +473,17 @@ public class IndexWriterManager {
     if ((mode == READING_MODE) && (mIndexReader == null)) {
       mLog.info("Switching to index mode: deleting mode");
       try {
-        mIndexReader = IndexReader.open(mTempIndexDir);
+        mIndexReader = IndexReader.open(mLuceneTempIndexDir, false);
       } catch (IOException exc) {
         throw new RegainException("Creating IndexReader failed", exc);
       }
     }
-    
+
     // Open the mIndexSearcher in SEARCHING_MODE
     if ((mode == SEARCHING_MODE) && (mIndexSearcher == null)) {
       mLog.info("Switching to index mode: searching mode");
       try {
-        mIndexSearcher = new IndexSearcher(mTempIndexDir.getAbsolutePath());
+        mIndexSearcher = new IndexSearcher(mLuceneTempIndexDir, false);
       } catch (IOException exc) {
         throw new RegainException("Creating IndexSearcher failed", exc);
       }
@@ -524,11 +495,10 @@ public class IndexWriterManager {
     }
   }
 
-
   private IndexWriter createIndexWriter(boolean createNewIndex)
-    throws IOException
-  { 
-    IndexWriter indexWriter = new IndexWriter(mTempIndexDir, mAnalyzer, createNewIndex);
+          throws IOException {
+    IndexWriter indexWriter = new IndexWriter(mLuceneTempIndexDir, mAnalyzer,
+            createNewIndex, IndexWriter.MaxFieldLength.UNLIMITED);
 
     int maxFieldLength = mConfig.getMaxFieldLength();
     if (maxFieldLength > 0) {
@@ -537,7 +507,6 @@ public class IndexWriterManager {
 
     return indexWriter;
   }
-
 
   /**
    * Kopiert den zuletzt erstellten Index in das Arbeitsverzeichnis.
@@ -549,8 +518,7 @@ public class IndexWriterManager {
    * @throws RegainException Wenn das Kopieren fehl schlug.
    */
   private boolean copyExistingIndex(File indexDir, String analyzerType)
-    throws RegainException
-  {
+          throws RegainException {
     // Find the newest index
     File oldIndexDir;
     if (mBreakpointIndexDir.exists()) {
@@ -562,22 +530,20 @@ public class IndexWriterManager {
       // verwendet wird
       oldIndexDir = new File(indexDir, WORKING_INDEX_SUBDIR);
     }
-    if (! oldIndexDir.exists()) {
+    if (!oldIndexDir.exists()) {
       mLog.warn("Can't update index, because there was no old index. " +
-        "A complete new index will be created...");
+              "A complete new index will be created...");
       return false;
     }
 
     // Analyzer-Typ des alten Index pr�en
     File analyzerTypeFile = new File(oldIndexDir, "analyzerType.txt");
     String analyzerTypeOfIndex = RegainToolkit.readStringFromFile(analyzerTypeFile);
-    if ((analyzerTypeOfIndex == null)
-      || (! analyzerType.equals(analyzerTypeOfIndex.trim())))
-    {
+    if ((analyzerTypeOfIndex == null) || (!analyzerType.equals(analyzerTypeOfIndex.trim()))) {
       mLog.warn("Can't update index, because the index was created using " +
-        "another analyzer type (index type: '" + analyzerTypeOfIndex.trim() +
-        "', configured type '" + analyzerType + "'). " +
-        "A complete new index will be created...");
+              "another analyzer type (index type: '" + analyzerTypeOfIndex.trim() +
+              "', configured type '" + analyzerType + "'). " +
+              "A complete new index will be created...");
       return false;
     }
 
@@ -598,27 +564,29 @@ public class IndexWriterManager {
    */
   public boolean isAlreadyIndexed(String url) throws RegainException {
     boolean result = false;
-    
-      if (mUpdateIndex) {
-        // Search the entry for this URL
-        Term urlTerm = new Term("url", url);
-        Query query = new TermQuery(urlTerm);
 
-        try {
-          setIndexMode(SEARCHING_MODE);
-          Hits hits = mIndexSearcher.search(query);
-          if (hits.length() == 1) {
-            // we found one hit for our URL
-            result = true;
-          
-          }
-        } catch (IOException exc) {
-            throw new RegainException("Searching old index entry failed for " + url, exc);
+    if (mUpdateIndex) {
+      // Search the entry for this URL
+      Term urlTerm = new Term("url", url);
+      Query query = new TermQuery(urlTerm);
+
+      try {
+        setIndexMode(SEARCHING_MODE);
+        TopScoreDocCollector collector = TopScoreDocCollector.create(2, false);
+        mIndexSearcher.search(query, collector);
+
+        if (collector.getTotalHits() == 1) {
+          // we found one hit for our URL
+          result = true;
+
         }
+      } catch (IOException exc) {
+        throw new RegainException("Searching old index entry failed for " + url, exc);
       }
+    }
     return result;
   }
-  
+
   /**
    * Adds a document to an index.<p>
    *
@@ -628,8 +596,7 @@ public class IndexWriterManager {
    * @throws RegainException if adding of the document failed
    */
   public void addToIndex(RawDocument rawDocument, ErrorLogger errorLogger)
-    throws RegainException
-  {
+          throws RegainException {
     // Check whether there already is an up-to-date entry in the index
     if (mUpdateIndex) {
       boolean removeOldEntry = false;
@@ -640,39 +607,38 @@ public class IndexWriterManager {
       Document doc;
       try {
         setIndexMode(SEARCHING_MODE);
-        Hits hits = mIndexSearcher.search(query);
-        if (hits.length() > 0) {
-          if (hits.length() > 1) {
-            for (int i = 1; i < hits.length(); i++) {
-              markForDeletion(hits.doc(i));
+        TopScoreDocCollector collector = TopScoreDocCollector.create(20, false);
+        mIndexSearcher.search(query, collector);
+        ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
+        if (hits.length > 0) {
+          if (hits.length > 1) {
+            for (int i = 1; i < hits.length; i++) {
+              markForDeletion(mIndexSearcher.doc(hits[i].doc));
             }
-            mLog.warn("There are duplicate entries (" + hits.length() + " in " +
-              "total) for " + rawDocument.getUrl() + ". They will be removed.");
+            mLog.warn("There are duplicate entries (" + hits.length + " in " +
+                    "total) for " + rawDocument.getUrl() + ". They will be removed.");
           }
 
-          doc = hits.doc(0);
-        }
-        else {
+          doc = mIndexSearcher.doc(hits[0].doc);
+        } else {
           doc = null;
         }
-      }
-      catch (IOException exc) {
-        throw new RegainException("Searching old index entry failed for "
-          + rawDocument.getUrl(), exc);
+      } catch (IOException exc) {
+        throw new RegainException("Searching old index entry failed for " + rawDocument.getUrl(), exc);
       }
 
       // If we found an entry, check whether it is up-to-date
       if (doc != null) {
         // Get the last modification date from the document
         Date docLastModified = rawDocument.getLastModified();
-        
+
         if (docLastModified == null) {
           // We are not able to get the last modification date from the
           // document (this happens with all http-URLs)
           // -> Delete the old entry and create a new one
           mLog.info("Don't know when the document was last modified. " +
-            "Creating a new index entry...");
+                  "Creating a new index entry...");
           removeOldEntry = true;
 
         } else {
@@ -685,24 +651,24 @@ public class IndexWriterManager {
               indexLastModified = DateTools.stringToDate(asString);
               diff = docLastModified.getTime() - indexLastModified.getTime();
             } catch (ParseException parseException) {
-              mLog.warn("Couldn't parse last-modified date from index. Document: " + 
-                rawDocument.getUrl(), parseException);
+              mLog.warn("Couldn't parse last-modified date from index. Document: " +
+                      rawDocument.getUrl(), parseException);
             }
             if (diff > 86400000L) {
               // -> The index entry is not up-to-date -> Delete the old entry
               mLog.info("Index entry is outdated. Creating a new one (source=" +
-                  docLastModified + "), (index=" + indexLastModified + "): " +
-                  rawDocument.getUrl());
+                      docLastModified + "), (index=" + indexLastModified + "): " +
+                      rawDocument.getUrl());
               removeOldEntry = true;
 
-            } else if( (new Date().getTime()) - indexLastModified.getTime() < 86400000L ) {
+            } else if ((new Date().getTime()) - indexLastModified.getTime() < 86400000L) {
               // Spidering at the same day
               // Due to the fuzziness of the docLastModified.getTime() (day accuracy) 
               // we can't be sure whether the document is up-to-date or not
-              mLog.info("Index entry is from the same day. Therefore we have to recrawl but do not index the document."+
-                "Creating a new one (source=" + docLastModified + "), (index=" + indexLastModified + "): " +
-                rawDocument.getUrl());
-              
+              mLog.info("Index entry is from the same day. Therefore we have to recrawl but do not index the document." +
+                      "Creating a new one (source=" + docLastModified + "), (index=" + indexLastModified + "): " +
+                      rawDocument.getUrl());
+
               parseDocument(rawDocument, errorLogger);
 
               return;
@@ -722,13 +688,13 @@ public class IndexWriterManager {
                   // The entry failed the last time, the user want's no retry
                   // -> We are done
                   mLog.info("Ignoring " + rawDocument.getUrl() + ", because " +
-                      "preparation already failed the last time and no retry is wanted.");
+                          "preparation already failed the last time and no retry is wanted.");
                   return;
                 }
               } else {
                 // The entry is up-to-date and contains text -> We are done
-                mLog.info("Index entry is already up to date (index="+indexLastModified+"), " +
-                  "(source=" + docLastModified + "): " +  rawDocument.getUrl());
+                mLog.info("Index entry is already up to date (index=" + indexLastModified + "), " +
+                        "(source=" + docLastModified + "): " + rawDocument.getUrl());
                 return;
               }
             }
@@ -736,7 +702,7 @@ public class IndexWriterManager {
             // We don't know the last modification date from the index entry
             // -> Delete the entry
             mLog.info("Index entry has no last-modified field. " +
-                "Creating a new one: " + rawDocument.getUrl());
+                    "Creating a new one: " + rawDocument.getUrl());
             removeOldEntry = true;
           }
         }
@@ -754,7 +720,6 @@ public class IndexWriterManager {
     createNewIndexEntry(rawDocument, errorLogger);
   }
 
-
   /**
    * Creates a indexable document and add this to the index
    *
@@ -764,8 +729,7 @@ public class IndexWriterManager {
    * @throws RegainException if indexing of the document failed
    */
   public void createNewIndexEntry(RawDocument rawDocument, ErrorLogger errorLogger)
-    throws RegainException
-  {
+          throws RegainException {
     // Dokument erzeugen
     if (mLog.isDebugEnabled()) {
       mLog.debug("Creating document: " + rawDocument.getUrl());
@@ -779,8 +743,7 @@ public class IndexWriterManager {
         setIndexMode(WRITING_MODE);
         mIndexWriter.addDocument(doc);
         mAddToIndexProfiler.stopMeasuring(rawDocument.getLength());
-      }
-      catch (IOException exc) {
+      } catch (IOException exc) {
         mAddToIndexProfiler.abortMeasuring();
         throw new RegainException("Adding document to index failed", exc);
       }
@@ -796,16 +759,15 @@ public class IndexWriterManager {
    * @throws RegainException if parsing of the document failed
    */
   public void parseDocument(RawDocument rawDocument, ErrorLogger errorLogger)
-    throws RegainException
-  {
+          throws RegainException {
     // Dokument erzeugen
     if (mLog.isDebugEnabled()) {
-      mLog.debug("Creating document: " + rawDocument.getUrl() +  " only for parsing.");
+      mLog.debug("Creating document: " + rawDocument.getUrl() + " only for parsing.");
     }
 
     mDocumentFactory.createDocument(rawDocument, errorLogger);
 
-   
+
   }
 
   /** 
@@ -831,15 +793,14 @@ public class IndexWriterManager {
    *         deleted.
    */
   public void removeObsoleteEntries(UrlChecker urlChecker)
-    throws RegainException
-  {
-    if (! mUpdateIndex) {
+          throws RegainException {
+    if (!mUpdateIndex) {
       // Wir haben einen komplett neuen Index erstellt
       // -> Es kann keine Einträge zu nicht vorhandenen Dokumenten geben
       // -> Wir sind fertig
       return;
     }
-    
+
     if ((mUrlsToDeleteHash == null) && (urlChecker == null)) {
       // There is nothing to delete -> Fast return
       return;
@@ -855,15 +816,13 @@ public class IndexWriterManager {
     setIndexMode(READING_MODE);
     int docCount = mIndexReader.numDocs();
     for (int docIdx = 0; docIdx < docCount; docIdx++) {
-      if (! mIndexReader.isDeleted(docIdx)) {
+      if (!mIndexReader.isDeleted(docIdx)) {
         // Document lesen
         Document doc;
         try {
           doc = mIndexReader.document(docIdx);
-        }
-        catch (Throwable thr) {
-          throw new RegainException("Getting document #" + docIdx
-            + " from index failed.", thr);
+        } catch (Throwable thr) {
+          throw new RegainException("Getting document #" + docIdx + " from index failed.", thr);
         }
 
         // URL und last-modified holen
@@ -876,16 +835,13 @@ public class IndexWriterManager {
           // Prüfen, ob dieser Eintrag zum Löschen vorgesehen ist
           if (isMarkedForDeletion(doc)) {
             shouldBeDeleted = true;
-          }
-          // Check whether all other documents should NOT be deleted
+          } // Check whether all other documents should NOT be deleted
           else if ((urlChecker == null)) {
             shouldBeDeleted = false;
-          }
-          // Check whether this document should be kept in the index
+          } // Check whether this document should be kept in the index
           else if (urlChecker.shouldBeKeptInIndex(url)) {
             shouldBeDeleted = false;
-          }
-          // Prüfen, ob die URL zu einem zu-verschonen-Präfix passt
+          } // Prüfen, ob die URL zu einem zu-verschonen-Präfix passt
           else {
             shouldBeDeleted = true;
             for (int i = 0; i < preserveUrlMatcherArr.length; i++) {
@@ -900,10 +856,8 @@ public class IndexWriterManager {
             try {
               mLog.info("Deleting from index: " + url + " from " + lastModified);
               mIndexReader.deleteDocument(docIdx);
-            }
-            catch (IOException exc) {
-              throw new RegainException("Deleting document #" + docIdx
-                + " from index failed: " + url + " from " + lastModified, exc);
+            } catch (IOException exc) {
+              throw new RegainException("Deleting document #" + docIdx + " from index failed: " + url + " from " + lastModified, exc);
             }
           }
         }
@@ -914,7 +868,6 @@ public class IndexWriterManager {
     mUrlsToDeleteHash = null;
   }
 
-  
   /**
    * Goes through the index and deletes all obsolete entries.
    * <p>
@@ -927,7 +880,6 @@ public class IndexWriterManager {
   private void removeObsoleteEntries() throws RegainException {
     removeObsoleteEntries(null);
   }
-  
 
   /**
    * Merkt ein Dokument für die sp�tere L�schung vor.
@@ -948,12 +900,10 @@ public class IndexWriterManager {
     String url = doc.get("url");
     String lastModified = doc.get("last-modified");
     if ((url != null) || (lastModified != null)) {
-      mLog.info("Marking old entry for a later deletion: " + url + " from "
-        + lastModified);
+      mLog.info("Marking old entry for a later deletion: " + url + " from " + lastModified);
       mUrlsToDeleteHash.put(url, lastModified);
     }
   }
-
 
   /**
    * Gibt zurück, ob ein Dokument für die Löschung vorgemerkt wurde.
@@ -982,7 +932,6 @@ public class IndexWriterManager {
     return lastModified.equals(lastModifiedToDelete);
   }
 
-
   /**
    * Gibt die Anzahl der Eintr�ge im Index zurück.
    *
@@ -994,11 +943,10 @@ public class IndexWriterManager {
       return mIndexReader.numDocs();
     } else {
       setIndexMode(WRITING_MODE);
-      return mIndexWriter.docCount();
+      return mIndexWriter.maxDoc();
     }
   }
 
-  
   /**
    * Prepares a breakpoint.
    * 
@@ -1007,29 +955,26 @@ public class IndexWriterManager {
   private void prepareBreakpoint() throws RegainException {
     // Testen, ob noch Eintr�ge für die L�schung vorgesehen sind
     if (mUrlsToDeleteHash != null) {
-      throw new RegainException("There are still documents marked for deletion."
-        + " The method removeObsoleteEntires(...) has to be called first.");
+      throw new RegainException("There are still documents marked for deletion." + " The method removeObsoleteEntires(...) has to be called first.");
     }
 
     // Switch to ALL_CLOSED_MODE
     setIndexMode(ALL_CLOSED_MODE);
-    
+
     // Close the error log of the index
     if (mErrorLogStream != null) {
       mErrorLogWriter.close();
       try {
         mErrorLogStream.close();
-      }
-      catch (IOException exc) {
+      } catch (IOException exc) {
         throw new RegainException("Closing error log file failed", exc);
       }
-      
+
       mErrorLogWriter = null;
       mErrorLogStream = null;
     }
   }
-  
-  
+
   /**
    * Creates a breakpoint.
    * 
@@ -1039,10 +984,10 @@ public class IndexWriterManager {
     mLog.info("Creating a breakpoint...");
     try {
       mBreakpointProfiler.startMeasuring();
-      
+
       // Remove the entries that were marked for deletion 
       removeObsoleteEntries();
-      
+
       // Prepare the breakpoint
       prepareBreakpoint();
 
@@ -1057,23 +1002,21 @@ public class IndexWriterManager {
 
       // Delete the old breakpoint if it exists
       deleteOldIndex(mBreakpointIndexDir);
-      
+
       // Rename the temp directory and let it become the new breakpoint
-      if (! tempDir.renameTo(mBreakpointIndexDir)) {
+      if (!tempDir.renameTo(mBreakpointIndexDir)) {
         throw new RegainException("Renaming temporary copy directory failed: " +
-            tempDir.getAbsolutePath());
+                tempDir.getAbsolutePath());
       }
 
       // Stop measuring
       long breakpointSize = RegainToolkit.getDirectorySize(mBreakpointIndexDir);
       mBreakpointProfiler.stopMeasuring(breakpointSize);
-    }
-    catch (RegainException exc) {
+    } catch (RegainException exc) {
       mBreakpointProfiler.abortMeasuring();
       throw exc;
     }
   }
-
 
   /**
    * Optimiert und schlie�t den Index
@@ -1086,8 +1029,7 @@ public class IndexWriterManager {
     try {
       setIndexMode(WRITING_MODE);
       mIndexWriter.optimize();
-    }
-    catch (IOException exc) {
+    } catch (IOException exc) {
       throw new RegainException("Finishing IndexWriter failed", exc);
     }
 
@@ -1113,8 +1055,7 @@ public class IndexWriterManager {
 
     // Write all terms in the index into a file
     if (mAnalysisDir != null) {
-      File termFile = new File(mAnalysisDir.getAbsolutePath() + File.separator
-                               + "AllTerms.txt");
+      File termFile = new File(mAnalysisDir.getAbsolutePath() + File.separator + "AllTerms.txt");
       writeTermFile(mTempIndexDir, termFile);
     }
 
@@ -1125,7 +1066,7 @@ public class IndexWriterManager {
     } else {
       targetDir = mNewIndexDir;
     }
-    
+
     // If there is already the target directory -> delete it
     deleteOldIndex(targetDir);
 
@@ -1133,23 +1074,21 @@ public class IndexWriterManager {
     // Workaround: Siehe Javadoc von RENAME_TIMEOUT
     long deadline = System.currentTimeMillis() + RENAME_TIMEOUT;
     boolean renameSucceed = false;
-    while ((! renameSucceed) && (System.currentTimeMillis() < deadline)) {
+    while ((!renameSucceed) && (System.currentTimeMillis() < deadline)) {
       renameSucceed = mTempIndexDir.renameTo(targetDir);
       try {
         Thread.sleep(100);
+      } catch (Exception exc) {
       }
-      catch (Exception exc) {}
     }
 
     if (renameSucceed) {
       // Delete the last breakpoint if there should be one
       deleteOldIndex(mBreakpointIndexDir);
     } else {
-      throw new RegainException("Renaming " + mTempIndexDir + " to " + targetDir
-        + " failed after " + (RENAME_TIMEOUT / 1000) + " seconds!");
+      throw new RegainException("Renaming " + mTempIndexDir + " to " + targetDir + " failed after " + (RENAME_TIMEOUT / 1000) + " seconds!");
     }
   }
-
 
   /**
    * Delets an old index directory.
@@ -1167,11 +1106,10 @@ public class IndexWriterManager {
         RegainToolkit.deleteDirectory(secureDir);
       } else {
         throw new RegainException("Deleting old index failed: " +
-            oldIndexDir.getAbsolutePath());
+                oldIndexDir.getAbsolutePath());
       }
     }
   }
-
 
   /**
    * Erzeugt eine Datei, die alle Terme (also alle erlaubten Suchtexte) enthält.
@@ -1186,16 +1124,13 @@ public class IndexWriterManager {
     FileOutputStream stream = null;
     PrintWriter writer = null;
     try {
-      reader = IndexReader.open(indexDir);
+      reader = IndexReader.open(FSDirectory.open(indexDir), true);
 
       stream = new FileOutputStream(termFile);
       writer = new PrintWriter(stream);
-      writer.println("This file was generated by the crawler and contains all "
-                     + "terms in the index.");
-      writer.println("It's no error when endings like 'e', 'en', and so on "
-                     + "are missing.");
-      writer.println("They have been cuttet by the GermanAnalyzer and will be "
-                     + "cuttet from a search query too.");
+      writer.println("This file was generated by the crawler and contains all " + "terms in the index.");
+      writer.println("It's no error when endings like 'e', 'en', and so on " + "are missing.");
+      writer.println("They have been cuttet by the GermanAnalyzer and will be " + "cuttet from a search query too.");
       writer.println();
 
       // Write the terms
@@ -1208,24 +1143,26 @@ public class IndexWriterManager {
       }
 
       mLog.info("Wrote " + termCount + " terms into " + termFile.getAbsolutePath());
-    }
-    catch (IOException exc) {
+    } catch (IOException exc) {
       throw new RegainException("Writing term file failed", exc);
-    }
-    finally {
+    } finally {
       if (reader != null) {
-        try { reader.close(); } catch (IOException exc) {}
+        try {
+          reader.close();
+        } catch (IOException exc) {
+        }
       }
       if (writer != null) {
         writer.close();
       }
       if (stream != null) {
-        try { stream.close(); } catch (IOException exc) {}
+        try {
+          stream.close();
+        } catch (IOException exc) {
+        }
       }
     }
   }
-
-
 
   /**
    * Schreibt die Terme so wie sie vom IndexReader kommen in den Writer.
@@ -1239,8 +1176,7 @@ public class IndexWriterManager {
    * @throws IOException Wenn das Schreiben fehl schlug.
    */
   private int writeTermsSimply(TermEnum termEnum, PrintWriter writer)
-    throws IOException
-  {
+          throws IOException {
     int termCount = 0;
     while (termEnum.next()) {
       Term term = termEnum.term();
@@ -1250,8 +1186,6 @@ public class IndexWriterManager {
 
     return termCount;
   }
-
-
 
   /**
    * Schreibt die Terme vom IndexReader sortiert in den Writer.
@@ -1267,8 +1201,7 @@ public class IndexWriterManager {
    * @throws IOException Wenn das Schreiben fehl schlug.
    */
   private int writeTermsSorted(TermEnum termEnum, PrintWriter writer)
-    throws IOException
-  {
+          throws IOException {
     // Put all terms in a list for a later sorting
     ArrayList list = new ArrayList();
     while (termEnum.next()) {
@@ -1289,5 +1222,4 @@ public class IndexWriterManager {
 
     return asArr.length;
   }
-
 }

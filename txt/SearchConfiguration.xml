@@ -24,10 +24,66 @@
      +-->
     <defaultSettings>
       <!--
+       | The settings for sorting the results.
+       |
+       | - The id is the position (1 will be the first in the list) for the entry in the dropdown on the search mask
+       | - The description defines the text in the dropdown on the search mask
+       | - Order holds the sort order 'ASC' for ascending and 'DESC' for descending of the sorting.
+       |   In the case you need ascending and descending possibilities you have to define two <sortEntry/> entries.
+       | - The field for wich the results are sorted. Possible fields are:
+       |   * 'relevance' the scoring
+       |   * 'size'
+       |   * 'last-modified'
+       |   * 'filename_sort' the filename without the file extension
+       |   * 'mimetype'
+       |   * 'title_sort'
+       |   * 'path_sort'
+       | The attribute showsortfieldcontent switches the display of the current text content
+       | from the choosen sort option on or off. The text will be displayed right to 
+       | the relevance.
+       +-->
+      <!--
+       | German example
+       +-->
+      <sortResults showsortfieldcontent="false">
+        <sortEntry id='1' description='Relevanz' order='desc' field='relevance' />
+        <!--sortEntry id='2' description='Dokumentendatum aufsteigend' order='asc' field='last-modified' />
+        <sortEntry id='3' description='Dokumentendatum absteigend' order='desc' field='last-modified' />
+        <sortEntry id='4' description='Dokumentengröße aufsteigend' order='asc' field='size' />
+        <sortEntry id='5' description='Dokumentengröße absteigend' order='desc' field='size' />
+        <sortEntry id='6' description='Dateiname aufsteigend' order='asc' field='filename_sort' />
+        <sortEntry id='7' description='Dateiname absteigend' order='desc' field='filename_sort' />
+        <sortEntry id='8' description='Mimetype aufsteigend' order='asc' field='mimetype' />
+        <sortEntry id='9' description='Mimetype absteigend' order='desc' field='mimetype' />
+        <sortEntry id='10' description='Titel aufsteigend' order='asc' field='title_sort' />
+        <sortEntry id='11' description='Titel absteigend' order='desc' field='title_sort' />
+        <sortEntry id='12' description='Pfad aufsteigend' order='asc' field='path_sort' />
+        <sortEntry id='13' description='Pfad absteigend' order='desc' field='path_sort' /-->
+      </sortResults>
+      <!--
+       | English example
+       +-->
+      <!--sortResults showsortfieldcontent="false">
+        <sortEntry id='1' description='relevance desc' order='desc' field='relevance' />
+        <sortEntry id='2' description='last modified date asc' order='asc' field='last-modified' />
+        <sortEntry id='3' description='last modified date desc' order='desc' field='last-modified' />
+        <sortEntry id='4' description='document size asc' order='asc' field='size' />
+        <sortEntry id='5' description='document size desc' order='desc' field='size' />
+        <sortEntry id='6' description='file name asc' order='asc' field='filename_sort' />
+        <sortEntry id='7' description='file name desc' order='desc' field='filename_sort' />
+        <sortEntry id='8' description='mimetype asc' order='asc' field='mimetype' />
+        <sortEntry id='9' description='mimetype desc' order='desc' field='mimetype' />
+        <sortEntry id='10' description='title asc' order='asc' field='title_sort' />
+        <sortEntry id='11' description='titel desc' order='desc' field='title_sort' />
+        <sortEntry id='12' description='path asc' order='asc' field='path_sort' />
+        <sortEntry id='13' description='path desc' order='desc' field='path_sort' />
+      </sortResults-->
+
+      <!--
        | The regular expression that identifies URLs that should be opened in
        | a new window.
        +-->
-      <openInNewWindowRegex>.(pdf|rtf|doc|xls|ppt)$</openInNewWindowRegex>
+      <openInNewWindowRegex>.(pdf|rtf|doc|xls|ppt|docx|xlsx|pptx)$</openInNewWindowRegex>
       
       <!--
        | Specifies whether the file-to-http-bridge should be used for file-URLs.

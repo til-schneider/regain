@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-01-17 11:45:08 +0100 (Di, 17 Jan 2006) $
- *   $Author: til132 $
- * $Revision: 188 $
+ *     $Date: 2009-11-26 18:14:25 +0100 (Do, 26 Nov 2009) $
+ *   $Author: thtesche $
+ * $Revision: 430 $
  */
 package net.sf.regain.search.sharedlib.input;
 
@@ -47,6 +47,7 @@ public class MaxresultsTag extends SharedTag implements SearchConstants {
    * @param response The page response.
    * @throws RegainException If there was an exception.
    */
+  @Override
   public void printEndTag(PageRequest request, PageResponse response)
     throws RegainException
   {

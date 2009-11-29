@@ -4,6 +4,7 @@
   <search:msg key="searchFor"/>:
   <search:input_hiddenparam name="index"/>
   <search:input_query/>
+  <search:input_order/>
   <search:input_maxresults/>
   <search:input_submit text="{msg:search}"/>
 </form>

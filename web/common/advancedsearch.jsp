@@ -33,6 +33,10 @@
             <td><search:input_fieldlist field="mimetype" allMsg="{msg:allItem}"/></td>
           </tr>
           <tr>
+            <td><search:msg key="resultSorting"/>:</td>
+            <td><search:input_order/></td>
+          </tr>
+          <tr>
             <td></td><td><search:input_submit text="{msg:search}"/></td>
           </tr>
         </table>

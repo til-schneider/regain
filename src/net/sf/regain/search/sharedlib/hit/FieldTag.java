@@ -21,12 +21,13 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2009-11-26 18:14:25 +0100 (Do, 26 Nov 2009) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 430 $
  */
 package net.sf.regain.search.sharedlib.hit;
 
+import java.util.zip.DataFormatException;
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.search.SearchToolkit;
@@ -34,6 +35,7 @@ import net.sf.regain.search.results.SearchResults;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
 
+import org.apache.lucene.document.CompressionTools;
 import org.apache.lucene.document.Document;
 
 /**
@@ -58,27 +60,39 @@ public class FieldTag extends AbstractHitTag {
    * @throws RegainException If there was an exception.
    */
   protected void printEndTag(PageRequest request, PageResponse response,
-    Document hit, int hitIndex)
-    throws RegainException
-  {
+          Document hit, int hitIndex)
+          throws RegainException {
     SearchResults results = SearchToolkit.getSearchResults(request);
     boolean shouldHighlight = results.getShouldHighlight(hitIndex);
-    
+
     String field = getParameter("field", true);
     String value = null;
-    if( shouldHighlight ) 
+    if (shouldHighlight) {
       value = hit.get(RegainToolkit.createHighlightedFieldIdent(field));
+    }
 
-    if( value == null || value.length()==0 )
+    if (value == null || value.length() == 0) {
       value = hit.get(field);
-    
+    }
+
+    // Maybe this is a compressed field
+    if (value == null) {
+      byte[] compressedFieldValue = hit.getBinaryValue(field);
+      if (compressedFieldValue != null) {
+        try {
+          value = CompressionTools.decompressString(compressedFieldValue);
+        } catch (DataFormatException dataFormatException) {
+          throw new RegainException("Couldn't uncompress field value." + dataFormatException);
+        }
+      }
+    }
+
     if (value != null) {
-      if( shouldHighlight ) {
+      if (shouldHighlight) {
         response.print(value);
       } else {
         response.printNoHtml(value);
       }
     }
   }
-
 }

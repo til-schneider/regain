@@ -189,6 +189,15 @@
 
   <tag>
     <info>
+      Writes an drop down that contains the possible result order options.
+    </info>
+    <name>input_order</name>
+    <tagclass>net.sf.regain.ui.server.taglib.input.OrderTag</tagclass>
+    <bodycontent>empty</bodycontent>
+  </tag>
+
+  <tag>
+    <info>
       Writes a hidden field that contains the maximum number of results.
     </info>
     <name>input_maxresults</name>
@@ -373,6 +382,16 @@
 
   <tag>
     <info>
+      Writes the sort content of the current hit.
+      This tag must be inside a link tag.
+    </info>
+    <name>hit_sortContent</name>
+    <tagclass>net.sf.regain.ui.server.taglib.hit.SortContentTag</tagclass>
+    <bodycontent>empty</bodycontent>
+  </tag>
+
+  <tag>
+    <info>
       Writes the size to the current hit's document.
       This tag must be inside a link tag.
     </info>
@@ -435,5 +454,16 @@
       <required>true</required>
     </attribute>
   </tag>
- 
+
+ <tag>
+    <info>
+      Writes the value the last modified date of the current hit's document.
+      This tag must be inside a link tag.
+    </info>
+    <name>hit_lastModified</name>
+    <tagclass>net.sf.regain.ui.server.taglib.hit.LastModifiedTag</tagclass>
+    <bodycontent>empty</bodycontent>
+
+  </tag>
+
 </taglib>

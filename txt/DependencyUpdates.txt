@@ -111,20 +111,39 @@ Ca. 28.07.04:
 
 05.10.08
 ========
+    Thomas Tesche (thtesche), cluster:Consult
     servlet.jar entfernt
     servlet-api.jar und jsp-api.jar aus Tomcat 6.0.16 hinzugefuegt
 
 06.10.09
 ========
     Thomas Tesche (thtesche), cluster:Consult
-    poi 3.1 --> 3.5 beta 
+    poi 3.1 --> 3.5 final
+    nsis installer 2.45
+    launch4j 3.0.0
+
+13.10.09
+========
+    Thomas Tesche (thtesche), cluster:Consult
+    PDFBox 0.7.3 --> 0.8.0 (now Apache Incubator project)
+
+12.11.09
+========
+    Thomas Tesche (thtesche), cluster:Consult
+    lucene 2.3.1 --> 2.9.1 
+
+14.11.09
+========
+    Thomas Tesche (thtesche), cluster:Consult
+    commons-codec-1.4
+
 Websites:
 =========
   jakarta regexp: http://jakarta.apache.org/site/downloads/downloads_regexp.cgi
   jakarta log4j: http://logging.apache.org/
   jakarta lucene: http://lucene.apache.org/java/docs/index.html
   xerces-j: 
-  pdfBox: http://www.pdfbox.org/
+  pdfBox: http://incubator.apache.org/pdfbox/index.html
   Jakarta POI: http://poi.apache.org/
   jacob: http://sourceforge.net/projects/jacob-project/
   jdic: https://jdic.dev.java.net/

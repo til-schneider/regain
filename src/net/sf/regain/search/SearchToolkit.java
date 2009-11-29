@@ -36,8 +36,8 @@ import net.sf.regain.search.config.DefaultSearchConfigFactory;
 import net.sf.regain.search.config.IndexConfig;
 import net.sf.regain.search.config.SearchConfig;
 import net.sf.regain.search.config.SearchConfigFactory;
-import net.sf.regain.search.results.MultipleSearchResults;
 import net.sf.regain.search.results.SearchResults;
+import net.sf.regain.search.results.SearchResultsImpl;
 import net.sf.regain.search.results.SingleSearchResults;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
@@ -46,8 +46,9 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.util.Version;
 
 /**
  * A toolkit for the search JSPs containing helper methods.
@@ -310,7 +311,7 @@ public class SearchToolkit {
       // bis 1.5.1 getIndexConfigArr(request);
       IndexConfig[] indexConfigArr = getIndexConfigArrWithParent(request);
 
-      if (indexConfigArr.length == 1) {
+      /*if (indexConfigArr.length == 1) {
         results = createSingleSearchResults(indexConfigArr[0], request);
       } else {
         SingleSearchResults[] childResultsArr = new SingleSearchResults[indexConfigArr.length];
@@ -318,10 +319,12 @@ public class SearchToolkit {
           childResultsArr[i] = createSingleSearchResults(indexConfigArr[i], request);
         }
         results = new MultipleSearchResults(childResultsArr);
-      }
+      }*/
+      results = new SearchResultsImpl(indexConfigArr, request);
 
       // Store the SearchResults in the page context
       request.setContextAttribute(SEARCH_RESULTS_ATTR_NAME, results);
+
     }
 
     return results;
@@ -335,6 +338,7 @@ public class SearchToolkit {
    * @param request The request that initiated the search.
    * @return The SingleSearchResults for the index. 
    * @throws RegainException If searching failed.
+   * @deprecated 
    */
   private static SingleSearchResults createSingleSearchResults(
     IndexConfig indexConfig, PageRequest request)
@@ -432,7 +436,7 @@ public class SearchToolkit {
   
         // Check whether the document is in the index
         Analyzer analyzer = new WhitespaceAnalyzer();
-        QueryParser parser = new QueryParser("url", analyzer);
+        QueryParser parser = new QueryParser(Version.LUCENE_CURRENT, "url", analyzer);
         String queryString = "\"" + transformedFileUrl + "\"";
         
         try {
@@ -441,9 +445,9 @@ public class SearchToolkit {
           throw new RegainException("Parsing of url lookup-query failed.", ex);
         }
         
-        Hits hits = manager.search(query);
+        ScoreDoc[] hits = manager.search(query);
         // Allow the access if we found the file in the index
-        if (hits.length() > 0) {
+        if (hits.length > 0) {
           return true;
         }
       }

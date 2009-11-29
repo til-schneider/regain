@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-10 08:26:23 +0200 (Mi, 10 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 154 $
+ *     $Date: 2009-11-28 15:29:30 +0100 (Sa, 28 Nov 2009) $
+ *   $Author: thtesche $
+ * $Revision: 441 $
  */
 package net.sf.regain.util.io;
 
@@ -72,6 +72,7 @@ public class Localizer {
   public Localizer(URL baseurl, String basename, Locale locale) {
     try {
       URLClassLoader loader = getClassLoader(baseurl);
+      //System.out.println("basename:" + basename + " baseURL: " + baseurl);
       mBundle = ResourceBundle.getBundle(basename, locale, loader);
     }
     catch (Throwable thr) {

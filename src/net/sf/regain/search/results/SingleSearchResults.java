@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-02-17 22:35:10 +0100 (Di, 17 Feb 2009) $
+ *     $Date: 2009-11-26 18:14:25 +0100 (Do, 26 Nov 2009) $
  *   $Author: thtesche $
- * $Revision: 375 $
+ * $Revision: 430 $
  */
 package net.sf.regain.search.results;
 
@@ -53,11 +53,14 @@ import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
 
 import java.io.StringReader;
+import java.util.zip.DataFormatException;
+import org.apache.lucene.document.CompressionTools;
 
 /**
  * Holds the results of a search on a single index.
  *
  * @author Til Schneider, www.murfman.de
+ * @deprecated Will be removed in release 2.0
  */
 public class SingleSearchResults implements SearchResults {
 
@@ -148,10 +151,10 @@ public class SingleSearchResults implements SearchResults {
         mQuery = mainQuery;
       }
 
-      //System.out.println("Query: '" + queryText + "' -> '" + mQuery.toString() + "'");
+      System.out.println("Query: '" + queryText + "' -> '" + mQuery.toString() + "'");
       
       try {
-        mHits = manager.search(mQuery);
+        mHits = manager.search_old(mQuery);
       } catch (RegainException exc) {
         throw new RegainException("Error while searching pattern: " + queryText, exc);
       }
@@ -364,15 +367,19 @@ public class SingleSearchResults implements SearchResults {
       // We transform this summary into 
       // a) a summary matching the search terms (highlighting)
       // b) and a shortend summary (200 characters)
-      String text = mHits.doc(index).get("summary");
+      String text = CompressionTools.decompressString(mHits.doc(index).getBinaryValue("summary"));
 
       if( text != null ) {
         // Overwrite the content with a shortend summary
         String resSummary = RegainToolkit.createSummaryFromContent(text, 200);
-        if( resSummary != null ) {
           mHits.doc(index).removeField("summary");
+        if( resSummary != null ) {
           mHits.doc(index).add(new Field("summary", resSummary,
-                     Field.Store.YES, Field.Index.UN_TOKENIZED));
+                     Field.Store.YES, Field.Index.NOT_ANALYZED));
+        } else {
+          // write back uncompressed summary
+          mHits.doc(index).add(new Field("summary", text,
+                     Field.Store.YES, Field.Index.NOT_ANALYZED));
         }
 
         String resHighlSummary = null;
@@ -388,7 +395,7 @@ public class SingleSearchResults implements SearchResults {
         if (resHighlSummary != null) {
           // write the result back to the document in a new field 
           mHits.doc(index).add(new Field("highlightedSummary", resHighlSummary,
-                   Field.Store.YES, Field.Index.UN_TOKENIZED));
+                   Field.Store.YES, Field.Index.NOT_ANALYZED));
         }
       }
       // Highlight the title
@@ -404,15 +411,21 @@ public class SingleSearchResults implements SearchResults {
       if (resHighlTitle != null) {
         // write the result back to the document in a new field 
         mHits.doc(index).add(new Field("highlightedTitle", resHighlTitle,
-                 Field.Store.YES, Field.Index.UN_TOKENIZED));
+                 Field.Store.YES, Field.Index.NOT_ANALYZED));
       }
       
       
     } catch (org.apache.lucene.index.CorruptIndexException exCorr) {
       throw new RegainException("Error while searching pattern: " + mQueryText, exCorr);
 
+     } catch (org.apache.lucene.search.highlight.InvalidTokenOffsetsException exToken) {
+      throw new RegainException("Error while searching pattern: " + mQueryText, exToken);
+
     } catch (IOException exIO) {
       throw new RegainException("Error while searching pattern: " + mQueryText, exIO);
+
+    } catch (DataFormatException ex) {
+      throw new RegainException("Error while searching pattern: " + mQueryText, ex);
     }
 
   }
@@ -427,4 +440,40 @@ public class SingleSearchResults implements SearchResults {
     return mIndexConfig.getShouldHighlight();
   }
 
+  /**
+   * Shortens the summary.
+   *
+   * @param index The index of the hit.
+   * @throws RegainException if shorten fails.
+   */
+  public void shortenSummary(int index) throws RegainException {
+
+    try {
+      byte[] compressedFieldValue = mHits.doc(index).getBinaryValue("summary");
+      String text = null;
+      if (compressedFieldValue != null) {
+        text = CompressionTools.decompressString(compressedFieldValue);
+      }
+
+      if (text != null) {
+        // Overwrite the content with a shortend summary
+        String resSummary = RegainToolkit.createSummaryFromContent(text, 200);
+        mHits.doc(index).removeField("summary");
+        if (resSummary != null) {
+          mHits.doc(index).add(new Field("summary", resSummary, Field.Store.NO, Field.Index.NOT_ANALYZED));
+          mHits.doc(index).add(new Field("summary", CompressionTools.compressString(resSummary), Field.Store.YES));
+
+        }
+      }
+    } catch (org.apache.lucene.index.CorruptIndexException exCorr) {
+      throw new RegainException("Error while searching pattern: " + mQueryText, exCorr);
+
+    } catch (IOException exIO) {
+      throw new RegainException("Error while searching pattern: " + mQueryText, exIO);
+
+    } catch (DataFormatException dataFormatException) {
+      throw new RegainException("Error while searching pattern: " + mQueryText, dataFormatException);
+    }
+
+  }
 }

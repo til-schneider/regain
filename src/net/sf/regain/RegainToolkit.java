@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-03-08 18:45:00 +0100 (So, 08 Mrz 2009) $
+ *     $Date: 2009-11-26 18:14:25 +0100 (Do, 26 Nov 2009) $
  *   $Author: thtesche $
- * $Revision: 382 $
+ * $Revision: 430 $
  */
 package net.sf.regain;
 
@@ -62,11 +62,11 @@ import java.util.StringTokenizer;
 
 import jcifs.smb.SmbFile;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;
@@ -701,23 +701,27 @@ public class RegainToolkit {
         //       Once for the analyzation and second for the returned TokenStream
         //       -> We save the content of the Reader in a String and read this
         //          String twice.
+        //       -> Old behaviour!
         try {
           // Save the content of the reader in a String
           StringWriter writer = new java.io.StringWriter();
           pipe(reader, writer);
           String asString = writer.toString();
 
-          // Anaylize the call
+          // Analyze the call
           TokenStream stream = nestedAnalyzer.tokenStream(fieldName,
             new StringReader(asString));
+          TermAttribute termAtt = (TermAttribute) stream.addAttribute(TermAttribute.class);
+          
           System.out.println("Tokens for '" + asString + "':");
-          Token token;
-          while ((token = stream.next()) != null) {
-            System.out.println("  '" + new String(token.termBuffer(), 0, token.termLength()) + "'");
+          while(stream.incrementToken()) {
+            System.out.println(" '" + termAtt.term() + "'");
           }
-
+          stream.reset();
+          return stream;
           // Do the call a second time and return the result this time
-          return nestedAnalyzer.tokenStream(fieldName, new StringReader(asString));
+          // Old behaviour
+          // return nestedAnalyzer.tokenStream(fieldName, new StringReader(asString));
         }
         catch (IOException exc) {
           System.out.println("exc: " + exc);
@@ -727,8 +731,6 @@ public class RegainToolkit {
       }
     };
   }
-
-
 
   /**
    * Replaces in a string all occurences of <code>pattern</code> with
@@ -1482,7 +1484,7 @@ public class RegainToolkit {
       if (lastSpacePos == -1) {
         return null;
       } else {
-        return content.substring(0, lastSpacePos) + "...";
+        return content.substring(0, lastSpacePos) + " ...";
       }
     } else {
       return content;

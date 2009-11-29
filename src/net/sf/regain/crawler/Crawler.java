@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-08-12 22:48:39 +0200 (Mi, 12 Aug 2009) $
+ *     $Date: 2009-11-14 11:16:16 +0100 (Sa, 14 Nov 2009) $
  *   $Author: thtesche $
- * $Revision: 396 $
+ * $Revision: 421 $
  */
 package net.sf.regain.crawler;
 
@@ -62,10 +62,11 @@ import net.sf.regain.crawler.config.UrlPattern;
 import net.sf.regain.crawler.config.WhiteListEntry;
 import net.sf.regain.crawler.document.RawDocument;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
-import sun.misc.BASE64Decoder;
+
 
 /**
  * Durchsucht alle konfigurierten Startseiten nach URLs. Die gefundenen Seiten
@@ -768,8 +769,8 @@ public class Crawler implements ErrorLogger {
           acPassEntry.setAccountName(URLEncoder.encode(authProps.getProperty(key), "UTF-8"));
           mLog.debug("Found account name: " + acPassEntry.getAccountName() + " for auth entry: " + url);
         } else if (key.indexOf(".password") != -1) {
-          BASE64Decoder decoder = new BASE64Decoder();
-          acPassEntry.setPassword(new String(decoder.decodeBuffer(authProps.getProperty(key))));
+          Base64 decoder = new Base64();
+          acPassEntry.setPassword(new String(decoder.decode(authProps.getProperty(key))));
           mLog.debug("Found password for auth entry: " + url);
         }
         // write the updated entry back to hashtable

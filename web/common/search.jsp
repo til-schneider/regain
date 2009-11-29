@@ -26,7 +26,7 @@
     <search:check noIndexUrl="noindex.jsp" noQueryUrl="searchinput.jsp"/>
     
     <table class="top"><tr>
-        <td><img src="img/logo_regain.gif" width="201" height="66"></td>
+        <td><img src="img/logo_regain.gif" width="201" height="66" alt="regain logo"></td>
         <td class="searchTop">
           <%@include file="search_form.jsp" %>
         </td>
@@ -51,11 +51,11 @@
         <tr><td colspan="2">
             <search:hit_typeicon imgpath="img/ext"/> <search:hit_link/>
             <span class="hitDetails">
-              (<search:msg key="relevance"/>: <search:hit_score/>)<br/>
+              (<search:msg key="relevance"/>: <search:hit_score/><search:hit_sortContent/>)<br/>
               <search:hit_field field="summary"/><br/>
               <search:hit_content/>
               <search:hit_path after="" createLinks="true"/><search:hit_field field="mimetype"/>&nbsp;
-              <span class="hitInfo"><search:hit_url beautified="true"/> - <search:hit_size/> - </span>
+              <span class="hitInfo"><search:hit_url beautified="true"/> - <search:hit_size/> - <search:hit_lastModified/></span>
               <search:hit_cached/><br/>
             <br/></span>
         </td></tr>

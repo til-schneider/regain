@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-08 10:40:41 +0200 (Mo, 08 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 151 $
+ *     $Date: 2009-11-26 18:14:25 +0100 (Do, 26 Nov 2009) $
+ *   $Author: thtesche $
+ * $Revision: 430 $
  */
 package net.sf.regain.search.results;
 
@@ -47,6 +47,7 @@ import org.apache.lucene.search.Hits;
  * after their score. The merging is done on demand.
  *
  * @author Til Schneider, www.murfman.de
+ * @deprecated 
  */
 public class MergedHits {
 

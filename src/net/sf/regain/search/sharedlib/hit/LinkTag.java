@@ -59,13 +59,14 @@ public class LinkTag extends AbstractHitTag {
     SearchResults results = SearchToolkit.getSearchResults(request);
     boolean shouldHighlight = results.getShouldHighlight(hitIndex);
 
-    String url   = results.getHitUrl(hitIndex);
+    String url = results.getHitUrl(hitIndex);
     String fieldName = (shouldHighlight) ? "highlightedTitle" : "title";
     String title = hit.get(fieldName);
-    if( shouldHighlight && (title==null || title.length()==0))
+    if (shouldHighlight && (title == null || title.length() == 0)) {
       title = hit.get("title");
+    }
     boolean openInNewWindow = results.getOpenHitInNewWindow(hitIndex);
-    
+
     // Trim the title
     if (title != null) {
       title = title.trim();
@@ -112,10 +113,11 @@ public class LinkTag extends AbstractHitTag {
 
       // Add the index name
       // NOTE: This is needed to ensure that only documents can be loaded that
-      //       are in the index.s
+      //       are in the indexes
       String indexName = results.getHitIndexName(hitIndex);
       String encodedIndexName = RegainToolkit.urlEncode(indexName, encoding);
-      href += "?index=" + encodedIndexName;
+      // @todo: refactor this 
+      //href += "?index=" + encodedIndexName;
     } else {
       href = RegainToolkit.urlDecode(url, RegainToolkit.INDEX_ENCODING);
 

@@ -1,3 +1,18 @@
+
+Version 1.6.4 am 29.11.2009 PREVIEW
+----------------------------------
+* PDFBox wurde auf Version 0.8.0 geupdated.
+* Lucene wurde auf Version 2.9.1 geupdated.
+* Obsolete PoiMsWord, -Excel, -Powerpoint und -VisioPreparator wurde entfernt. Diese
+  Klassen können über das Tag 'release-1.6.3' im Repo gefunden werden.
+* Neue Sortiermöglichkeiten: Relevanz, Datum (last-modified), Größe, Titel, Mimetype, Pfad, Dateiname
+  Die Sortierung wird in der SearchConfiguration.xml konfiguriert.
+  In der mitgelieferten SearchConfiguration.xml ist nur die Relevanz
+  (also bisheriges Verhalten) eingeschaltet.
+* Last-Modified wird am Suchtreffer ausgegeben
+* DEPRECATED: SingleSearchResults, MultipleSearchResults, MergedHits.
+  Diese Klassen werden mit der Umstellung auf Lucene 3.0 entfernt.
+
 Version 1.6.3 am 28.09.09 PREVIEW
 ----------------------------------
 * POI-Extraktion für Officedokumente auf neueste Beta umgestellt. Damit lassen

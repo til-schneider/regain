@@ -1,0 +1,34 @@
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>C:\Dokumente und Einstellungen\thtesche\Eigene Dateien\NetBeansProjects\regain\build\runtime\desktop\win\regain.jar</jar>
+  <outfile>C:\Dokumente und Einstellungen\thtesche\Eigene Dateien\NetBeansProjects\regain\build\public\regain.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir></chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl></supportUrl>
+  <customProcName>false</customProcName>
+  <stayAlive>false</stayAlive>
+  <manifest></manifest>
+  <icon></icon>
+  <jre>
+    <path></path>
+    <minVersion>1.6.0</minVersion>
+    <maxVersion></maxVersion>
+    <jdkPreference>preferJre</jdkPreference>
+  </jre>
+  <versionInfo>
+    <fileVersion>1.6.3.0</fileVersion>
+    <txtFileVersion>Preview</txtFileVersion>
+    <fileDescription>regain Desktop Search Engine</fileDescription>
+    <copyright>Til Schneider, Thomas Tesche</copyright>
+    <productVersion>1.6.3.0</productVersion>
+    <txtProductVersion>Preview</txtProductVersion>
+    <productName>regain Desktop Search Engine</productName>
+    <companyName></companyName>
+    <internalName>regain</internalName>
+    <originalFilename>regain.exe</originalFilename>
+  </versionInfo>
+</launch4jConfig>

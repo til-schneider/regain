@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-01 21:28:04 +0100 (Di, 01 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 47 $
+ *     $Date: 2009-11-28 23:02:27 +0100 (Sa, 28 Nov 2009) $
+ *   $Author: thtesche $
+ * $Revision: 443 $
  */
 package net.sf.regain.search;
 
@@ -48,6 +48,12 @@ public interface SearchConstants {
    * list tag.
    */
   public static final String ATTR_CURRENT_HIT_SCORE = "currentHitScore";
+
+  /**
+   * The name of the attribute containing the current hit sort content within the
+   * list tag.
+   */
+  public static final String ATTR_CURRENT_HIT_SORT_CONTENT = "currentHitSortContent1";
 
   /**
    * The name of the attribute containing the index of the current hit within

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-09 16:47:07 +0100 (Mi, 09 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 60 $
+ *     $Date: 2009-10-11 22:47:56 +0200 (So, 11 Okt 2009) $
+ *   $Author: thtesche $
+ * $Revision: 413 $
  */
 package net.sf.regain.search.sharedlib.input;
 
@@ -51,6 +51,7 @@ public class SubmitTag extends SharedTag {
    * @param response The page response.
    * @throws RegainException If there was an exception.
    */
+  @Override
   public void printEndTag(PageRequest request, PageResponse response)
     throws RegainException
   {

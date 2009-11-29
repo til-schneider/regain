@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2009-11-26 18:14:25 +0100 (Do, 26 Nov 2009) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 430 $
  */
 package net.sf.regain.search.results;
 
@@ -38,6 +38,7 @@ import org.apache.lucene.search.Hits;
  * Holds the results of a search on a multiple indexes.
  *
  * @author Til Schneider, www.murfman.de
+ * @deprecated Will be removed in release 2.0
  */
 public class MultipleSearchResults implements SearchResults {
 
@@ -262,14 +263,31 @@ public class MultipleSearchResults implements SearchResults {
    * @throws RegainException If the value could not read from config
    */
   public boolean getShouldHighlight(int index) throws RegainException {
-      // Get the SingleSearchResults the hit came from
+    // Get the SingleSearchResults the hit came from
     SingleSearchResults results = getResultsForHit(index);
-    
+
     // Get the index of the hit in the SingleSearchResults
     int hitsPosition = mMergedHits.getHitsPosition(index);
-    
+
     // Get whether a hit should be highlighted.
     return results.getShouldHighlight(hitsPosition);
   }
 
+  /**
+   * Shortens the summary.
+   *
+   * @param index The index of the hit.
+   * @throws RegainException if shorten fails.
+   */
+  public void shortenSummary(int index) throws RegainException {
+    // Get the SingleSearchResults the hit came from
+    SingleSearchResults results = getResultsForHit(index);
+
+    // Get the index of the hit in the SingleSearchResults
+    int hitsPosition = mMergedHits.getHitsPosition(index);
+
+    // Shortens the summary
+    results.shortenSummary(hitsPosition);
+
+  }
 }

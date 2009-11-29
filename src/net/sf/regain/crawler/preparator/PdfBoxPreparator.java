@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
+ *     $Date: 2009-10-13 22:18:19 +0200 (Di, 13 Okt 2009) $
  *   $Author: thtesche $
- * $Revision: 349 $
+ * $Revision: 414 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -34,12 +34,12 @@ import net.sf.regain.RegainException;
 import net.sf.regain.crawler.document.AbstractPreparator;
 import net.sf.regain.crawler.document.RawDocument;
 
-import org.pdfbox.exceptions.CryptographyException;
-import org.pdfbox.exceptions.InvalidPasswordException;
-import org.pdfbox.pdfparser.PDFParser;
-import org.pdfbox.pdmodel.PDDocument;
-import org.pdfbox.pdmodel.PDDocumentInformation;
-import org.pdfbox.util.PDFTextStripper;
+import org.apache.pdfbox.exceptions.CryptographyException;
+import org.apache.pdfbox.exceptions.InvalidPasswordException;
+import org.apache.pdfbox.pdfparser.PDFParser;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
+import org.apache.pdfbox.util.PDFTextStripper;
 
 /**
  * Präpariert ein PDF-Dokument für die Indizierung.
@@ -95,7 +95,7 @@ public class PdfBoxPreparator extends AbstractPreparator {
       stripper.setStartPage(1);
       stripper.setEndPage(Integer.MAX_VALUE);
 
-      setCleanedContent(stripper.getText(pdfDocument));
+      setCleanedContent(stripper.getText(pdfDocument).replaceAll("visiblespace", " "));
 
       // Get the title
       // NOTE: There is more information that could be read from a PFD-Dokument.

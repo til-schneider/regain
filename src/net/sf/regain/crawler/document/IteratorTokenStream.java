@@ -48,6 +48,7 @@ public class IteratorTokenStream extends TokenStream {
 
 
   // overridden
+  @Override
   public Token next() throws IOException {
     if (mIter.hasNext()) {
       String text = (String) mIter.next();

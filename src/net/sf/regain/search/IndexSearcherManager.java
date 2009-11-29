@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-01-04 22:09:48 +0100 (So, 04 Jan 2009) $
+ *     $Date: 2009-11-19 22:12:58 +0100 (Do, 19 Nov 2009) $
  *   $Author: thtesche $
- * $Revision: 372 $
+ * $Revision: 425 $
  */
 package net.sf.regain.search;
 
@@ -39,6 +39,9 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.store.FSDirectory;
 
 /**
  * Kapselt die Suche auf dem Suchindex.
@@ -127,6 +130,7 @@ public class IndexSearcherManager {
     mBackupIndexDir  = new File(indexDir + File.separator + BACKUP_INDEX_SUBDIR);
 
     mIndexUpdateThread = new Thread() {
+      @Override
       public void run() {
         indexUpdateThreadRun();
       }
@@ -138,7 +142,7 @@ public class IndexSearcherManager {
 
 
   /**
-   * Gibt den IndexWriterManager für das gegebene Index-Verzeichnis zurück.
+   * Gibt den IndexSearcherManager für das gegebene Index-Verzeichnis zurück.
    *
    * @param indexDir Das Verzeichnis, in dem der Index steht.
    *
@@ -149,7 +153,7 @@ public class IndexSearcherManager {
       mIndexManagerHash = new HashMap();
     }
 
-    // Zust�ndigen IndexWriterManager aus der Hash zu holen
+    // Zust�ndigen IndexSearcherManager aus der Hash zu holen
     IndexSearcherManager manager = (IndexSearcherManager) mIndexManagerHash.get(indexDir);
     if (manager == null) {
       // für diesen Index gibt es noch keinen Manager -> einen anlegen
@@ -159,8 +163,6 @@ public class IndexSearcherManager {
 
     return manager;
   }
-
-
 
   /**
    * Sucht im Suchindex.
@@ -173,14 +175,14 @@ public class IndexSearcherManager {
    * @return Die gefundenen Treffer.
    * @throws RegainException Wenn die Suche fehl schlug.
    */
-  public synchronized Hits search(Query query) throws RegainException {
-    if (mIndexSearcher == null) {
+  public synchronized ScoreDoc[] search(Query query) throws RegainException {
+    if (getIndexSearcher() == null) {
       if (! mWorkingIndexDir.exists()) {
         checkForIndexUpdate();
       }
 
       try {
-        mIndexSearcher = new IndexSearcher(mWorkingIndexDir.getAbsolutePath());
+        mIndexSearcher = new IndexSearcher(FSDirectory.open(mWorkingIndexDir),true);
       }
       catch (IOException exc) {
         throw new RegainException("Creating index searcher failed", exc);
@@ -188,7 +190,43 @@ public class IndexSearcherManager {
     }
 
     try {
-      return mIndexSearcher.search(query);
+      TopScoreDocCollector collector = TopScoreDocCollector.create(20, false);
+      mIndexSearcher.search(query, collector);
+      return collector.topDocs().scoreDocs;
+
+    } catch (IOException exc) {
+      throw new RegainException("Searching query failed", exc);
+    }
+  }
+
+  /**
+   * Sucht im Suchindex.
+   * <p>
+   * Hinweis: Suchen und Update-Checks laufen synchronisiert ab (also niemals
+   * gleichzeitig).
+   *
+   * @param query Die Suchanfrage.
+   *
+   * @return Die gefundenen Treffer.
+   * @throws RegainException Wenn die Suche fehl schlug.
+   * @deprecated Method will be removed in regain 2.x
+   */
+  public synchronized Hits search_old(Query query) throws RegainException {
+    if (getIndexSearcher() == null) {
+      if (! mWorkingIndexDir.exists()) {
+        checkForIndexUpdate();
+      }
+
+      try {
+        mIndexSearcher = new IndexSearcher(FSDirectory.open(mWorkingIndexDir),true);
+      }
+      catch (IOException exc) {
+        throw new RegainException("Creating index searcher failed", exc);
+      }
+    }
+
+    try {
+      return getIndexSearcher().search(query);
     }
     catch (IOException exc) {
       throw new RegainException("Searching query failed", exc);
@@ -211,7 +249,7 @@ public class IndexSearcherManager {
       }
 
       try {
-        mIndexReader = IndexReader.open(mWorkingIndexDir.getAbsolutePath());
+        mIndexReader = IndexReader.open(FSDirectory.open(mWorkingIndexDir),true);
       }
       catch (IOException exc) {
         throw new RegainException("Creating index reader failed", exc);
@@ -296,7 +334,7 @@ public class IndexSearcherManager {
           untokenizedFieldNames = new String[0];
       }
 
-      // NOTE: Make shure to use the same analyzer in the crawler
+      // NOTE: Make shure to use the same analyzer as in the crawler
       mAnalyzer = RegainToolkit.createAnalyzer(analyzerType, stopWordList,
                                                exclusionList, untokenizedFieldNames);
     }
@@ -403,11 +441,33 @@ public class IndexSearcherManager {
     Query rewittenQuery = query;
     if (mIndexSearcher != null) {
       try {
-        rewittenQuery = mIndexSearcher.rewrite(query);
+        rewittenQuery = getIndexSearcher().rewrite(query);
       } catch (IOException e) {
         throw new RegainException("Rewriting of query: " + query.toString() + " failed. " + e.getMessage());
       }
     }
     return rewittenQuery;
+  }
+
+  /**
+   * Returns the IndexSearcher.
+   *
+   * @return the IndexSearcher
+   */
+  public IndexSearcher getIndexSearcher()  throws RegainException{
+   if (mIndexSearcher == null) {
+      if (! mWorkingIndexDir.exists()) {
+        checkForIndexUpdate();
+      }
+
+      try {
+        mIndexSearcher = new IndexSearcher(FSDirectory.open(mWorkingIndexDir),true);
+      }
+      catch (IOException exc) {
+        throw new RegainException("Creating index searcher failed", exc);
+      }
+    }
+
+    return mIndexSearcher;
   }
 }

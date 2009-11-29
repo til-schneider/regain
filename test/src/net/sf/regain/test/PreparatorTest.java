@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-29 22:14:32 +0100 (Sa, 29 Nov 2008) $
+ *     $Date: 2009-11-15 23:12:24 +0100 (So, 15 Nov 2009) $
  *   $Author: thtesche $
- * $Revision: 368 $
+ * $Revision: 424 $
  */
 package net.sf.regain.test;
 
@@ -44,10 +44,7 @@ import net.sf.regain.crawler.preparator.JacobMsPowerPointPreparator;
 import net.sf.regain.crawler.preparator.JacobMsWordPreparator;
 import net.sf.regain.crawler.preparator.PdfBoxPreparator;
 import net.sf.regain.crawler.preparator.PlainTextPreparator;
-import net.sf.regain.crawler.preparator.PoiMsExcelPreparator;
-import net.sf.regain.crawler.preparator.PoiMsPowerPointPreparator;
-import net.sf.regain.crawler.preparator.PoiMsVisioPreparator;
-import net.sf.regain.crawler.preparator.PoiMsWordPreparator;
+import net.sf.regain.crawler.preparator.PoiMsOfficePreparator;
 import net.sf.regain.crawler.preparator.SimpleRtfPreparator;
 import net.sf.regain.crawler.preparator.SwingRtfPreparator;
 import net.sf.regain.crawler.preparator.XmlPreparator;
@@ -73,7 +70,7 @@ public class PreparatorTest {
 
   /**
    * Does the test
-   * 
+   *
    * @param args The Command line arguments
    */
   public static void main(String[] args) {
@@ -122,15 +119,15 @@ public class PreparatorTest {
 
     try {
       testPreparator(docDir, outputDir, "html", new HtmlPreparator());
-      testPreparator(docDir, outputDir, "doc", new PoiMsWordPreparator());
+      testPreparator(docDir, outputDir, "doc", new PoiMsOfficePreparator());
       testPreparator(docDir, outputDir, "pdf", new PdfBoxPreparator());
-      testPreparator(docDir, outputDir, "ppt", new PoiMsPowerPointPreparator());
+      testPreparator(docDir, outputDir, "ppt", new PoiMsOfficePreparator());
       testPreparator(docDir, outputDir, "rtf", new SimpleRtfPreparator());
       testPreparator(docDir, outputDir, "rtf", new SwingRtfPreparator());
       testPreparator(docDir, outputDir, "txt", new PlainTextPreparator());
-      testPreparator(docDir, outputDir, "xls", new PoiMsExcelPreparator());
+      testPreparator(docDir, outputDir, "xls", new PoiMsOfficePreparator());
       testPreparator(docDir, outputDir, "xml", new XmlPreparator());
-      testPreparator(docDir, outputDir, "vsd", new PoiMsVisioPreparator());
+      testPreparator(docDir, outputDir, "vsd", new PoiMsOfficePreparator());
     } catch (RegainException exc) {
       mLog.error("Creating preparator failed", exc);
     }
@@ -144,7 +141,7 @@ public class PreparatorTest {
 
   /**
    * Tests one preparator
-   * 
+   *
    * @param docDir The source directory where the documents are located.
    * @param outputDir The target directory where to write the extracted texts.
    * @param fileType The file type the current preperator takes.

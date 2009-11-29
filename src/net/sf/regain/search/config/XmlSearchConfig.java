@@ -2,19 +2,23 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-09-17 22:15:48 +0200 (Mi, 17 Sep 2008) $
+ *     $Date: 2009-11-28 23:02:27 +0100 (Sa, 28 Nov 2009) $
  *   $Author: thtesche $
- * $Revision: 337 $
+ * $Revision: 443 $
  */
 package net.sf.regain.search.config;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.XmlToolkit;
+import net.sf.regain.search.results.SortingOption;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -66,7 +70,37 @@ public class XmlSearchConfig implements SearchConfig {
     // get the highlighted flag
     node = XmlToolkit.getChild(defaultNode, "Highlighting");
     boolean highlighting = (node == null) ? true : XmlToolkit.getTextAsBoolean(node);
-    
+
+    // get the sorting options
+    SortingOption[] sortingOptions = null;
+    Node sortResultsNode = XmlToolkit.getChild(defaultNode, "sortResults");
+    String showSortFieldContentString = XmlToolkit.getAttribute(sortResultsNode, "showsortfieldcontent", false);
+    boolean showSortFieldContent = (showSortFieldContentString != null &&
+            showSortFieldContentString.equalsIgnoreCase("true")) ? true : false;
+
+    if (sortResultsNode != null) {
+      Node[] sortNodes = XmlToolkit.getChildArr(sortResultsNode, "sortEntry");
+      if (sortNodes != null) {
+        List<SortingOption> tmpSortOptions = new Vector<SortingOption>();
+        for (int i = 0; i < sortNodes.length; i++) {
+          Node sortEntry = sortNodes[i];
+          String desc = XmlToolkit.getAttribute(sortEntry, "description", true);
+          int id = Integer.parseInt(XmlToolkit.getAttribute(sortEntry, "id", true));
+          String field = XmlToolkit.getAttribute(sortEntry, "field", true);
+          String order = XmlToolkit.getAttribute(sortEntry, "order", false);
+          SortingOption sortOption = new SortingOption(desc, field, order, id);
+          tmpSortOptions.add(sortOption);
+        }
+        if (tmpSortOptions.size() > 0) {
+          // create the final array and sort the options by id
+          sortingOptions = tmpSortOptions.toArray(new SortingOption[0]);
+          Arrays.sort(sortingOptions);
+        }
+      }
+    }
+    //for (int j = 0; j < sortingOptions.length; j++) {
+      //System.out.println("SortingOption: " + sortingOptions[j].toString());
+    //}
     // Get the index nodes
     mIndexHash = new HashMap();
     ArrayList defaultIndexNameList = new ArrayList();
@@ -131,13 +165,14 @@ public class XmlSearchConfig implements SearchConfig {
       
       // Create the index config
       IndexConfig indexConfig = new IndexConfig(indexName, directory,
-          openInNewWindowRegex, useFileToHttpBridge, searchFieldList, rewriteRules,
-          searchAccessControllerClass, searchAccessControllerJar,
-          searchAccessControllerConfig, highlighting);
- 			indexConfig.setParent(isParent);
-      if(null != parentName && parentName.length()>0){
-    	  indexConfig.setParentName(parentName);
-      }          
+              openInNewWindowRegex, useFileToHttpBridge, searchFieldList, rewriteRules,
+              searchAccessControllerClass, searchAccessControllerJar,
+              searchAccessControllerConfig, highlighting, sortingOptions,
+              showSortFieldContent);
+      indexConfig.setParent(isParent);
+      if (null != parentName && parentName.length() > 0) {
+        indexConfig.setParentName(parentName);
+      }
       mIndexHash.put(indexName, indexConfig);
       
       // Check whether this index is default
