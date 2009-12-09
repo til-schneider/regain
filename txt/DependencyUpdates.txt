@@ -136,6 +136,11 @@ Ca. 28.07.04:
 ========
     Thomas Tesche (thtesche), cluster:Consult
     commons-codec-1.4
+    
+08.12.09
+========
+    Thomas Tesche (thtesche), cluster:Consult
+    commons-collections-3.2.1   
 
 Websites:
 =========

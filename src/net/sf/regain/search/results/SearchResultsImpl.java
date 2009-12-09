@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,6 +42,8 @@ import net.sf.regain.search.SearchToolkit;
 import net.sf.regain.search.access.SearchAccessController;
 import net.sf.regain.search.config.IndexConfig;
 import net.sf.regain.util.sharedtag.PageRequest;
+import org.apache.commons.collections.Factory;
+import org.apache.commons.collections.ListUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.CompressionTools;
@@ -53,7 +54,6 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.MultiSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -87,7 +87,6 @@ public class SearchResultsImpl implements SearchResults {
   private String mIndexName;
   /** The hits of this search. */
   private ScoreDoc[] hitScoreDocs;
-  private List<Document> hitDocs = new LinkedList<Document>();
   /** The DocCollector. */
   TopDocsCollector topDocsCollector;
   private static Pattern mimetypeFieldPattern = Pattern.compile("(mimetype:\".*\")");
@@ -102,6 +101,15 @@ public class SearchResultsImpl implements SearchResults {
   private Analyzer mAnalyzer;
   /** The current config. */
   private IndexConfig mIndexConfig;
+  /** Factory for create a new LazyList-entry. */
+  Factory factory = new Factory() {
+
+    public Object create() {
+      return new Document();
+    }
+  };
+  /** held the transformed hits. */
+  private List lazyHitList = ListUtils.lazyList(new ArrayList(), factory);
 
   /**
    * Creates an instanz of SearchResults. This class can search over a single
@@ -265,19 +273,11 @@ public class SearchResultsImpl implements SearchResults {
           SortingOption sortingOption = new SortingOption(request.getParameter("order"));
           Sort sort = new Sort(sortingOption.getSortField());
           //System.out.println(sortingOption.toString());
-          
+
           topDocsCollector = TopFieldCollector.create(sort, 10000, true, true, true, false);
 
           mIndexSearcher.search(mQuery, topDocsCollector);
           hitScoreDocs = topDocsCollector.topDocs().scoreDocs;
-
-          //System.out.println("Hits found: '" + hitScoreDocs.length);
-          hitDocs.clear();
-          // Copy all documents into a separate array
-          for (int i = 0; i < hitScoreDocs.length; i++) {
-            int docId = hitScoreDocs[i].doc;
-            hitDocs.add(mIndexSearcher.doc(docId));
-          }
 
         } catch (IOException exc) {
           throw new RegainException("Searching query failed", exc);
@@ -317,15 +317,15 @@ public class SearchResultsImpl implements SearchResults {
    * @return the number of hits the search had.
    */
   public int getHitCount() {
-    if (hitDocs == null) {
+    if (hitScoreDocs == null) {
       return 0;
     }
-
-    return hitDocs.size();
+    return hitScoreDocs.length;
   }
 
   /**
-   * Gets the document of one hit.
+   * Gets the document of one hit. For holding the transformed documents we use
+   * a lazy list.
    *
    * @param index The index of the hit.
    * @return the document of one hit.
@@ -335,7 +335,29 @@ public class SearchResultsImpl implements SearchResults {
    */
   public Document getHitDocument(int index) throws RegainException {
 
-    return hitDocs.get(index);
+    try {
+      Document currDoc = (Document) lazyHitList.get(index);
+      // The document is empty, so it's created by the factory. Replace it with the real one
+      // at this position
+      if (currDoc.getFields().isEmpty()) {
+        lazyHitList.set(index, mIndexSearcher.doc(hitScoreDocs[index].doc));
+      }
+    } catch (Exception ex) {
+      throw new RegainException("Error while accessing index", ex);
+    }
+    return (Document) lazyHitList.get(index);
+
+  }
+
+  /**
+   * Writes a changed document back to the list.
+   * 
+   * @param index
+   * @param document
+   * @throws RegainException
+   */
+  private void setHitDocument(int index, Document document) throws RegainException {
+    lazyHitList.set(index, document);
   }
 
   /**
@@ -452,7 +474,8 @@ public class SearchResultsImpl implements SearchResults {
   public void shortenSummary(int index) throws RegainException {
 
     try {
-      byte[] compressedFieldValue = hitDocs.get(index).getBinaryValue("summary");
+      Document document = getHitDocument(index);
+      byte[] compressedFieldValue = document.getBinaryValue("summary");
       String text = null;
       if (compressedFieldValue != null) {
         text = CompressionTools.decompressString(compressedFieldValue);
@@ -461,11 +484,12 @@ public class SearchResultsImpl implements SearchResults {
       if (text != null) {
         // Overwrite the content with a shortend summary
         String resSummary = RegainToolkit.createSummaryFromContent(text, 200);
-        hitDocs.get(index).removeField("summary");
+        document.removeField("summary");
         if (resSummary != null) {
-          hitDocs.get(index).add(new Field("summary", resSummary, Field.Store.NO, Field.Index.NOT_ANALYZED));
-          hitDocs.get(index).add(new Field("summary", CompressionTools.compressString(resSummary), Field.Store.YES));
-
+          document.add(new Field("summary", resSummary, Field.Store.NO, Field.Index.NOT_ANALYZED));
+          document.add(new Field("summary", CompressionTools.compressString(resSummary), Field.Store.YES));
+          // write back the transformed document
+          setHitDocument(index, document);
         }
       }
     } catch (DataFormatException dataFormatException) {
@@ -501,7 +525,8 @@ public class SearchResultsImpl implements SearchResults {
       // b) and a shortend summary (200 characters)
 //      int docId = hitScoreDocs[index].doc;
 
-      byte[] compressedFieldValue = hitDocs.get(index).getBinaryValue("summary");
+      Document document = getHitDocument(index);
+      byte[] compressedFieldValue = document.getBinaryValue("summary");
       String text = null;
       if (compressedFieldValue != null) {
         text = CompressionTools.decompressString(compressedFieldValue);
@@ -510,11 +535,11 @@ public class SearchResultsImpl implements SearchResults {
       if (text != null) {
         // Overwrite the content with a shortend summary
         String resSummary = RegainToolkit.createSummaryFromContent(text, 200);
-        hitDocs.get(index).removeField("summary");
+        document.removeField("summary");
         if (resSummary != null) {
           //System.out.println("resSummary " + resSummary);
-          hitDocs.get(index).add(new Field("summary", resSummary, Field.Store.NO, Field.Index.NOT_ANALYZED));
-          hitDocs.get(index).add(new Field("summary", CompressionTools.compressString(resSummary), Field.Store.YES));
+          document.add(new Field("summary", resSummary, Field.Store.NO, Field.Index.NOT_ANALYZED));
+          document.add(new Field("summary", CompressionTools.compressString(resSummary), Field.Store.YES));
 
         }
 
@@ -531,12 +556,12 @@ public class SearchResultsImpl implements SearchResults {
         if (resHighlSummary != null) {
           //System.out.println("Highlighted summary: " + resHighlSummary);
           // write the result back to the document in a new field
-          hitDocs.get(index).add(new Field("highlightedSummary", resHighlSummary, Field.Store.NO, Field.Index.NOT_ANALYZED));
-          hitDocs.get(index).add(new Field("highlightedSummary", CompressionTools.compressString(resHighlSummary), Field.Store.YES));
+          document.add(new Field("highlightedSummary", resHighlSummary, Field.Store.NO, Field.Index.NOT_ANALYZED));
+          document.add(new Field("highlightedSummary", CompressionTools.compressString(resHighlSummary), Field.Store.YES));
         }
       }
       // Highlight the title
-      text = hitDocs.get(index).get("title");
+      text = document.get("title");
       String resHighlTitle = null;
       if (text != null) {
         TokenStream tokenStream = mAnalyzer.tokenStream("content",
@@ -548,10 +573,12 @@ public class SearchResultsImpl implements SearchResults {
       if (resHighlTitle != null) {
         // write the result back to the document in a new field
         //System.out.println("Highlighted title: " + resHighlTitle);
-        hitDocs.get(index).add(new Field("highlightedTitle", resHighlTitle,
+        document.add(new Field("highlightedTitle", resHighlTitle,
                 Field.Store.YES, Field.Index.NOT_ANALYZED));
 
       }
+      // write back the transformed document
+      setHitDocument(index, document);
 
       //System.out.println("The document: " + hitDocs.get(index).toString());
 

@@ -1,6 +1,9 @@
+Version 1.6.5 am 09.12.2009 PREVIEW
+-----------------------------------
+* BUGFIX: Hoher Memorybedarf bei grossen Ergbnissets.
 
 Version 1.6.4 am 29.11.2009 PREVIEW
-----------------------------------
+-----------------------------------
 * PDFBox wurde auf Version 0.8.0 geupdated.
 * Lucene wurde auf Version 2.9.1 geupdated.
 * Obsolete PoiMsWord, -Excel, -Powerpoint und -VisioPreparator wurde entfernt. Diese

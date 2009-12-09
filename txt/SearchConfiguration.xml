@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE configuration [
   <!ENTITY amp "&#x26;">
@@ -49,8 +49,8 @@
         <sortEntry id='1' description='Relevanz' order='desc' field='relevance' />
         <!--sortEntry id='2' description='Dokumentendatum aufsteigend' order='asc' field='last-modified' />
         <sortEntry id='3' description='Dokumentendatum absteigend' order='desc' field='last-modified' />
-        <sortEntry id='4' description='Dokumentengröße aufsteigend' order='asc' field='size' />
-        <sortEntry id='5' description='Dokumentengröße absteigend' order='desc' field='size' />
+        <sortEntry id='4' description='DokumentengrÃ¶ÃŸe aufsteigend' order='asc' field='size' />
+        <sortEntry id='5' description='DokumentengrÃ¶ÃŸe absteigend' order='desc' field='size' />
         <sortEntry id='6' description='Dateiname aufsteigend' order='asc' field='filename_sort' />
         <sortEntry id='7' description='Dateiname absteigend' order='desc' field='filename_sort' />
         <sortEntry id='8' description='Mimetype aufsteigend' order='asc' field='mimetype' />

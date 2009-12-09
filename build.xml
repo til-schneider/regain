@@ -22,9 +22,9 @@
  | CVS information:
  |  $RCSfile$
  |   $Source$
- |     $Date: 2009-11-28 23:02:27 +0100 (Sa, 28 Nov 2009) $
+ |     $Date: 2009-12-08 22:36:43 +0100 (Di, 08 Dez 2009) $
  |   $Author: thtesche $
- | $Revision: 443 $
+ | $Revision: 449 $
  |
  | Author: Til Schneider, www.murfman.de
  +-->
@@ -49,7 +49,7 @@
   <property name="programname.file" value="regain"/>
   <property name="doc.header" value="${programname} ${version} API"/>
   <property name="doc.title" value="API documentation for ${programname} ${version}"/>
-  <property name="doc.bottom" value="${programname} ${version}, Copyright (C) 2004-2008 Til Schneider, www.murfman.de, Thomas Tesche, www.thtesche.com"/>
+  <property name="doc.bottom" value="${programname} ${version}, Copyright (C) 2004-2010 Til Schneider, www.murfman.de, Thomas Tesche, www.thtesche.com"/>
   <property name="jacobgen-src.dir" value="build/jacobgen/generated-src"/>
   <property name="jacobgen-classes.dir" value="build/jacobgen/classes"/>
   <property name="jacobgen-packed.dir" value="jacobgen/packed"/>
@@ -638,6 +638,7 @@
       <include name="org/apache/lucene/**"/>
       <include name="org/apache/log4j/**"/>
       <include name="org/apache/regexp/**"/>
+      <include name="org/apache/commons/collections/**"/>
     
       <!-- aperture -->
       <include name="org/semanticdesktop/aperture/**"/>
@@ -728,6 +729,7 @@
         <include name="org/apache/lucene/**"/>
         <include name="org/apache/log4j/**"/>
         <include name="org/apache/regexp/**"/>
+        <include name="org/apache/commons/collections/**"/>
         
         <!-- aperture -->
         <include name="org/semanticdesktop/aperture/**"/>
@@ -771,6 +773,7 @@
         <include name="lucene-*.jar"/>
         <include name="jakarta-regexp-*.jar"/>
         <include name="log4j-*.jar"/>
+        <include name="commons-collections*.jar"/>
       </lib>
       <fileset dir="web/common">
         <exclude name="msg*.properties"/>

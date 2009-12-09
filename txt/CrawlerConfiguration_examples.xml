@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE configuration [
   <!ENTITY amp "&#x26;">
@@ -118,8 +118,8 @@
   <!--
    | Gibt den maximalen Prozentsatz von gescheiterten Dokumenten an. (0..100)
    |
-   | Ist das Verhältnis von gescheiterten Dokumenten zur Gesamtzahl von Dokumenten
-   | größer als dieser Prozentsatz, so wird der Index verworfen.
+   | Ist das VerhÃ¤ltnis von gescheiterten Dokumenten zur Gesamtzahl von Dokumenten
+   | grÃ¶ÃŸer als dieser Prozentsatz, so wird der Index verworfen.
    |
    | Gescheiterte Dokumente sind Dokumente die es entweder nicht gibt (Deadlink)
    | oder die nicht ausgelesen werden konnten.
@@ -131,16 +131,16 @@
    | Separate the words by a blank.
    +-->
   <stopwordList>
-    einer eine eines einem einen der die das dass daß du er sie es was wer wie
+    einer eine eines einem einen der die das dass daÃŸ du er sie es was wer wie
     wir und oder ohne mit am im in aus auf ist sein war wird ihr ihre ihres als
-    für von mit dich dir mich mir mein sein kein durch wegen wird
+    fÃ¼r von mit dich dir mich mir mein sein kein durch wegen wird
   </stopwordList>
   <!-- italian:
   <stopwordList>
     di a da in con su per tra fra io tu egli ella essa noi voi essi loro che cui
-    se e né anche inoltre neanche o ovvero oppure ma però eppure anzi invece
-    bensì tuttavia quindi dunque perciò pertanto cioè infatti ossia non come
-    mentre perché quando mio mia miei mie tuo tua tuoi tue suo sua suoi sue
+    se e nÃ© anche inoltre neanche o ovvero oppure ma perÃ² eppure anzi invece
+    bensÃ¬ tuttavia quindi dunque perciÃ² pertanto cioÃ¨ infatti ossia non come
+    mentre perchÃ© quando mio mia miei mie tuo tua tuoi tue suo sua suoi sue
     nostro nostre nostri nostre vostro vostre vostri vostre il lo la i gli le un
     uno una degli delle alcuno alcuna alcune qualcuno qualcuna nessuno nessuna
     molto molte molti molte poco parecchio assai
@@ -149,12 +149,12 @@
   <!-- french:
   <stopwordList>
     alors au aucuns aussi autre avant avec avoir bon car ce cela ces ceux chaque ci comme comment
-    dans des du dedans dehors depuis deux devrait doit donc dos droite début elle elles en encore essai est et eu
-    fait faites fois font force haut hors ici il ils je juste la le les leur là ma maintenant mais mes mine moins
-    mon mot même ni nommés notre nous nouveaux ou où par parce parole pas personnes peut peu pièce plupart
+    dans des du dedans dehors depuis deux devrait doit donc dos droite dÃ©but elle elles en encore essai est et eu
+    fait faites fois font force haut hors ici il ils je juste la le les leur lÃ  ma maintenant mais mes mine moins
+    mon mot mÃªme ni nommÃ©s notre nous nouveaux ou oÃ¹ par parce parole pas personnes peut peu piÃ¨ce plupart
     pour pourquoi quand que quel quelle quelles quels qui sa sans ses seulement si sien son sont sous soyez sujet
-    sur ta tandis tellement tels tes ton tous tout trop très tu valeur voie voient vont votre vous vu ça étaient
-    état étions été être
+    sur ta tandis tellement tels tes ton tous tout trop trÃ¨s tu valeur voie voient vont votre vous vu Ã§a Ã©taient
+    Ã©tat Ã©tions Ã©tÃ© Ãªtre
   </stopwordList>
   -->
 
@@ -300,7 +300,7 @@
        |     manager, company, bytes, lines, paras, hyperlinkBase, charsWSpaces
        +-->
       <section name="main">
-        <param name="headlineStyles">Überschrift 1;Überschrift 2</param>
+        <param name="headlineStyles">Ãœberschrift 1;Ãœberschrift 2</param>
         <param name="properties">author</param>
       </section>
     </config>
@@ -417,7 +417,7 @@
 
 
 <!--
- | Der Timeout für HTTP-Downloads. Dieser Wert bestimmt die maximale Zeit
+ | Der Timeout fÃ¼r HTTP-Downloads. Dieser Wert bestimmt die maximale Zeit
  | in Sekunden, die ein HTTP-Download insgesamt dauern darf.
  +-->
 <httpTimeout>180</httpTimeout>
