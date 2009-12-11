@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-11-14 11:16:16 +0100 (Sa, 14 Nov 2009) $
+ *     $Date: 2009-12-10 22:56:22 +0100 (Do, 10 Dez 2009) $
  *   $Author: thtesche $
- * $Revision: 421 $
+ * $Revision: 450 $
  */
 package net.sf.regain.crawler;
 
@@ -438,8 +438,12 @@ public class Crawler implements ErrorLogger {
         try {
           File file = RegainToolkit.urlToFile(url);
           // Check whether the file is readable.
-          if (! file.canRead()) {
+          if (!file.canRead()) {
             mCrawlerJobProfiler.abortMeasuring();
+            mLog.debug("File rights: canRead: " + file.canRead() +
+                    " canExecute: " + file.canExecute() +
+                    " canWrite: " + file.canWrite() + " exists: " + file.exists() +
+                    " for url: " + url + ", canonical url: " + file.getCanonicalPath());
             logError("File is not readable: '" + url + "'", null, false);
             continue;
           } else if (file.isDirectory()) {

@@ -1,3 +1,11 @@
+Version 1.6.7 on 2009/12/xx PREVIEW
+-----------------------------------
+* BUGFIX: Remove unwanted PDFBox-log entries from regain log.
+
+Version 1.6.6 on 2009/12/10 PREVIEW
+-----------------------------------
+* BUGFIX: Insert missing classes from commons-collections into desktop and server version.
+
 Version 1.6.5 on 2009/12/09 PREVIEW
 -----------------------------------
 * BUGFIX: Huge memory consumption on large result sets.
