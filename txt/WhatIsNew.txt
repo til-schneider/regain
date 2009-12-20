@@ -1,4 +1,9 @@
-Version 1.6.7 on 2009/12/xx PREVIEW
+Version 1.6.8 on 2009/12/20 PREVIEW
+-----------------------------------
+* BUGFIX: Path and file name are indexed correct.
+* Enhancement: Total count of indexed documents is shown on search result page.
+
+Version 1.6.7 on 2009/12/17 PREVIEW
 -----------------------------------
 * BUGFIX: Remove unwanted PDFBox-log entries from regain log.
 

@@ -81,6 +81,14 @@ public class MultipleSearchResults implements SearchResults {
     return mMergedHits.length();
   }
 
+  /**
+   * Gets the number of documents in the in index.
+   *
+   * @return the number of indexed documents.
+   */
+  public int getDocumentCount() {
+    return 0;
+  }
 
   /**
    * Gets the document of one hit.

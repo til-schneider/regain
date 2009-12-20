@@ -49,11 +49,14 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.CompressionTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.MultiSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -79,6 +82,8 @@ public class SearchResultsImpl implements SearchResults {
 
   /** The searcher (single or multi). */
   private Searcher mIndexSearcher;
+  /** The reader (multi). */
+  private MultiReader mMultiReader;
   /** The Query text. */
   private String mQueryText;
   /** The time the search took. */
@@ -179,17 +184,20 @@ public class SearchResultsImpl implements SearchResults {
         mIndexSearcher = indexSearcherManagers[0].getIndexSearcher();
         mAnalyzer = indexSearcherManagers[0].getAnalyzer();
         mIndexName = indexConfigs[0].getName();
+        IndexReader[] readerArray = {indexSearcherManagers[0].getIndexReader()};
+        mMultiReader = new MultiReader(readerArray);
 
       } else {
         // Collect all IndexSearchers and instantiate a MultiSearcher
-        //System.out.println("MultiSearcher");
-
         Searcher[] searchers = new Searcher[indexConfigs.length];
+        IndexReader[] readerArray = new IndexReader[indexConfigs.length];
         for (int j = 0; j < indexSearcherManagers.length; j++) {
           searchers[j] = indexSearcherManagers[j].getIndexSearcher();
+          readerArray[j] = indexSearcherManagers[j].getIndexReader();
         }
         try {
           mIndexSearcher = new MultiSearcher(searchers);
+          mMultiReader = new MultiReader(readerArray);
           // get the 'first' analyzer (in fact it is a random choice)
           // All indexes has to be build with the same analyzer
           mAnalyzer = indexSearcherManagers[0].getAnalyzer();
@@ -321,6 +329,15 @@ public class SearchResultsImpl implements SearchResults {
       return 0;
     }
     return hitScoreDocs.length;
+  }
+
+  /**
+   * Gets the number of documents in the in index.
+   *
+   * @return the number of indexed documents.
+   */
+  public int getDocumentCount() {
+    return mMultiReader.numDocs() - mMultiReader.numDeletedDocs();
   }
 
   /**

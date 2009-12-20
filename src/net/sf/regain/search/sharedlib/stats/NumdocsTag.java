@@ -39,7 +39,7 @@ import net.sf.regain.util.sharedtag.SharedTag;
  *
  * @author Til Schneider, www.murfman.de
  */
-public class TotalTag extends SharedTag {
+public class NumdocsTag extends SharedTag {
 
   /**
    * Called when the parser reaches the end tag.
@@ -50,11 +50,9 @@ public class TotalTag extends SharedTag {
    */
   @Override
   public void printEndTag(PageRequest request, PageResponse response)
-    throws RegainException
-  {
+          throws RegainException {
     SearchResults results = SearchToolkit.getSearchResults(request);
 
-    response.print(Integer.toString(results.getHitCount()));
+    response.print(Integer.toString(results.getDocumentCount()));
   }
-
 }

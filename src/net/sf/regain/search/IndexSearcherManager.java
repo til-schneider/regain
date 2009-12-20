@@ -242,7 +242,7 @@ public class IndexSearcherManager {
    * @return An IndexReader for the index.
    * @throws RegainException If creating the IndexReader failed.
    */
-  private IndexReader getIndexReader() throws RegainException {
+  public IndexReader getIndexReader() throws RegainException {
     if (mIndexReader == null) {
       if (! mWorkingIndexDir.exists()) {
         checkForIndexUpdate();

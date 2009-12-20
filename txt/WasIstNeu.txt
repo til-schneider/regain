@@ -1,4 +1,9 @@
-Version 1.6.7 am xx.12.2009 PREVIEW
+Version 1.6.8 am 20.12.2009 PREVIEW
+-----------------------------------
+* BUGFIX: Pfad und Dateiname sind wieder korrekt indiziert.
+* Ausgabe der Anzahl der indizierten Dokumente auf der Suchergebnisseite.
+
+Version 1.6.7 am 17.12.2009 PREVIEW
 -----------------------------------
 * BUGFIX: PDFBox-Logeinträge aus dem regain Log entfernt.
 
@@ -6,10 +11,9 @@ Version 1.6.6 am 10.12.2009 PREVIEW
 -----------------------------------
 * BUGFIX: Fehlende commons-collections-xxx Klasses im Buildprozess berücksichtigt.
 
-
 Version 1.6.5 am 09.12.2009 PREVIEW
 -----------------------------------
-* BUGFIX: Hoher Memorybedarf bei grossen Ergbnissets.
+* BUGFIX: Hoher Memorybedarf bei grossen Ergebnissets.
 
 Version 1.6.4 am 29.11.2009 PREVIEW
 -----------------------------------

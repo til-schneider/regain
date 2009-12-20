@@ -9,7 +9,7 @@
   <!-- The location of the configuration file -->
   <context-param>
     <param-name>searchConfigFile</param-name>
-    <param-value>../../conf/regain/SearchConfiguration.xml</param-value>
+    <param-value>../conf/regain/SearchConfiguration.xml</param-value>
   </context-param>
 
   <!--

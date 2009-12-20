@@ -39,7 +39,8 @@
         </td>
         <td class="headlineRight">
           <search:msg key="results.part1"/> <b><search:stats_from/></b>-<b><search:stats_to/></b>
-          <search:msg key="results.part2"/> <b><search:stats_total/></b>.
+          <search:msg key="results.part2"/> <b><search:stats_total/></b>
+          <search:msg key="results.part3"/> <b><search:stats_numdocs/></b> <search:msg key="results.part4"/>
           (<b><search:stats_searchtime/></b> <search:msg key="seconds"/>)
           &nbsp;
         </td>

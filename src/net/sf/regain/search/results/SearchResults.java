@@ -47,6 +47,13 @@ public interface SearchResults {
   public int getHitCount();
 
   /**
+   * Gets the number of documents in the in index.
+   *
+   * @return the number of indexed documents.
+   */
+  public int getDocumentCount();
+
+  /**
    * Gets the document of one hit.
    *
    * @param index The index of the hit.

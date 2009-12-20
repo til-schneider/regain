@@ -51,6 +51,7 @@ import java.io.FileInputStream;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.Vector;
+import net.sf.regain.util.io.PathFilenamePair;
 import org.apache.lucene.analysis.WhitespaceTokenizer;
 import org.apache.lucene.document.CompressionTools;
 import org.apache.lucene.document.DateTools;
@@ -472,22 +473,10 @@ public class DocumentFactory {
     // Add the file name (without protocol, drive-letter and path)
     String filenameWithVariants = RegainToolkit.urlToWhitespacedFileName(url);
     doc.add(new Field("filename", new WhitespaceTokenizer(new StringReader(filenameWithVariants))));
-    StreamTokenizer filenameTokenizer = new StreamTokenizer(new StringReader(filenameWithVariants));
-    String filename = "";
-    try {
-      if (filenameTokenizer.nextToken() != StreamTokenizer.TT_EOF) {
-        // take only the first token: it's the filename
-        if (filenameTokenizer.sval != null) {
-          filename = filenameTokenizer.sval;
-        } else {
-          filename = "";
-        }
-      }
-    } catch (IOException ex) {
-      // do nothing.
-    }
+    PathFilenamePair pfPair = RegainToolkit.fragmentUrl(url);
+
     // Add the filename field for sorting
-    doc.add(new Field("filename_sort", filename.toLowerCase(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+    doc.add(new Field("filename_sort", pfPair.getFilename(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
     // Add the document's size
     int size = rawDocument.getLength();
@@ -573,13 +562,13 @@ public class DocumentFactory {
     }
 
     // Add the document's path
-    if (path != null) {
-      String asString = pathToString(path);
-      doc.add(new Field("path", asString, Field.Store.YES, Field.Index.NO));
-      doc.add(new Field("path_sort", asString.toLowerCase(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+    if (pfPair.getPath() != null) {
+      //String asString = pathToString(path);
+      doc.add(new Field("path", pfPair.getPath(), Field.Store.YES, Field.Index.NO));
+      doc.add(new Field("path_sort", pfPair.getPath().toLowerCase(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
       // Write the path to an analysis file
-      writeAnalysisFile(url, "path", asString);
+      writeAnalysisFile(url, "path", pfPair.getPath());
     } else {
       doc.add(new Field("path_sort", "", Field.Store.YES, Field.Index.NOT_ANALYZED));
     }

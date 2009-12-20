@@ -61,6 +61,7 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 
 import jcifs.smb.SmbFile;
+import net.sf.regain.util.io.PathFilenamePair;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
@@ -1295,31 +1296,81 @@ public class RegainToolkit {
    * Gets the 'real' file name that is described by a URL with the <code>file://</code>
    * protocol. This file name does not contain a path, protocol and drive-letter
    *
-   * @param url The URL to get the file name for.
+   * @param url The URL to extract the file name from.
    * @return The file name that matches the URL.
    * @throws RegainException.
    */
   public static String urlToWhitespacedFileName(String url) throws RegainException {
-    int lastSlash = url.lastIndexOf("/");
+
     // Cut file name from path
-    if( lastSlash > 0 && lastSlash+1 < url.length() ) {
-      String fileName = url.substring(lastSlash+1);
+    PathFilenamePair pfPair = fragmentUrl(url);
+    String fileName = pfPair.getFilename();
+    if (fileName != null) {
       int lastDot = fileName.lastIndexOf(".");
       // Remove the extension
-      String fileNameWithoutExtension ="";
-      if( lastDot>0 && lastDot < fileName.length() ) {
-        fileNameWithoutExtension = fileName.substring(0,lastDot);
+      String fileNameWithoutExtension = "";
+      if (lastDot > 0 && lastDot < fileName.length()) {
+        fileNameWithoutExtension = fileName.substring(0, lastDot);
       }
-      String fileNameWhitespaced = fileNameWithoutExtension.replaceAll("\\.", " ").replaceAll("-", " ").replaceAll("_"," ");
+      String fileNameWhitespaced = fileNameWithoutExtension.replaceAll("\\.", " ").replaceAll("-", " ").replaceAll("_", " ");
+      // Reset fileNameWhitespaced in case we couldn't expand the filename
+      // to a whitespaced version
+      if (fileNameWithoutExtension.equals(fileNameWhitespaced)) {
+        fileNameWhitespaced = "";
+      }
       // Replace URL-encoded special characters
-      return urlDecode(fileName + " " + 
-        fileNameWithoutExtension + " " +
-        fileNameWhitespaced, INDEX_ENCODING);
+      return urlDecode(fileName + " "
+              + fileNameWithoutExtension + " "
+              + fileNameWhitespaced, INDEX_ENCODING).trim();
     } else {
-        return "";
+      return "";
     }
   }
-  
+
+  /**
+   * Constructs a path-filename pair from a given URL.
+   *
+   * @param url the url
+   * @return a path-filename pair
+   *
+   * @throws RegainException
+   */
+  public static PathFilenamePair fragmentUrl(String url) throws RegainException {
+
+    PathFilenamePair pfPair = new PathFilenamePair();
+    int lastSlash = url.lastIndexOf("/");
+    // Cut file name from path
+    if (lastSlash > 0 && lastSlash + 1 < url.length()) {
+      String fileName = url.substring(lastSlash + 1);
+      String path = url.substring(0, lastSlash+1);
+      path = removeProtocol(path);
+      pfPair.setFilename(fileName);
+      pfPair.setPath(path);
+    }
+
+    return pfPair;
+  }
+
+  /**
+   * Removes the protocol from a given path.
+   *
+   * @param path the path
+   * @return a path without a protocol
+   */
+  public static String removeProtocol(String path) {
+    String newPath = "";
+    if (path != null) {
+      newPath = path.replace("file://", "");
+      newPath = newPath.replace("http://", "");
+      newPath = newPath.replace("https://", "");
+      newPath = newPath.replace("imap://", "");
+      newPath = newPath.replace("imaps://", "");
+      newPath = newPath.replace("smb://", "");
+    }
+
+    return newPath;
+  }
+
   /**
    * Gets the file that is described by a URL with the <code>file://</code>
    * protocol.
