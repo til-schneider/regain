@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-08-09 18:52:40 +0200 (So, 09 Aug 2009) $
+ *     $Date: 2009-12-20 21:52:30 +0100 (So, 20 Dez 2009) $
  *   $Author: thtesche $
- * $Revision: 394 $
+ * $Revision: 452 $
  */
 package net.sf.regain;
 
@@ -103,7 +103,7 @@ public class XmlToolkit {
     FileOutputStream stream = null;
     try {
       stream = new FileOutputStream(xmlFile);
-      String encoding = "ISO-8859-1";
+      String encoding = "UTF-8";
       PrintStream out = new PrintStream(stream, true, encoding);
       
       out.println("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>");

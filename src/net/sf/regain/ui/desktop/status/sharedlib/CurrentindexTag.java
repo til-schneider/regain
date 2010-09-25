@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-07 12:51:09 +0200 (So, 07 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 145 $
+ *     $Date: 2010-09-25 18:32:21 +0200 (Sa, 25 Sep 2010) $
+ *   $Author: thtesche $
+ * $Revision: 458 $
  */
 package net.sf.regain.ui.desktop.status.sharedlib;
 
@@ -60,6 +60,7 @@ public class CurrentindexTag extends SharedTag implements DesktopConstants {
    * @param response The page response.
    * @throws RegainException If there was an exception.
    */
+  @Override
   public void printEndTag(PageRequest request, PageResponse response)
     throws RegainException
   {

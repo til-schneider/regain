@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-12-10 22:56:22 +0100 (Do, 10 Dez 2009) $
+ *     $Date: 2010-03-05 15:42:27 +0100 (Fr, 05 Mrz 2010) $
  *   $Author: thtesche $
- * $Revision: 450 $
+ * $Revision: 455 $
  */
 package net.sf.regain.crawler;
 
@@ -661,6 +661,7 @@ public class Crawler implements ErrorLogger {
 
     // Fehler und Deadlink-Liste schreiben
     writeDeadlinkAndErrorList();
+    writeCrawledURLsList();
 
     // finalize index
     if (mIndexWriterManager != null) {
@@ -692,6 +693,27 @@ public class Crawler implements ErrorLogger {
       + "  Dead links:         " + mDeadlinkList.size() + lineSeparator
       + "  Errors:             " + mErrorCount + lineSeparator
       + "  Error ratio:        " + RegainToolkit.toPercentString(failedPercent));
+  }
+
+  private File createTempDir() {
+    // Get the directory where the files should be put in
+    File listDir;
+    if (mConfiguration.getBuildIndex()) {
+      listDir = new File(mConfiguration.getIndexDir() + File.separator + "temp" + File.separator + "log");
+    } else {
+      listDir = new File("log");
+    }
+    try {
+      // Create the directory if doesn't exist
+      if (!listDir.exists()) {
+        if (!listDir.mkdir()) {
+          throw new IOException("Creating directory failed: " + listDir.getAbsolutePath());
+        }
+      }
+    } catch (IOException exc) {
+      logError("Writing deadlink list and error list failed", exc, false);
+    }
+    return listDir;
   }
 
 
@@ -846,7 +868,42 @@ public class Crawler implements ErrorLogger {
     return whiteList;
   }
 
+  /**
+   * Writes the URLs of all crawl jobs into a file.
+   */
+  private void writeCrawledURLsList() {
+    if (mUrlChecker.getmAcceptedUrlSet() != null) {
 
+      File listDir = createTempDir();
+      FileOutputStream stream = null;
+      PrintStream printer = null;
+
+      Iterator crawledURLsIter = mUrlChecker.getmAcceptedUrlSet().iterator();
+      try {
+        stream = new FileOutputStream(new File(listDir, "crawledURLs.txt"));
+        printer = new PrintStream(stream);
+
+        while (crawledURLsIter.hasNext()) {
+          printer.println((String) crawledURLsIter.next());
+        }
+        printer.close();
+        stream.close();
+
+      } catch (IOException exc) {
+        logError("Writing crawled URLs failed", exc, false);
+      } finally {
+        if (printer != null) {
+          printer.close();
+        }
+        if (stream != null) {
+          try {
+            stream.close();
+          } catch (IOException exc) {
+          }
+        }
+      }
+    }
+  }
 
   /**
    * Schreibt die Deadlink- und Fehlerliste ins Logfile und nochmal in eine
@@ -859,26 +916,12 @@ public class Crawler implements ErrorLogger {
       // Nothing to do
       return;
     }
-
-    // Get the directory where the files should be put in
-    File listDir;
-    if (mConfiguration.getBuildIndex()) {
-      listDir = new File(mConfiguration.getIndexDir() + File.separator + "temp"
-        + File.separator + "log");
-    } else {
-      listDir = new File("log");
-    }
+    File listDir = createTempDir();
 
     String msg;
     FileOutputStream stream = null;
     PrintStream printer = null;
     try {
-      // Create the directory if doesn't exist
-      if (! listDir.exists()) {
-        if (! listDir.mkdir()) {
-          throw new IOException("Creating directory failed: " + listDir.getAbsolutePath());
-        }
-      }
 
       // Write the deadlink list
       if (! mDeadlinkList.isEmpty()) {

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-03-08 18:45:00 +0100 (So, 08 Mrz 2009) $
+ *     $Date: 2010-04-13 12:47:22 +0200 (Di, 13 Apr 2010) $
  *   $Author: thtesche $
- * $Revision: 382 $
+ * $Revision: 456 $
  */
 package net.sf.regain.crawler;
 
@@ -62,9 +62,9 @@ public class UrlChecker {
   private static Logger mLog = Logger.getLogger(UrlChecker.class);
   
   /** Contains all http-URLs that have been accepted. */
-  private HashSet mAcceptedUrlSet;
+  private HashSet<String> mAcceptedUrlSet;
   /** Contains all http-URLs that have been ignored. */
-  private HashSet mIgnoredUrlSet;
+  private HashSet<String> mIgnoredUrlSet;
   /** The number of URLs that have been ignored. */
   private int mIgnoredCount;
 
@@ -93,8 +93,8 @@ public class UrlChecker {
    *        a URL <i>must not</i> match to, in order to be processed.
    */
   public UrlChecker(WhiteListEntry[] whiteList, UrlMatcher[] blackList) {
-    mAcceptedUrlSet = new HashSet();
-    mIgnoredUrlSet = new HashSet();
+    mAcceptedUrlSet = new HashSet<String>();
+    mIgnoredUrlSet = new HashSet<String>();
     mIgnoredCount = 0;
 
     mWhiteListEntryArr = whiteList;
@@ -282,7 +282,7 @@ public class UrlChecker {
       // This is a file URL -> We haven't found it yet (Why? See class javadoc)
       return false;
     } else {
-      return mAcceptedUrlSet.contains(url);
+      return getmAcceptedUrlSet().contains(url);
     }
   }
 
@@ -332,7 +332,7 @@ public class UrlChecker {
       // All tests passed -> Keep the file
       return true;
     } else {
-      return mAcceptedUrlSet.contains(url);
+      return getmAcceptedUrlSet().contains(url);
     }
   }
 
@@ -346,7 +346,7 @@ public class UrlChecker {
     if (url.startsWith("file://")) {
       // This is a file URL -> We haven't to remember it (Why? See class javadoc)
     } else {
-      mAcceptedUrlSet.add(url);
+      getmAcceptedUrlSet().add(url);
     }
   }
 
@@ -375,5 +375,16 @@ public class UrlChecker {
   public int getIgnoredCount() {
     return mIgnoredCount;
   }
+
+
+  /**
+   * Gets the set of accepted URLs.
+   *
+   * @return the mAcceptedUrlSet
+   */
+  public HashSet getmAcceptedUrlSet() {
+    return mAcceptedUrlSet;
+  }
+
 
 }

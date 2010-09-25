@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-08-12 22:48:39 +0200 (Mi, 12 Aug 2009) $
+ *     $Date: 2010-02-03 17:24:29 +0100 (Mi, 03 Feb 2010) $
  *   $Author: thtesche $
- * $Revision: 396 $
+ * $Revision: 454 $
  */
 package net.sf.regain.crawler;
 
@@ -204,6 +204,20 @@ public class CrawlerToolkit {
   {
     URLConnection conn = null;
     try {
+
+      String userPassword = extractCredentialsFromProtocolHostFragment(createURLWithoutPath(url.toExternalForm()));
+      if (userPassword != null && userPassword.length() > 0) {
+        final String [] token = userPassword.split(":");
+        //System.out.println("username"+token[0]);
+        //System.out.println("password"+token[1]);
+        Authenticator.setDefault(new Authenticator() {
+
+          @Override
+          protected  PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(token[0], token[1].toCharArray());
+          }
+        });
+      }
       conn = url.openConnection();
       if (conn instanceof HttpURLConnection) {
         HttpURLConnection hconn = (HttpURLConnection) conn;
@@ -262,6 +276,7 @@ public class CrawlerToolkit {
   public static byte[] loadHttpDocument(String url) throws RegainException {
     InputStream in = null;
     ByteArrayOutputStream out = null;
+
     try {
       in = getHttpStream(new URL(url));
 
@@ -458,11 +473,12 @@ public class CrawlerToolkit {
             url = url.substring(0, url.length() - 1);
           }
 
-          return url + "/";
+          //@ToDo: Reminder for an unclear feature. 
+          //return url + "/";
         }
       }
     } catch (MalformedURLException ex) {
-      // This should never happen. We assume all URL where checked before
+      // This should never happen. We assume the URL where checked before.
     }
 
 
@@ -751,6 +767,32 @@ public class CrawlerToolkit {
     }
 
     mLog.debug("Resulting Url after replacement: " + result);
+
+    return result;
+  }
+
+  /**
+   * Extract the username, password from a given protocol, host-domain url fragment.
+   * Example: http://tester:secret&amp;host.sld.tld/
+   *
+   * @param urlFragment the fragment which contains protocol, optional user/pw and host+domain.
+   * @return the user:pw if it exist in the urlFragment
+   */
+  public static String extractCredentialsFromProtocolHostFragment(String urlFragment) {
+    String result = "";
+
+    if (urlFragment.contains("@") && urlFragment.contains(":")) {
+      // We've found a possible username@password part
+      int startPos = urlFragment.indexOf("//") + 2;
+      int endPos = urlFragment.indexOf("@");
+      // We need at least x:x@ in length
+      if (endPos > startPos + 2) {
+        String temp = urlFragment.substring(startPos, endPos);
+        if (!(temp.startsWith(":") || temp.endsWith(":") || temp.endsWith(":@"))) {
+          result = temp;
+        }
+      }
+    }
 
     return result;
   }

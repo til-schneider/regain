@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-07 12:51:09 +0200 (So, 07 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 145 $
+ *     $Date: 2009-12-20 21:52:30 +0100 (So, 20 Dez 2009) $
+ *   $Author: thtesche $
+ * $Revision: 452 $
  */
 package net.sf.regain.search.sharedlib.stats;
 

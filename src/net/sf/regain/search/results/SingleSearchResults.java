@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-11-26 18:14:25 +0100 (Do, 26 Nov 2009) $
+ *     $Date: 2009-12-20 21:52:30 +0100 (So, 20 Dez 2009) $
  *   $Author: thtesche $
- * $Revision: 430 $
+ * $Revision: 452 $
  */
 package net.sf.regain.search.results;
 

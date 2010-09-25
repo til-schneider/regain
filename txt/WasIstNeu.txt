@@ -1,3 +1,12 @@
+Version 1.7.0 am 06.03.2010 STABLE
+-----------------------------------
+* Authentifizierung für http nun möglich
+* Liste aller gecrawlten URLs wird am Ende des Crawlvorganges geschrieben.
+* BUGFIX: Fehlende Apache Commons Bibliotheken hinzugefügt.
+* Anwenderhandbuch in aktuelles OpenOfficeformat konvertiert. Zusätzlich liegt im
+  Ordner txt ein pdf-Version des Handbuchs.
+* BUGFIX: Fehlende *.o Libs für launch4j hinzugefügt.
+
 Version 1.6.8 am 20.12.2009 PREVIEW
 -----------------------------------
 * BUGFIX: Pfad und Dateiname sind wieder korrekt indiziert.

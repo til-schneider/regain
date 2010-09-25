@@ -3,5 +3,8 @@
 /build.properties
 /build/
 /jacobgen/classes/
+/launch4j/.classpath
+/launch4j/.project
+/launch4j/.settings/
 /nbproject/
 /test/docs/

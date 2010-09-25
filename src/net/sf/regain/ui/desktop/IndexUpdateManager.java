@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-16 22:23:54 +0100 (So, 16 Nov 2008) $
+ *     $Date: 2010-09-25 18:32:21 +0200 (Sa, 25 Sep 2010) $
  *   $Author: thtesche $
- * $Revision: 360 $
+ * $Revision: 458 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -79,6 +79,7 @@ public class IndexUpdateManager implements DesktopConstants {
    */
   public void init() {
     mCheckThread = new Thread() {
+      @Override
       public void run() {
         checkThreadRun();
       }

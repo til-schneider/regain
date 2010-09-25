@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-05-21 16:29:23 +0200 (Do, 21 Mai 2009) $
+ *     $Date: 2010-02-03 17:24:29 +0100 (Mi, 03 Feb 2010) $
  *   $Author: thtesche $
- * $Revision: 392 $
+ * $Revision: 454 $
  */
 package net.sf.regain.test;
 
@@ -39,12 +39,12 @@ import junit.framework.TestCase;
 public class CrawlerToolkitTest extends TestCase {
 
   public void testURLCleaners() {
-    assertEquals("http://www.heise.de/index.htm?id=1", CrawlerToolkit.cleanURL("http://www.heise.de/index.htm?id=1",new String[]{}));
-    assertEquals("http://www/x.htm?id=1", CrawlerToolkit.cleanURL("http://www/x.htm?id=1&PHPSESSID=ajfasdfh3423",new String[]{"PHPSESSID=[0-9a-z]{3,}"}));
-    assertEquals("uuuu", CrawlerToolkit.cleanURL("uuAAuu",new String[]{"AA"}));
-    assertEquals("http://www/x.htm?id=1&p1=34", CrawlerToolkit.cleanURL("http://www/x.htm?id=1&PHPSESSID=ajfasdfh3423&p1=34",new String[]{"PHPSESSID=[0-9a-z]{3,}"}));
-    assertEquals("http://www/x.htm", CrawlerToolkit.cleanURL("http://www/x.htm?PHPSESSID=ajfasdfh3423",new String[]{"PHPSESSID=[0-9a-z]{3,}"}));
-    assertEquals("http://www/x.htm?id=1", CrawlerToolkit.cleanURL("http://www/x.htm?id=1&PHPSESSID=ajfasdfh3423",new String[]{"PHPSESSID=[0-9a-z]{3,}"}));
+    assertEquals("http://www.heise.de/index.htm?id=1", CrawlerToolkit.cleanURL("http://www.heise.de/index.htm?id=1", new String[]{}));
+    assertEquals("http://www/x.htm?id=1", CrawlerToolkit.cleanURL("http://www/x.htm?id=1&PHPSESSID=ajfasdfh3423", new String[]{"PHPSESSID=[0-9a-z]{3,}"}));
+    assertEquals("uuuu", CrawlerToolkit.cleanURL("uuAAuu", new String[]{"AA"}));
+    assertEquals("http://www/x.htm?id=1&p1=34", CrawlerToolkit.cleanURL("http://www/x.htm?id=1&PHPSESSID=ajfasdfh3423&p1=34", new String[]{"PHPSESSID=[0-9a-z]{3,}"}));
+    assertEquals("http://www/x.htm", CrawlerToolkit.cleanURL("http://www/x.htm?PHPSESSID=ajfasdfh3423", new String[]{"PHPSESSID=[0-9a-z]{3,}"}));
+    assertEquals("http://www/x.htm?id=1", CrawlerToolkit.cleanURL("http://www/x.htm?id=1&PHPSESSID=ajfasdfh3423", new String[]{"PHPSESSID=[0-9a-z]{3,}"}));
 
   }
 
@@ -61,35 +61,35 @@ public class CrawlerToolkitTest extends TestCase {
   public void testToAbsoluteUrl() {
     // Test absolute
     assertEquals("http://murfman.de/abc/f/g",
-      CrawlerToolkit.toAbsoluteUrl("http://murfman.de/abc/f/g", "http://murfman.de/abc/d/e/bla.html"));
+            CrawlerToolkit.toAbsoluteUrl("http://murfman.de/abc/f/g", "http://murfman.de/abc/d/e/bla.html"));
 
     // Test relative
     assertEquals("http://murfman.de/abc/d/e/bla/test.doc",
-      CrawlerToolkit.toAbsoluteUrl("bla/test.doc", "http://murfman.de/abc/d/e/bla.html"));
+            CrawlerToolkit.toAbsoluteUrl("bla/test.doc", "http://murfman.de/abc/d/e/bla.html"));
 
     // Test absolute within domain
     assertEquals("http://murfman.de/bla/test.doc",
-      CrawlerToolkit.toAbsoluteUrl("/bla/test.doc", "http://murfman.de/abc/d/e/bla.html"));
+            CrawlerToolkit.toAbsoluteUrl("/bla/test.doc", "http://murfman.de/abc/d/e/bla.html"));
 
     // Test ..
     assertEquals("file://abc/d/test.doc",
-      CrawlerToolkit.toAbsoluteUrl("../test.doc", "file://abc/d/e/"));
+            CrawlerToolkit.toAbsoluteUrl("../test.doc", "file://abc/d/e/"));
     assertEquals("file://abc/d/e/test.doc",
-      CrawlerToolkit.toAbsoluteUrl("f/../test.doc", "file://abc/d/e/"));
+            CrawlerToolkit.toAbsoluteUrl("f/../test.doc", "file://abc/d/e/"));
     assertEquals("file://abc/d/e/f",
-      CrawlerToolkit.toAbsoluteUrl("f/g/..", "file://abc/d/e/"));
+            CrawlerToolkit.toAbsoluteUrl("f/g/..", "file://abc/d/e/"));
     assertEquals("file://abc/d/e/..otto/karl../test.doc",
-      CrawlerToolkit.toAbsoluteUrl("..otto/karl../test.doc", "file://abc/d/e/"));
+            CrawlerToolkit.toAbsoluteUrl("..otto/karl../test.doc", "file://abc/d/e/"));
     assertEquals("http://xyz/shg/abc/def/test.html",
-      CrawlerToolkit.toAbsoluteUrl("abc/ash/khjasd/../../asjdhg/ghj/fght/../.././../def/test.html", "http://xyz/shg/main.html"));
+            CrawlerToolkit.toAbsoluteUrl("abc/ash/khjasd/../../asjdhg/ghj/fght/../.././../def/test.html", "http://xyz/shg/main.html"));
 
     // Test .
     assertEquals("file://abc/d/e/f/g",
-      CrawlerToolkit.toAbsoluteUrl("./f/./g", "file://abc/d/e/"));
+            CrawlerToolkit.toAbsoluteUrl("./f/./g", "file://abc/d/e/"));
     assertEquals("file://abc/d/e/f/g",
-      CrawlerToolkit.toAbsoluteUrl("f/g/.", "file://abc/d/e/"));
+            CrawlerToolkit.toAbsoluteUrl("f/g/.", "file://abc/d/e/"));
     assertEquals("file://abc/d/e/f/.protected",
-      CrawlerToolkit.toAbsoluteUrl("f/.protected", "file://abc/d/e/"));
+            CrawlerToolkit.toAbsoluteUrl("f/.protected", "file://abc/d/e/"));
   }
 
   /**
@@ -97,25 +97,45 @@ public class CrawlerToolkitTest extends TestCase {
    */
   public void testCompleteDirectory() {
     assertEquals("http://www.murfman.de/",
-      CrawlerToolkit.completeDirectory("http://www.murfman.de/"));
+            CrawlerToolkit.completeDirectory("http://www.murfman.de/"));
 
     assertEquals("http://www.murfman.de/info/",
-      CrawlerToolkit.completeDirectory("http://www.murfman.de/info/"));
+            CrawlerToolkit.completeDirectory("http://www.murfman.de/info/"));
 
     assertEquals("http://www.murfman.de/info/",
-      CrawlerToolkit.completeDirectory("http://www.murfman.de/info"));
+            CrawlerToolkit.completeDirectory("http://www.murfman.de/info"));
 
     assertEquals("http://www.murfman.de/info?get=id",
-      CrawlerToolkit.completeDirectory("http://www.murfman.de/info?get=id"));
+            CrawlerToolkit.completeDirectory("http://www.murfman.de/info?get=id"));
 
     assertEquals("http://www.murfman.de/info.htm?get=id",
-      CrawlerToolkit.completeDirectory("http://www.murfman.de/info.htm?get=id"));
+            CrawlerToolkit.completeDirectory("http://www.murfman.de/info.htm?get=id"));
 
     assertEquals("http://www.murfman.de/info/",
-      CrawlerToolkit.completeDirectory("http://www.murfman.de/info?"));
+            CrawlerToolkit.completeDirectory("http://www.murfman.de/info?"));
 
     assertEquals("http://www.murfman.de/info/?",
-      CrawlerToolkit.completeDirectory("http://www.murfman.de/info/?"));
+            CrawlerToolkit.completeDirectory("http://www.murfman.de/info/?"));
+
+  }
+
+  public void testExtractCredentialsFromUrl() {
+    assertEquals("",
+            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://www.thtesche.com/"));
+
+    assertEquals("username:password",
+            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://username:password@www.thtesche.com/"));
+    assertEquals("u:p",
+            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://u:p@www.thtesche.com/"));
+    assertEquals("",
+            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://username:@www.thtesche.com/"));
+    assertEquals("",
+            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://username:www.thtesche.com/"));
+    assertEquals("",
+            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://username:@www.thtesche.com/"));
+    assertEquals("",
+            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://:dfdf@www.thtesche.com/"));
+
 
   }
 }

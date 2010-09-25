@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-11-26 18:14:25 +0100 (Do, 26 Nov 2009) $
+ *     $Date: 2010-09-25 18:32:21 +0200 (Sa, 25 Sep 2010) $
  *   $Author: thtesche $
- * $Revision: 430 $
+ * $Revision: 458 $
  */
 package net.sf.regain.crawler.document;
 
@@ -48,9 +48,8 @@ import net.sf.regain.crawler.config.PreparatorSettings;
 
 import org.apache.log4j.Logger;
 import java.io.FileInputStream;
-import java.io.StreamTokenizer;
 import java.io.StringReader;
-import java.util.Vector;
+import java.util.ArrayList;
 import net.sf.regain.util.io.PathFilenamePair;
 import org.apache.lucene.analysis.WhitespaceTokenizer;
 import org.apache.lucene.document.CompressionTools;
@@ -246,7 +245,7 @@ public class DocumentFactory {
     // Find the preparator that will prepare this URL
     Document doc = null;
     boolean preparatorFound = false;
-    Vector <Integer>matchingPreperators = new Vector <Integer>();
+    ArrayList <Integer>matchingPreperators = new ArrayList <Integer>();
     for (int i = 0; i < mPreparatorArr.length; i++) {
       if (mPreparatorArr[i].accepts(rawDocument)) {
         // This preparator can prepare this URL
@@ -550,7 +549,6 @@ public class DocumentFactory {
       summary = createSummaryFromContent(cleanedContent);
     }
     if (hasContent(summary)) {
-      //doc.add(new Field("summary", summary, Field.Store.COMPRESS, Field.Index.ANALYZED));
       doc.add(new Field("summary", summary, Field.Store.NO, Field.Index.ANALYZED));
       doc.add(new Field("summary", CompressionTools.compressString(summary), Field.Store.YES));
     }
@@ -625,16 +623,16 @@ public class DocumentFactory {
    * @return Der Pfad als String
    */
   private String pathToString(PathElement[] path) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder builder = new StringBuilder();
 
     for (int i = 0; i < path.length; i++) {
-      buffer.append(path[i].getUrl());
-      buffer.append(' ');
-      buffer.append(path[i].getTitle());
-      buffer.append('\n');
+      builder.append(path[i].getUrl());
+      builder.append(' ');
+      builder.append(path[i].getTitle());
+      builder.append('\n');
     }
 
-    return buffer.toString();
+    return builder.toString();
   }
 
 

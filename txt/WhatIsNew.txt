@@ -1,3 +1,12 @@
+Version 1.7.0 on 2010/08/26 STABLE
+----------------------------------
+* Authentication for http now possible.
+* List of all crawled URL will be written at the end of crawling.
+* BUGFIX: Added missing Apache Commons libs.
+* convert 'Anwenderhandbuch_regain' into current OpenOffice format. Add PDF-export
+  of document to the txt section.
+* BUGFIX: Add missing libs for launch4j.
+
 Version 1.6.8 on 2009/12/20 PREVIEW
 -----------------------------------
 * BUGFIX: Path and file name are indexed correct.

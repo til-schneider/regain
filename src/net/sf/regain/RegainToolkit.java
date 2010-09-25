@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-11-26 18:14:25 +0100 (Do, 26 Nov 2009) $
+ *     $Date: 2010-09-25 18:32:21 +0200 (Sa, 25 Sep 2010) $
  *   $Author: thtesche $
- * $Revision: 430 $
+ * $Revision: 458 $
  */
 package net.sf.regain;
 
@@ -755,7 +755,7 @@ public class RegainToolkit {
     }
 
     // Build a new String where pattern is replaced by the replacement
-    StringBuffer target = new StringBuffer(source.length());
+    StringBuilder target = new StringBuilder(source.length());
     int start = 0; // The start of a part without the pattern
     do {
       target.append(source.substring(start, pos));
@@ -814,7 +814,7 @@ public class RegainToolkit {
     }
 
     // Build a new String where patterns are replaced by the replacements
-    StringBuffer target = new StringBuffer(source.length());
+    StringBuilder target = new StringBuilder(source.length());
     int start = 0;    // The start of a part without the pattern
     do {
       target.append(source.substring(start, minPos));
@@ -1001,7 +1001,7 @@ public class RegainToolkit {
     int hour = cal.get(Calendar.HOUR_OF_DAY);
     int minute = cal.get(Calendar.MINUTE);
 
-    StringBuffer buffer = new StringBuffer(16);
+    StringBuilder buffer = new StringBuilder(16);
 
     // "YYYY-"
     buffer.append(year);
@@ -1346,6 +1346,9 @@ public class RegainToolkit {
       path = removeProtocol(path);
       pfPair.setFilename(fileName);
       pfPair.setPath(path);
+    } else {
+      pfPair.setPath("");
+      pfPair.setFilename("");
     }
 
     return pfPair;
