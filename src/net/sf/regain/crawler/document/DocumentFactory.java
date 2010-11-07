@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2010-09-25 18:32:21 +0200 (Sa, 25 Sep 2010) $
+ *     $Date: 2010-11-07 17:03:46 +0100 (So, 07 Nov 2010) $
  *   $Author: thtesche $
- * $Revision: 458 $
+ * $Revision: 467 $
  */
 package net.sf.regain.crawler.document;
 
@@ -217,10 +217,7 @@ public class DocumentFactory {
       FileInputStream fis = new FileInputStream(file);
       byte[] bytes = new byte[mimeTypeIdentifier.getMinArrayLength()];
       fis.read(bytes);
-      //URL url;
-      //url = new URL(rawDocument.getUrl());
       mimeType = mimeTypeIdentifier.identify(bytes, file.getPath(),
-              //new URIImpl(url.getProtocol()+"://"+url.getHost()+url.getPath())) ;
               new URIImpl(rawDocument.getUrl(),false)) ;
       if (mimeType == null || mimeType.length() == 0) {
         mimeType = "application/x-unknown-mime-type";
@@ -323,6 +320,7 @@ public class DocumentFactory {
     String cleanedContent;
     String title;
     String summary;
+    String metadata;
     String headlines;
     PathElement[] path;
     Map additionalFieldMap;
@@ -337,6 +335,7 @@ public class DocumentFactory {
       cleanedContent     = preparator.getCleanedContent();
       title              = preparator.getTitle();
       summary            = preparator.getSummary();
+      metadata           = preparator.getCleanedMetaData();
       headlines          = preparator.getHeadlines();
       path               = preparator.getPath();
       additionalFieldMap = preparator.getAdditionalFields();
@@ -359,7 +358,7 @@ public class DocumentFactory {
 
     // Preparing succeed -> Create the document
     Document doc = createDocument(rawDocument, cleanedContent, title,
-                                  summary, headlines, path, additionalFieldMap);
+                                  summary, metadata, headlines, path, additionalFieldMap);
 
     // return the document
     return doc;
@@ -382,7 +381,7 @@ public class DocumentFactory {
   private Document createSubstituteDocument(RawDocument rawDocument)
     throws RegainException
   {
-    return createDocument(rawDocument, null, null, null, null, null, null);
+    return createDocument(rawDocument, null, null, null, null, null, null, null);
   }
 
   
@@ -396,6 +395,7 @@ public class DocumentFactory {
    *        created)
    * @param title The title. May be null.
    * @param summary The summary. May be null.
+   * @param metadata The cleaned meta data. May be null.
    * @param headlines The headlines. May be null.
    * @param path The path to the document. May be null.
    * @param additionalFieldMap The additional fields provided by the preparator.
@@ -405,7 +405,7 @@ public class DocumentFactory {
    *         document couldn't be determined. 
    */
   private Document createDocument(RawDocument rawDocument, String cleanedContent,
-    String title, String summary, String headlines, PathElement[] path,
+    String title, String summary, String metadata, String headlines, PathElement[] path,
     Map additionalFieldMap)
     throws RegainException
   {
@@ -463,7 +463,14 @@ public class DocumentFactory {
       // NOTE: The field "groups" is tokenized, but not stemmed.
       //       See: RegainToolkit.WrapperAnalyzer
       Iterator groupIter = Arrays.asList(groupArr).iterator();
-      doc.add(new Field("groups", new IteratorTokenStream(groupIter)));
+      StringBuilder tokenBuilder = new StringBuilder();
+      while (groupIter.hasNext()) {
+        tokenBuilder.append((String) groupIter.next());
+        tokenBuilder.append(" ");
+      }
+    
+      //doc.add(new Field("groups", new IteratorTokenStream(groupIter)));
+      doc.add(new Field("groups", new WhitespaceTokenizer(new StringReader(tokenBuilder.toString()))));
     }
 
     // Add the URL of the document
@@ -551,6 +558,11 @@ public class DocumentFactory {
     if (hasContent(summary)) {
       doc.add(new Field("summary", summary, Field.Store.NO, Field.Index.ANALYZED));
       doc.add(new Field("summary", CompressionTools.compressString(summary), Field.Store.YES));
+    }
+
+   // Add the document's metadata
+    if (hasContent(metadata)) {
+      doc.add(new Field("metadata", metadata, Field.Store.YES, Field.Index.ANALYZED));
     }
 
     // Add the document's headlines

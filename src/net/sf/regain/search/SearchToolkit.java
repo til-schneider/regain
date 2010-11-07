@@ -31,14 +31,12 @@ import java.util.List;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
-import net.sf.regain.search.access.SearchAccessController;
 import net.sf.regain.search.config.DefaultSearchConfigFactory;
 import net.sf.regain.search.config.IndexConfig;
 import net.sf.regain.search.config.SearchConfig;
 import net.sf.regain.search.config.SearchConfigFactory;
 import net.sf.regain.search.results.SearchResults;
 import net.sf.regain.search.results.SearchResultsImpl;
-import net.sf.regain.search.results.SingleSearchResults;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
 
@@ -241,7 +239,7 @@ public class SearchToolkit {
     String queryString = (String) request.getContextAttribute(SEARCH_QUERY_CONTEXT_ATTR_NAME);
     if (queryString == null) {
       // Get the query parameter
-      StringBuffer query = new StringBuffer();
+      StringBuilder query = new StringBuilder();
       String[] queryParamArr = request.getParametersNotNull("query");
       for (int i = 0; i < queryParamArr.length; i++) {
         if( queryParamArr[i] != null ) {
@@ -264,7 +262,11 @@ public class SearchToolkit {
           if (fieldValue != null) {
             fieldValue = fieldValue.trim();
             if (fieldValue.length() != 0) {
-              query.append(" " + fieldName + ":\"" + fieldValue + "\"");
+              query.append(" ");
+              query.append(fieldName);
+              query.append(":\"");
+              query.append(fieldValue);
+              query.append("\"");
             }
           }
         }
@@ -276,7 +278,10 @@ public class SearchToolkit {
 					if (fieldValue != null) {
 						fieldValue = fieldValue.trim();
 						if (fieldValue.length() != 0) {
-							query.append(" " + fieldName + ":" + fieldValue);
+							query.append(" ");
+							query.append(fieldName);
+							query.append(":");
+							query.append(fieldValue);
 						}
 					}
 				}
@@ -329,37 +334,6 @@ public class SearchToolkit {
 
     return results;
   }
-
-
-  /**
-   * Gets the SingleSearchResults from one index.
-   * 
-   * @param indexConfig The config of the index to search in.
-   * @param request The request that initiated the search.
-   * @return The SingleSearchResults for the index. 
-   * @throws RegainException If searching failed.
-   * @deprecated 
-   */
-  private static SingleSearchResults createSingleSearchResults(
-    IndexConfig indexConfig, PageRequest request)
-    throws RegainException
-  {
-    // Get the query
-    String query = getSearchQuery(request);
-
-    // Get the groups the current user has reading rights for
-    String[] groupArr = null;
-    SearchAccessController accessController = indexConfig.getSearchAccessController();
-    if (accessController != null) {
-      groupArr = accessController.getUserGroups(request);
-      
-      // Check the Group array
-      RegainToolkit.checkGroupArray(accessController, groupArr);
-    }
-
-    return new SingleSearchResults(indexConfig, query, groupArr);
-  }
-
 
   /**
    * Extracts the file URL from a request path.
@@ -436,7 +410,7 @@ public class SearchToolkit {
   
         // Check whether the document is in the index
         Analyzer analyzer = new WhitespaceAnalyzer();
-        QueryParser parser = new QueryParser(Version.LUCENE_CURRENT, "url", analyzer);
+        QueryParser parser = new QueryParser(Version.LUCENE_30, "url", analyzer);
         String queryString = "\"" + transformedFileUrl + "\"";
         
         try {

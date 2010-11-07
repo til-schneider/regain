@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-25 18:41:44 +0200 (Sa, 25 Okt 2008) $
+ *     $Date: 2010-11-07 16:02:14 +0100 (So, 07 Nov 2010) $
  *   $Author: thtesche $
- * $Revision: 350 $
+ * $Revision: 465 $
  */
 package net.sf.regain.crawler.document;
 
@@ -120,10 +120,16 @@ public interface Preparator {
   /**
    * Gibt den von Formatierungsinformation befreiten Inhalt des Dokuments zurück.
    *
-   * @return Der ges�uberte Inhalt.
+   * @return The cleanedContent
    */
   public String getCleanedContent();
 
+  /**
+   * 
+   * @return the cleaned meta data
+   */
+  public String getCleanedMetaData();
+  
   /**
    * Gibt eine Zusammenfassung für das Dokument zurück.
    * <p>

@@ -30,7 +30,7 @@ package net.sf.regain.crawler.preparator;
 import java.io.File;
 import java.io.IOException;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import net.sf.regain.RegainException;
 import net.sf.regain.crawler.document.AbstractPreparator;
 import net.sf.regain.crawler.document.RawDocument;
@@ -69,12 +69,13 @@ public class MP3Preparator extends AbstractPreparator {
    *
    * @throws RegainException if preparation goes wrong
    */
+  @Override
   public void prepare(RawDocument rawDocument) throws RegainException {
 
     File rawFile = rawDocument.getContentAsFile(false);
     try {
       MP3File mp3file = new MP3File(rawFile);
-      Vector<String> info = new Vector<String>();
+      ArrayList<String> info = new ArrayList<String>();
 
       if (mp3file.hasID3v2Tag()) {
         ID3v24Tag id3v24tag = mp3file.getID3v2TagAsv24();

@@ -21,14 +21,12 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-05-21 16:29:23 +0200 (Do, 21 Mai 2009) $
+ *     $Date: 2010-11-07 16:02:14 +0100 (So, 07 Nov 2010) $
  *   $Author: thtesche $
- * $Revision: 392 $
+ * $Revision: 465 $
  */
 package net.sf.regain.crawler.preparator;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;

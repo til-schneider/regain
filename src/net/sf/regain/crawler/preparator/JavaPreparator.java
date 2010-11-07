@@ -29,7 +29,6 @@ package net.sf.regain.crawler.preparator;
 
 import net.sf.regain.crawler.preparator.java.*;
 import java.util.ArrayList;
-import java.util.Vector;
 import net.sf.regain.RegainException;
 import net.sf.regain.crawler.document.AbstractPreparator;
 import net.sf.regain.crawler.document.RawDocument;
@@ -60,10 +59,11 @@ public class JavaPreparator extends AbstractPreparator {
    *
    * @throws RegainException if preparation goes wrong
    */
+  @Override
   public void prepare(RawDocument rawDocument) throws RegainException {
 
-    Vector<String> contentParts = new Vector<String>();
-    Vector<String> titleParts = new Vector<String>();
+    ArrayList<String> contentParts = new ArrayList<String>();
+    ArrayList<String> titleParts = new ArrayList<String>();
 
     try {
       // Creates the parser

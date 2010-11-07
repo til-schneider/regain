@@ -49,7 +49,7 @@
   <property name="programname.file" value="regain"/>
   <property name="doc.header" value="${programname} ${version} API"/>
   <property name="doc.title" value="API documentation for ${programname} ${version}"/>
-  <property name="doc.bottom" value="${programname} ${version}, Copyright (C) 2004-2010 Til Schneider, www.murfman.de, Thomas Tesche, www.thtesche.com"/>
+  <property name="doc.bottom" value="${programname} ${version}, Copyright (C) 2004-2010 Til Schneider, www.murfman.de, Thomas Tesche, www.clustersystems.de"/>
   <property name="jacobgen-src.dir" value="build/jacobgen/generated-src"/>
   <property name="jacobgen-classes.dir" value="build/jacobgen/classes"/>
   <property name="jacobgen-packed.dir" value="jacobgen/packed"/>

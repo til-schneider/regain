@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-11-29 16:46:09 +0100 (So, 29 Nov 2009) $
+ *     $Date: 2010-11-07 17:18:20 +0100 (So, 07 Nov 2010) $
  *   $Author: thtesche $
- * $Revision: 447 $
+ * $Revision: 468 $
  */
 package net.sf.regain.search.config;
 
@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.XmlToolkit;
@@ -81,7 +80,7 @@ public class XmlSearchConfig implements SearchConfig {
     if (sortResultsNode != null) {
       Node[] sortNodes = XmlToolkit.getChildArr(sortResultsNode, "sortEntry");
       if (sortNodes != null) {
-        List<SortingOption> tmpSortOptions = new Vector<SortingOption>();
+        List<SortingOption> tmpSortOptions = new ArrayList<SortingOption>();
         for (int i = 0; i < sortNodes.length; i++) {
           Node sortEntry = sortNodes[i];
           String desc = XmlToolkit.getAttribute(sortEntry, "description", true);
@@ -103,8 +102,8 @@ public class XmlSearchConfig implements SearchConfig {
     //}
     // Get the index nodes
     mIndexHash = new HashMap();
-    ArrayList defaultIndexNameList = new ArrayList();
-    ArrayList allIndexNameList = new ArrayList();
+    List defaultIndexNameList = new ArrayList();
+    List allIndexNameList = new ArrayList();
     Node[] nodeArr = XmlToolkit.getChildArr(listNode, "index");
     for (int indexIdx = 0; indexIdx < nodeArr.length; indexIdx++) {
       Node indexNode = nodeArr[indexIdx];
@@ -230,6 +229,7 @@ public class XmlSearchConfig implements SearchConfig {
    * @return The configuration for the wanted index or <code>null</code> if
    *         there is no such index configured.
    */
+  @Override
   public IndexConfig getIndexConfig(String indexName) {
     return (IndexConfig) mIndexHash.get(indexName);
   }
@@ -241,6 +241,7 @@ public class XmlSearchConfig implements SearchConfig {
    * @return The names of the default indexes or an empty array if no default
    *         index was specified.
    */
+  @Override
   public String[] getDefaultIndexNameArr() {
     return mDefaultIndexNameArr;
   }
@@ -252,6 +253,7 @@ public class XmlSearchConfig implements SearchConfig {
    * @return The names of the default indexes or an empty array if no default
    *         index was specified.
    */
+  @Override
   public String[] getAllIndexNameArr() {
     return mAllIndexNameArr;
   }  

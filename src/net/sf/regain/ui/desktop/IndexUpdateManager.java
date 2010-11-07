@@ -21,13 +21,12 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2010-09-25 18:32:21 +0200 (Sa, 25 Sep 2010) $
+ *     $Date: 2010-11-07 17:03:46 +0100 (So, 07 Nov 2010) $
  *   $Author: thtesche $
- * $Revision: 458 $
+ * $Revision: 467 $
  */
 package net.sf.regain.ui.desktop;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;

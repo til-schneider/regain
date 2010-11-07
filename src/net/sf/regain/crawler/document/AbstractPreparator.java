@@ -21,16 +21,16 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-23 23:46:59 +0100 (So, 23 Nov 2008) $
+ *     $Date: 2010-11-07 16:02:14 +0100 (So, 07 Nov 2010) $
  *   $Author: thtesche $
- * $Revision: 364 $
+ * $Revision: 465 $
  */
 package net.sf.regain.crawler.document;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import java.util.Vector;
 import net.sf.regain.RegainException;
 import net.sf.regain.crawler.config.PreparatorConfig;
 
@@ -56,11 +56,12 @@ public abstract class AbstractPreparator implements Preparator {
   private RE mUrlRegex;
   /** Der gefundene Titel. */
   private String mTitle;
-  /** Der gesä
-   * uberte Inhalt. */
+  /** The cleaned content. */
   private String mCleanedContent;
   /** Die Zusammenfassung des Dokuments. */
   private String mSummary;
+  /** The cleaned meta data of the document. */
+  private String mCleanedMetaData;
   /** Die extrahierten Überschriften. Kann <code>null</code> sein */
   private String mHeadlines;
   /** Der Pfad, über den das Dokument zu erreichen ist. */
@@ -70,7 +71,7 @@ public abstract class AbstractPreparator implements Preparator {
   /** The assigned mimetypes for the preparator */
   private String[] mMimeTypes;
   /** The priority of the preparator. Used for the selection of preparators */
-  private int mPriority; 
+  private int mPriority;
 
   /**
    * Creates a new instance of AbstractPreparator.
@@ -83,7 +84,6 @@ public abstract class AbstractPreparator implements Preparator {
    */
   public AbstractPreparator() {
   }
-
 
   /**
    * Creates a new instance of AbstractPreparator.
@@ -100,7 +100,6 @@ public abstract class AbstractPreparator implements Preparator {
     mUrlRegex = urlRegex;
   }
 
-
   /**
    * Creates a new instance of AbstractPreparator.
    * <p>
@@ -115,10 +114,9 @@ public abstract class AbstractPreparator implements Preparator {
    * @see #accepts(RawDocument)
    */
   public AbstractPreparator(String mimeType) throws RegainException {
-    mMimeTypes = new String[] {mimeType};
+    mMimeTypes = new String[]{mimeType};
     // this(createExtentionRegex(extention));
   }
-
 
   /**
    * Creates a new instance of AbstractPreparator.
@@ -138,7 +136,6 @@ public abstract class AbstractPreparator implements Preparator {
     // this(createExtentionRegex(extentionArr));
   }
 
-  
   /**
    * Creates a regex that matches a file extensions.
    * <p>
@@ -149,8 +146,7 @@ public abstract class AbstractPreparator implements Preparator {
    * @throws RegainException If the regex couldn't be created.
    */
   private static RE createExtentionRegex(String extention)
-    throws RegainException
-  {
+          throws RegainException {
     if (extention == null || extention.length() == 0) {
       return null;
     }
@@ -160,10 +156,9 @@ public abstract class AbstractPreparator implements Preparator {
       return new RE(regex, RE.MATCH_CASEINDEPENDENT);
     } catch (RESyntaxException exc) {
       throw new RegainException("Creating accept regex for preparator failed: "
-          + regex, exc);
+              + regex, exc);
     }
   }
-  
 
   /**
    * Creates a regex that matches a set of file extensions.
@@ -175,13 +170,12 @@ public abstract class AbstractPreparator implements Preparator {
    * @throws RegainException If the regex couldn't be created.
    */
   private static RE createExtentionRegex(String[] extentionArr)
-    throws RegainException
-  {
+          throws RegainException {
     if (extentionArr == null || extentionArr.length == 0) {
       return null;
     }
 
-    StringBuffer buffer = new StringBuffer("\\.(");
+    StringBuilder buffer = new StringBuilder("\\.(");
     for (int i = 0; i < extentionArr.length; i++) {
       if (i > 0) {
         buffer.append("|");
@@ -195,10 +189,9 @@ public abstract class AbstractPreparator implements Preparator {
       return new RE(urlRegex, RE.MATCH_CASEINDEPENDENT);
     } catch (RESyntaxException exc) {
       throw new RegainException("Creating accept regex for preparator failed: "
-          + urlRegex, exc);
+              + urlRegex, exc);
     }
   }
-
 
   /**
    * Initializes the preparator.
@@ -209,9 +202,9 @@ public abstract class AbstractPreparator implements Preparator {
    * @throws RegainException If the regular expression or the configuration
    *         has an error.
    */
+  @Override
   public void init(PreparatorConfig config) throws RegainException {
   }
-
 
   /**
    * Sets the regular expression a URL must match to, to be prepared by this
@@ -222,10 +215,10 @@ public abstract class AbstractPreparator implements Preparator {
    * @param urlRegex the new URL regex (may be null)
    * @see #accepts(RawDocument)
    */
+  @Override
   public void setUrlRegex(RE urlRegex) {
     mUrlRegex = urlRegex;
   }
-
 
   /**
    * Gets whether the preparator is able to process the given document. This is
@@ -235,12 +228,14 @@ public abstract class AbstractPreparator implements Preparator {
    * @return Whether the preparator is able to process the given document.
    * @see #setUrlRegex(RE)
    */
+  @Override
   public boolean accepts(RawDocument rawDocument) {
     if (mUrlRegex == null) {
-      if( mMimeTypes != null && mMimeTypes.length > 0 ) {
-        for( String mimeType : mMimeTypes ){
-          if( mimeType.equals(rawDocument.getMimeType()))
+      if (mMimeTypes != null && mMimeTypes.length > 0) {
+        for (String mimeType : mMimeTypes) {
+          if (mimeType.equals(rawDocument.getMimeType())) {
             return true;
+          }
         }
         return false;
       } else {
@@ -251,8 +246,6 @@ public abstract class AbstractPreparator implements Preparator {
     }
   }
 
-
-
   /**
    * Gibt den Titel des Dokuments zurück.
    * <p>
@@ -261,11 +254,10 @@ public abstract class AbstractPreparator implements Preparator {
    *
    * @return Der Titel des Dokuments.
    */
+  @Override
   public String getTitle() {
     return mTitle;
   }
-
-
 
   /**
    * Setzt den Titel des Dokuments, das gerade Präpariert wird.
@@ -276,30 +268,40 @@ public abstract class AbstractPreparator implements Preparator {
     mTitle = title;
   }
 
-
-
   /**
    * Gibt den von Formatierungsinformation befreiten Inhalt des Dokuments zurück.
    *
    * @return Der ges�uberte Inhalt.
    */
+  @Override
   public String getCleanedContent() {
     return mCleanedContent;
   }
-
-
 
   /**
    * Setzt von Formatierungsinformation befreiten Inhalt des Dokuments, das
    * gerade Präpariert wird.
    *
-   * @param cleanedContent Der ges�uberte Inhalt.
+   * @param The cleanedContent
    */
   protected void setCleanedContent(String cleanedContent) {
     mCleanedContent = cleanedContent;
   }
 
+  /**
+   * @return the mCleanedMetaData
+   */
+  @Override
+  public String getCleanedMetaData() {
+    return mCleanedMetaData;
+  }
 
+  /**
+   * @param mCleanedMetaData the mCleanedMetaData to set
+   */
+  public void setCleanedMetaData(String mCleanedMetaData) {
+    this.mCleanedMetaData = mCleanedMetaData;
+  }
 
   /**
    * Gibt eine Zusammenfassung für das Dokument zurück.
@@ -309,11 +311,10 @@ public abstract class AbstractPreparator implements Preparator {
    *
    * @return Eine Zusammenfassung für das Dokument
    */
+  @Override
   public String getSummary() {
     return mSummary;
   }
-
-
 
   /**
    * Setzt die Zusammenfassung des Dokuments, das gerade Präpariert wird.
@@ -323,8 +324,6 @@ public abstract class AbstractPreparator implements Preparator {
   protected void setSummary(String summary) {
     mSummary = summary;
   }
-
-
 
   /**
    * Gibt die überschriften des Dokuments zurück.
@@ -339,11 +338,10 @@ public abstract class AbstractPreparator implements Preparator {
    *
    * @return Die überschriften des Dokuments.
    */
+  @Override
   public String getHeadlines() {
     return mHeadlines;
   }
-
-
 
   /**
    * Setzt die überschriften, in im Dokument, das gerade Präpariert wird,
@@ -355,8 +353,6 @@ public abstract class AbstractPreparator implements Preparator {
     mHeadlines = headlines;
   }
 
-
-
   /**
    * Gibt den Pfad zurück, über den das Dokument zu erreichen ist.
    * <p>
@@ -364,11 +360,10 @@ public abstract class AbstractPreparator implements Preparator {
    *
    * @return Der Pfad, über den das Dokument zu erreichen ist.
    */
+  @Override
   public PathElement[] getPath() {
     return mPath;
   }
-
-
 
   /**
    * Setzt den Pfad, über den das Dokument zu erreichen ist.
@@ -379,7 +374,6 @@ public abstract class AbstractPreparator implements Preparator {
     mPath = path;
   }
 
-
   /**
    * Gets additional fields that should be indexed.
    * <p>
@@ -387,10 +381,10 @@ public abstract class AbstractPreparator implements Preparator {
    * 
    * @return The additional fields or <code>null</code>.
    */
+  @Override
   public Map getAdditionalFields() {
     return mAdditionalFieldMap;
   }
-
 
   /**
    * Adds an additional field to the current document.
@@ -406,11 +400,12 @@ public abstract class AbstractPreparator implements Preparator {
     }
     mAdditionalFieldMap.put(fieldName, fieldValue);
   }
-  
+
   /** 
    * Gets the priority of the preparator
    * @return int the priority
    */
+  @Override
   public int getPriority() {
     return mPriority;
   }
@@ -419,6 +414,7 @@ public abstract class AbstractPreparator implements Preparator {
    * Sets the priority of the preparator
    * @param priority read from config or default value settings
    */
+  @Override
   public void setPriority(int priority) {
     this.mPriority = priority;
   }
@@ -426,6 +422,7 @@ public abstract class AbstractPreparator implements Preparator {
   /**
    * Release all ressources used for handling a document.
    */
+  @Override
   public void cleanUp() {
     mTitle = null;
     mCleanedContent = null;
@@ -443,7 +440,7 @@ public abstract class AbstractPreparator implements Preparator {
    * @param maxPartsUsed number of partsused for concatenation
    * @return the resulting string whith all single parts concatenated
    */
-   protected String concatenateStringParts(Vector<String> parts, int maxPartsUsed) {
+  protected String concatenateStringParts(ArrayList<String> parts, int maxPartsUsed) {
 
     String result = "";
 
@@ -464,7 +461,7 @@ public abstract class AbstractPreparator implements Preparator {
     }
     return result;
   }
-  
+
   /**
    * Frees all resources reserved by the preparator.
    * <p>
@@ -473,7 +470,7 @@ public abstract class AbstractPreparator implements Preparator {
    * 
    * @throws RegainException If freeing the resources failed.
    */
+  @Override
   public void close() throws RegainException {
   }
-
 }

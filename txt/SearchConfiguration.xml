@@ -102,7 +102,7 @@
        | "field:"-operator. Read the lucene query syntax for details:
        | http://jakarta.apache.org/lucene/docs/queryparsersyntax.html
        +-->
-      <searchFieldList>content title headlines location filename</searchFieldList>
+      <searchFieldList>content title metadata headlines location filename</searchFieldList>
 
       <!--
        | The SearchAccessController to use.

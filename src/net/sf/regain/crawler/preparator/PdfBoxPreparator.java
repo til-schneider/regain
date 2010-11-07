@@ -21,14 +21,15 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-10-13 22:18:19 +0200 (Di, 13 Okt 2009) $
+ *     $Date: 2010-11-07 16:26:47 +0100 (So, 07 Nov 2010) $
  *   $Author: thtesche $
- * $Revision: 414 $
+ * $Revision: 466 $
  */
 package net.sf.regain.crawler.preparator;
 
 import java.io.InputStream;
 import java.io.IOException;
+import org.apache.log4j.Logger;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.crawler.document.AbstractPreparator;
@@ -51,6 +52,9 @@ import org.apache.pdfbox.util.PDFTextStripper;
  */
 public class PdfBoxPreparator extends AbstractPreparator {
 
+  /** The logger for this class */
+  private static Logger mLog = Logger.getLogger(PdfBoxPreparator.class);
+
   /**
    * Creates a new instance of PdfBoxPreparator.
    *
@@ -59,7 +63,6 @@ public class PdfBoxPreparator extends AbstractPreparator {
   public PdfBoxPreparator() throws RegainException {
     super("application/pdf");
   }
-
 
   /**
    * Präpariert ein Dokument für die Indizierung.
@@ -97,33 +100,57 @@ public class PdfBoxPreparator extends AbstractPreparator {
 
       setCleanedContent(stripper.getText(pdfDocument).replaceAll("visiblespace", " "));
 
-      // Get the title
-      // NOTE: There is more information that could be read from a PFD-Dokument.
-      //       See org.pdfbox.searchengine.lucene.LucenePDFDocument for details.
+      // Get the meta data
       PDDocumentInformation info = pdfDocument.getDocumentInformation();
+      StringBuilder metaData = new StringBuilder();
+      metaData.append("p.");
+      metaData.append(Integer.toString(pdfDocument.getNumberOfPages()));
+      metaData.append(" ");
 
-      if( info.getTitle() != null ) {
+      // Check if fields are null
+      if (info.getAuthor() != null) {
+        metaData.append(info.getAuthor());
+        metaData.append(" ");
+      }
+      if (info.getSubject() != null) {
+        metaData.append(info.getSubject());
+        metaData.append(" ");
+      }
+      if (info.getKeywords() != null) {
+        metaData.append(info.getKeywords());
+        metaData.append(" ");
+      }
+
+      if (info.getTitle() != null) {
         setTitle(info.getTitle());
       }
-    }
-    catch (CryptographyException exc) {
+
+      setCleanedMetaData(metaData.toString());
+      if (mLog.isDebugEnabled()) {
+        mLog.debug("Extracted meta data ::" + getCleanedMetaData()
+                + ":: from " + rawDocument.getUrl());
+      }
+
+    } catch (CryptographyException exc) {
       throw new RegainException("Error decrypting document: " + url, exc);
-    }
-    catch (InvalidPasswordException exc) {
+    } catch (InvalidPasswordException exc) {
       // They didn't supply a password and the default of "" was wrong.
       throw new RegainException("Document is encrypted: " + url, exc);
-    }
-    catch (IOException exc) {
+    } catch (IOException exc) {
       throw new RegainException("Error reading document: " + url, exc);
-    }
-    finally {
+    } finally {
       if (stream != null) {
-        try { stream.close(); } catch (Exception exc) {}
+        try {
+          stream.close();
+        } catch (Exception exc) {
+        }
       }
       if (pdfDocument != null) {
-        try { pdfDocument.close(); } catch (Exception exc) {}
+        try {
+          pdfDocument.close();
+        } catch (Exception exc) {
+        }
       }
     }
   }
-
 }

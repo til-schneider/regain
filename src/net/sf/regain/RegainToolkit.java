@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2010-09-25 18:32:21 +0200 (Sa, 25 Sep 2010) $
+ *     $Date: 2010-10-09 21:36:26 +0200 (Sa, 09 Okt 2010) $
  *   $Author: thtesche $
- * $Revision: 458 $
+ * $Revision: 461 $
  */
 package net.sf.regain;
 
@@ -58,6 +58,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import jcifs.smb.SmbFile;
@@ -71,6 +72,7 @@ import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;
+import org.apache.lucene.util.Version;
 
 /**
  * Enthält Hilfsmethoden, die sowohl vom Crawler als auch von der Suchmaske
@@ -82,29 +84,21 @@ public class RegainToolkit {
 
   /** The encoding used for storing URLs in the index */
   public static final String INDEX_ENCODING = "UTF-8";
-
   /**
    * Gibt an, ob die Worte, die der Analyzer identifiziert ausgegeben werden
    * sollen.
    */
   private static final boolean ANALYSE_ANALYZER = false;
-
   /** The number of bytes in a kB (kilo byte). */
   private static final int SIZE_KB = 1024;
-
   /** The number of bytes in a MB (mega byte). */
   private static final int SIZE_MB = 1024 * 1024;
-
   /** The number of bytes in a GB (giga byte). */
   private static final int SIZE_GB = 1024 * 1024 * 1024;
-
   /** The cached system's default encoding. */
   private static String mSystemDefaultEncoding;
-
   /** Der gecachte, systemspeziefische Zeilenumbruch. */
   private static String mLineSeparator;
-
-
 
   /**
    * Löscht ein Verzeichnis mit allen Unterverzeichnissen und -dateien.
@@ -114,7 +108,7 @@ public class RegainToolkit {
    * @throws RegainException Wenn das Lï¿½schen fehl schlug.
    */
   public static void deleteDirectory(File dir) throws RegainException {
-    if (! dir.exists()) {
+    if (!dir.exists()) {
       return; // Nothing to do
     }
 
@@ -125,21 +119,19 @@ public class RegainToolkit {
         if (children[i].isDirectory()) {
           deleteDirectory(children[i]);
         } else {
-          if (! children[i].delete()) {
+          if (!children[i].delete()) {
             throw new RegainException("Deleting " + children[i].getAbsolutePath()
-              + " failed!");
+                    + " failed!");
           }
         }
       }
     }
 
     // Delete self
-    if (! dir.delete()) {
+    if (!dir.delete()) {
       throw new RegainException("Deleting " + dir.getAbsolutePath() + " failed!");
     }
   }
-
-
 
   /**
    * Writes all data from the reader to the writer.
@@ -161,8 +153,6 @@ public class RegainToolkit {
     }
   }
 
-
-
   /**
    * Schreibt alle Daten, die der InputStream liefert in den OutputStream.
    * <p>
@@ -183,7 +173,6 @@ public class RegainToolkit {
     }
   }
 
-
   /**
    * Copies a file.
    *
@@ -199,22 +188,25 @@ public class RegainToolkit {
       out = new FileOutputStream(to);
 
       RegainToolkit.pipe(in, out);
-    }
-    catch (IOException exc) {
+    } catch (IOException exc) {
       throw new RegainException("Copying file from " + from.getAbsolutePath()
-        + " to " + to.getAbsolutePath() + " failed", exc);
-    }
-    finally {
+              + " to " + to.getAbsolutePath() + " failed", exc);
+    } finally {
       if (out != null) {
-        try { out.close(); } catch (IOException exc) {}
+        try {
+          out.close();
+        } catch (IOException exc) {
+        }
       }
       if (in != null) {
-        try { in.close(); } catch (IOException exc) {}
+        try {
+          in.close();
+        } catch (IOException exc) {
+        }
       }
     }
   }
-  
-  
+
   /**
    * Copies a directory.
    * 
@@ -225,9 +217,8 @@ public class RegainToolkit {
    * @throws RegainException If copying the index failed.
    */
   public static void copyDirectory(File fromDir, File toDir,
-    boolean copySubDirs, String excludeExtension)
-    throws RegainException
-  {
+          boolean copySubDirs, String excludeExtension)
+          throws RegainException {
     File[] indexFiles = fromDir.listFiles();
     for (int i = 0; i < indexFiles.length; i++) {
       String fileName = indexFiles[i].getName();
@@ -237,13 +228,11 @@ public class RegainToolkit {
           targetFile.mkdir();
           copyDirectory(indexFiles[i], targetFile, copySubDirs, excludeExtension);
         }
-      }
-      else if ((excludeExtension == null) || (! fileName.endsWith(excludeExtension))) {
+      } else if ((excludeExtension == null) || (!fileName.endsWith(excludeExtension))) {
         RegainToolkit.copyFile(indexFiles[i], targetFile);
       }
     }
   }
-
 
   /**
    * Copies a directory.
@@ -254,13 +243,11 @@ public class RegainToolkit {
    * @throws RegainException If copying the index failed.
    */
   public static void copyDirectory(File fromDir, File toDir,
-    boolean copySubDirs)
-    throws RegainException
-  {
+          boolean copySubDirs)
+          throws RegainException {
     copyDirectory(fromDir, toDir, copySubDirs, null);
   }
-  
-  
+
   /**
    * Reads a String from a stream.
    * 
@@ -270,8 +257,7 @@ public class RegainToolkit {
    * @throws RegainException If reading the String failed.
    */
   public static String readStringFromStream(InputStream stream, String charsetName)
-    throws RegainException
-  {
+          throws RegainException {
     InputStreamReader reader = null;
     try {
       if (charsetName == null) {
@@ -287,18 +273,18 @@ public class RegainToolkit {
       writer.close();
 
       return writer.toString();
-    }
-    catch (IOException exc) {
+    } catch (IOException exc) {
       throw new RegainException("Reading String from stream failed", exc);
-    }
-    finally {
+    } finally {
       if (reader != null) {
-        try { reader.close(); } catch (IOException exc) {}
+        try {
+          reader.close();
+        } catch (IOException exc) {
+        }
       }
     }
   }
 
-  
   /**
    * Reads a String from a stream.
    * 
@@ -307,11 +293,9 @@ public class RegainToolkit {
    * @throws RegainException If reading the String failed.
    */
   public static String readStringFromStream(InputStream stream)
-    throws RegainException
-  {
+          throws RegainException {
     return readStringFromStream(stream, null);
   }
-  
 
   /**
    * Liest einen String aus einer Datei.
@@ -323,7 +307,7 @@ public class RegainToolkit {
    * @throws RegainException Wenn das Lesen fehl schlug.
    */
   public static String readStringFromFile(File file) throws RegainException {
-    if (! file.exists()) {
+    if (!file.exists()) {
       return null;
     }
 
@@ -331,18 +315,18 @@ public class RegainToolkit {
     try {
       stream = new FileInputStream(file);
       return readStringFromStream(stream);
-    }
-    catch (IOException exc) {
+    } catch (IOException exc) {
       throw new RegainException("Reading String from " + file.getAbsolutePath()
-          + "failed", exc);
-    }
-    finally {
+              + "failed", exc);
+    } finally {
       if (stream != null) {
-        try { stream.close(); } catch (IOException exc) {}
+        try {
+          stream.close();
+        } catch (IOException exc) {
+        }
       }
     }
   }
-
 
   /**
    * Reads a word list from a file.
@@ -353,7 +337,7 @@ public class RegainToolkit {
    * @throws RegainException If reading failed.
    */
   public static String[] readListFromFile(File file) throws RegainException {
-    if (! file.exists()) {
+    if (!file.exists()) {
       return null;
     }
 
@@ -373,21 +357,24 @@ public class RegainToolkit {
       list.toArray(asArr);
 
       return asArr;
-    }
-    catch (IOException exc) {
+    } catch (IOException exc) {
       throw new RegainException("Reading word list from " + file.getAbsolutePath()
-        + "failed", exc);
-    }
-    finally {
+              + "failed", exc);
+    } finally {
       if (buffReader != null) {
-        try { buffReader.close(); } catch (IOException exc) {}
+        try {
+          buffReader.close();
+        } catch (IOException exc) {
+        }
       }
       if (reader != null) {
-        try { reader.close(); } catch (IOException exc) {}
+        try {
+          reader.close();
+        } catch (IOException exc) {
+        }
       }
     }
   }
-
 
   /**
    * Writes data to a file
@@ -398,24 +385,23 @@ public class RegainToolkit {
    * @throws RegainException When writing failed
    */
   public static void writeToFile(byte[] data, File file)
-    throws RegainException
-  {
+          throws RegainException {
     FileOutputStream stream = null;
     try {
       stream = new FileOutputStream(file);
       stream.write(data);
       stream.close();
-    }
-    catch (IOException exc) {
+    } catch (IOException exc) {
       throw new RegainException("Writing file failed: " + file.getAbsolutePath(), exc);
-    }
-    finally {
+    } finally {
       if (stream != null) {
-        try { stream.close(); } catch (IOException exc) {}
+        try {
+          stream.close();
+        } catch (IOException exc) {
+        }
       }
     }
   }
-
 
   /**
    * Writes a String into a file.
@@ -426,11 +412,9 @@ public class RegainToolkit {
    * @throws RegainException If writing failed.
    */
   public static void writeToFile(String text, File file)
-    throws RegainException
-  {
-    writeListToFile(new String[] { text }, file);
+          throws RegainException {
+    writeListToFile(new String[]{text}, file);
   }
-
 
   /**
    * Writes a word list in a file. Each item of the list will be written in a
@@ -442,8 +426,7 @@ public class RegainToolkit {
    * @throws RegainException If writing failed.
    */
   public static void writeListToFile(String[] wordList, File file)
-    throws RegainException
-  {
+          throws RegainException {
     if ((wordList == null) || (wordList.length == 0)) {
       // Nothing to do
       return;
@@ -458,22 +441,22 @@ public class RegainToolkit {
       for (int i = 0; i < wordList.length; i++) {
         printer.println(wordList[i]);
       }
-    }
-    catch (IOException exc) {
+    } catch (IOException exc) {
       throw new RegainException("Writing word list to " + file.getAbsolutePath()
-        + " failed", exc);
-    }
-    finally {
+              + " failed", exc);
+    } finally {
       if (printer != null) {
         printer.close();
       }
       if (stream != null) {
-        try { stream.close(); } catch (IOException exc) {}
+        try {
+          stream.close();
+        } catch (IOException exc) {
+        }
       }
     }
   }
 
-  
   /**
    * Gets the size of a directory with all files.
    * 
@@ -495,7 +478,6 @@ public class RegainToolkit {
     return size;
   }
 
-
   /**
    * Returns the destinct values of one or more fields.
    * <p>
@@ -514,9 +496,8 @@ public class RegainToolkit {
    *         writing a cache file failed.
    */
   public static HashMap readFieldValues(IndexReader indexReader,
-      String[] fieldNameArr, File indexDir)
-      throws RegainException
-  {
+          String[] fieldNameArr, File indexDir)
+          throws RegainException {
     // Create the result map
     HashMap resultMap = new HashMap();
 
@@ -550,10 +531,10 @@ public class RegainToolkit {
     fieldNameArr = null;
 
     // Read the terms
-    if (! fieldsToReadSet.isEmpty()) {
+    if (!fieldsToReadSet.isEmpty()) {
       try {
         TermEnum termEnum = indexReader.terms();
-        while(termEnum.next()) {
+        while (termEnum.next()) {
           Term term = termEnum.term();
           String field = term.field();
           if (fieldsToReadSet.contains(field)) {
@@ -592,7 +573,6 @@ public class RegainToolkit {
     return resultMap;
   }
 
-
   /**
    * Creates an analyzer that is used both from the crawler and the search mask.
    * It is important that both use the same analyzer which is the reason for
@@ -608,9 +588,8 @@ public class RegainToolkit {
    * @throws RegainException If the creation failed.
    */
   public static Analyzer createAnalyzer(String analyzerType,
-    String[] stopWordList, String[] exclusionList, String[] untokenizedFieldNames)
-    throws RegainException
-  {
+          String[] stopWordList, String[] exclusionList, String[] untokenizedFieldNames)
+          throws RegainException {
     if (analyzerType == null) {
       throw new RegainException("No analyzer type specified!");
     }
@@ -632,25 +611,41 @@ public class RegainToolkit {
       throw new RegainException("Analyzer class not found: " + analyzerClassName, exc);
     }
 
+    // Extract stopword 'Set'. Since lucene 3.x
+    Set<String> stopWordSet = new HashSet<String>();
+    stopWordSet.addAll(Arrays.asList(stopWordList));
+
     // Create an instance
     Analyzer analyzer;
     if ((stopWordList != null) && (stopWordList.length != 0)) {
+      // Copy
       Constructor ctor;
       try {
         ctor = analyzerClass.getConstructor(
-            new Class[] { stopWordList.getClass() });
+                new Class[]{Version.class, Set.class});
       } catch (Throwable thr) {
         throw new RegainException("Analyzer " + analyzerType
-            + " does not support stop words");
+                + " does not support stop words", thr);
       }
       try {
-        analyzer = (Analyzer) ctor.newInstance(new Object[] { stopWordList });
+        analyzer = (Analyzer) ctor.newInstance(new Object[]{Version.LUCENE_30, stopWordSet});
       } catch (Throwable thr) {
         throw new RegainException("Creating analyzer instance failed", thr);
       }
+
     } else {
+      // instantiate analyser whitout stopwords.
       try {
-        analyzer = (Analyzer) analyzerClass.newInstance();
+        Constructor analyzerWithoutStopWords;
+        try {
+          analyzerWithoutStopWords = analyzerClass.getConstructor(
+                  new Class[]{Version.class});
+        } catch (Throwable thr) {
+          throw new RegainException("Analyzer " + analyzerType
+                  + " is not supported.", thr);
+        }
+
+        analyzer = (Analyzer) analyzerWithoutStopWords.newInstance(new Object[]{Version.LUCENE_30});
       } catch (Throwable thr) {
         throw new RegainException("Creating analyzer instance failed", thr);
       }
@@ -662,14 +657,14 @@ public class RegainToolkit {
       Method setter;
       try {
         setter = analyzerClass.getMethod("setStemExclusionTable",
-            new Class[] { exclusionList.getClass() });
+                new Class[]{exclusionList.getClass()});
       } catch (Throwable thr) {
         throw new RegainException("Analyzer " + analyzerType
-            + " does not support exclusion lists");
+                + " does not support exclusion lists");
       }
 
       try {
-        setter.invoke(analyzer, new Object[] { exclusionList });
+        setter.invoke(analyzer, new Object[]{exclusionList});
       } catch (Throwable thr) {
         throw new RegainException("Applying exclusion list failed.", thr);
       }
@@ -682,7 +677,6 @@ public class RegainToolkit {
     }
     return analyzer;
   }
-
 
   /**
    * Erzeugt einen Analyzer, der die Aufrufe an einen eingebetteten Analyzer
@@ -697,6 +691,7 @@ public class RegainToolkit {
    */
   private static Analyzer createAnalysingAnalyzer(final Analyzer nestedAnalyzer) {
     return new Analyzer() {
+
       public TokenStream tokenStream(String fieldName, Reader reader) {
         // NOTE: For Analyzation we have to read the reader twice:
         //       Once for the analyzation and second for the returned TokenStream
@@ -711,11 +706,11 @@ public class RegainToolkit {
 
           // Analyze the call
           TokenStream stream = nestedAnalyzer.tokenStream(fieldName,
-            new StringReader(asString));
+                  new StringReader(asString));
           TermAttribute termAtt = (TermAttribute) stream.addAttribute(TermAttribute.class);
-          
+
           System.out.println("Tokens for '" + asString + "':");
-          while(stream.incrementToken()) {
+          while (stream.incrementToken()) {
             System.out.println(" '" + termAtt.term() + "'");
           }
           stream.reset();
@@ -723,8 +718,7 @@ public class RegainToolkit {
           // Do the call a second time and return the result this time
           // Old behaviour
           // return nestedAnalyzer.tokenStream(fieldName, new StringReader(asString));
-        }
-        catch (IOException exc) {
+        } catch (IOException exc) {
           System.out.println("exc: " + exc);
 
           return null;
@@ -768,7 +762,6 @@ public class RegainToolkit {
     return target.toString();
   }
 
-
   /**
    * Replaces in a string all occurences of a list of patterns with replacements.
    * <p>
@@ -789,12 +782,11 @@ public class RegainToolkit {
    *         by <code>replacement</code>.
    */
   public static String replace(String source, String[] patternArr,
-      String[] replacementArr)
-  {
+          String[] replacementArr) {
     if (patternArr.length != replacementArr.length) {
       throw new IllegalArgumentException("patternArr and replacementArr must "
-      		+ "have the same length: " + patternArr.length + " != "
-      		+ replacementArr.length);
+              + "have the same length: " + patternArr.length + " != "
+              + replacementArr.length);
     }
 
     // Check whether the patterns occurs in the source at all
@@ -842,7 +834,6 @@ public class RegainToolkit {
     return target.toString();
   }
 
-
   /**
    * Gibt einen Wert in Prozent mit zwei Nachkommastellen zurï¿½ck.
    *
@@ -856,7 +847,6 @@ public class RegainToolkit {
     return format.format(value);
   }
 
-  
   /**
    * Gibt einen fï¿½r den Menschen gut lesbaren String fï¿½r eine Anzahl Bytes
    * zurï¿½ck.
@@ -867,7 +857,6 @@ public class RegainToolkit {
   public static String bytesToString(long bytes) {
     return bytesToString(bytes, Locale.ENGLISH);
   }
-
 
   /**
    * Gibt einen fï¿½r den Menschen gut lesbaren String fï¿½r eine Anzahl Bytes
@@ -881,7 +870,6 @@ public class RegainToolkit {
     return bytesToString(bytes, 2, locale);
   }
 
-
   /**
    * Gibt einen fï¿½r den Menschen gut lesbaren String fï¿½r eine Anzahl Bytes
    * zurï¿½ck.
@@ -893,7 +881,6 @@ public class RegainToolkit {
   public static String bytesToString(long bytes, int fractionDigits) {
     return bytesToString(bytes, fractionDigits, Locale.ENGLISH);
   }
-  
 
   /**
    * Gibt einen fï¿½r den Menschen gut lesbaren String fï¿½r eine Anzahl Bytes
@@ -911,16 +898,13 @@ public class RegainToolkit {
     if (bytes > SIZE_GB) {
       factor = SIZE_GB;
       unit = "GB";
-    }
-    else if (bytes > SIZE_MB) {
+    } else if (bytes > SIZE_MB) {
       factor = SIZE_MB;
       unit = "MB";
-    }
-    else if (bytes > SIZE_KB) {
+    } else if (bytes > SIZE_KB) {
       factor = SIZE_KB;
       unit = "kB";
-    }
-    else {
+    } else {
       return bytes + " Byte";
     }
 
@@ -933,7 +917,6 @@ public class RegainToolkit {
     return asString + " " + unit;
   }
 
-
   /**
    * Gets a human readable String for a time.
    *
@@ -945,7 +928,7 @@ public class RegainToolkit {
       // This is no time
       return "?";
     }
-    
+
     long millis = time % 1000;
     time /= 1000;
     long secs = time % 60;
@@ -956,14 +939,12 @@ public class RegainToolkit {
 
     if (hours != 0) {
       return hours + ":"
-        + ((mins > 9) ? "" : "0") + mins + ":"
-        + ((secs > 9) ? "" : "0") + secs + " h";
-    }
-    else if (mins != 0) {
+              + ((mins > 9) ? "" : "0") + mins + ":"
+              + ((secs > 9) ? "" : "0") + secs + " h";
+    } else if (mins != 0) {
       return mins + ":"
-        + ((secs > 9) ? "" : "0") + secs + " min";
-    }
-    else if (secs != 0) {
+              + ((secs > 9) ? "" : "0") + secs + " min";
+    } else if (secs != 0) {
       NumberFormat format = NumberFormat.getInstance();
       format.setMinimumFractionDigits(2);
       format.setMaximumFractionDigits(2);
@@ -971,12 +952,10 @@ public class RegainToolkit {
       String asString = format.format(secs + millis / 1000.0);
 
       return asString + " sec";
-    }
-    else {
+    } else {
       return millis + " millis";
     }
   }
-
 
   /**
    * Konvertiert ein Date-Objekt in einen String mit dem Format
@@ -1037,7 +1016,6 @@ public class RegainToolkit {
     return buffer.toString();
   }
 
-
   /**
    * Konvertiert einen String mit dem Format "YYYY-MM-DD HH:MM" in ein Date-Objekt.
    *
@@ -1047,29 +1025,27 @@ public class RegainToolkit {
    * @see #lastModifiedToString(Date)
    */
   public static Date stringToLastModified(String asString)
-    throws RegainException
-  {
+          throws RegainException {
     Calendar cal = Calendar.getInstance();
 
     try {
       // Format: "YYYY-MM-DD HH:MM"
 
-      int year   = Integer.parseInt(asString.substring(0, 4));
+      int year = Integer.parseInt(asString.substring(0, 4));
       cal.set(Calendar.YEAR, year);
-      int month  = Integer.parseInt(asString.substring(5, 7));
+      int month = Integer.parseInt(asString.substring(5, 7));
       cal.set(Calendar.MONTH, month - 1); // -1: In the Date class january is 0
-      int day    = Integer.parseInt(asString.substring(8, 10));
+      int day = Integer.parseInt(asString.substring(8, 10));
       cal.set(Calendar.DAY_OF_MONTH, day);
 
-      int hour   = Integer.parseInt(asString.substring(11, 13));
+      int hour = Integer.parseInt(asString.substring(11, 13));
       cal.set(Calendar.HOUR_OF_DAY, hour);
       int minute = Integer.parseInt(asString.substring(14, 16));
       cal.set(Calendar.MINUTE, minute);
       cal.set(Calendar.SECOND, 0);
-    }
-    catch (Throwable thr) {
-      throw new RegainException("Last-modified-string has not the format" +
-        "'YYYY-MM-DD HH:MM': " + asString, thr);
+    } catch (Throwable thr) {
+      throw new RegainException("Last-modified-string has not the format"
+              + "'YYYY-MM-DD HH:MM': " + asString, thr);
     }
 
     return cal.getTime();
@@ -1085,7 +1061,6 @@ public class RegainToolkit {
   public static String[] splitString(String str, String delim) {
     return splitString(str, delim, false);
   }
-
 
   /**
    * Splits a String into a string array.
@@ -1108,7 +1083,6 @@ public class RegainToolkit {
     return searchFieldArr;
   }
 
-
   /**
    * Gibt den systemspeziefischen Zeilenumbruch zurï¿½ck.
    *
@@ -1122,7 +1096,6 @@ public class RegainToolkit {
     return mLineSeparator;
   }
 
-  
   /**
    * Returns the system's default encoding.
    *
@@ -1135,7 +1108,6 @@ public class RegainToolkit {
 
     return mSystemDefaultEncoding;
   }
-  
 
   /**
    * Checks whether the given String contains whitespace.
@@ -1149,10 +1121,9 @@ public class RegainToolkit {
         return true;
       }
     }
-    
+
     return false;
   }
-
 
   /**
    * Checks an array of group names.
@@ -1163,26 +1134,24 @@ public class RegainToolkit {
    * @throws RegainException If the array of group names is not valid.
    */
   public static void checkGroupArray(Object accessController, String[] groupArr)
-    throws RegainException
-  {
+          throws RegainException {
     if (groupArr == null) {
       // Check for null
-      throw new RegainException("Access controller " +
-          accessController.getClass().getName() + " returned illegal " +
-          "group array: null");
+      throw new RegainException("Access controller "
+              + accessController.getClass().getName() + " returned illegal "
+              + "group array: null");
     } else {
       // Check for whitespace
       for (int i = 0; i < groupArr.length; i++) {
         if (RegainToolkit.containsWhitespace(groupArr[i])) {
-          throw new RegainException("Access controller " +
-              accessController.getClass().getName() + " returned illegal " +
-              "group name containing whitespace: '" + groupArr[i] + "'");
+          throw new RegainException("Access controller "
+                  + accessController.getClass().getName() + " returned illegal "
+                  + "group name containing whitespace: '" + groupArr[i] + "'");
         }
       }
     }
   }
 
- 
   /**
    * Loads a class and creates an instance.
    * 
@@ -1195,9 +1164,8 @@ public class RegainToolkit {
    *         failed or if the class is no instance of the given super class. 
    */
   public static Object createClassInstance(String className,
-    Class superClass, ClassLoader classLoader)
-    throws RegainException
-  {
+          Class superClass, ClassLoader classLoader)
+          throws RegainException {
     // Load the class
     Class clazz;
     try {
@@ -1206,31 +1174,28 @@ public class RegainToolkit {
       } else {
         clazz = classLoader.loadClass(className);
       }
-    }
-    catch (ClassNotFoundException exc) {
+    } catch (ClassNotFoundException exc) {
       throw new RegainException("The class '" + className
-        + "' does not exist", exc);
+              + "' does not exist", exc);
     }
 
     // Create the instance
     Object obj;
     try {
       obj = clazz.newInstance();
-    }
-    catch (Exception exc) {
+    } catch (Exception exc) {
       throw new RegainException("Error creating instance of class "
-        + className, exc);
+              + className, exc);
     }
 
     // Check the instance
-    if (! superClass.isInstance(obj)) {
-      throw new RegainException("The class " + className + " does not " +
-        "implement " + superClass.getName());
+    if (!superClass.isInstance(obj)) {
+      throw new RegainException("The class " + className + " does not "
+              + "implement " + superClass.getName());
     }
 
     return obj;
   }
-
 
   /**
    * Loads a class and creates an instance.
@@ -1244,32 +1209,29 @@ public class RegainToolkit {
    *         failed or if the class is no instance of the given super class. 
    */
   public static Object createClassInstance(String className, Class superClass,
-    String jarFileName)
-    throws RegainException
-  {
+          String jarFileName)
+          throws RegainException {
     // Create a class loader for the jar file
     ClassLoader classLoader = null;
     if (jarFileName != null) {
       File jarFile = new File(jarFileName);
-      if (! jarFile.exists()) {
-        throw new RegainException("Jar file does not exist: " +
-            jarFile.getAbsolutePath());
+      if (!jarFile.exists()) {
+        throw new RegainException("Jar file does not exist: "
+                + jarFile.getAbsolutePath());
       }
-      
+
       try {
-        classLoader = new URLClassLoader(new URL[] { jarFile.toURI().toURL() }, superClass.getClassLoader());
-      }
-      catch (MalformedURLException exc) {
-        throw new RegainException("Creating class loader for " +
-            "jar file failed: " + jarFile.getAbsolutePath(),
-            exc);
+        classLoader = new URLClassLoader(new URL[]{jarFile.toURI().toURL()}, superClass.getClassLoader());
+      } catch (MalformedURLException exc) {
+        throw new RegainException("Creating class loader for "
+                + "jar file failed: " + jarFile.getAbsolutePath(),
+                exc);
       }
     }
-    
+
     // Create the instance
     return createClassInstance(className, superClass, classLoader);
   }
-
 
   /**
    * Gets the file name that is described by a URL with the <code>file://</code>
@@ -1280,9 +1242,9 @@ public class RegainToolkit {
    * @throws RegainException If the URL's protocol isn't <code>file://</code>.
    */
   public static String urlToFileName(String url) throws RegainException {
-    if (! url.startsWith("file://")) {
+    if (!url.startsWith("file://")) {
       throw new RegainException("URL must have the file:// protocol to get a "
-        + "File for it");
+              + "File for it");
     }
 
     // Cut the file://
@@ -1342,7 +1304,7 @@ public class RegainToolkit {
     // Cut file name from path
     if (lastSlash > 0 && lastSlash + 1 < url.length()) {
       String fileName = url.substring(lastSlash + 1);
-      String path = url.substring(0, lastSlash+1);
+      String path = url.substring(0, lastSlash + 1);
       path = removeProtocol(path);
       pfPair.setFilename(fileName);
       pfPair.setPath(path);
@@ -1386,7 +1348,7 @@ public class RegainToolkit {
     return new File(urlToFileName(url));
   }
 
- /**
+  /**
    * Gets the smbfile that is described by a URL with the <code>smb://</code>
    * protocol.
    *
@@ -1395,7 +1357,7 @@ public class RegainToolkit {
    * @throws RegainException If the URL's protocol isn't <code>smb://</code>.
    */
   public static SmbFile urlToSmbFile(String url) throws RegainException {
-    
+
     try {
       return new SmbFile(urlToSmbFileName(url));
     } catch (MalformedURLException urlEx) {
@@ -1403,7 +1365,7 @@ public class RegainToolkit {
     }
   }
 
-    /**
+  /**
    * Gets the smb file name that is described by a URL with the <code>smb://</code>
    * protocol.
    *
@@ -1412,9 +1374,9 @@ public class RegainToolkit {
    * @throws RegainException If the URL's protocol isn't <code>smb://</code>.
    */
   public static String urlToSmbFileName(String url) throws RegainException {
-    if (! url.startsWith("smb://")) {
+    if (!url.startsWith("smb://")) {
       throw new RegainException("URL must have the smb:// protocol to get a "
-        + "File for it");
+              + "File for it");
     }
     // Replace URL-encoded special characters
     return urlDecode(url, INDEX_ENCODING);
@@ -1428,8 +1390,7 @@ public class RegainToolkit {
    * @throws RegainException If URL-encoding failed. 
    */
   public static String fileNameToUrl(String fileName)
-    throws RegainException
-  {
+          throws RegainException {
     // Replace special characters
     fileName = urlEncode(fileName, INDEX_ENCODING);
 
@@ -1442,7 +1403,6 @@ public class RegainToolkit {
     return "file://" + fileName;
   }
 
-
   /**
    * Returns the URL of a file.
    *
@@ -1451,11 +1411,9 @@ public class RegainToolkit {
    * @throws RegainException If URL-encoding failed. 
    */
   public static String fileToUrl(File file)
-    throws RegainException
-  {
+          throws RegainException {
     return fileNameToUrl(file.getAbsolutePath());
   }
-
 
   /**
    * Gets the canonical URL of a file (no symbolic links, normalised names etc).
@@ -1466,24 +1424,22 @@ public class RegainToolkit {
    * @throws RegainException If URL-encoding failed. 
    */
   public static String fileToCanonicalUrl(File file)
-    throws RegainException
-  {
+          throws RegainException {
     String canUrl = null;
-    try{
+    try {
       //This may throw SecurityException
-      canUrl=file.getCanonicalPath();
-    }catch (Exception e){
+      canUrl = file.getCanonicalPath();
+    } catch (Exception e) {
       return null;
-    }  
+    }
     //Canonical url returns "current dir:parh"
-    int pos = canUrl.indexOf(':')+1;
-    if (pos > 0 && pos < canUrl.length()){
+    int pos = canUrl.indexOf(':') + 1;
+    if (pos > 0 && pos < canUrl.length()) {
       canUrl = canUrl.substring(pos);
     }
 
     return fileNameToUrl(canUrl);
   }
-
 
   /**
    * URL-encodes a String. 
@@ -1496,12 +1452,10 @@ public class RegainToolkit {
   public static String urlEncode(String text, String encoding) throws RegainException {
     try {
       return URLEncoder.encode(text, encoding);
-    }
-    catch (UnsupportedEncodingException exc) {
+    } catch (UnsupportedEncodingException exc) {
       throw new RegainException("URL-encoding failed: '" + text + "'", exc);
     }
   }
-
 
   /**
    * URL-decodes a String. 
@@ -1514,24 +1468,23 @@ public class RegainToolkit {
   public static String urlDecode(String text, String encoding) throws RegainException {
     try {
       return URLDecoder.decode(text, encoding);
-    }
-    catch (UnsupportedEncodingException exc) {
+    } catch (UnsupportedEncodingException exc) {
       throw new RegainException("URL-decoding failed: '" + text + "'", exc);
     }
   }
 
   /**
-    * Creates a summary from given content 
-    * <p>
-    * The method returns <code>null</code> if no summary could created
-    *
-    * @param content The content for which the summary is referring to
-    * @param maxLength The maximum length of the created summary
-    * @return The summary (first n characters of content
-    */
-   public static String createSummaryFromContent(String content, int maxLength) {
+   * Creates a summary from given content
+   * <p>
+   * The method returns <code>null</code> if no summary could created
+   *
+   * @param content The content for which the summary is referring to
+   * @param maxLength The maximum length of the created summary
+   * @return The summary (first n characters of content
+   */
+  public static String createSummaryFromContent(String content, int maxLength) {
 
-    if( content.length() > maxLength ) {
+    if (content.length() > maxLength) {
       // cut the content only if it exceeds the max size for the summary
       int lastSpacePos = content.lastIndexOf(' ', maxLength);
 
@@ -1555,33 +1508,31 @@ public class RegainToolkit {
    * @param field The content for which the summary is referring to
    * @return the new field identifier
    */
-  public static String createHighlightedFieldIdent(String fieldName)  {
-    
-    if( fieldName !=null && fieldName.length()>1 )
-      return "highlighted" + fieldName.substring(0,1).toUpperCase() 
+  public static String createHighlightedFieldIdent(String fieldName) {
+
+    if (fieldName != null && fieldName.length() > 1) {
+      return "highlighted" + fieldName.substring(0, 1).toUpperCase()
               + fieldName.substring(1, fieldName.length());
-    else
+    } else {
       return null;
+    }
   }
-  
+
   // inner class WrapperAnalyzer
-  
-  
   /**
    * An analyzer that changes a document in lowercase before delivering
    * it to a nested analyzer. For the field "groups" an analyzer is used that
    * only tokenizes the input without stemming the tokens.
    */
   private static class WrapperAnalyzer extends Analyzer {
-    
+
     /** The analyzer to use for a field that shouldn't be stemmed. */
     private Analyzer mNoStemmingAnalyzer;
     /** The nested analyzer. */
     private Analyzer mNestedAnalyzer;
     /** The names of the fields that should not be tokenized. */
     private HashSet mUntokenizedFieldNames;
-    
-    
+
     /**
      * Creates a new instance of WrapperAnalyzer.
      * 
@@ -1595,11 +1546,10 @@ public class RegainToolkit {
 
       mUntokenizedFieldNames = new HashSet();
       for (int i = 0; i < untokenizedFieldNames.length; i++) {
-          mUntokenizedFieldNames.add(untokenizedFieldNames[i]);
+        mUntokenizedFieldNames.add(untokenizedFieldNames[i]);
       }
     }
-    
-    
+
     /**
      * Creates a TokenStream which tokenizes all the text in the provided
      * Reader.
@@ -1609,23 +1559,19 @@ public class RegainToolkit {
       // NOTE: For security reasons we explicitely check for the groups field
       //       and don't use the mUntokenizedFieldNames for this implicitely
       if (fieldName.equals("groups") || mUntokenizedFieldNames.contains(fieldName)) {
-          useStemming = false;
+        useStemming = false;
       }
 
       if (useStemming) {
-          Reader lowercasingReader = new LowercasingReader(reader);
-          return mNestedAnalyzer.tokenStream(fieldName, lowercasingReader);
+        Reader lowercasingReader = new LowercasingReader(reader);
+        return mNestedAnalyzer.tokenStream(fieldName, lowercasingReader);
       } else {
         return mNoStemmingAnalyzer.tokenStream(fieldName, reader);
       }
     }
-
   } // inner class WrapperAnalyzer
 
-
   // inner class LowercasingReader
-
-
   /**
    * Liest alle Zeichen von einem eingebetteten Reader in Kleinschreibung.
    *
@@ -1635,7 +1581,6 @@ public class RegainToolkit {
 
     /** Der eingebettete Reader. */
     private Reader mNestedReader;
-
 
     /**
      * Erzeugt eine neue LowercasingReader-Instanz.
@@ -1647,7 +1592,6 @@ public class RegainToolkit {
       mNestedReader = nestedReader;
     }
 
-
     /**
      * Schlieï¿½t den eingebetteten Reader.
      *
@@ -1657,7 +1601,6 @@ public class RegainToolkit {
     public void close() throws IOException {
       mNestedReader.close();
     }
-
 
     /**
      * Liest Daten vom eingebetteten Reader und wandelt sie in Kleinschreibung.
@@ -1685,7 +1628,5 @@ public class RegainToolkit {
       // Return the number of chars read
       return charCount;
     }
-
   } // inner class LowercasingReader
-
 }

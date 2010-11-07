@@ -56,7 +56,6 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.MultiSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -222,7 +221,7 @@ public class SearchResultsImpl implements SearchResults {
             String[] searchFieldArr = indexConfigs[k].getSearchFieldList();
             for (int i = 0; i < searchFieldArr.length; i++) {
 
-              QueryParser parser = new QueryParser(Version.LUCENE_CURRENT, searchFieldArr[i], mAnalyzer);
+              QueryParser parser = new QueryParser(Version.LUCENE_30, searchFieldArr[i], mAnalyzer);
               parser.setDefaultOperator(QueryParser.AND_OPERATOR);
               parser.setAllowLeadingWildcard(true);
               Query fieldQuery = parser.parse(queryText);

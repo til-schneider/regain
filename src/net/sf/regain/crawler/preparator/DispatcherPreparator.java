@@ -8,17 +8,13 @@ package net.sf.regain.crawler.preparator;
 
 import java.io.InputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.sf.regain.RegainException;
-// import net.sf.regain.crawler.Profiler;
-// import net.sf.regain.crawler.config.*;
 import net.sf.regain.crawler.config.PreparatorConfig;
-// import net.sf.regain.crawler.config.PreparatorSettings;
 import net.sf.regain.crawler.document.AbstractPreparator;
-// import net.sf.regain.crawler.document.PreparatorFactory;
 import net.sf.regain.crawler.document.RawDocument;
-// import net.sf.regain.crawler.preparator.html.HtmlContentExtractor;
 
 import org.apache.log4j.Logger;
 
@@ -39,7 +35,7 @@ import org.apache.poi.util.LongField;
  */
 public class DispatcherPreparator extends AbstractPreparator {
 
-	// MS office signature just to know qwich one it is for documentary reasons:
+	// MS office signature just to know which one it is for documentary reasons:
 	// public static final long _signature = 0xE11AB1A1E011CFD0L; //MS Office
 	// signature
 	public static final int _signature_offset = 0;
@@ -49,10 +45,10 @@ public class DispatcherPreparator extends AbstractPreparator {
 	// Prreparators
 
 	/** The logger for this class */
-	private static Logger mLog = Logger.getLogger(AbstractPreparator.class);
+	private static Logger mLog = Logger.getLogger(DispatcherPreparator.class);
 
 	/**
-	 * Creates a new instance of WrongLabelPreparator.
+	 * Creates a new instance of DispatcherPreparator.
 	 * 
 	 * @throws RegainException
 	 *             If creating the preparator failed.
@@ -71,6 +67,7 @@ public class DispatcherPreparator extends AbstractPreparator {
 	 * @throws RegainException
 	 *             Wenn die Pr�paration fehl schlug.
 	 */
+  @Override
 	public void init(PreparatorConfig config) throws RegainException {
 		// Read the different Preparator sections of config
 		int secnum = config.getSectionCount();
@@ -108,16 +105,16 @@ public class DispatcherPreparator extends AbstractPreparator {
 		// reads the first 512 byte for verifiying the headerblock
 		try {
 			stream = rawDocument.getContentAsStream();
-			byte[] _data = new byte[POIFSConstants.BIG_BLOCK_SIZE];
+			byte[] _data = new byte[POIFSConstants.SMALLER_BIG_BLOCK_SIZE];
 			int byte_count = IOUtils.readFully(stream, _data);
 
 			// verify if there is enough data
-			if (byte_count != POIFSConstants.BIG_BLOCK_SIZE) {
+			if (byte_count != POIFSConstants.SMALLER_BIG_BLOCK_SIZE) {
 				String type = " byte" + ((byte_count == 1) ? ("") : ("s"));
 
 				throw new IOException("Unable to read entire header; "
 						+ byte_count + type + " read; expected "
-						+ POIFSConstants.BIG_BLOCK_SIZE + " bytes");
+						+ POIFSConstants.SMALLER_BIG_BLOCK_SIZE + " bytes");
 			}
 
 			LongField signature = new LongField(_signature_offset, _data);

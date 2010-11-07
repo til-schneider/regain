@@ -31,7 +31,7 @@ import org.apache.lucene.analysis.TokenStream;
  *
  * @author Til Schneider, www.murfman.de
  */
-public class IteratorTokenStream extends TokenStream {
+public class IteratorTokenStream /*extends TokenStream*/ {
 
   /** An iterator providing Strings. */
   private Iterator mIter;
@@ -48,7 +48,6 @@ public class IteratorTokenStream extends TokenStream {
 
 
   // overridden
-  @Override
   public Token next() throws IOException {
     if (mIter.hasNext()) {
       String text = (String) mIter.next();

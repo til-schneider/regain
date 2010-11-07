@@ -31,7 +31,7 @@ import java.io.File;
 import java.io.IOException;
 
 import java.text.DecimalFormat;
-import java.util.Vector;
+import java.util.ArrayList;
 import net.sf.regain.RegainException;
 import net.sf.regain.crawler.document.AbstractPreparator;
 import net.sf.regain.crawler.document.RawDocument;
@@ -70,12 +70,13 @@ public class GenericAudioPreparator extends AbstractPreparator {
    *
    * @throws RegainException if preparation goes wrong
    */
+  @Override
   public void prepare(RawDocument rawDocument) throws RegainException {
 
     File rawFile = rawDocument.getContentAsFile(false);
     try {
       AudioFile audioFile = AudioFileIO.read(rawFile);
-      Vector<String> info = new Vector<String>();
+      ArrayList<String> info = new ArrayList<String>();
 
       Tag tag = audioFile.getTag();
 

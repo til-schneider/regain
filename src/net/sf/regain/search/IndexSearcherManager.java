@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-12-20 21:52:30 +0100 (So, 20 Dez 2009) $
+ *     $Date: 2010-11-07 17:18:20 +0100 (So, 07 Nov 2010) $
  *   $Author: thtesche $
- * $Revision: 452 $
+ * $Revision: 468 $
  */
 package net.sf.regain.search;
 
@@ -36,7 +36,6 @@ import net.sf.regain.RegainToolkit;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -200,41 +199,6 @@ public class IndexSearcherManager {
   }
 
   /**
-   * Sucht im Suchindex.
-   * <p>
-   * Hinweis: Suchen und Update-Checks laufen synchronisiert ab (also niemals
-   * gleichzeitig).
-   *
-   * @param query Die Suchanfrage.
-   *
-   * @return Die gefundenen Treffer.
-   * @throws RegainException Wenn die Suche fehl schlug.
-   * @deprecated Method will be removed in regain 2.x
-   */
-  public synchronized Hits search_old(Query query) throws RegainException {
-    if (getIndexSearcher() == null) {
-      if (! mWorkingIndexDir.exists()) {
-        checkForIndexUpdate();
-      }
-
-      try {
-        mIndexSearcher = new IndexSearcher(FSDirectory.open(mWorkingIndexDir),true);
-      }
-      catch (IOException exc) {
-        throw new RegainException("Creating index searcher failed", exc);
-      }
-    }
-
-    try {
-      return getIndexSearcher().search(query);
-    }
-    catch (IOException exc) {
-      throw new RegainException("Searching query failed", exc);
-    }
-  }
-
-
-  /**
    * Gets an IndexReader for the index.
    * <p>
    * NOTE: Must be called in a synchronized block.
@@ -355,7 +319,7 @@ public class IndexSearcherManager {
       }
       catch (RegainException exc) {
         System.out.println("Updating index failed!");
-        exc.printStackTrace();
+        exc.printStackTrace(System.err);
       }
 
       try {
