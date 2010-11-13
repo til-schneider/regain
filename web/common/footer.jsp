@@ -8,5 +8,5 @@
 
 <p class="footerLinks">
   <search:msg key="version"/> <%@include file="version" %> &middot;
-  &copy; 2005-2010 Til Schneider, Thomas Tesche <a href="http://www.clustersystems.de/">(cluster:Systems CSG GmbH)</a>
+  &copy; 2005-2010 Til Schneider, Thomas Tesche (<a href="http://www.clustersystems.info/" target="_blank">cluster:Systems</a>)
 </p>

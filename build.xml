@@ -22,9 +22,9 @@
  | CVS information:
  |  $RCSfile$
  |   $Source$
- |     $Date: 2010-09-25 18:32:21 +0200 (Sa, 25 Sep 2010) $
+ |     $Date: 2010-11-14 11:19:15 +0100 (So, 14 Nov 2010) $
  |   $Author: thtesche $
- | $Revision: 458 $
+ | $Revision: 471 $
  |
  | Author: Til Schneider, www.murfman.de
  +-->
@@ -38,10 +38,11 @@
   <tstamp>
     <format property="timestamp" pattern="yyMMdd-HHmm"/>
   </tstamp>
-  <condition property="version" value="${version.prefix}-preview-${timestamp}">
+  <!--condition property="version" value="${version.prefix}-preview-${timestamp}"-->
+  <condition property="version" value="${version.prefix}-PREVIEW">
     <istrue value="${is-preview}"/>
   </condition>
-  <condition property="version" value="${version.prefix}">
+  <condition property="version" value="${version.prefix}-STABLE">
     <isfalse value="${is-preview}"/>
   </condition>
   <property name="version.file" value="${version}"/>
@@ -49,7 +50,7 @@
   <property name="programname.file" value="regain"/>
   <property name="doc.header" value="${programname} ${version} API"/>
   <property name="doc.title" value="API documentation for ${programname} ${version}"/>
-  <property name="doc.bottom" value="${programname} ${version}, Copyright (C) 2004-2010 Til Schneider, www.murfman.de, Thomas Tesche, www.clustersystems.de"/>
+  <property name="doc.bottom" value="${programname} ${version}, Copyright (C) 2004-2010 Til Schneider, www.murfman.de, Thomas Tesche, www.clustersystems.info"/>
   <property name="jacobgen-src.dir" value="build/jacobgen/generated-src"/>
   <property name="jacobgen-classes.dir" value="build/jacobgen/classes"/>
   <property name="jacobgen-packed.dir" value="jacobgen/packed"/>
@@ -533,6 +534,7 @@
     </copy>
     <copy todir="build/runtime/desktop/linux">
       <fileset dir="lib/linux" includes="libtray.so"/>
+      <fileset dir="lib/linux" includes="libjdic.so"/>
     </copy>
     <copy todir="build/runtime/desktop/win/conf/default">
       <fileset dir="txt" includes="*Configuration*.xml"/>
@@ -685,6 +687,7 @@
       <fileset dir="build/included-lib-classes/win">
         <include name="org/jdesktop/jdic/init/**"/>
         <include name="org/jdesktop/jdic/tray/**"/>
+        <include name="org/jdesktop/jdic/browser/**"/>
       </fileset>
     </jar>
     <jar jarfile="build/runtime/desktop/linux/${programname.file}.jar"
@@ -698,6 +701,7 @@
       <fileset dir="build/included-lib-classes/linux">
         <include name="org/jdesktop/jdic/init/**"/>
         <include name="org/jdesktop/jdic/tray/**"/>
+        <include name="org/jdesktop/jdic/browser/**"/>
       </fileset>
     </jar>
   </target>
@@ -953,7 +957,9 @@
           <!--
           jvm="${java.dir}/bin/java"
           -->
-      <jvmarg value="-Djava.library.path=."/>
+      <!--jvmarg value="-Djava.library.path=."/-->
+      <!-- Install the lib for your systems e.g. apt-get install libjdic-bin -->
+      <jvmarg value="-Djava.library.path=/usr/lib/jni"/>
       <jvmarg value="-Xmx256M"/>
       <classpath>
         <path refid="classpath"/>
@@ -1028,6 +1034,7 @@
         <include name="license.txt"/>
         <include name="WhatIsNew.txt"/>
         <include name="WasIstNeu.txt"/>
+        <include name="regain.sh"/>
       </zipfileset>
     </zip>
     <zip destfile="build/public/${programname.file}_v${version}_doc.zip">

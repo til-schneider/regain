@@ -1,3 +1,15 @@
+Version 1.7.2 on 2010/Nov/14 PREVIEW
+-----------------------------------
+UPDATE
+  * TrayIcon for Linux: call Regain with "java -Djava.library.path=/usr/lib/jni -jar regain.jar"
+      The trayicon will be shown correct if you installed libjdic.
+      For Ubuntu/Debian: sudo apt-get install libjdic-bin
+  * Aperture 1.5.0: Used for mimetype detection
+  * jcifs 1.3.14: Samba lib
+
+NEW
+  * Example start script for Linux (trayicon).
+
 Version 1.7.1 on 2010/11/07 PREVIEW
 -----------------------------------
 * UPDATE: Lucene from 2.9 to 3.0.2. Some deprecated regain classes where removed.

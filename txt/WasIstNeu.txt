@@ -1,3 +1,16 @@
+Version 1.7.2 am 14.11.2010 PREVIEW
+-----------------------------------
+UPDATE
+  * TrayIcon für Linux: Regain mit "java -Djava.library.path=/usr/lib/jni -jar regain.jar" aufrufen.
+      Dann wird das TrayIcon korrekt angezeigt, wenn man libjdic-bin für sein System installiert hat.
+      Unter Ubuntu/Debian z.B.: sudo apt-get install libjdic-bin 
+  * Aperture 1.5.0: Benutzt für Mimetype-Detection
+  * jcifs 1.3.14: Samba Bibliothek
+
+NEU
+  * Beispielscript für Linux (Desktopversion) zum korrekten Aufruf in Zusammenhang mit der
+    Darstellung des TrayIcons.
+
 Version 1.7.1 am 07.11.2001 PREVIEW
 -----------------------------------
 * Lucene wurde auf Version 3.0.2 geupdated. Damit in Zusammenhang stehende deprecated
@@ -5,7 +18,7 @@ Version 1.7.1 am 07.11.2001 PREVIEW
 * UPDATE: PDFBox wurde von 0.8.0-incubating auf 1.2.1 geupdated.
 * BUGFIX: Fehlendes lucene-memory-3.0.2.jar hinzugefügt.
 * UPDATE: POI von Version 3.5 auf Version 3.7
-* NUE:    Extraktion von Metadaten aus allen mit POI geparsten und PDF Dokumenten. Wenn ein
+* NEU:    Extraktion von Metadaten aus allen mit POI geparsten und PDF Dokumenten. Wenn ein
           Titel in den Metadaten gefunden wird, wird dieser zum Dokumenttitel.
           Extrahierte Metadaten werden im Index im Feld 'metadata' indiziert und
           gespeichert. Man kann also in der Suche mit metadata:ein_suchbegriff gezielt
