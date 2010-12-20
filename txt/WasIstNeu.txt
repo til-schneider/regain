@@ -1,3 +1,7 @@
+Version 1.7.3 am 21.12.2010
+---------------------------
+ Stabile Version von regain.
+
 Version 1.7.2 am 14.11.2010 PREVIEW
 -----------------------------------
 UPDATE
@@ -9,7 +13,7 @@ UPDATE
 
 NEU
   * Beispielscript für Linux (Desktopversion) zum korrekten Aufruf in Zusammenhang mit der
-    Darstellung des TrayIcons.
+    Darstellung des TrayIcons (nur 32bit).
 
 Version 1.7.1 am 07.11.2001 PREVIEW
 -----------------------------------
