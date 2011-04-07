@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2010-11-07 17:03:46 +0100 (So, 07 Nov 2010) $
+ *     $Date: 2011-04-08 20:04:01 +0200 (Fr, 08 Apr 2011) $
  *   $Author: thtesche $
- * $Revision: 467 $
+ * $Revision: 479 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -143,7 +143,7 @@ public class IndexUpdateManager implements DesktopConstants {
     Crawler crawler = mCrawler;
     if (crawler != null) {
       crawler.setShouldPause(shouldPause);
-      TrayIconManager.getInstance().setIndexUpdateRunning(! shouldPause);
+      TrayIconHandler.getInstance().setIndexUpdateRunning(! shouldPause);
     }
   }
 
@@ -200,7 +200,7 @@ public class IndexUpdateManager implements DesktopConstants {
         // Update the index
 
         // Create and run the crawler
-        TrayIconManager.getInstance().setIndexUpdateRunning(true);
+        TrayIconHandler.getInstance().setIndexUpdateRunning(true);
         try {
           mLog.info("Starting index update on " + new Date());
           mCrawler = new Crawler(config, authProps);
@@ -221,7 +221,7 @@ public class IndexUpdateManager implements DesktopConstants {
           // Run the garbage collector
           System.gc();
   
-          TrayIconManager.getInstance().setIndexUpdateRunning(false);
+          TrayIconHandler.getInstance().setIndexUpdateRunning(false);
         }
       }
     }

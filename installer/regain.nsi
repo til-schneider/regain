@@ -76,15 +76,15 @@ Var STARTMENU_FOLDER
 LangString SecProgName          ${LANG_ENGLISH} "${PROG_NAME} (required)"
 LangString SecProgName          ${LANG_GERMAN}  "${PROG_NAME} (erforderlich)"
 LangString SecLinkName          ${LANG_ENGLISH} "Links"
-LangString SecLinkName          ${LANG_GERMAN}  "Verknüpfungen"
+LangString SecLinkName          ${LANG_GERMAN}  "Verknï¿½pfungen"
 LangString SecLinkStartmenuName ${LANG_ENGLISH} "Links in the start menu"
-LangString SecLinkStartmenuName ${LANG_GERMAN}  "Verknüpfungen im Start-Menü"
+LangString SecLinkStartmenuName ${LANG_GERMAN}  "Verknï¿½pfungen im Start-Menï¿½"
 LangString LicenseTerms         ${LANG_ENGLISH} "License terms"
 LangString LicenseTerms         ${LANG_GERMAN}  "Lizenzbedingungen"
 LangString UninstallRegain      ${LANG_ENGLISH} "Uninstall ${PROG_NAME}"
 LangString UninstallRegain      ${LANG_GERMAN}  "${PROG_NAME} deinstallieren"
 LangString SecLinkAutostartName ${LANG_ENGLISH} "Link in autostart folder"
-LangString SecLinkAutostartName ${LANG_GERMAN}  "Verknüpfung im Autostart-Ordner"
+LangString SecLinkAutostartName ${LANG_GERMAN}  "Verknï¿½pfung im Autostart-Ordner"
 
 
 ;--------------------------------
@@ -99,8 +99,8 @@ Section $(SecProgName)
 
   SetOutPath $INSTDIR
   File txt\license.txt
-  File txt\WhatIsNew.txt
-  File txt\WasIstNeu.txt
+  File txt\README.txt
+  File txt\README_DE.txt
   File build\runtime\desktop\win\*.dll
   File build\runtime\desktop\win\regain.exe
 

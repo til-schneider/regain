@@ -22,9 +22,9 @@
  | CVS information:
  |  $RCSfile$
  |   $Source$
- |     $Date: 2010-11-14 13:11:39 +0100 (So, 14 Nov 2010) $
+ |     $Date: 2011-04-08 20:04:01 +0200 (Fr, 08 Apr 2011) $
  |   $Author: thtesche $
- | $Revision: 473 $
+ | $Revision: 479 $
  |
  | Author: Til Schneider, www.murfman.de
  +-->
@@ -282,6 +282,7 @@
            target="1.5"
            fork="true"
            includeantruntime="false">
+      <compilerarg value="-Xlint"/>
       <src>
         <path refid="sourcepath"/>
       </src>
@@ -532,10 +533,10 @@
       <fileset dir="lib/win" includes="ifilter_wrapper.dll"/>
       <fileset dir="lib/win" includes="tray.dll"/>
     </copy>
-    <copy todir="build/runtime/desktop/linux">
+<!--    <copy todir="build/runtime/desktop/linux">
       <fileset dir="lib/linux" includes="libtray.so"/>
       <fileset dir="lib/linux" includes="libjdic.so"/>
-    </copy>
+    </copy>-->
     <copy todir="build/runtime/desktop/win/conf/default">
       <fileset dir="txt" includes="*Configuration*.xml"/>
       <fileset dir="txt" includes="log4j.properties"/>
@@ -667,9 +668,9 @@
       
       <!-- desktop specific stuff -->
       <include name="simple/**"/>
-      <include name="org/jdesktop/jdic/init/**"/>
+<!--      <include name="org/jdesktop/jdic/init/**"/>
       <include name="org/jdesktop/jdic/tray/**"/>
-      <include name="org/jdesktop/jdic/browser/internal/WebBrowserUtil.*"/>
+      <include name="org/jdesktop/jdic/browser/internal/WebBrowserUtil.*"/>-->
     </fileset>
     <fileset id="desktop-common-classes" dir="build/classes">
       <exclude name="net/sf/regain/crawler/preparator/**"/>
@@ -684,11 +685,11 @@
       </manifest>
       <fileset refid="desktop-common-jars"/>
       <fileset refid="desktop-common-classes"/>
-      <fileset dir="build/included-lib-classes/win">
+<!--      <fileset dir="build/included-lib-classes/win">
         <include name="org/jdesktop/jdic/init/**"/>
         <include name="org/jdesktop/jdic/tray/**"/>
         <include name="org/jdesktop/jdic/browser/**"/>
-      </fileset>
+      </fileset>-->
     </jar>
     <jar jarfile="build/runtime/desktop/linux/${programname.file}.jar"
          compress="false"
@@ -698,11 +699,11 @@
       </manifest>
       <fileset refid="desktop-common-jars"/>
       <fileset refid="desktop-common-classes"/>
-      <fileset dir="build/included-lib-classes/linux">
+<!--      <fileset dir="build/included-lib-classes/linux">
         <include name="org/jdesktop/jdic/init/**"/>
         <include name="org/jdesktop/jdic/tray/**"/>
         <include name="org/jdesktop/jdic/browser/**"/>
-      </fileset>
+      </fileset>-->
     </jar>
   </target>
 

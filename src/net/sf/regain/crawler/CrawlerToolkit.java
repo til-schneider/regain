@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2010-02-03 17:24:29 +0100 (Mi, 03 Feb 2010) $
+ *     $Date: 2011-01-02 18:09:46 +0100 (So, 02 Jan 2011) $
  *   $Author: thtesche $
- * $Revision: 454 $
+ * $Revision: 477 $
  */
 package net.sf.regain.crawler;
 
@@ -690,9 +690,11 @@ public class CrawlerToolkit {
     mLog.debug("search for >" + leftUrlPart + "< in authentication store.");
     // Lookup the key and in case of a match build the final url with account, password enrichment
     if (authMap.containsKey(leftUrlPart)) {
+      mLog.debug("Found an authentication entry for " + leftUrlPart);
       return authMap.get(leftUrlPart);
     } else {
-       return null;
+      mLog.debug("Don't found an authentication entry for " + leftUrlPart);
+      return null;
     }
   }
 

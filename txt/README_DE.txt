@@ -1,6 +1,18 @@
+
+
+Version 1.7.4 am xx.XX.2011 PREVIEW
+-----------------------------------
+Migration
+ * Java 6 wird zwingend benötigt.
+NEU
+ * Annotations werden aus PDF Dokumenten ausgelesen.
+ * TrayIcon wird auch auf 64-bit Systemen dargestellt.
+
 Version 1.7.3 am 21.12.2010
 ---------------------------
- Stabile Version von regain.
+Weihnachtsversion 2010. Beinhaltet alle Änderungen seit 1.7.0.
+
+Frohe Suchen zu Weihnachten
 
 Version 1.7.2 am 14.11.2010 PREVIEW
 -----------------------------------

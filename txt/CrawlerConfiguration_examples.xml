@@ -63,7 +63,14 @@
 <blacklist>
   <!--
   <prefix>http://www.mydomain.de/some/dynamic/content/</prefix>
+  <!-- exclude backup directory -->
+  <!--
   <regex>/backup/[^/]*$</regex>
+  -->
+  <!-- Include only documents with the enlisted endings. So this is in reality
+       a whitelist :). Thanks to ikkysleepy-->
+  <!--
+       <regex>^file:\/\/\/.*\.(?!(csv|doc|docx|dot|htm|html|mht|msg|pdf|pot|ppt|pptx|rtf|shtml|txt|xla|xls|xlsm|xlsx|xlt|xml|eml|odp|ods|odt|sdw))(.|..|...|....)$</regex>
   -->
 </blacklist>
 

@@ -21,14 +21,15 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2010-11-07 16:26:47 +0100 (So, 07 Nov 2010) $
+ *     $Date: 2011-01-02 18:09:46 +0100 (So, 02 Jan 2011) $
  *   $Author: thtesche $
- * $Revision: 466 $
+ * $Revision: 477 $
  */
 package net.sf.regain.crawler.preparator;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.List;
 import org.apache.log4j.Logger;
 
 import net.sf.regain.RegainException;
@@ -36,10 +37,14 @@ import net.sf.regain.crawler.document.AbstractPreparator;
 import net.sf.regain.crawler.document.RawDocument;
 
 import org.apache.pdfbox.exceptions.CryptographyException;
-import org.apache.pdfbox.exceptions.InvalidPasswordException;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
+import org.apache.pdfbox.pdmodel.encryption.BadSecurityHandlerException;
+import org.apache.pdfbox.pdmodel.encryption.StandardDecryptionMaterial;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.util.PDFTextStripper;
 
 /**
@@ -71,6 +76,7 @@ public class PdfBoxPreparator extends AbstractPreparator {
    *
    * @throws RegainException Wenn die Pr�paration fehl schlug.
    */
+  @SuppressWarnings("unchecked")
   public void prepare(RawDocument rawDocument) throws RegainException {
     String url = rawDocument.getUrl();
 
@@ -88,7 +94,14 @@ public class PdfBoxPreparator extends AbstractPreparator {
 
       // Decrypt the PDF-Dokument
       if (pdfDocument.isEncrypted()) {
-        pdfDocument.decrypt("");
+        mLog.debug("Document is encrypted: " + url);
+        StandardDecryptionMaterial sdm = new StandardDecryptionMaterial("");
+        pdfDocument.openProtection(sdm);
+        AccessPermission ap = pdfDocument.getCurrentAccessPermission();
+
+        if (!ap.canExtractContent()) {
+          throw new RegainException("Document is encrypted and can't be opened: " + url);
+        }
       }
 
       // Extract the text with a utility class
@@ -99,6 +112,30 @@ public class PdfBoxPreparator extends AbstractPreparator {
       stripper.setEndPage(Integer.MAX_VALUE);
 
       setCleanedContent(stripper.getText(pdfDocument).replaceAll("visiblespace", " "));
+
+      // extract annotations
+      StringBuilder annotsResult = new StringBuilder();
+      List allPages = pdfDocument.getDocumentCatalog().getAllPages();
+      for (int i = 0; i < allPages.size(); i++) {
+        int pageNum = i + 1;
+        PDPage page = (PDPage) allPages.get(i);
+        List<PDAnnotation> annotations = page.getAnnotations();
+        if (annotations.size() < 1) {
+          continue;
+        }
+        mLog.debug("Total annotations = " + annotations.size());
+        mLog.debug("\nProcess Page " + pageNum + "...");
+        for (PDAnnotation annotation : annotations) {
+          if (annotation.getContents() != null && annotation.getContents().length() > 0) {
+            annotsResult.append(annotation.getContents());
+            annotsResult.append(" ");
+            mLog.debug("Text from annotation: " + annotation.getContents());
+          }
+        }
+      }
+      if (annotsResult.length() > 0) {
+        setCleanedContent(getCleanedContent() + " Annotations " + annotsResult.toString());
+      }
 
       // Get the meta data
       PDDocumentInformation info = pdfDocument.getDocumentInformation();
@@ -133,11 +170,14 @@ public class PdfBoxPreparator extends AbstractPreparator {
 
     } catch (CryptographyException exc) {
       throw new RegainException("Error decrypting document: " + url, exc);
-    } catch (InvalidPasswordException exc) {
+
+    } catch (BadSecurityHandlerException exc) {
       // They didn't supply a password and the default of "" was wrong.
       throw new RegainException("Document is encrypted: " + url, exc);
+
     } catch (IOException exc) {
       throw new RegainException("Error reading document: " + url, exc);
+
     } finally {
       if (stream != null) {
         try {

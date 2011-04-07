@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
+ *     $Date: 2011-04-08 20:04:01 +0200 (Fr, 08 Apr 2011) $
  *   $Author: thtesche $
- * $Revision: 325 $
+ * $Revision: 479 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -43,12 +43,12 @@ import org.apache.log4j.PropertyConfigurator;
  * Starts the desktop search.
  *
  * @author Til Schneider, www.murfman.de
+ * @auther Thomas Tesche, www.clustersystems.de
  */
 public class Main implements DesktopConstants {
-  
+
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(Main.class);
-
 
   /**
    * The main entry point.
@@ -56,28 +56,27 @@ public class Main implements DesktopConstants {
    * @param args The command line arguments.
    */
   public static void main(String[] args) {
-	boolean useTrayIcon = true;
-	for (int i = 0; i < args.length; i++) {	
-	  if (args[i].equalsIgnoreCase("-noTrayIcon")) {
-	    useTrayIcon = false;
-	  }	
-	}
-	 
+    boolean useTrayIcon = true;
+    for (int i = 0; i < args.length; i++) {
+      if (args[i].equalsIgnoreCase("-noTrayIcon")) {
+        useTrayIcon = false;
+      }
+    }
+
     // Initialize the configuration
     // (Copy all files from the default dir that don't exist in the config dir)
     String[] defaultFileArr = DEFAULT_CONFIG_DIR.list();
     for (int i = 0; i < defaultFileArr.length; i++) {
       File confFile = new File(CONFIG_DIR, defaultFileArr[i]);
-      if (! confFile.exists()) {
+      if (!confFile.exists()) {
         // This config file does not exist -> Copy the default file
         File defaultConfFile = new File(DEFAULT_CONFIG_DIR, defaultFileArr[i]);
         try {
           RegainToolkit.copyFile(defaultConfFile, confFile);
-        }
-        catch (RegainException exc) {
+        } catch (RegainException exc) {
           System.out.println("Copying default config file failed: "
-              + defaultConfFile.getAbsolutePath());
-          exc.printStackTrace();
+                  + defaultConfFile.getAbsolutePath());
+          exc.printStackTrace(System.err);
           System.exit(1); // Abort
         }
       }
@@ -85,9 +84,9 @@ public class Main implements DesktopConstants {
 
     // Initialize Logging
     File logConfigFile = new File("conf/log4j.properties");
-    if (! logConfigFile.exists()) {
+    if (!logConfigFile.exists()) {
       System.out.println("ERROR: Logging configuration file not found: "
-        + logConfigFile.getAbsolutePath());
+              + logConfigFile.getAbsolutePath());
       System.exit(1); // Abort
     }
 
@@ -99,9 +98,8 @@ public class Main implements DesktopConstants {
     URL baseurl;
     try {
       baseurl = new File("web").toURI().toURL();
-    }
-    catch (MalformedURLException exc) {
-      exc.printStackTrace();
+    } catch (MalformedURLException exc) {
+      exc.printStackTrace(System.err);
       System.exit(1); // Abort
       return;
     }
@@ -111,35 +109,32 @@ public class Main implements DesktopConstants {
     ExecuterParser.registerNamespace("search", "net.sf.regain.search.sharedlib");
     ExecuterParser.registerNamespace("config", "net.sf.regain.ui.desktop.config.sharedlib");
     ExecuterParser.registerNamespace("status", "net.sf.regain.ui.desktop.status.sharedlib");
-    
+
     // Start the Tray icon
-    TrayIconManager.getInstance().init(useTrayIcon);
-    
+    TrayIconHandler.getInstance().init(useTrayIcon);
+
     // Start the webserver
     try {
       DesktopToolkit.checkWebserver();
-    }
-    catch (RegainException exc) {
-      exc.printStackTrace();
+    } catch (RegainException exc) {
+      exc.printStackTrace(System.err);
       System.exit(1); // Abort
     }
-    
+
     // Start the index update manager
     INDEX_DIR.mkdir();
     IndexUpdateManager.getInstance().init();
-     
+
     // Opening browser only in tryIcon-less mode
-    if(!useTrayIcon) {
+    if (!useTrayIcon) {
       DesktopToolkit.openPageInBrowser("welcome.jsp");
     }
   }
-  
-  
+
   /**
    * Quits the desktop search.
    */
   public static void quit() {
     System.exit(0);
   }
-  
 }

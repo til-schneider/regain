@@ -1,6 +1,16 @@
+Version 1.7.4 on 2011/XXX/xx PREVIEW
+-------------------------------------
+MIGRATE
+ * Use Java 6 only to start regain.
+NEW
+ * Annotations extraction from PDF documents
+ * System Tray will be correctly displayed on 64-bit Systems.
+
 Version 1.7.3 on 2010/Dec/21
 ----------------------------
- Stable version of regain.
+Christmas_2010 release. Covers all changes from 1.7.1 and 1.7.2.
+
+Happy searching on XMAS 
 
 Version 1.7.2 on 2010/Nov/14 PREVIEW
 -----------------------------------
