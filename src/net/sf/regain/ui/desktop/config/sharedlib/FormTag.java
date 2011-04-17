@@ -1,6 +1,6 @@
 /*
  * regain - A file search engine providing plenty of formats
- * Copyright (C) 2004  Til Schneider
+ * Copyright (C) 2004-2011  Til Schneider
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,14 +16,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Contact: Til Schneider, info@murfman.de
+ * Contact: Til Schneider, info@murfman.de, Thomas Tesche, www.clustersystems.info
  *
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-08-09 18:52:40 +0200 (So, 09 Aug 2009) $
+ *     $Date: 2011-04-18 22:01:07 +0200 (Mo, 18 Apr 2011) $
  *   $Author: thtesche $
- * $Revision: 394 $
+ * $Revision: 483 $
  */
 package net.sf.regain.ui.desktop.config.sharedlib;
 
@@ -32,7 +32,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import javax.mail.URLName;
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.XmlToolkit;
@@ -40,6 +39,8 @@ import net.sf.regain.ui.desktop.DesktopConstants;
 import net.sf.regain.ui.desktop.DesktopToolkit;
 import net.sf.regain.ui.desktop.IndexUpdateManager;
 import net.sf.regain.ui.desktop.config.DesktopConfig;
+import net.sf.regain.util.io.Localizer;
+import net.sf.regain.util.io.MultiLocalizer;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
 import net.sf.regain.util.sharedtag.SharedTag;
@@ -55,15 +56,15 @@ import org.w3c.dom.Node;
  * @author Til Schneider, www.murfman.de
  */
 public class FormTag extends SharedTag implements DesktopConstants {
-  
+
   /** The URL prefix of file URLs. */
   private static final String FILE_PROTOCOL = "file://";
-
   /** The URL prefix of http URLs. */
   private static final String HTTP_PROTOCOL = "http://";
-
-   /** The URL prefix of http URLs. */
+  /** The URL prefix of http URLs. */
   private static final String IMAP_PROTOCOL = "imap";
+  /** The MultiLocalizer for this class. */
+  private static MultiLocalizer mMultiLocalizer = new MultiLocalizer(FormTag.class);
 
   /**
    * Called when the parser reaches the start tag.
@@ -78,55 +79,58 @@ public class FormTag extends SharedTag implements DesktopConstants {
    */
   @Override
   public int printStartTag(PageRequest request, PageResponse response)
-    throws RegainException
-  {
+          throws RegainException {
     int interval = request.getParameterAsInt("interval", -1);
     String[] dirlist;
     String[] dirblacklist;
     String[] sitelist;
     String[] siteblacklist;
     String[] imaplist;
-    
+
+    Localizer localizer = mMultiLocalizer.getLocalizer(request.getLocale());
+
     int port;
     if (interval == -1) {
       // This is the first call -> Load the settings
       DesktopConfig desktopConfig = DesktopToolkit.getDesktopConfig();
       Document crawlerDoc = XmlToolkit.loadXmlDocument(CRAWLER_CONFIG_FILE);
-      
-      interval      = desktopConfig.getInterval();
-      dirlist       = getStartlistEntries(crawlerDoc, FILE_PROTOCOL);
-      dirblacklist  = getBlacklistEntries(crawlerDoc, FILE_PROTOCOL);
-      sitelist      = getStartlistEntries(crawlerDoc, HTTP_PROTOCOL);
+
+      interval = desktopConfig.getInterval();
+      dirlist = getStartlistEntries(crawlerDoc, FILE_PROTOCOL);
+      dirblacklist = getBlacklistEntries(crawlerDoc, FILE_PROTOCOL);
+      sitelist = getStartlistEntries(crawlerDoc, HTTP_PROTOCOL);
       siteblacklist = getBlacklistEntries(crawlerDoc, HTTP_PROTOCOL);
-      imaplist      = getCompleteStartlistEntries(crawlerDoc, IMAP_PROTOCOL);
-      port          = desktopConfig.getPort();
+      imaplist = getCompleteStartlistEntries(crawlerDoc, IMAP_PROTOCOL);
+      port = desktopConfig.getPort();
     } else {
       // There were new settings sent -> Check the input
-      ArrayList errorList = new ArrayList();
-      
+      ArrayList<String> errorList = new ArrayList<String>();
+
       // Get the input
-      dirlist       = request.getParametersNotNull("dirlist");
-      dirblacklist  = request.getParametersNotNull("dirblacklist");
-      sitelist      = request.getParametersNotNull("sitelist");
+      dirlist = request.getParametersNotNull("dirlist");
+      dirblacklist = request.getParametersNotNull("dirblacklist");
+      sitelist = request.getParametersNotNull("sitelist");
       siteblacklist = request.getParametersNotNull("siteblacklist");
-      imaplist      = request.getParametersNotNull("imaplist");
-      port          = request.getParameterAsInt("port", DEFAULT_PORT);
+      imaplist = request.getParametersNotNull("imaplist");
+      port = request.getParameterAsInt("port", DEFAULT_PORT);
 
       // Check the input
-      checkDirectoryList(errorList, dirlist);
-      checkDirectoryList(errorList, dirblacklist);
-      checkWebsiteList(errorList, sitelist);
-      checkWebsiteList(errorList, siteblacklist);
-      checkImapList(errorList, imaplist);      
-      
+      checkDirectoryList(errorList, dirlist, localizer);
+      checkDirectoryList(errorList, dirblacklist, localizer);
+      checkWebsiteList(errorList, sitelist, localizer);
+      checkWebsiteList(errorList, siteblacklist, localizer);
+      checkImapList(errorList, imaplist, localizer);
+
       if (errorList.isEmpty()) {
         // There were no errors -> Save the values
         saveSettings(interval, dirlist, dirblacklist, sitelist, siteblacklist, imaplist, port);
         DesktopToolkit.checkWebserver();
-        response.print("Ihre Einstellungen wurden gespeichert!");
+        response.print(localizer.msg("settingsSaved", "Your settings where saved!"));
+//        response.print("Ihre Einstellungen wurden gespeichert!");
       } else {
         // There were errors -> Show them
-        response.print("Leider enth&auml;lt Ihre Eingabe noch Fehler:<ul>");
+        response.print(localizer.msg("settingsContainsError", "The following errors where detected:<ul>"));
+//        response.print("Leider enth&auml;lt Ihre Eingabe noch Fehler:<ul>");
         for (int i = 0; i < errorList.size(); i++) {
           response.print("<li>" + errorList.get(i) + "</li>");
         }
@@ -142,14 +146,13 @@ public class FormTag extends SharedTag implements DesktopConstants {
     request.setContextAttribute("settings.siteblacklist", siteblacklist);
     request.setContextAttribute("settings.imaplist", imaplist);
     request.setContextAttribute("settings.port", Integer.toString(port));
-    
+
     String action = getParameter("action", true);
-    response.print("<form name=\"settings\" action=\"" + action + "\" " +
-        "method=\"post\" onsubmit=\"prepareEditListsForSubmit()\">");
-    
+    response.print("<form name=\"settings\" action=\"" + action + "\" "
+            + "method=\"post\" onsubmit=\"prepareEditListsForSubmit()\">");
+
     return EVAL_TAG_BODY;
   }
-  
 
   /**
    * Called when the parser reaches the end tag.
@@ -160,51 +163,62 @@ public class FormTag extends SharedTag implements DesktopConstants {
    */
   @Override
   public void printEndTag(PageRequest request, PageResponse response)
-    throws RegainException
-  {
+          throws RegainException {
     response.print("</form>");
   }
 
-  
   /**
    * Checks a list of diretory names.
    * 
    * @param errorList The list where to store the error messages.
    * @param dirlist The list to check.
    */
-  private void checkDirectoryList(ArrayList errorList, String[] dirlist) {
+  private void checkDirectoryList(ArrayList<String> errorList, String[] dirlist, Localizer localizer) {
     for (int i = 0; i < dirlist.length; i++) {
       File dir = new File(dirlist[i]);
-      if (! dir.exists()) {
-        errorList.add("Das Verzeichnis '" + dirlist[i] + "' existiert nicht");
+      StringBuilder tmpString = new StringBuilder();
+      if (!dir.exists()) {
+        tmpString.append(localizer.msg("checkDir1", "The directory '"));
+        tmpString.append(dirlist[i].toString());
+        tmpString.append(localizer.msg("checkDir2", "' doesn't exist"));
+        errorList.add(tmpString.toString());
+//        errorList.add("Das Verzeichnis '" + dirlist[i] + "' existiert nicht");
+      } else if (!dir.isDirectory()) {
+        tmpString.append(localizer.msg("checkDir3", "'"));
+        tmpString.append(dirlist[i].toString());
+        tmpString.append(localizer.msg("checkDir4", "' is not a directory"));
+//        errorList.add("'" + dirlist[i] + "' ist kein Verzeichnis");
       }
-      else if (! dir.isDirectory()) {
-        errorList.add("'" + dirlist[i] + "' ist kein Verzeichnis");
-      }
-      
+
       // Make the path URL conform
       dirlist[i] = RegainToolkit.replace(dirlist[i], "\\", "/");
     }
   }
-  
-  
+
   /**
    * Checks a list of website names.
    * 
    * @param errorList The list where to store the error messages.
    * @param sitelist The list to check.
    */
-  private void checkWebsiteList(ArrayList errorList, String[] sitelist) {
+  private void checkWebsiteList(ArrayList<String> errorList, String[] sitelist, Localizer localizer) {
     for (int i = 0; i < sitelist.length; i++) {
       try {
         String urlAsString = sitelist[i];
-        if (! urlAsString.startsWith(HTTP_PROTOCOL)) {
+        if (!urlAsString.startsWith(HTTP_PROTOCOL)) {
           urlAsString = HTTP_PROTOCOL + urlAsString;
         }
-        new URL(urlAsString);
-      }
-      catch (MalformedURLException exc) {
-        errorList.add("'" + sitelist[i] + "' ist keine HTTP URL");
+        // variable is not used. Only instantiated to produce an exception
+        // in case of a malformed URL
+        URL dummyURL = new URL(urlAsString);
+      } catch (MalformedURLException exc) {
+        StringBuilder tmpString = new StringBuilder();
+        tmpString.append(localizer.msg("checkWebsite1", "'"));
+        tmpString.append(sitelist[i]);
+        tmpString.append(localizer.msg("checkWebsite2", "' is not a valid http URL"));
+        errorList.add(tmpString.toString());
+//        errorList.add("'" + sitelist[i] + "' ist keine HTTP URL");
+        System.err.println(exc.getMessage());
       }
     }
   }
@@ -215,14 +229,22 @@ public class FormTag extends SharedTag implements DesktopConstants {
    * @param errorList The list where to store the error messages.
    * @param imaplist The list to check.
    */
-  private void checkImapList(ArrayList errorList, String[] imaplist) {
+  private void checkImapList(ArrayList<String> errorList, String[] imaplist, Localizer localizer) {
     for (int i = 0; i < imaplist.length; i++) {
       try {
         String urlAsString = imaplist[i];
-        new URLName(urlAsString);
-
+        // variable is not used. Only instantiated to produce an exception
+        // in case of a malformed URL
+        URL dummyURL = new URL(urlAsString);
       } catch (Exception exc) {
-        errorList.add("'" + imaplist[i] + "' ist keine IMAP URL");
+
+        StringBuilder tmpString = new StringBuilder();
+        tmpString.append(localizer.msg("checkIMAP1", "'"));
+        tmpString.append(imaplist[i]);
+        tmpString.append(localizer.msg("checkIMAP2", "' is not a valid IMAP URL"));
+        errorList.add(tmpString.toString());
+        System.err.println(exc.getMessage());
+//        errorList.add("'" + imaplist[i] + "' ist keine IMAP URL");
       }
     }
   }
@@ -237,8 +259,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
    * @throws RegainException If reading the config failed.
    */
   private String[] getStartlistEntries(Document crawlerDoc, String prefix)
-    throws RegainException
-  {
+          throws RegainException {
     return getListEntries(crawlerDoc, prefix, "startlist", "start");
   }
 
@@ -252,16 +273,15 @@ public class FormTag extends SharedTag implements DesktopConstants {
    * @throws RegainException If reading the config failed.
    */
   private String[] getCompleteStartlistEntries(Document crawlerDoc, String prefix)
-    throws RegainException
-  {
+          throws RegainException {
     String[] startList = getListEntries(crawlerDoc, prefix, "startlist", "start");
-    for( int i=0; i<startList.length; i++ ) {
+    for (int i = 0; i < startList.length; i++) {
       startList[i] = prefix + startList[i];
     }
-    
+
     return startList;
   }
-  
+
   /**
    * Gets the blacklist from the crawler configuration.
    * 
@@ -272,12 +292,10 @@ public class FormTag extends SharedTag implements DesktopConstants {
    * @throws RegainException If reading the config failed.
    */
   private String[] getBlacklistEntries(Document crawlerDoc, String prefix)
-    throws RegainException
-  {
+          throws RegainException {
     return getListEntries(crawlerDoc, prefix, "blacklist", "prefix");
   }
 
-  
   /**
    * Gets a list from the crawler configuration.
    * 
@@ -290,32 +308,28 @@ public class FormTag extends SharedTag implements DesktopConstants {
    * @throws RegainException If reading the config failed.
    */
   private String[] getListEntries(Document crawlerDoc, String prefix,
-    String listNodeName, String entryNodeName)
-    throws RegainException
-  {
+          String listNodeName, String entryNodeName)
+          throws RegainException {
     Element config = crawlerDoc.getDocumentElement();
     Node startlist = XmlToolkit.getChild(config, listNodeName, true);
     Node[] startArr = XmlToolkit.getChildArr(startlist, entryNodeName);
-    ArrayList entries = new ArrayList();
+    ArrayList<String> entries = new ArrayList<String>();
     for (int i = 0; i < startArr.length; i++) {
       String startUrl = XmlToolkit.getTextOrCData(startArr[i], true);
       if (startUrl.startsWith(prefix)) {
         String entry = startUrl;
-        if( entry.startsWith(FILE_PROTOCOL)) {
+        if (entry.startsWith(FILE_PROTOCOL)) {
           entry = RegainToolkit.urlToFileName(entry);
         }
-        //String entry = startUrl.substring(prefix.length());
-        
         entries.add(entry);
       }
     }
-    
+
     // Convert the ArrayList to a String[]
     String[] asArr = new String[entries.size()];
     entries.toArray(asArr);
     return asArr;
   }
-
 
   /**
    * Saves the settings.
@@ -329,11 +343,10 @@ public class FormTag extends SharedTag implements DesktopConstants {
    * @throws RegainException If saving the config failed.
    */
   private void saveSettings(int interval, String[] dirlist,
-    String[] dirblacklist, String[] sitelist, String[] siteblacklist, String[] imaplist, int port)
-    throws RegainException
-  {
+          String[] dirblacklist, String[] sitelist, String[] siteblacklist, String[] imaplist, int port)
+          throws RegainException {
     Node node;
-    
+
     // Load the config files
     Document desktopDoc = XmlToolkit.loadXmlDocument(DESKTOP_CONFIG_FILE);
     Element desktopConfig = desktopDoc.getDocumentElement();
@@ -357,16 +370,16 @@ public class FormTag extends SharedTag implements DesktopConstants {
 
     Node blacklistNode = XmlToolkit.getChild(crawlerConfig, "blacklist", true);
     XmlToolkit.removeAllChildren(blacklistNode);
-    
+
     // Fill the startlist
     for (int i = 0; i < dirlist.length; i++) {
       String url = RegainToolkit.fileNameToUrl(dirlist[i]);
-      node = XmlToolkit.addChildWithText(crawlerDoc, startlistNode, "start", url );
+      node = XmlToolkit.addChildWithText(crawlerDoc, startlistNode, "start", url);
       XmlToolkit.setAttribute(crawlerDoc, node, "parse", "true");
       XmlToolkit.setAttribute(crawlerDoc, node, "index", "false");
     }
     for (int i = 0; i < sitelist.length; i++) {
-      String url = /*HTTP_PROTOCOL + */sitelist[i];
+      String url = /*HTTP_PROTOCOL + */ sitelist[i];
       if (!url.startsWith(HTTP_PROTOCOL)) {
         url = HTTP_PROTOCOL + url;
       }
@@ -378,23 +391,23 @@ public class FormTag extends SharedTag implements DesktopConstants {
       XmlToolkit.setAttribute(crawlerDoc, node, "parse", "true");
       XmlToolkit.setAttribute(crawlerDoc, node, "index", "true");
     }
-   for (int i = 0; i < imaplist.length; i++) {
+    for (int i = 0; i < imaplist.length; i++) {
       node = XmlToolkit.addChildWithText(crawlerDoc, startlistNode, "start", imaplist[i]);
       XmlToolkit.setAttribute(crawlerDoc, node, "parse", "true");
       XmlToolkit.setAttribute(crawlerDoc, node, "index", "true");
     }
-        
+
     // Add the file protocol to the whitelist
     for (int i = 0; i < dirlist.length; i++) {
       String url = RegainToolkit.fileNameToUrl(dirlist[i]);
       XmlToolkit.addChildWithText(crawlerDoc, whitelistNode, "prefix", url);
     }
-    
+
     // Add the sitelist to the whitelist
     for (int i = 0; i < sitelist.length; i++) {
       String url = /*HTTP_PROTOCOL + */ sitelist[i];
       if (!url.startsWith(HTTP_PROTOCOL)) {
-        url = HTTP_PROTOCOL +url;
+        url = HTTP_PROTOCOL + url;
       }
       if (url.contains("&")) {
         XmlToolkit.addChildWithCData(crawlerDoc, whitelistNode, "prefix", url);
@@ -402,7 +415,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
         XmlToolkit.addChildWithText(crawlerDoc, whitelistNode, "prefix", url);
       }
     }
-    
+
     // Add the imaplist to the whitelist
     for (int i = 0; i < imaplist.length; i++) {
       XmlToolkit.addChildWithText(crawlerDoc, whitelistNode, "prefix", imaplist[i]);
@@ -424,22 +437,21 @@ public class FormTag extends SharedTag implements DesktopConstants {
         XmlToolkit.addChildWithText(crawlerDoc, blacklistNode, "prefix", url);
       }
     }
-    
+
     // Set the port
     Node portNode = XmlToolkit.getOrAddChild(desktopDoc, desktopConfig, "port");
     XmlToolkit.setText(desktopDoc, portNode, Integer.toString(port));
-    
+
     // Pretty print the nodes
     XmlToolkit.prettyPrint(crawlerDoc, startlistNode);
     XmlToolkit.prettyPrint(crawlerDoc, whitelistNode);
     XmlToolkit.prettyPrint(crawlerDoc, blacklistNode);
-    
+
     // Save the config
     XmlToolkit.saveXmlDocument(DESKTOP_CONFIG_FILE, desktopDoc);
     XmlToolkit.saveXmlDocument(CRAWLER_CONFIG_FILE, crawlerDoc);
-    
+
     // Create the needsupdate file, so the index will be updated
     IndexUpdateManager.getInstance().startIndexUpdate();
   }
-
 }

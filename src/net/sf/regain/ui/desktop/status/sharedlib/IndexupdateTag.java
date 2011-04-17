@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-13 11:22:50 +0200 (Sa, 13 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 156 $
+ *     $Date: 2011-04-18 22:01:07 +0200 (Mo, 18 Apr 2011) $
+ *   $Author: thtesche $
+ * $Revision: 483 $
  */
 package net.sf.regain.ui.desktop.status.sharedlib;
 
@@ -51,7 +51,6 @@ public class IndexupdateTag extends SharedTag {
   /** The MultiLocalizer for this class. */
   private static MultiLocalizer mMultiLocalizer = new MultiLocalizer(IndexupdateTag.class);
 
-
   /**
    * Called when the parser reaches the end tag.
    *  
@@ -59,6 +58,7 @@ public class IndexupdateTag extends SharedTag {
    * @param response The page response.
    * @throws RegainException If there was an exception.
    */
+  @Override
   public void printEndTag(PageRequest request, PageResponse response)
     throws RegainException
   {

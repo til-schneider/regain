@@ -142,6 +142,61 @@
     wir und oder ohne mit am im in aus auf ist sein war wird ihr ihre ihres als
     für von mit dich dir mich mir mein sein kein durch wegen wird
   </stopwordList>
+  <!-- English short
+  <stopwordList>
+   a able about across after all almost also am among an and any are as at be
+   because been but by can cannot could dear did do does either else ever every
+   for from get got had has have he her hers him his how however i if in into is
+   it its just least let like likely may me might most must my neither no nor
+   not of off often on only or other our own rather said say says she should
+   since so some than that the their them then there these they this tis to too
+   twas us wants was we were what when where which while who whom why will with
+   would yet you your
+  </stopwordList>
+  -->
+   <!-- English long
+  <stopwordList>
+    a about an are as at be by com de en for from how in is it la of on or
+    that the this to was what when where who will with und the www a about above
+    accordingly after again against ah all also although always am an and
+    any anymore anyone are as at away b be been begin beginning beginnings begins
+    begone begun being below between but by c ca can cannot come could d did do
+    doing during each either else end et etc even ever far ff following for fro
+    from further get go goes going got had has have he her hers herself him
+    himself his how i if in into is it its itself last lastly less ll many may
+    me might more must my myself nay near nearly never new next no not now o of
+    off often oh on only or other otherwise our ourselves out over perhaps put
+    puts quite s said saw say see seen shall she should since so some such t
+    than that the their them themselves then there therefore these they this
+    those thou though throughout thus to too toward unless until up upon us ve
+    very was we were what whatever when where which while who whom whomever
+    whose why with within without would yes your yours yourself yourselves
+    a b c d e f g h i j k l m n o p q r s t u v w x y z the an about above
+    across afterwards after again against ago almost along already always among
+    anywhere around as at away back before behind beside between beyond by down
+    downstairs during else enough every everywhere far for from here in inside
+    into just last lot lots many middle much near next never not now nowhere of
+    off often on once over outside over quite rather recently rarely round
+    seldom sometimes somewhere there through till today to tomorrow tonight too
+    towards until up upstairs usually under very while with within without yes
+    yesterday yet you he she it we they me him her it us them myself yourself
+    himself herself itself ourselves yourselves themselves oneself my your its
+    our their mine yours hers ours theirs this these those some any no none
+    other another every all others each whole both neither none someone somebody
+    something anyone anybody anything nobody nothing everyone everybody
+    everything and or but because if as like such how who why what where
+    whose when whom which bye hello be was been am is are were can could come
+    came comes do did done does get got gets have had has having may might must
+    shall should ought take took taken takes taking use uses used will would
+    cannot can could did does one two three four five six seven eight nine ten
+    nought zero first second third fourth fifth sixth seventh eighth ninth tenth
+    ii iii iv vi vii viii ix sunday monday tuesday wednesday thursday friday
+    saturday january february march april may june july august september october
+    november december date false e.g eg i.e ie etc example examples jr miss
+    thing things true year bad big close difficult easy empty full good little
+    long ready open short tall
+  </stopwordList>
+  -->
   <!-- italian:
   <stopwordList>
     di a da in con su per tra fra io tu egli ella essa noi voi essi loro che cui

@@ -1,5 +1,5 @@
 ;Language: German (1031)
-;By L.King, changes by K. Windszus & R. Bisswanger & M. Simmack & D. Weiß
+;By L.King, changes by K. Windszus & R. Bisswanger & M. Simmack & D. Weiï¿½
 
 !insertmacro LANGFILE "German" "Deutsch"
 

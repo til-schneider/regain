@@ -1,4 +1,10 @@
-Version 1.7.4 on 2011/XXX/xx PREVIEW
+Version 1.7.5 on 2011/Apr/18 PREVIEW
+-------------------------------------
+FIX
+ * english stopwords example in CrawlerConfiguration.xml
+ * english response in FormTag (settings)
+
+Version 1.7.4 on 2011/Apr/11 PREVIEW
 -------------------------------------
 MIGRATE
  * Use Java 6 only to start regain.

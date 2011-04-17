@@ -1,6 +1,11 @@
+Version 1.7.5 am 18.04.2011 PREVIEW
+-----------------------------------
+FIX:
+ * Beispiel für englische Stopwords
+ * englische Ausgabe der Meldungen im FormTag (Einstellungen)
 
 
-Version 1.7.4 am xx.XX.2011 PREVIEW
+Version 1.7.4 am 11.04.2011 PREVIEW
 -----------------------------------
 Migration
  * Java 6 wird zwingend benötigt.
