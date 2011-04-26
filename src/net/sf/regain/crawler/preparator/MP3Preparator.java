@@ -38,6 +38,7 @@ import net.sf.regain.crawler.document.RawDocument;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.audio.mp3.MP3File;
+import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.id3.ID3v1Tag;
 import org.jaudiotagger.tag.id3.ID3v24Frames;
@@ -99,13 +100,13 @@ public class MP3Preparator extends AbstractPreparator {
       } else if (mp3file.hasID3v1Tag()) {
         ID3v1Tag tag = mp3file.getID3v1Tag();
 
-        info.add(tag.getFirstArtist().trim());
-        info.add(tag.getFirstAlbum().trim());
-        info.add(tag.getFirstTitle().trim());
+        info.add(tag.getFirst(FieldKey.ARTIST).trim());
+        info.add(tag.getFirst(FieldKey.ALBUM).trim());
+        info.add(tag.getFirst(FieldKey.TITLE).trim());
         try {
-          int year = new Integer(tag.getFirstYear().trim()).intValue();
+          int year = new Integer(tag.getFirst(FieldKey.YEAR).trim()).intValue();
           if (year > 0) {
-            info.add(tag.getFirstYear().trim());
+            info.add(tag.getFirst(FieldKey.YEAR).trim());
           }
         } catch (Exception ex) {
         }

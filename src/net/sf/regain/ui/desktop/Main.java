@@ -16,14 +16,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Contact: Til Schneider, info@murfman.de
+ * Contact: Til Schneider, info@murfman.de, Thomas Tesche, thomas.tesche@clustersystems.de
  *
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-04-08 20:04:01 +0200 (Fr, 08 Apr 2011) $
+ *     $Date: 2011-04-27 17:03:58 +0200 (Mi, 27 Apr 2011) $
  *   $Author: thtesche $
- * $Revision: 479 $
+ * $Revision: 485 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -62,6 +62,9 @@ public class Main implements DesktopConstants {
         useTrayIcon = false;
       }
     }
+
+    testIfFileExists(CONFIG_DIR, "conf");
+    testIfFileExists(DEFAULT_CONFIG_DIR, "conf/default");
 
     // Initialize the configuration
     // (Copy all files from the default dir that don't exist in the config dir)
@@ -136,5 +139,20 @@ public class Main implements DesktopConstants {
    */
   public static void quit() {
     System.exit(0);
+  }
+
+  /**
+   * Checks whether the given file exists and notice the user with an
+   * appropriate message.
+   *
+   * @param file the file/dir to check
+   * @param label the file name for the message
+   */
+  private static void testIfFileExists(File file, String label) {
+    if (file == null || !file.exists()) {
+      System.out.println("Error: Config Dir '" + label + "' not found.\n"
+              + "Current Working Directory is: " + System.getProperty("user.dir"));
+      System.exit(1);
+    }
   }
 }

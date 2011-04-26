@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-08-09 18:52:40 +0200 (So, 09 Aug 2009) $
+ *     $Date: 2011-04-27 19:58:02 +0200 (Mi, 27 Apr 2011) $
  *   $Author: thtesche $
- * $Revision: 394 $
+ * $Revision: 488 $
  */
 package net.sf.regain.crawler.config;
 
@@ -678,6 +678,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return Der Host-Namen des Proxy-Servers.
    */
+  @Override
   public String getProxyHost() {
     return mProxyHost;
   }
@@ -690,6 +691,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return Der Port des Proxy-Servers.
    */
+  @Override
   public String getProxyPort() {
     return mProxyPort;
   }
@@ -702,6 +704,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return Der Benutzernamen fï¿œr die Anmeldung beim Proxy-Server.
    */
+  @Override
   public String getProxyUser() {
     return mProxyUser;
   }
@@ -714,12 +717,14 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return Das Passwort fï¿œr die Anmeldung beim Proxy-Server.
    */
+  @Override
   public String getProxyPassword() {
     return mProxyPassword;
   }
 
 
   // overridden
+  @Override
   public String getUserAgent() {
     return mUserAgent;
   }
@@ -731,6 +736,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return Den Timeout fï¿œr HTTP-Downloads
    */
+  @Override
   public int getHttpTimeoutSecs() {
     return mHttpTimeoutSecs;
   }
@@ -743,6 +749,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * @return Ob URLs geladen werden sollen, die weder durchsucht noch indiziert
    *         werden.
    */
+  @Override
   public boolean getLoadUnparsedUrls() {
     return mLoadUnparsedUrls;
   }
@@ -754,6 +761,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return Ob ein Suchindex erstellt werden soll.
    */
+  @Override
   public boolean getBuildIndex() {
     return mBuildIndex;
   }
@@ -764,6 +772,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return Das Verzeichnis, in dem der Suchindex am Ende stehen soll.
    */
+  @Override
   public String getIndexDir() {
     return mIndexDir;
   }
@@ -774,12 +783,14 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return en zu verwendenden Analyzer-Typ
    */
+  @Override
   public String getAnalyzerType() {
     return mAnalyzerType;
   }
 
 
   // overridden
+  @Override
   public int getMaxFieldLength() {
     return mMaxFieldLength;
   }
@@ -790,6 +801,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return Alle Worte, die nicht indiziert werden sollen.
    */
+  @Override
   public String[] getStopWordList() {
     return mStopWordList;
   }
@@ -803,6 +815,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * @return Alle Worte, die bei der Indizierung nicht vom Analyzer
    *         verändert werden sollen.
    */
+  @Override
   public String[] getExclusionList() {
     return mExclusionList;
   }
@@ -817,6 +830,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return Ob Analyse-Deteien geschrieben werden sollen.
    */
+  @Override
   public boolean getWriteAnalysisFiles() {
     return mWriteAnalysisFiles;
   }
@@ -828,6 +842,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return the interval between two breakpoint in minutes.
    */
+  @Override
   public int getBreakpointInterval() {
     return mBreakpointInterval;
   }
@@ -844,6 +859,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return Den maximalen Prozentsatz von gescheiterten Dokumenten zurück.
    */
+  @Override
   public double getMaxFailedDocuments() {
     return mMaxFailedDocuments;
   }
@@ -860,6 +876,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return Der Name der Kontrolldatei fï¿œr erfolgreiche Indexerstellung
    */
+  @Override
   public String getFinishedWithoutFatalsFileName() {
     return mFinishedWithoutFatalsFileName;
   }
@@ -876,6 +893,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return Der Name der Kontrolldatei fï¿œr fehlerhafte Indexerstellung
    */
+  @Override
   public String getFinishedWithFatalsFileName() {
     return mFinishedWithFatalsFileName;
   }
@@ -886,6 +904,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * @return boolean true if content preview is enabled and the whole content should be
    * stored in the index
    */
+  @Override
   public boolean getStoreContentForPreview(){
     return this.storeContentForPreview;
   }
@@ -895,6 +914,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return Die StartUrls.
    */
+  @Override
   public StartUrl[] getStartUrls() {
     return mStartUrls;
   }
@@ -907,6 +927,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return Die UrlPattern fï¿œr den HTML-Parser.
    */
+  @Override
   public UrlPattern[] getHtmlParserUrlPatterns() {
     return mHtmlParserUrlPatterns;
   }
@@ -920,6 +941,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * 
    * @return The black list.
    */
+  @Override
   public UrlMatcher[] getBlackList() {
     return mBlackList;
   }
@@ -933,12 +955,14 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return The white list
    */
+  @Override
   public WhiteListEntry[] getWhiteList() {
     return mWhiteListEntryArr;
   }
 
 
   // overridden
+  @Override
   public String[] getValuePrefetchFields() {
     return mValuePrefetchFields;
   }
@@ -952,6 +976,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * @return Die regulï¿œren Ausdrï¿œcke, die Dokumente bestimmen, fï¿œr die der
    *         Linktext als Titel genommen werden soll.
    */
+  @Override
   public String[] getUseLinkTextAsTitleRegexList() {
     return mUseLinkTextAsTitleRegexList;
   }
@@ -962,6 +987,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return The list with the preparator settings.
    */
+  @Override
   public PreparatorSettings[] getPreparatorSettingsList() {
     return mPreparatorSettingsArr;
   }
@@ -972,6 +998,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * 
    * @return The list of the auxiliary fields. May be null.
    */
+  @Override
   public AuxiliaryField[] getAuxiliaryFieldList() {
     return mAuxiliaryFieldArr;
   }
@@ -984,6 +1011,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * 
    * @return The class name of the CrawlerAccessController. 
    */
+  @Override
   public String getCrawlerAccessControllerClass() {
     return mCrawlerAccessControllerClass;
   }
@@ -997,6 +1025,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * 
    * @return The name of jar file to load the CrawlerAccessController from. 
    */
+  @Override
   public String getCrawlerAccessControllerJar() {
     return mCrawlerAccessControllerJar;
   }
@@ -1009,6 +1038,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * 
    * @return The the configuration of the CrawlerAccessController. 
    */
+  @Override
   public Properties getCrawlerAccessControllerConfig() {
     return mCrawlerAccessControllerConfig;
   }
@@ -1018,6 +1048,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return MaxCycleCount
    */
+  @Override
   public int getMaxCycleCount() {
     return mMaxCycleCount;
   }
@@ -1027,6 +1058,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    *
    * @return MaxSummaryLength
    */
+  @Override
   public int getMaxSummaryLength() {
     return mMaxSummaryLength;
   }
@@ -1049,6 +1081,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * @param config The crawler configuration.
    * @return The names of the fields that shouldn't be tokenized.
    */
+  @Override
   public String[] getUntokenizedFieldNames() {
     AuxiliaryField[] auxFieldArr = getAuxiliaryFieldList();
     ArrayList list = new ArrayList();
@@ -1066,6 +1099,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   /**
    * {@inheritDoc }
    */
+  @Override
   public String[] getURLCleaners() {
     return mURLCleaners;
   }

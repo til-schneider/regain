@@ -1,3 +1,11 @@
+Version 1.7.6 am 28.04.2011 PREVIEW
+-----------------------------------
+UPDATE:
+ * Icons für docx, pptx, xlsx hinzugefügt
+ * Fehlermeldung bei falschem Config-Dir verbessert (Contrib. benjamin » 26.04.2011, 08:45)
+ * Bibliotheks-Updates: PDFBox, Lucene, JaudioTager
+ * Definition von Analysern für französisch und italiänisch hinzugefügt.
+
 Version 1.7.5 am 18.04.2011 PREVIEW
 -----------------------------------
 FIX:
@@ -17,7 +25,7 @@ Version 1.7.3 am 21.12.2010
 ---------------------------
 Weihnachtsversion 2010. Beinhaltet alle Änderungen seit 1.7.0.
 
-Frohe Suchen zu Weihnachten
+Frohes Suchen zu Weihnachten
 
 Version 1.7.2 am 14.11.2010 PREVIEW
 -----------------------------------

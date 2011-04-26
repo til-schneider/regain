@@ -22,9 +22,9 @@
  | CVS information:
  |  $RCSfile$
  |   $Source$
- |     $Date: 2011-04-08 20:04:01 +0200 (Fr, 08 Apr 2011) $
+ |     $Date: 2011-04-27 19:59:34 +0200 (Mi, 27 Apr 2011) $
  |   $Author: thtesche $
- | $Revision: 479 $
+ | $Revision: 489 $
  |
  | Author: Til Schneider, www.murfman.de
  +-->
@@ -640,6 +640,7 @@
     <echo message="Creating the jars ..." />
     <fileset id="desktop-common-jars" dir="build/included-lib-classes/common">
       <include name="org/apache/lucene/**"/>
+      <include name="org/tartarus/**"/>
       <include name="org/apache/log4j/**"/>
       <include name="org/apache/regexp/**"/>
       <include name="org/apache/commons/collections/**"/>
@@ -734,6 +735,7 @@
       </manifest>
       <fileset dir="build/included-lib-classes/common">
         <include name="org/apache/lucene/**"/>
+        <include name="org/tartarus/**"/>
         <include name="org/apache/log4j/**"/>
         <include name="org/apache/regexp/**"/>
         <include name="org/apache/commons/collections/**"/>

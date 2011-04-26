@@ -41,6 +41,7 @@ import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 
@@ -80,13 +81,14 @@ public class GenericAudioPreparator extends AbstractPreparator {
 
       Tag tag = audioFile.getTag();
 
-      info.add(tag.getFirstArtist().trim());
-      info.add(tag.getFirstAlbum().trim());
-      info.add(tag.getFirstTitle().trim());
+      info.add(tag.getFirst(FieldKey.ARTIST).trim());
+      info.add(tag.getFirst(FieldKey.ALBUM).trim());
+      info.add(tag.getFirst(FieldKey.TITLE).trim());
+
       try {
-        int year = new Integer(tag.getFirstYear().trim()).intValue();
+        int year = new Integer(tag.getFirst(FieldKey.YEAR).trim()).intValue();
         if (year > 0) {
-          info.add(tag.getFirstYear().trim());
+          info.add(tag.getFirst(FieldKey.YEAR).trim());
         }
       } catch (Exception ex) {
       }

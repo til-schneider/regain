@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2010-10-09 21:36:26 +0200 (Sa, 09 Okt 2010) $
+ *     $Date: 2011-04-27 19:58:02 +0200 (Mi, 27 Apr 2011) $
  *   $Author: thtesche $
- * $Revision: 461 $
+ * $Revision: 488 $
  */
 package net.sf.regain;
 
@@ -67,7 +67,9 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.de.GermanAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.apache.lucene.analysis.fr.FrenchAnalyzer;
+import org.apache.lucene.analysis.it.ItalianAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
@@ -598,9 +600,16 @@ public class RegainToolkit {
     analyzerType = analyzerType.trim();
     String analyzerClassName = analyzerType;
     if (analyzerType.equalsIgnoreCase("english")) {
-      analyzerClassName = StandardAnalyzer.class.getName();
-    } else if (analyzerType.equalsIgnoreCase("german")) {
+      analyzerClassName = EnglishAnalyzer.class.getName();
+    } else if (analyzerType.equalsIgnoreCase("german")
+            || analyzerType.equalsIgnoreCase("deutsch")) {
       analyzerClassName = GermanAnalyzer.class.getName();
+    } else if (analyzerType.equalsIgnoreCase("french")
+            || analyzerType.equalsIgnoreCase("francais")) {
+      analyzerClassName = FrenchAnalyzer.class.getName();
+    } else if (analyzerType.equalsIgnoreCase("italian")
+            || analyzerType.equalsIgnoreCase("italiano")) {
+      analyzerClassName = ItalianAnalyzer.class.getName();
     }
 
     // Get the analyzer class
@@ -692,6 +701,7 @@ public class RegainToolkit {
   private static Analyzer createAnalysingAnalyzer(final Analyzer nestedAnalyzer) {
     return new Analyzer() {
 
+      @Override
       public TokenStream tokenStream(String fieldName, Reader reader) {
         // NOTE: For Analyzation we have to read the reader twice:
         //       Once for the analyzation and second for the returned TokenStream
@@ -1545,15 +1555,14 @@ public class RegainToolkit {
       mNestedAnalyzer = nestedAnalyzer;
 
       mUntokenizedFieldNames = new HashSet();
-      for (int i = 0; i < untokenizedFieldNames.length; i++) {
-        mUntokenizedFieldNames.add(untokenizedFieldNames[i]);
-      }
+      mUntokenizedFieldNames.addAll(Arrays.asList(untokenizedFieldNames));
     }
 
     /**
      * Creates a TokenStream which tokenizes all the text in the provided
      * Reader.
      */
+    @Override
     public TokenStream tokenStream(String fieldName, Reader reader) {
       boolean useStemming = true;
       // NOTE: For security reasons we explicitely check for the groups field
@@ -1598,6 +1607,7 @@ public class RegainToolkit {
      * @throws IOException Wenn der eingebettete Reader nicht geschlossen werden
      *         konnte.
      */
+    @Override
     public void close() throws IOException {
       mNestedReader.close();
     }
@@ -1614,6 +1624,7 @@ public class RegainToolkit {
      * @throws IOException Wenn nicht vom eingebetteten Reader gelesen werden
      *         konnte.
      */
+    @Override
     public int read(char[] cbuf, int off, int len) throws IOException {
       // Read the data
       int charCount = mNestedReader.read(cbuf, off, len);

@@ -87,15 +87,22 @@
   <!-- Specifies, whether the index should be built -->
   <buildIndex>true</buildIndex>
 
-  <!--
+ <!--
    | Specifies the analyzer type to use.
    |
    | You may specify the class name of the analyzer or you use one of the
-   | following aliases: 
+   | following aliases:
    |  * english: For the english language
-   |    (alias for org.apache.lucene.analysis.standard.StandardAnalyzer)
-   |  * german: For the german language
+   |    (alias for org.apache.lucene.analysis.en.EnglishAnalyzer)
+   |  * german or deutsch: For the german language
    |    (alias for org.apache.lucene.analysis.de.GermanAnalyzer)
+   |  * french or francais: For the french language
+   |    (alias for org.apache.lucene.analysis.fr.FrenchAnalyzer)
+   |  * italian or italiano: For the italian language
+   |    (alias for org.apache.lucene.analysis.it.ItalianAnalyzer)
+   |
+   | Get more information at:
+   | http://lucene.apache.org/java/3_1_0/api/contrib-analyzers/index.html?overview-summary.html
    +-->
   <analyzerType>german</analyzerType>
 

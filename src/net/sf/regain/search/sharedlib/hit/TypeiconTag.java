@@ -61,6 +61,7 @@ public class TypeiconTag extends AbstractHitTag {
    * @param hitIndex The index of the hit.
    * @throws RegainException If there was an exception.
    */
+  @Override
   protected void printEndTag(PageRequest request, PageResponse response,
     Document hit, int hitIndex)
     throws RegainException

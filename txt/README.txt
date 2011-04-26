@@ -1,3 +1,11 @@
+Version 1.7.6 on 2011/Apr/28 PREVIEW
+-------------------------------------
+UPDATE
+ * Add icons for docx, xlsx, pptx on the search result.
+ * Improve error handling and message for a non-existent conf-dir
+ * Lib-Updates: PDFBox, Lucene, JaudioTager
+ * Add predefined analyzer definitions for french and italian analyzers.
+
 Version 1.7.5 on 2011/Apr/18 PREVIEW
 -------------------------------------
 FIX
