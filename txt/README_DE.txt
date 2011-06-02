@@ -1,3 +1,7 @@
+Version 1.7.7 am 03.06.2011 STABLE
+-----------------------------------
+Enthält alle Änderungen von 1.7.4-1.7.6
+
 Version 1.7.6 am 28.04.2011 PREVIEW
 -----------------------------------
 UPDATE:
@@ -21,8 +25,8 @@ NEU
  * Annotations werden aus PDF Dokumenten ausgelesen.
  * TrayIcon wird auch auf 64-bit Systemen dargestellt.
 
-Version 1.7.3 am 21.12.2010
----------------------------
+Version 1.7.3 am 21.12.2010 STABLE
+----------------------------------
 Weihnachtsversion 2010. Beinhaltet alle Änderungen seit 1.7.0.
 
 Frohes Suchen zu Weihnachten

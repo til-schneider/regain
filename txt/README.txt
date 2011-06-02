@@ -1,3 +1,8 @@
+Version 1.7.7 on 2011/Jun/03 STABLE
+-----------------------------------
+Release includes all changes from 1.7.4
+to 1.7.6.
+
 Version 1.7.6 on 2011/Apr/28 PREVIEW
 -------------------------------------
 UPDATE
@@ -20,8 +25,8 @@ NEW
  * Annotations extraction from PDF documents
  * System Tray will be correctly displayed on 64-bit Systems.
 
-Version 1.7.3 on 2010/Dec/21
-----------------------------
+Version 1.7.3 on 2010/Dec/21 STABLE
+-----------------------------------
 Christmas_2010 release. Covers all changes from 1.7.1 and 1.7.2.
 
 Happy searching on XMAS 

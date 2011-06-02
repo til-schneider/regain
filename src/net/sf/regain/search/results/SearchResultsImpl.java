@@ -56,6 +56,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MultiSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -108,6 +109,7 @@ public class SearchResultsImpl implements SearchResults {
   /** Factory for create a new LazyList-entry. */
   Factory factory = new Factory() {
 
+    @Override
     public Object create() {
       return new Document();
     }
@@ -188,7 +190,7 @@ public class SearchResultsImpl implements SearchResults {
 
       } else {
         // Collect all IndexSearchers and instantiate a MultiSearcher
-        Searcher[] searchers = new Searcher[indexConfigs.length];
+        IndexSearcher[] searchers = new IndexSearcher[indexConfigs.length];
         IndexReader[] readerArray = new IndexReader[indexConfigs.length];
         for (int j = 0; j < indexSearcherManagers.length; j++) {
           searchers[j] = indexSearcherManagers[j].getIndexSearcher();
@@ -323,6 +325,7 @@ public class SearchResultsImpl implements SearchResults {
    *
    * @return the number of hits the search had.
    */
+  @Override
   public int getHitCount() {
     if (hitScoreDocs == null) {
       return 0;
@@ -335,6 +338,7 @@ public class SearchResultsImpl implements SearchResults {
    *
    * @return the number of indexed documents.
    */
+  @Override
   public int getDocumentCount() {
     return mMultiReader.numDocs() - mMultiReader.numDeletedDocs();
   }
@@ -349,6 +353,7 @@ public class SearchResultsImpl implements SearchResults {
    * @throws RegainException If getting the document failed.
    * @see Document
    */
+  @Override
   public Document getHitDocument(int index) throws RegainException {
 
     try {
@@ -385,6 +390,7 @@ public class SearchResultsImpl implements SearchResults {
    * @throws RegainException If getting the score failed.
    * @see Hits#score(int)
    */
+  @Override
   public float getHitScore(int index) throws RegainException {
     try {
       return hitScoreDocs[index].score;
@@ -398,6 +404,7 @@ public class SearchResultsImpl implements SearchResults {
    *
    * @return The search time.
    */
+  @Override
   public int getSearchTime() {
     return mSearchTime;
   }
@@ -409,6 +416,7 @@ public class SearchResultsImpl implements SearchResults {
    * @return Whether the hit should be opened in a new window.
    * @throws RegainException If getting the URL failed.
    */
+  @Override
   public synchronized boolean getOpenHitInNewWindow(int index)
           throws RegainException {
     String url = getHitUrl(index);
@@ -435,6 +443,7 @@ public class SearchResultsImpl implements SearchResults {
    * @param index The index of the hit.
    * @return Whether the file-to-http-bridge should be used.
    */
+  @Override
   public boolean getUseFileToHttpBridgeForHit(int index) {
     return mIndexConfig.getUseFileToHttpBridge();
   }
@@ -447,6 +456,7 @@ public class SearchResultsImpl implements SearchResults {
    * @return The url of the wanted hit.
    * @throws RegainException If getting the hit document failed.
    */
+  @Override
   public String getHitUrl(int index) throws RegainException {
     String url = getHitDocument(index).get("url");
     if (url == null) {
@@ -477,6 +487,7 @@ public class SearchResultsImpl implements SearchResults {
    * @return The name of the index a hit comes from.
    * @throws RegainException If getting the index name failed.
    */
+  @Override
   public String getHitIndexName(int index) throws RegainException {
     return mIndexName;
   }
@@ -487,6 +498,7 @@ public class SearchResultsImpl implements SearchResults {
    * @param index The index of the hit.
    * @throws RegainException if shorten fails.
    */
+  @Override
   public void shortenSummary(int index) throws RegainException {
 
     try {
@@ -522,6 +534,7 @@ public class SearchResultsImpl implements SearchResults {
    * @param index The index of the hit.
    * @throws RegainException If highlighting failed.
    */
+  @Override
   public void highlightHitDocument(int index) throws RegainException {
 
     try {
@@ -619,6 +632,7 @@ public class SearchResultsImpl implements SearchResults {
    * @return whether to highlight
    * @throws RegainException If the value could not read from config
    */
+  @Override
   public boolean getShouldHighlight(int index) throws RegainException {
     return mIndexConfig.getShouldHighlight();
   }
