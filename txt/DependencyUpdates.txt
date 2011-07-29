@@ -150,8 +150,8 @@ Thomas Tesche (thtesche), cluster:Consult
   jcifs 1.3.11 --> 1.3.14
   * jcifs-1.3.14.jar
 
-27.04.201
-=========
+27.04.2011
+==========
 Thomas Tesche (thtesche), cluster:Systems CSG GmbH
   PDFBox 1.2.1 --> 1.5
   * pdfbox, jempbox, fontbox
@@ -160,6 +160,13 @@ Thomas Tesche (thtesche), cluster:Systems CSG GmbH
   JAudioTagger 1.0.8 --> 2.0.3
   * jaudiotagger
 
+29.07.2011
+==========
+Thomas Tesche (thtesche), cluster:Systems CSG GmbH
+  PDFBox 1.5 --> 1.6
+  * pdfbox, jempbox, fontbox
+Benjamin Pick
+  * commons-beanutils 1.8.2 --> 1.8.3
 
 Websites:
 =========
@@ -176,3 +183,4 @@ Websites:
   jaudiotagger: https://jaudiotagger.dev.java.net/, http://www.jthink.net/jaudiotagger/ 
   Eclipse: http://www.eclipse.org/
   BouncyCastle: http://www.bouncycastle.org/
+  Apache Commons Beanutils: http://commons.apache.org/beanutils/

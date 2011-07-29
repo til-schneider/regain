@@ -1,3 +1,15 @@
+Version 1.7.8 on 2011/XXX/XX PREVIEW
+-------------------------------------
+NEW
+ * Capability for Crawler Plugins
+ * commons-beanutils 1.8.3: Used for Reflection in CrawlerPluginManager
+
+UPDATE
+ * PDFBox to 1.6.0: performance improvements, bugfixes
+
+BUGFIX
+ * Catch Null-Pointerexception when OpenOfficePreparator treats a Office 2007-File
+
 Version 1.7.7 on 2011/Jun/03 STABLE
 -----------------------------------
 Release includes all changes from 1.7.4
@@ -25,8 +37,8 @@ NEW
  * Annotations extraction from PDF documents
  * System Tray will be correctly displayed on 64-bit Systems.
 
-Version 1.7.3 on 2010/Dec/21 STABLE
------------------------------------
+Version 1.7.3 on 2010/Dec/21
+----------------------------
 Christmas_2010 release. Covers all changes from 1.7.1 and 1.7.2.
 
 Happy searching on XMAS 

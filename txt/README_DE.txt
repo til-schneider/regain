@@ -1,3 +1,15 @@
+Version 1.7.8 am XX.XX.2011 PREVIEW
+-----------------------------------
+NEU 
+ * Crawler-Plugin-Infrastruktur
+ * commons-beanutils 1.8.3: Für die Reflection-API von CrawlerPluginManager
+
+UPDATE
+ * PDFBox auf 1.6.0: Performanceverbesserung, Bugfixes
+
+BUGFIX
+ * OpenOfficePreparator: Hatte eine Nullpointer-Exceptions geworfen bei Office 2007-Dateien
+
 Version 1.7.7 am 03.06.2011 STABLE
 -----------------------------------
 Enthält alle Änderungen von 1.7.4-1.7.6
@@ -25,8 +37,8 @@ NEU
  * Annotations werden aus PDF Dokumenten ausgelesen.
  * TrayIcon wird auch auf 64-bit Systemen dargestellt.
 
-Version 1.7.3 am 21.12.2010 STABLE
-----------------------------------
+Version 1.7.3 am 21.12.2010
+---------------------------
 Weihnachtsversion 2010. Beinhaltet alle Änderungen seit 1.7.0.
 
 Frohes Suchen zu Weihnachten

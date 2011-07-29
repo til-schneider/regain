@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-04-27 19:58:02 +0200 (Mi, 27 Apr 2011) $
+ *     $Date: 2011-07-30 21:19:08 +0200 (Sa, 30 Jul 2011) $
  *   $Author: thtesche $
- * $Revision: 488 $
+ * $Revision: 498 $
  */
 package net.sf.regain;
 
@@ -62,6 +62,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import jcifs.smb.SmbFile;
+import net.sf.regain.search.config.IndexConfig;
 import net.sf.regain.util.io.PathFilenamePair;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -637,7 +638,7 @@ public class RegainToolkit {
                 + " does not support stop words", thr);
       }
       try {
-        analyzer = (Analyzer) ctor.newInstance(new Object[]{Version.LUCENE_30, stopWordSet});
+        analyzer = (Analyzer) ctor.newInstance(new Object[]{IndexConfig.getLuceneVersion(), stopWordSet});
       } catch (Throwable thr) {
         throw new RegainException("Creating analyzer instance failed", thr);
       }
@@ -654,7 +655,7 @@ public class RegainToolkit {
                   + " is not supported.", thr);
         }
 
-        analyzer = (Analyzer) analyzerWithoutStopWords.newInstance(new Object[]{Version.LUCENE_30});
+        analyzer = (Analyzer) analyzerWithoutStopWords.newInstance(new Object[]{IndexConfig.getLuceneVersion()});
       } catch (Throwable thr) {
         throw new RegainException("Creating analyzer instance failed", thr);
       }
@@ -1541,7 +1542,7 @@ public class RegainToolkit {
     /** The nested analyzer. */
     private Analyzer mNestedAnalyzer;
     /** The names of the fields that should not be tokenized. */
-    private HashSet mUntokenizedFieldNames;
+    private HashSet<String> mUntokenizedFieldNames;
 
     /**
      * Creates a new instance of WrapperAnalyzer.
@@ -1551,10 +1552,10 @@ public class RegainToolkit {
      *        tokenized.
      */
     public WrapperAnalyzer(Analyzer nestedAnalyzer, String[] untokenizedFieldNames) {
-      mNoStemmingAnalyzer = new WhitespaceAnalyzer();
+      mNoStemmingAnalyzer = new WhitespaceAnalyzer(IndexConfig.getLuceneVersion());
       mNestedAnalyzer = nestedAnalyzer;
 
-      mUntokenizedFieldNames = new HashSet();
+      mUntokenizedFieldNames = new HashSet<String>();
       mUntokenizedFieldNames.addAll(Arrays.asList(untokenizedFieldNames));
     }
 

@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-10 16:00:46 +0200 (Mi, 10 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 155 $
+ *     $Date: 2011-07-30 21:19:08 +0200 (Sa, 30 Jul 2011) $
+ *   $Author: thtesche $
+ * $Revision: 498 $
  */
 package net.sf.regain.search.config;
 
@@ -29,6 +29,7 @@ public class DefaultSearchConfigFactory implements SearchConfigFactory {
    * @return The configuration of the search mask.
    * @throws RegainException If loading failed.
    */
+  @Override
   public SearchConfig createSearchConfig(PageRequest request)
     throws RegainException
   {

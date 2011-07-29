@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-11-15 23:12:24 +0100 (So, 15 Nov 2009) $
- *   $Author: thtesche $
- * $Revision: 424 $
+ *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 495 $
  */
 package net.sf.regain.crawler;
 
@@ -43,6 +43,7 @@ import net.sf.regain.crawler.config.CrawlerConfig;
 import net.sf.regain.crawler.config.UrlMatcher;
 import net.sf.regain.crawler.document.DocumentFactory;
 import net.sf.regain.crawler.document.RawDocument;
+import net.sf.regain.crawler.plugin.CrawlerPluginManager;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -216,6 +217,9 @@ public class IndexWriterManager {
    * Die URL bildet den key, der LastUpdated-String die value.
    */
   private HashMap mUrlsToDeleteHash;
+  
+  /** Crawler Plugin Manager instance */
+  private CrawlerPluginManager pluginManager = CrawlerPluginManager.getInstance();
 
   /**
    * Erzeugt eine neue IndexWriterManager-Instanz.
@@ -738,9 +742,11 @@ public class IndexWriterManager {
 
     // Dokument in den Index aufnehmen
     if (doc != null) {
+
       mAddToIndexProfiler.startMeasuring();
       try {
         setIndexMode(WRITING_MODE);
+        pluginManager.eventCreateIndexEntry(doc, mIndexWriter);
         mIndexWriter.addDocument(doc);
         mAddToIndexProfiler.stopMeasuring(rawDocument.getLength());
       } catch (IOException exc) {
@@ -853,6 +859,8 @@ public class IndexWriterManager {
           }
 
           if (shouldBeDeleted) {
+        	pluginManager.eventDeleteIndexEntry(doc, mIndexReader);
+        	  
             try {
               mLog.info("Deleting from index: " + url + " from " + lastModified);
               mIndexReader.deleteDocument(docIdx);

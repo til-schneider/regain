@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT analyzerType ( #PCDATA ) >
+
+<!ELEMENT auxiliaryField ( regex ) >
+<!ATTLIST auxiliaryField name NMTOKEN #REQUIRED >
+<!ATTLIST auxiliaryField regexGroup NMTOKEN #REQUIRED >
+<!ATTLIST auxiliaryField store NMTOKEN #IMPLIED >
+<!ATTLIST auxiliaryField toLowercase NMTOKEN #IMPLIED >
+<!ATTLIST auxiliaryField tokenize NMTOKEN #IMPLIED >
+
+<!ELEMENT auxiliaryFieldList ( auxiliaryField+ ) >
+
+<!ELEMENT blacklist EMPTY >
+
+<!ELEMENT breakpointInterval ( #PCDATA ) >
+
+<!ELEMENT buildIndex ( #PCDATA ) >
+
+<!ELEMENT class ( #PCDATA ) >
+
+<!ELEMENT config ( section* ) >
+
+<!ELEMENT configuration ( proxy, userAgent, startlist, whitelist, blacklist, UrlCleaner, searchIndex, preparatorList, crawlerPlugins, auxiliaryFieldList, loadUnparsedUrls, httpTimeout, useLinkTextAsTitleList, MaxCycleCount, MaxSummaryLength ) >
+
+<!ELEMENT crawlerPlugin ( class, config? ) >
+<!ATTLIST crawlerPlugin enabled NMTOKEN #IMPLIED >
+<!ATTLIST crawlerPlugin priority NMTOKEN #IMPLIED >
+
+<!ELEMENT crawlerPluginList ( crawlerPlugin* ) >
+
+<!ELEMENT dir ( #PCDATA ) >
+
+<!ELEMENT exclusionList EMPTY >
+
+<!ELEMENT httpTimeout ( #PCDATA ) >
+
+<!ELEMENT loadUnparsedUrls ( #PCDATA ) >
+
+<!ELEMENT maxFailedDocuments ( #PCDATA ) >
+
+<!ELEMENT maxFieldLength ( #PCDATA ) >
+
+<!ELEMENT param ( #PCDATA ) >
+<!ATTLIST param name NMTOKEN #REQUIRED >
+
+<!ELEMENT prefix ( #PCDATA ) >
+<!ATTLIST prefix name NMTOKEN #IMPLIED >
+
+<!ELEMENT preparator ( class, config?, urlPattern? ) >
+<!ATTLIST preparator enabled NMTOKEN #IMPLIED >
+<!ATTLIST preparator priority NMTOKEN #IMPLIED >
+
+<!ELEMENT preparatorList ( preparator+ ) >
+
+<!ELEMENT proxy EMPTY >
+
+<!ELEMENT regex ( #PCDATA ) >
+
+<!ELEMENT searchIndex ( dir, buildIndex, analyzerType, maxFieldLength, breakpointInterval?, writeAnalysisFiles, maxFailedDocuments, stopwordList, exclusionList, valuePrefetchFields, storeContentForPreview ) >
+
+<!ELEMENT section ( param* ) >
+<!ATTLIST section name NMTOKEN #REQUIRED >
+
+<!ELEMENT startlist EMPTY >
+
+<!ELEMENT stopwordList ( #PCDATA ) >
+
+<!ELEMENT storeContentForPreview ( #PCDATA ) >
+
+<!ELEMENT urlPattern ( #PCDATA ) >
+
+<!ELEMENT useLinkTextAsTitleList ( urlPattern ) >
+
+<!ELEMENT userAgent ( #PCDATA ) >
+
+<!ELEMENT valuePrefetchFields ( #PCDATA ) >
+
+<!ELEMENT whitelist ( prefix+ ) >
+
+<!ELEMENT writeAnalysisFiles ( #PCDATA ) >
+

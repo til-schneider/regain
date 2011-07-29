@@ -46,7 +46,6 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.util.Version;
 
 /**
  * A toolkit for the search JSPs containing helper methods.
@@ -57,29 +56,22 @@ public class SearchToolkit {
 
   /** The name of the page context attribute that holds the search query. */
   private static final String SEARCH_QUERY_CONTEXT_ATTR_NAME = "SearchQuery";
-  
   /** The name of the page context attribute that holds the SearchResults. */
   private static final String SEARCH_RESULTS_ATTR_NAME = "SearchResults";
-
   /** The name of the page context attribute that holds the IndexConfig array. */
   private static final String INDEX_CONFIG_CONTEXT_ARRAY_ATTR_NAME = "IndexConfigArr";
-  
   /** The prefix for request parameters that contain additional field values. */
   private static final String FIELD_PREFIX = "field.";
-
-	/**
-	 * The prefix for request parameters that contain additional field values
-	 * that is not a string.
-	 */
-	 private static final String FIELD_PREFIX_NOSTRING = "fieldNoString.";
-	   
+  /**
+   * The prefix for request parameters that contain additional field values
+   * that is not a string.
+   */
+  private static final String FIELD_PREFIX_NOSTRING = "fieldNoString.";
   /** The configuration of the search mask. */
   private static SearchConfig mConfig;
-  
   /** Holds for an extension the mime type. */
-  private static HashMap mMimeTypeHash;
+  private static HashMap<String, String> mMimeTypeHash;
 
-  
   /**
    * Gets the IndexConfig array from the PageContext. It contains the
    * configurations of all indexes the search query is searching on.
@@ -93,8 +85,7 @@ public class SearchToolkit {
    * @throws RegainException If there is no IndexConfig for the specified index.
    */
   public static IndexConfig[] getIndexConfigArr(PageRequest request)
-    throws RegainException
-  {
+          throws RegainException {
     IndexConfig[] configArr = (IndexConfig[]) request.getContextAttribute(INDEX_CONFIG_CONTEXT_ARRAY_ATTR_NAME);
     if (configArr == null) {
       // Load the config (if not yet done)
@@ -107,18 +98,18 @@ public class SearchToolkit {
         // defined
         indexNameArr = mConfig.getDefaultIndexNameArr();
         if (indexNameArr == null) {
-          throw new RegainException("Request parameter 'index' not specified and " +
-              "no default index configured");
+          throw new RegainException("Request parameter 'index' not specified and "
+                  + "no default index configured");
         }
       }
-      
+
       // Get the configurations for these indexes
       configArr = new IndexConfig[indexNameArr.length];
       for (int i = 0; i < indexNameArr.length; i++) {
         configArr[i] = mConfig.getIndexConfig(indexNameArr[i]);
         if (configArr[i] == null) {
           throw new RegainException("The configuration does not contain the index '"
-              + indexNameArr[i] + "'");
+                  + indexNameArr[i] + "'");
         }
       }
 
@@ -127,104 +118,100 @@ public class SearchToolkit {
     }
     return configArr;
   }
-  
-  
+
   /**
-	 * Gets the IndexConfig array from the PageContext. It contains the
-	 * configurations of all indexes the search query is searching on.
-	 * <p>
-	 * If there is no IndexConfig array in the PageContext it is put in the
-	 * PageContext, so the next call will find it.
-	 * 
-	 * @param request
-	 *            The page request where the IndexConfig array will be taken
-	 *            from or put to.
-	 * @return The IndexConfig array for the page the context is for.
-	 * @throws RegainException
-	 *             If there is no IndexConfig for the specified index.
-	 */
-	public static IndexConfig[] getIndexConfigArrWithParent(PageRequest request) throws RegainException {
-		IndexConfig[] configArr = (IndexConfig[]) request.getContextAttribute(INDEX_CONFIG_CONTEXT_ARRAY_ATTR_NAME);
-		if (configArr == null) {
-			// Load the config (if not yet done)
-			loadConfiguration(request);
+   * Gets the IndexConfig array from the PageContext. It contains the
+   * configurations of all indexes the search query is searching on.
+   * <p>
+   * If there is no IndexConfig array in the PageContext it is put in the
+   * PageContext, so the next call will find it.
+   * 
+   * @param request
+   *            The page request where the IndexConfig array will be taken
+   *            from or put to.
+   * @return The IndexConfig array for the page the context is for.
+   * @throws RegainException
+   *             If there is no IndexConfig for the specified index.
+   */
+  public static IndexConfig[] getIndexConfigArrWithParent(PageRequest request) throws RegainException {
+    IndexConfig[] configArr = (IndexConfig[]) request.getContextAttribute(INDEX_CONFIG_CONTEXT_ARRAY_ATTR_NAME);
+    if (configArr == null) {
+      // Load the config (if not yet done)
+      loadConfiguration(request);
 
-			// Get the names of the indexes
-			String[] indexNameArr = request.getParameters("index");
-			if (indexNameArr == null) {
-				// There was no index specified -> Check whether we have default
-				// indexes
-				// defined
-				indexNameArr = mConfig.getDefaultIndexNameArr();
-				if (indexNameArr == null) {
-					throw new RegainException("Request parameter 'index' not specified and "
-							+ "no default index configured");
-				}
-			}
+      // Get the names of the indexes
+      String[] indexNameArr = request.getParameters("index");
+      if (indexNameArr == null) {
+        // There was no index specified -> Check whether we have default
+        // indexes
+        // defined
+        indexNameArr = mConfig.getDefaultIndexNameArr();
+        if (indexNameArr == null) {
+          throw new RegainException("Request parameter 'index' not specified and "
+                  + "no default index configured");
+        }
+      }
 
-			// Get the configurations for these indexes
-			List configList = new ArrayList();
-			for (int i = 0; i < indexNameArr.length; i++) {
-				IndexConfig index = mConfig.getIndexConfig(indexNameArr[i]);
-				if (index == null) {
-					throw new RegainException("The configuration does not contain the index '" + indexNameArr[i] + "'");
+      // Get the configurations for these indexes
+      List<IndexConfig> configList = new ArrayList<IndexConfig>();
+      for (int i = 0; i < indexNameArr.length; i++) {
+        IndexConfig index = mConfig.getIndexConfig(indexNameArr[i]);
+        if (index == null) {
+          throw new RegainException("The configuration does not contain the index '" + indexNameArr[i] + "'");
 
-				}
-				// If index is a parent index -> get all childs
-				if (index.isParent()) {
-					String[] allIndexName = mConfig.getAllIndexNameArr();
-					for (int j = 0; j < allIndexName.length; j++) {
-						IndexConfig indexParent = mConfig.getIndexConfig(allIndexName[j]);
-						if (indexParent.hasParent() && indexNameArr[i].equals(indexParent.getParentName())) {
-							configList.add(indexParent);
-						}
-					}
-				} else {
-					configList.add(index);
-				}
-			}
-			// Rebuild array from list
-			configArr = new IndexConfig[configList.size()];
-			for (int i = 0; i < configList.size(); i++) {
-				configArr[i] = (IndexConfig) configList.get(i);
-			}
-			// Store the IndexConfig in the page context
-			request.setContextAttribute(INDEX_CONFIG_CONTEXT_ARRAY_ATTR_NAME, configArr);
-		}
-		return configArr;
-	}
-	
-	
+        }
+        // If index is a parent index -> get all childs
+        if (index.isParent()) {
+          String[] allIndexName = mConfig.getAllIndexNameArr();
+          for (int j = 0; j < allIndexName.length; j++) {
+            IndexConfig indexParent = mConfig.getIndexConfig(allIndexName[j]);
+            if (indexParent.hasParent() && indexNameArr[i].equals(indexParent.getParentName())) {
+              configList.add(indexParent);
+            }
+          }
+        } else {
+          configList.add(index);
+        }
+      }
+      // Rebuild array from list
+      configArr = new IndexConfig[configList.size()];
+      for (int i = 0; i < configList.size(); i++) {
+        configArr[i] = (IndexConfig) configList.get(i);
+      }
+      // Store the IndexConfig in the page context
+      request.setContextAttribute(INDEX_CONFIG_CONTEXT_ARRAY_ATTR_NAME, configArr);
+    }
+    return configArr;
+  }
+
   /**
-	 * Gets the IndexConfig array from the configurationn. It contains the
-	 * configurations of all indexes in the configuration file.
-	 * <p>
-	 * 
-	 * @return The IndexConfig array for all indizes.
-	 * @throws RegainException
-	 *             If there is no IndexConfig for the specified index.
-	 */
+   * Gets the IndexConfig array from the configurationn. It contains the
+   * configurations of all indexes in the configuration file.
+   * <p>
+   * 
+   * @return The IndexConfig array for all indizes.
+   * @throws RegainException
+   *             If there is no IndexConfig for the specified index.
+   */
+  public static IndexConfig[] getAllIndexConfigArr(PageRequest request) throws RegainException {
+    loadConfiguration(request);
+    String[] indexNameArr;
+    indexNameArr = mConfig.getAllIndexNameArr();
+    if (indexNameArr == null) {
+      throw new RegainException("There are no Indizes defined in the search configuration  "
+              + "no index configured");
+    }
 
-	public static IndexConfig[] getAllIndexConfigArr(PageRequest request) throws RegainException {
-		loadConfiguration(request);
-		String[] indexNameArr;
-		indexNameArr = mConfig.getAllIndexNameArr();
-		if (indexNameArr == null) {
-			throw new RegainException("There are no Indizes defined in the search configuration  "
-					+ "no index configured");
-		}
-
-		// Get the configurations for these indexes
-		IndexConfig[] configArr = new IndexConfig[indexNameArr.length];
-		for (int i = 0; i < indexNameArr.length; i++) {
-			configArr[i] = mConfig.getIndexConfig(indexNameArr[i]);
-			if (configArr[i] == null) {
-				throw new RegainException("The configuration does not contain the index '" + indexNameArr[i] + "'");
-			}
-		}
-		return configArr;
-	}
-
+    // Get the configurations for these indexes
+    IndexConfig[] configArr = new IndexConfig[indexNameArr.length];
+    for (int i = 0; i < indexNameArr.length; i++) {
+      configArr[i] = mConfig.getIndexConfig(indexNameArr[i]);
+      if (configArr[i] == null) {
+        throw new RegainException("The configuration does not contain the index '" + indexNameArr[i] + "'");
+      }
+    }
+    return configArr;
+  }
 
   /**
    * Gets the search query.
@@ -234,22 +221,21 @@ public class SearchToolkit {
    * @throws RegainException If getting the query failed.
    */
   public static String getSearchQuery(PageRequest request)
-    throws RegainException
-  {
+          throws RegainException {
     String queryString = (String) request.getContextAttribute(SEARCH_QUERY_CONTEXT_ATTR_NAME);
     if (queryString == null) {
       // Get the query parameter
       StringBuilder query = new StringBuilder();
       String[] queryParamArr = request.getParametersNotNull("query");
       for (int i = 0; i < queryParamArr.length; i++) {
-        if( queryParamArr[i] != null ) {
+        if (queryParamArr[i] != null) {
           if (i != 0) {
             query.append(" ");
           }
           query.append(queryParamArr[i]);
         }
       }
-      
+
       // Append the additional fields to the query
       Enumeration enm = request.getParameterNames();
       while (enm.hasMoreElements()) {
@@ -258,7 +244,7 @@ public class SearchToolkit {
           // This is an additional field -> Append it to the query
           String fieldName = paramName.substring(FIELD_PREFIX.length());
           String fieldValue = request.getParameter(paramName);
-          
+
           if (fieldValue != null) {
             fieldValue = fieldValue.trim();
             if (fieldValue.length() != 0) {
@@ -271,29 +257,28 @@ public class SearchToolkit {
           }
         }
         if (paramName.startsWith(FIELD_PREFIX_NOSTRING)) {
-					// This is an additional field -> Append it to the query
-					String fieldName = paramName.substring(FIELD_PREFIX_NOSTRING.length());
-					String fieldValue = request.getParameter(paramName);
+          // This is an additional field -> Append it to the query
+          String fieldName = paramName.substring(FIELD_PREFIX_NOSTRING.length());
+          String fieldValue = request.getParameter(paramName);
 
-					if (fieldValue != null) {
-						fieldValue = fieldValue.trim();
-						if (fieldValue.length() != 0) {
-							query.append(" ");
-							query.append(fieldName);
-							query.append(":");
-							query.append(fieldValue);
-						}
-					}
-				}
+          if (fieldValue != null) {
+            fieldValue = fieldValue.trim();
+            if (fieldValue.length() != 0) {
+              query.append(" ");
+              query.append(fieldName);
+              query.append(":");
+              query.append(fieldValue);
+            }
+          }
+        }
       }
-      
+
       queryString = query.toString().trim();
       request.setContextAttribute(SEARCH_QUERY_CONTEXT_ATTR_NAME, queryString);
     }
-    
+
     return queryString;
   }
-  
 
   /**
    * Gets the SearchResults from the PageContext.
@@ -308,8 +293,7 @@ public class SearchToolkit {
    * @see SearchResults
    */
   public static SearchResults getSearchResults(PageRequest request)
-    throws RegainException
-  {
+          throws RegainException {
     SearchResults results = (SearchResults) request.getContextAttribute(SEARCH_RESULTS_ATTR_NAME);
     if (results == null) {
       // Get the index configurations
@@ -317,13 +301,13 @@ public class SearchToolkit {
       IndexConfig[] indexConfigArr = getIndexConfigArrWithParent(request);
 
       /*if (indexConfigArr.length == 1) {
-        results = createSingleSearchResults(indexConfigArr[0], request);
+      results = createSingleSearchResults(indexConfigArr[0], request);
       } else {
-        SingleSearchResults[] childResultsArr = new SingleSearchResults[indexConfigArr.length];
-        for (int i = 0; i < childResultsArr.length; i++) {
-          childResultsArr[i] = createSingleSearchResults(indexConfigArr[i], request);
-        }
-        results = new MultipleSearchResults(childResultsArr);
+      SingleSearchResults[] childResultsArr = new SingleSearchResults[indexConfigArr.length];
+      for (int i = 0; i < childResultsArr.length; i++) {
+      childResultsArr[i] = createSingleSearchResults(indexConfigArr[i], request);
+      }
+      results = new MultipleSearchResults(childResultsArr);
       }*/
       results = new SearchResultsImpl(indexConfigArr, request);
 
@@ -346,8 +330,7 @@ public class SearchToolkit {
    * @see net.sf.regain.search.sharedlib.hit.LinkTag
    */
   public static String extractFileUrl(String requestPath, String encoding)
-    throws RegainException
-  {
+          throws RegainException {
     // NOTE: This is the counterpart to net.sf.regain.search.sharedlib.hit.LinkTag
     // NOTE: Removing index GET Parameter not nessesary: We already have the requestPath
 
@@ -361,13 +344,12 @@ public class SearchToolkit {
     // Restore the double slashes
     // See workaround in net.sf.regain.search.sharedlib.hit.LinkTag
     fileName = RegainToolkit.replace(fileName,
-        new String[] {"$/$", "$$"},
-        new String[] {"/",   "$"});
+            new String[]{"$/$", "$$"},
+            new String[]{"/", "$"});
 
     // Assemble the file URL
     return RegainToolkit.fileNameToUrl(fileName);
   }
-
 
   /**
    * Decides whether the remote access to a file should be allowed.
@@ -381,18 +363,17 @@ public class SearchToolkit {
    * @throws RegainException If checking the file failed.
    */
   public static boolean allowFileAccess(PageRequest request, String fileUrl)
-    throws RegainException
-  {
+          throws RegainException {
     IndexConfig[] configArr = getIndexConfigArr(request);
     Query query = null;
-        
+
     // Check whether one of the indexes contains the file
     for (int i = 0; i < configArr.length; i++) {
       // NOTE: We only allow the file access if there is no access controller
       if (configArr[i].getSearchAccessController() == null) {
         String dir = configArr[i].getDirectory();
         IndexSearcherManager manager = IndexSearcherManager.getInstance(dir);
-        
+
         String transformedFileUrl = fileUrl;
         // back transform the file url according to given rewrite rules
         String[][] rewriteRules = configArr[i].getRewriteRules();
@@ -407,18 +388,18 @@ public class SearchToolkit {
             }
           }
         }
-  
+
         // Check whether the document is in the index
-        Analyzer analyzer = new WhitespaceAnalyzer();
-        QueryParser parser = new QueryParser(Version.LUCENE_30, "url", analyzer);
+        Analyzer analyzer = new WhitespaceAnalyzer(IndexConfig.getLuceneVersion());
+        QueryParser parser = new QueryParser(IndexConfig.getLuceneVersion(), "url", analyzer);
         String queryString = "\"" + transformedFileUrl + "\"";
-        
+
         try {
           query = parser.parse(queryString);
         } catch (ParseException ex) {
           throw new RegainException("Parsing of url lookup-query failed.", ex);
         }
-        
+
         ScoreDoc[] hits = manager.search(query);
         // Allow the access if we found the file in the index
         if (hits.length > 0) {
@@ -426,11 +407,10 @@ public class SearchToolkit {
         }
       }
     }
-    
+
     // We didn't find the file in the indexes -> File access is not allowed
     return false;
   }
-
 
   /**
    * Sends a file to the client.
@@ -441,8 +421,7 @@ public class SearchToolkit {
    * @throws RegainException If sending the file failed.
    */
   public static void sendFile(PageRequest request, PageResponse response, File file)
-    throws RegainException
-  {
+          throws RegainException {
     long lastModified = file.lastModified();
     if (lastModified < request.getHeaderAsDate("If-Modified-Since")) {
       // The browser can use the cached file
@@ -450,59 +429,59 @@ public class SearchToolkit {
     } else {
       response.setHeaderAsDate("Date", System.currentTimeMillis());
       response.setHeaderAsDate("Last-Modified", lastModified);
-    
+
       // TODO: Make this configurable
       if (mMimeTypeHash == null) {
         // Source: http://de.selfhtml.org/diverses/mimetypen.htm
-        mMimeTypeHash = new HashMap();
+        mMimeTypeHash = new HashMap<String, String>();
         mMimeTypeHash.put("html", "text/html");
-        mMimeTypeHash.put("htm",  "text/html");
-        mMimeTypeHash.put("gif",  "image/gif");
-        mMimeTypeHash.put("jpg",  "image/jpeg");
+        mMimeTypeHash.put("htm", "text/html");
+        mMimeTypeHash.put("gif", "image/gif");
+        mMimeTypeHash.put("jpg", "image/jpeg");
         mMimeTypeHash.put("jpeg", "image/jpeg");
-        mMimeTypeHash.put("png",  "image/png");
-        mMimeTypeHash.put("js",   "text/javascript");
-        mMimeTypeHash.put("txt",  "text/plain");
-        mMimeTypeHash.put("pdf",  "application/pdf");
-        mMimeTypeHash.put("xls",  "application/msexcel");
-        mMimeTypeHash.put("doc",  "application/msword");
-        mMimeTypeHash.put("ppt",  "application/mspowerpoint");
-        mMimeTypeHash.put("rtf",  "text/rtf");
-        
+        mMimeTypeHash.put("png", "image/png");
+        mMimeTypeHash.put("js", "text/javascript");
+        mMimeTypeHash.put("txt", "text/plain");
+        mMimeTypeHash.put("pdf", "application/pdf");
+        mMimeTypeHash.put("xls", "application/msexcel");
+        mMimeTypeHash.put("doc", "application/msword");
+        mMimeTypeHash.put("ppt", "application/mspowerpoint");
+        mMimeTypeHash.put("rtf", "text/rtf");
+
         // Source: http://framework.openoffice.org/documentation/mimetypes/mimetypes.html
-        mMimeTypeHash.put("sds",  "application/vnd.stardivision.chart");
-        mMimeTypeHash.put("sdc",  "application/vnd.stardivision.calc");
-        mMimeTypeHash.put("sdw",  "application/vnd.stardivision.writer");
-        mMimeTypeHash.put("sgl",  "application/vnd.stardivision.writer-global");
-        mMimeTypeHash.put("sda",  "application/vnd.stardivision.draw");
-        mMimeTypeHash.put("sdd",  "application/vnd.stardivision.impress");
-        mMimeTypeHash.put("sdf",  "application/vnd.stardivision.math");
-        mMimeTypeHash.put("sxw",  "application/vnd.sun.xml.writer");
-        mMimeTypeHash.put("stw",  "application/vnd.sun.xml.writer.template");
-        mMimeTypeHash.put("sxg",  "application/vnd.sun.xml.writer.global");
-        mMimeTypeHash.put("sxc",  "application/vnd.sun.xml.calc");
-        mMimeTypeHash.put("stc",  "application/vnd.sun.xml.calc.template");
-        mMimeTypeHash.put("sxi",  "application/vnd.sun.xml.impress");
-        mMimeTypeHash.put("sti",  "application/vnd.sun.xml.impress.template");
-        mMimeTypeHash.put("sxd",  "application/vnd.sun.xml.draw");
-        mMimeTypeHash.put("std",  "application/vnd.sun.xml.draw.template");
-        mMimeTypeHash.put("sxm",  "application/vnd.sun.xml.math");
-        mMimeTypeHash.put("odt",  "application/vnd.oasis.opendocument.text");
-        mMimeTypeHash.put("ott",  "application/vnd.oasis.opendocument.text-template");
-        mMimeTypeHash.put("oth",  "application/vnd.oasis.opendocument.text-web");
-        mMimeTypeHash.put("odm",  "application/vnd.oasis.opendocument.text-master");
-        mMimeTypeHash.put("odg",  "application/vnd.oasis.opendocument.graphics");
-        mMimeTypeHash.put("otg",  "application/vnd.oasis.opendocument.graphics-template");
-        mMimeTypeHash.put("odp",  "application/vnd.oasis.opendocument.presentation");
-        mMimeTypeHash.put("otp",  "application/vnd.oasis.opendocument.presentation-template");
-        mMimeTypeHash.put("ods",  "application/vnd.oasis.opendocument.spreadsheet");
-        mMimeTypeHash.put("ots",  "application/vnd.oasis.opendocument.spreadsheet-template");
-        mMimeTypeHash.put("odc",  "application/vnd.oasis.opendocument.chart");
-        mMimeTypeHash.put("odf",  "application/vnd.oasis.opendocument.formula");
-        mMimeTypeHash.put("odb",  "application/vnd.oasis.opendocument.database");
-        mMimeTypeHash.put("odi",  "application/vnd.oasis.opendocument.image");
+        mMimeTypeHash.put("sds", "application/vnd.stardivision.chart");
+        mMimeTypeHash.put("sdc", "application/vnd.stardivision.calc");
+        mMimeTypeHash.put("sdw", "application/vnd.stardivision.writer");
+        mMimeTypeHash.put("sgl", "application/vnd.stardivision.writer-global");
+        mMimeTypeHash.put("sda", "application/vnd.stardivision.draw");
+        mMimeTypeHash.put("sdd", "application/vnd.stardivision.impress");
+        mMimeTypeHash.put("sdf", "application/vnd.stardivision.math");
+        mMimeTypeHash.put("sxw", "application/vnd.sun.xml.writer");
+        mMimeTypeHash.put("stw", "application/vnd.sun.xml.writer.template");
+        mMimeTypeHash.put("sxg", "application/vnd.sun.xml.writer.global");
+        mMimeTypeHash.put("sxc", "application/vnd.sun.xml.calc");
+        mMimeTypeHash.put("stc", "application/vnd.sun.xml.calc.template");
+        mMimeTypeHash.put("sxi", "application/vnd.sun.xml.impress");
+        mMimeTypeHash.put("sti", "application/vnd.sun.xml.impress.template");
+        mMimeTypeHash.put("sxd", "application/vnd.sun.xml.draw");
+        mMimeTypeHash.put("std", "application/vnd.sun.xml.draw.template");
+        mMimeTypeHash.put("sxm", "application/vnd.sun.xml.math");
+        mMimeTypeHash.put("odt", "application/vnd.oasis.opendocument.text");
+        mMimeTypeHash.put("ott", "application/vnd.oasis.opendocument.text-template");
+        mMimeTypeHash.put("oth", "application/vnd.oasis.opendocument.text-web");
+        mMimeTypeHash.put("odm", "application/vnd.oasis.opendocument.text-master");
+        mMimeTypeHash.put("odg", "application/vnd.oasis.opendocument.graphics");
+        mMimeTypeHash.put("otg", "application/vnd.oasis.opendocument.graphics-template");
+        mMimeTypeHash.put("odp", "application/vnd.oasis.opendocument.presentation");
+        mMimeTypeHash.put("otp", "application/vnd.oasis.opendocument.presentation-template");
+        mMimeTypeHash.put("ods", "application/vnd.oasis.opendocument.spreadsheet");
+        mMimeTypeHash.put("ots", "application/vnd.oasis.opendocument.spreadsheet-template");
+        mMimeTypeHash.put("odc", "application/vnd.oasis.opendocument.chart");
+        mMimeTypeHash.put("odf", "application/vnd.oasis.opendocument.formula");
+        mMimeTypeHash.put("odb", "application/vnd.oasis.opendocument.database");
+        mMimeTypeHash.put("odi", "application/vnd.oasis.opendocument.image");
       }
-      
+
       // Set the MIME type
       String filename = file.getName();
       int lastDot = filename.lastIndexOf('.');
@@ -513,7 +492,7 @@ public class SearchToolkit {
           response.setHeader("Content-Type", mimeType);
         }
       }
-      
+
       // Send the file
       OutputStream out = null;
       FileInputStream in = null;
@@ -521,21 +500,24 @@ public class SearchToolkit {
         out = response.getOutputStream();
         in = new FileInputStream(file);
         RegainToolkit.pipe(in, out);
-      }
-      catch (IOException exc) {
+      } catch (IOException exc) {
         throw new RegainException("Sending file failed: " + file.getAbsolutePath(), exc);
-      }
-      finally {
+      } finally {
         if (in != null) {
-          try { in.close(); } catch (IOException exc) {}
+          try {
+            in.close();
+          } catch (IOException exc) {
+          }
         }
         if (out != null) {
-          try { out.close(); } catch (IOException exc) {}
+          try {
+            out.close();
+          } catch (IOException exc) {
+          }
         }
       }
     }
   }
-
 
   /**
    * Loads the configuration of the search mask.
@@ -547,21 +529,18 @@ public class SearchToolkit {
    * @throws RegainException If loading failed.
    */
   private static void loadConfiguration(PageRequest request)
-    throws RegainException
-  {
+          throws RegainException {
     if (mConfig == null) {
       // Create the factory
       String factoryClassname = request.getInitParameter("searchConfigFactoryClass");
-      String factoryJarfile   = request.getInitParameter("searchConfigFactoryJar");
+      String factoryJarfile = request.getInitParameter("searchConfigFactoryJar");
       if (factoryClassname == null) {
         factoryClassname = DefaultSearchConfigFactory.class.getName();
       }
-      SearchConfigFactory factory = (SearchConfigFactory)
-        RegainToolkit.createClassInstance(factoryClassname, SearchConfigFactory.class, factoryJarfile);
-      
+      SearchConfigFactory factory = (SearchConfigFactory) RegainToolkit.createClassInstance(factoryClassname, SearchConfigFactory.class, factoryJarfile);
+
       // Create the config
       mConfig = factory.createSearchConfig(request);
     }
   }
-  
 }

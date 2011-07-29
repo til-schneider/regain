@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-11-29 16:46:09 +0100 (So, 29 Nov 2009) $
+ *     $Date: 2011-07-30 21:19:08 +0200 (Sa, 30 Jul 2011) $
  *   $Author: thtesche $
- * $Revision: 447 $
+ * $Revision: 498 $
  */
 package net.sf.regain.search.config;
 
@@ -14,6 +14,7 @@ import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.search.access.SearchAccessController;
 import net.sf.regain.search.results.SortingOption;
+import org.apache.lucene.util.Version;
 
 /**
  * The configuration for one index.
@@ -23,24 +24,18 @@ import net.sf.regain.search.results.SortingOption;
 public class IndexConfig {
 
   /** Default list of index fields to search in. */
-  protected static final String[] DEFAULT_SEARCH_FIELD_LIST
-    = { "content", "title", "headlines", "location", "filename" };
-
+  protected static final String[] DEFAULT_SEARCH_FIELD_LIST = {"content", "title", "headlines", "location", "filename"};
   /** The name of the index. */
   private String mName;
-  
   /** The directory where the index is located. */
   private String mDirectory;
-  
   /**
    * The regular expression that identifies URLs that should be opened in a new
    * window.
    */
   private String mOpenInNewWindowRegex;
-  
   /** Whether the file-to-http-bridge should be used. */
   private boolean mUseFileToHttpBridge;
-  
   /**
    * The index fields to search by default.
    * <p>
@@ -50,7 +45,6 @@ public class IndexConfig {
    * for details.
    */
   private String[] mSearchFieldList;
-  
   /**
    * The URL rewrite rules.
    * <p>
@@ -66,26 +60,21 @@ public class IndexConfig {
    * </pre>
    */
   private String[][] mRewriteRules;
-
   /** The SearchAccessController to use. May be <code>null</code>. */
   private SearchAccessController mSearchAccessController;
-
   /** Flag for highlighting of the search terms in the results */
   private boolean mShouldHighlight;
-  
   /** Index is used as parent cover */
-	private boolean mParent;
-
-	/** Index has a parent */
-	private boolean mHasParent;
-
-	/** Name of the parent (only used if mHasParent is true) */
-	private String mParentName;
-
+  private boolean mParent;
+  /** Index has a parent */
+  private boolean mHasParent;
+  /** Name of the parent (only used if mHasParent is true) */
+  private String mParentName;
   /** The sorting options for the results. */
   private SortingOption[] mSortingOptions;
-
   private boolean mShowSortFieldContent;
+  /** The current version matching to the embedded lucene jars. */
+  private static final Version LUCENE_VERSION = Version.LUCENE_31;
 
   /**
    * Creates a new instance of IndexConfig.
@@ -109,27 +98,25 @@ public class IndexConfig {
    * @throws RegainException If loading the SearchAccessController failed.
    */
   public IndexConfig(String name, String directory, String openInNewWindowRegex,
-    boolean useFileToHttpBridge, String[] searchFieldList, String[][] rewriteRules,
-    String searchAccessControllerClass, String searchAccessControllerJar,
-    Properties searchAccessControllerConfig, boolean shouldHighlight,
-    SortingOption[] sortingOptions, boolean showSortFieldContent)
-    throws RegainException
-  {
+          boolean useFileToHttpBridge, String[] searchFieldList, String[][] rewriteRules,
+          String searchAccessControllerClass, String searchAccessControllerJar,
+          Properties searchAccessControllerConfig, boolean shouldHighlight,
+          SortingOption[] sortingOptions, boolean showSortFieldContent)
+          throws RegainException {
     this.mName = name;
     this.mDirectory = directory;
     this.mOpenInNewWindowRegex = openInNewWindowRegex;
     this.mUseFileToHttpBridge = useFileToHttpBridge;
     this.mSearchFieldList = searchFieldList;
     this.mRewriteRules = rewriteRules;
- 		this.mParent = true;
-		this.mHasParent = false;
-    
+    this.mParent = true;
+    this.mHasParent = false;
+
     if (searchAccessControllerClass != null) {
-      this.mSearchAccessController = (SearchAccessController)
-        RegainToolkit.createClassInstance(searchAccessControllerClass,
-                                          SearchAccessController.class,
-                                          searchAccessControllerJar);
-      
+      this.mSearchAccessController = (SearchAccessController) RegainToolkit.createClassInstance(searchAccessControllerClass,
+              SearchAccessController.class,
+              searchAccessControllerJar);
+
       if (searchAccessControllerConfig == null) {
         searchAccessControllerConfig = new Properties();
       }
@@ -140,7 +127,6 @@ public class IndexConfig {
     this.mShowSortFieldContent = showSortFieldContent;
   }
 
-
   /**
    * Gets the name of the index.
    * 
@@ -150,7 +136,6 @@ public class IndexConfig {
     return mName;
   }
 
-  
   /**
    * Gets the directory where the index is located.
    * 
@@ -159,8 +144,7 @@ public class IndexConfig {
   public String getDirectory() {
     return mDirectory;
   }
-  
-  
+
   /**
    * Gets the regular expression that identifies URLs that should be opened in
    * a new window.
@@ -171,7 +155,6 @@ public class IndexConfig {
   public String getOpenInNewWindowRegex() {
     return mOpenInNewWindowRegex;
   }
-
 
   /**
    * Gets whether the file-to-http-bridge should be used for file-URLs.
@@ -187,7 +170,6 @@ public class IndexConfig {
     return mUseFileToHttpBridge;
   }
 
-
   /**
    * Gets the index fields to search by default.
    * <p>
@@ -200,14 +182,14 @@ public class IndexConfig {
    */
   public String[] getSearchFieldList() {
 
-    if(mSearchFieldList != null)
+    if (mSearchFieldList != null) {
       return mSearchFieldList;
-    else
+    } else {
       return DEFAULT_SEARCH_FIELD_LIST;
-      
+    }
+
   }
 
-  
   /**
    * Gets the URL rewrite rules.
    * <p>
@@ -227,7 +209,6 @@ public class IndexConfig {
   public String[][] getRewriteRules() {
     return mRewriteRules;
   }
-
 
   /**
    * Gets the SearchAccessController to use. Returns <code>null</code> if no
@@ -249,57 +230,57 @@ public class IndexConfig {
   }
 
   /**
-	 * Is index has a parent index?
-	 *  
-	 * @return true if index has a parent
-	 * 		   false if index has no parent
-	 */
-	public boolean hasParent() {
-		return mHasParent;
-	}
+   * Is index has a parent index?
+   *  
+   * @return true if index has a parent
+   * 		   false if index has no parent
+   */
+  public boolean hasParent() {
+    return mHasParent;
+  }
 
-	/**
-	 * Is index a child of a parent index?
-	 *   
-	 * @return true if index is a parent index
-	 * 		   false if index is not a parent index
-	 */
-	public boolean isParent() {
-		return mParent;
-	}
+  /**
+   * Is index a child of a parent index?
+   *   
+   * @return true if index is a parent index
+   * 		   false if index is not a parent index
+   */
+  public boolean isParent() {
+    return mParent;
+  }
 
-	/**
-	 * Set index as parent if parent is "true" otherwise 
-	 * set false
-	 * 
-	 * @param parent is index a parent index?
-	 */
-	public void setParent(String parent) {
-		if ("true".equals(parent)) {
-			this.mParent = true;
-		} else {
-			this.mParent = false;
-		}
-	}
+  /**
+   * Set index as parent if parent is "true" otherwise 
+   * set false
+   * 
+   * @param parent is index a parent index?
+   */
+  public void setParent(String parent) {
+    if ("true".equals(parent)) {
+      this.mParent = true;
+    } else {
+      this.mParent = false;
+    }
+  }
 
-	/**
-	 * Gets the name of the parent index.
-	 * 
-	 * @return The name of the parent index.
-	 */
-	public String getParentName() {
-		return mParentName;
-	}
+  /**
+   * Gets the name of the parent index.
+   * 
+   * @return The name of the parent index.
+   */
+  public String getParentName() {
+    return mParentName;
+  }
 
-	/**
-	 * Set the name of the parent index
-	 * 
-	 * @param parentName Name of the parent index
-	 */
-	public void setParentName(String parentName) {
-		this.mParentName = parentName;
-		this.mHasParent = true;
-	}
+  /**
+   * Set the name of the parent index
+   * 
+   * @param parentName Name of the parent index
+   */
+  public void setParentName(String parentName) {
+    this.mParentName = parentName;
+    this.mHasParent = true;
+  }
 
   /**
    * @return the sortingOptions
@@ -315,4 +296,10 @@ public class IndexConfig {
     return mShowSortFieldContent;
   }
 
+  /**
+   * @return the LUCENE_VERSION
+   */
+  public static Version getLuceneVersion() {
+    return LUCENE_VERSION;
+  }
 }

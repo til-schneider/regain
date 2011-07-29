@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-04-30 08:59:19 +0200 (Do, 30 Apr 2009) $
- *   $Author: thtesche $
- * $Revision: 387 $
+ *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 495 $
  */
 package net.sf.regain.crawler.config;
 
@@ -273,6 +273,13 @@ public interface CrawlerConfig {
    * @return The list with the preparator settings.
    */
   public PreparatorSettings[] getPreparatorSettingsList();
+  
+  /**
+   * Gets the list with the crawler plugin settings.
+   *
+   * @return The list with the crawler plugin settings.
+   */
+  public PreparatorSettings[] getCrawlerPluginSettingsList();
   
   /**
    * Gets the list of the auxiliary fields.

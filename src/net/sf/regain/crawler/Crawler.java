@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2010-03-05 15:42:27 +0100 (Fr, 05 Mrz 2010) $
- *   $Author: thtesche $
- * $Revision: 455 $
+ *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 495 $
  */
 package net.sf.regain.crawler;
 
@@ -56,11 +56,14 @@ import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.crawler.access.AccountPasswordEntry;
 import net.sf.regain.crawler.config.CrawlerConfig;
+import net.sf.regain.crawler.config.PreparatorSettings;
 import net.sf.regain.crawler.config.StartUrl;
 import net.sf.regain.crawler.config.UrlMatcher;
 import net.sf.regain.crawler.config.UrlPattern;
 import net.sf.regain.crawler.config.WhiteListEntry;
 import net.sf.regain.crawler.document.RawDocument;
+import net.sf.regain.crawler.plugin.CrawlerPluginFactory;
+import net.sf.regain.crawler.plugin.CrawlerPluginManager;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
@@ -141,6 +144,9 @@ public class Crawler implements ErrorLogger {
   /** Username, password Map for configured hostnames. */
   Map <String, AccountPasswordEntry> accountPasswordStore;
   
+  /** Plugin Manager */
+  private CrawlerPluginManager pluginManager = CrawlerPluginManager.getInstance();
+  
   /**
    * Creates a new instance of Crawler.
    * 
@@ -180,9 +186,15 @@ public class Crawler implements ErrorLogger {
         }
       }
     }
+    
     accountPasswordStore = new HashMap<String, AccountPasswordEntry>();
     readAuthenticationProperties(authProps);
     mLog.debug(System.getenv().toString());
+    
+    // Create the crawler Plugins
+    PreparatorSettings[] crawlerPluginConf = config.getCrawlerPluginSettingsList();
+    pluginManager.clear();
+    CrawlerPluginFactory.getInstance().createPluggables(crawlerPluginConf); // Automatically registers them to CrawlerPluginManager
   }
   
   
@@ -353,6 +365,7 @@ public class Crawler implements ErrorLogger {
 
         CrawlerJob job = new CrawlerJob(url, sourceUrl, sourceLinkText,
                                       shouldBeParsed, shouldBeIndexed);
+    	pluginManager.eventAcceptURL(url, job);
         
         // NOTE: This is a little trick: We put documents that aren't parsed at
         //       the beginning of the job list and documents that are parsed at
@@ -364,6 +377,7 @@ public class Crawler implements ErrorLogger {
           mJobList.addFirst(job);
         }
       } else {
+      	pluginManager.eventDeclineURL(url);
         mUrlChecker.setIgnored(url);
         if (mLog.isDebugEnabled()) {
           mLog.debug("Ignoring URL: " + url + " in page: " + sourceUrl);
@@ -388,299 +402,304 @@ public class Crawler implements ErrorLogger {
     String[] onlyEntriesArr)
   {
     mLog.info("Starting crawling ...");
+    pluginManager.eventStartCrawling(this);
     mShouldPause = false;
 
-    // Init the HTTP client
-    CrawlerToolkit.initHttpClient(mConfiguration);
-
-    // Initialize the IndexWriterManager if building the index is wanted
-    mIndexWriterManager = null;
-    if (mConfiguration.getBuildIndex()) {
-      mLog.info("Preparing the index");
-      try {
-        mIndexWriterManager = new IndexWriterManager(mConfiguration, updateIndex, retryFailedDocs);
-        updateIndex = mIndexWriterManager.getUpdateIndex();
-      }
-      catch (RegainException exc) {
-        logError("Preparing the index failed!", exc, true);
-        return;
-      }
-    }
-
-    mLog.debug("Read whitelist entries from config");
-    // Get the white list and set the "should be updated"-flags
-    WhiteListEntry[] whiteList = mConfiguration.getWhiteList();
-    whiteList = useOnlyWhiteListEntries(whiteList, onlyEntriesArr, updateIndex);
-
-    // Create the UrlChecker
-    mUrlChecker = new UrlChecker(whiteList, mConfiguration.getBlackList());
-
-
-    // Add the start URLs
-    mLog.info("Read start-URLs from config");
-    addStartUrls();
-    
-    // Remember the last time when a breakpoint was created
-    long lastBreakpointTime = System.currentTimeMillis();
-    
-    // Work on the job list
-    while (! mJobList.isEmpty()) {
-      mCrawlerJobProfiler.startMeasuring();
-
-      mCurrentJob = (CrawlerJob) mJobList.removeFirst();
-      String url = mCurrentJob.getUrl();
-
-      boolean shouldBeParsed = mCurrentJob.shouldBeParsed();
-      boolean shouldBeIndexed = mCurrentJob.shouldBeIndexed();
-
-      if (url.startsWith("file://")) {
-        // file system: Check whether this is a directory 
-        try {
-          File file = RegainToolkit.urlToFile(url);
-          // Check whether the file is readable.
-          if (!file.canRead()) {
-            mCrawlerJobProfiler.abortMeasuring();
-            mLog.debug("File rights: canRead: " + file.canRead() +
-                    " canExecute: " + file.canExecute() +
-                    " canWrite: " + file.canWrite() + " exists: " + file.exists() +
-                    " for url: " + url + ", canonical url: " + file.getCanonicalPath());
-            logError("File is not readable: '" + url + "'", null, false);
-            continue;
-          } else if (file.isDirectory()) {
-            // This IS a directory -> Add all child files as Jobs
-            if (shouldBeParsed) {
-              parseDirectory(file);
-            }
-            
-            // A directory can't be indexed -> continue
-            mCrawlerJobProfiler.stopMeasuring(0);
-            continue;
-          }
-        }
-        catch (Throwable thr) {
-          mCrawlerJobProfiler.abortMeasuring();
-          logError("Invalid URL: '" + url + "'", thr, false);
-          continue;
-        }
-      } else if (url.startsWith("smb://")) {
-        // Windows share: Check whether this is a directory
-        try {
-          SmbFile smbFile = RegainToolkit.urlToSmbFile(
-            CrawlerToolkit.replaceAuthenticationValuesInURL(url,
-            CrawlerToolkit.findAuthenticationValuesForURL(url, accountPasswordStore)));
-          // Check whether the file is readable.
-          if (!smbFile.canRead()) {
-            mCrawlerJobProfiler.abortMeasuring();
-            logError("File is not readable: '" + url + "'", null, false);
-            continue;
-          } else if (smbFile.isDirectory()) {
-            // This IS a directory -> Add all child files as Jobs
-            if (shouldBeParsed) {
-              parseSmbDirectory(smbFile);
-            }
-
-            // A directory can't be indexed -> continue
-            mCrawlerJobProfiler.stopMeasuring(0);
-            continue;
-          }
-            
-        }
-        catch (Throwable thr) {
-          mCrawlerJobProfiler.abortMeasuring();
-          logError("Invalid URL: '" + url + "'", thr, false);
-          continue;
-        }
-        
-      } else if(url.startsWith("imap://") || url.startsWith("imaps://")) {
-        // IMAP mail box: Check whether this is a folder or an e-mail url
-        try {
-          if( ImapToolkit.isMessageURL( url) == true) {
-            // This is an URL wich describes an a-mail like 
-            // imap://user:password@mail.mailhost.com/INBOX/message_23(_attachment_1)
-            // Mail are only indexed one times
-            if( mIndexWriterManager.isAlreadyIndexed(url)) {
-              // do not crawl the mail again
-              mCrawlerJobProfiler.stopMeasuring(0);
-              continue;
-            }
-          } else {
-            // If the URL is not an e-mail it have to be folder. Add all subfolders and 
-            // messages as jobs
-            if (shouldBeParsed) {
-              parseIMAPFolder(url);
-            }
-            
-            // A folder can't be indexed -> continue
-            mCrawlerJobProfiler.stopMeasuring(0);
-            continue;
-          }
-
-        }
-        catch (Throwable thr) {
-          mCrawlerJobProfiler.abortMeasuring();
-          logError("Invalid URL: '" + url + "'", thr, false);
-          continue;
-        }
-      }
-
-      // Create a raw document
-      RawDocument rawDocument;
-      try {
-        rawDocument = new RawDocument(url, mCurrentJob.getSourceUrl(),
-          mCurrentJob.getSourceLinkText(), 
-          CrawlerToolkit.findAuthenticationValuesForURL(url, accountPasswordStore));
-        
-      } catch (RedirectException exc) {
-        String redirectUrl = exc.getRedirectUrl();
-        mLog.info("Redirect '" + url +  "' -> '" + redirectUrl + "'");
-        mUrlChecker.setIgnored(url);
-        // the RedirectURL inherit the properties for shouldBeParsed, shouldBeIndexed from the 
-        // sourceURL. This is possibly not right according to definitions in the whitelist
-        addJob(redirectUrl, mCurrentJob.getSourceUrl(), shouldBeParsed,
-               shouldBeIndexed, mCurrentJob.getSourceLinkText());
-        mCrawlerJobProfiler.stopMeasuring(0);
-        continue;
-      }
-      catch (RegainException exc) {
-        // Check whether the exception was caused by a dead link
-        handleDocumentLoadingException(exc, mCurrentJob);
-
-        // This document does not exist -> We can't parse or index anything
-        // -> continue
-        mCrawlerJobProfiler.abortMeasuring();
-        continue;
-      }
-
-      if( shouldBeIndexed || shouldBeParsed ){
-        if (mLog.isDebugEnabled()) {
-          mLog.debug("Parsing and indexing " + rawDocument.getUrl());
-        }
-        mHtmlParsingProfiler.startMeasuring();
-
-        // Parse and index content and metadata
-        if (shouldBeIndexed) {
-           try {
-            mIndexWriterManager.addToIndex(rawDocument, this);
-          }
-          catch (RegainException exc) {
-            logError("Indexing failed for: " + rawDocument.getUrl(), exc, false);
-          }
-        } 
-
-        // Extract links form the document (parse=true). The real meaning of parse in this context
-        // is link-extraction. The document is parsed anyway (building a html-node tree).
-        if (shouldBeParsed) {
-          if(!shouldBeIndexed){
-            // The document is not parsed so parse it
-            mIndexWriterManager.getDocumentFactory().createDocument(rawDocument, this);
-          }
-          try {
-            //parseHtmlDocument(rawDocument);
-            createCrawlerJobs(rawDocument);
-          }
-          catch (RegainException exc) {
-            logError("CrawlerJob creation failed for: " + rawDocument.getUrl(), exc, false);
-          }
-        }
-        mHtmlParsingProfiler.stopMeasuring(rawDocument.getLength());
-      }
-      // System-Ressourcen des RawDocument wieder frei geben.
-      rawDocument.dispose();
-
-      // Zeitmessung stoppen
-      mCrawlerJobProfiler.stopMeasuring(rawDocument.getLength());
-      mCurrentJob = null;
-      
-      // Check whether to create a breakpoint
-      int breakpointInterval = mConfiguration.getBreakpointInterval();
-      boolean breakpointIntervalIsOver = (breakpointInterval > 0)
-        && (System.currentTimeMillis() > lastBreakpointTime + breakpointInterval * 60 * 1000);
-      if (mShouldPause || breakpointIntervalIsOver) {
-        try {
-          mIndexWriterManager.createBreakpoint();
-        }
-        catch (RegainException exc) {
-          logError("Creating breakpoint failed", exc, false);
-        }
-        
-        // Pause
-        while (mShouldPause) {
-          try {
-            Thread.sleep(1000);
-            mLog.info("The crawler sleeps for 1 second.");
-          } catch (InterruptedException exc) {}
-        }
-        
-        lastBreakpointTime = System.currentTimeMillis();
-      }
-    } // while (! mJobList.isEmpty())
-
-    // Remove documents from the index which no longer exists
-    if (mConfiguration.getBuildIndex()) {
-      mLog.info("Removing index entries of documents that do not exist any more...");
-      try {
-        mIndexWriterManager.removeObsoleteEntries(mUrlChecker);
-      }
-      catch (Throwable thr) {
-        logError("Removing non-existing documents from index failed", thr, true);
-      }
-    }
-
-    // Check wether the index is empty
     int entryCount = 0;
+    double failedPercent = 0.0;
     try {
-      entryCount = mIndexWriterManager.getIndexEntryCount();
-      // NOTE: We've got to substract the errors, because for each failed
-      //       document a substitute document is added to the index
-      //       (which should not be counted).
-      entryCount -= mErrorCount;
-      if (entryCount < 0) {
-        entryCount = 0;
-      }
+	    // Init the HTTP client
+	    CrawlerToolkit.initHttpClient(mConfiguration);
+	
+	    // Initialize the IndexWriterManager if building the index is wanted
+	    mIndexWriterManager = null;
+	    if (mConfiguration.getBuildIndex()) {
+	      mLog.info("Preparing the index");
+	      try {
+	        mIndexWriterManager = new IndexWriterManager(mConfiguration, updateIndex, retryFailedDocs);
+	        updateIndex = mIndexWriterManager.getUpdateIndex();
+	      }
+	      catch (RegainException exc) {
+	        logError("Preparing the index failed!", exc, true);
+	        return;
+	      }
+	    }
+	
+	    mLog.debug("Read whitelist entries from config");
+	    // Get the white list and set the "should be updated"-flags
+	    WhiteListEntry[] whiteList = mConfiguration.getWhiteList();
+	    whiteList = useOnlyWhiteListEntries(whiteList, onlyEntriesArr, updateIndex);
+	
+	    // Create the UrlChecker
+	    mUrlChecker = new UrlChecker(whiteList, mConfiguration.getBlackList());
+	
+	
+	    // Add the start URLs
+	    mLog.info("Read start-URLs from config");
+	    addStartUrls();
+	    
+	    // Remember the last time when a breakpoint was created
+	    long lastBreakpointTime = System.currentTimeMillis();
+	    
+	    // Work on the job list
+	    while (! mJobList.isEmpty()) {
+	      mCrawlerJobProfiler.startMeasuring();
+	
+	      mCurrentJob = (CrawlerJob) mJobList.removeFirst();
+	      String url = mCurrentJob.getUrl();
+	
+	      boolean shouldBeParsed = mCurrentJob.shouldBeParsed();
+	      boolean shouldBeIndexed = mCurrentJob.shouldBeIndexed();
+	
+	      if (url.startsWith("file://")) {
+	        // file system: Check whether this is a directory 
+	        try {
+	          File file = RegainToolkit.urlToFile(url);
+	          // Check whether the file is readable.
+	          if (!file.canRead()) {
+	            mCrawlerJobProfiler.abortMeasuring();
+	            mLog.debug("File rights: canRead: " + file.canRead() +
+	                    " canExecute: " + file.canExecute() +
+	                    " canWrite: " + file.canWrite() + " exists: " + file.exists() +
+	                    " for url: " + url + ", canonical url: " + file.getCanonicalPath());
+	            logError("File is not readable: '" + url + "'", null, false);
+	            continue;
+	          } else if (file.isDirectory()) {
+	            // This IS a directory -> Add all child files as Jobs
+	            if (shouldBeParsed) {
+	              parseDirectory(file);
+	            }
+	            
+	            // A directory can't be indexed -> continue
+	            mCrawlerJobProfiler.stopMeasuring(0);
+	            continue;
+	          }
+	        }
+	        catch (Throwable thr) {
+	          mCrawlerJobProfiler.abortMeasuring();
+	          logError("Invalid URL: '" + url + "'", thr, false);
+	          continue;
+	        }
+	      } else if (url.startsWith("smb://")) {
+	        // Windows share: Check whether this is a directory
+	        try {
+	          SmbFile smbFile = RegainToolkit.urlToSmbFile(
+	            CrawlerToolkit.replaceAuthenticationValuesInURL(url,
+	            CrawlerToolkit.findAuthenticationValuesForURL(url, accountPasswordStore)));
+	          // Check whether the file is readable.
+	          if (!smbFile.canRead()) {
+	            mCrawlerJobProfiler.abortMeasuring();
+	            logError("File is not readable: '" + url + "'", null, false);
+	            continue;
+	          } else if (smbFile.isDirectory()) {
+	            // This IS a directory -> Add all child files as Jobs
+	            if (shouldBeParsed) {
+	              parseSmbDirectory(smbFile);
+	            }
+	
+	            // A directory can't be indexed -> continue
+	            mCrawlerJobProfiler.stopMeasuring(0);
+	            continue;
+	          }
+	            
+	        }
+	        catch (Throwable thr) {
+	          mCrawlerJobProfiler.abortMeasuring();
+	          logError("Invalid URL: '" + url + "'", thr, false);
+	          continue;
+	        }
+	        
+	      } else if(url.startsWith("imap://") || url.startsWith("imaps://")) {
+	        // IMAP mail box: Check whether this is a folder or an e-mail url
+	        try {
+	          if( ImapToolkit.isMessageURL( url) == true) {
+	            // This is an URL wich describes an a-mail like 
+	            // imap://user:password@mail.mailhost.com/INBOX/message_23(_attachment_1)
+	            // Mail are only indexed one times
+	            if( mIndexWriterManager.isAlreadyIndexed(url)) {
+	              // do not crawl the mail again
+	              mCrawlerJobProfiler.stopMeasuring(0);
+	              continue;
+	            }
+	          } else {
+	            // If the URL is not an e-mail it have to be folder. Add all subfolders and 
+	            // messages as jobs
+	            if (shouldBeParsed) {
+	              parseIMAPFolder(url);
+	            }
+	            
+	            // A folder can't be indexed -> continue
+	            mCrawlerJobProfiler.stopMeasuring(0);
+	            continue;
+	          }
+	
+	        }
+	        catch (Throwable thr) {
+	          mCrawlerJobProfiler.abortMeasuring();
+	          logError("Invalid URL: '" + url + "'", thr, false);
+	          continue;
+	        }
+	      }
+	
+	      // Create a raw document
+	      RawDocument rawDocument;
+	      try {
+	        rawDocument = new RawDocument(url, mCurrentJob.getSourceUrl(),
+	          mCurrentJob.getSourceLinkText(), 
+	          CrawlerToolkit.findAuthenticationValuesForURL(url, accountPasswordStore));
+	        
+	      } catch (RedirectException exc) {
+	        String redirectUrl = exc.getRedirectUrl();
+	        mLog.info("Redirect '" + url +  "' -> '" + redirectUrl + "'");
+	        mUrlChecker.setIgnored(url);
+	        // the RedirectURL inherit the properties for shouldBeParsed, shouldBeIndexed from the 
+	        // sourceURL. This is possibly not right according to definitions in the whitelist
+	        addJob(redirectUrl, mCurrentJob.getSourceUrl(), shouldBeParsed,
+	               shouldBeIndexed, mCurrentJob.getSourceLinkText());
+	        mCrawlerJobProfiler.stopMeasuring(0);
+	        continue;
+	      }
+	      catch (RegainException exc) {
+	        // Check whether the exception was caused by a dead link
+	        handleDocumentLoadingException(exc, mCurrentJob);
+	
+	        // This document does not exist -> We can't parse or index anything
+	        // -> continue
+	        mCrawlerJobProfiler.abortMeasuring();
+	        continue;
+	      }
+	
+	      if( shouldBeIndexed || shouldBeParsed ){
+	        if (mLog.isDebugEnabled()) {
+	          mLog.debug("Parsing and indexing " + rawDocument.getUrl());
+	        }
+	        mHtmlParsingProfiler.startMeasuring();
+	
+	        // Parse and index content and metadata
+	        if (shouldBeIndexed) {
+	           try {
+	            mIndexWriterManager.addToIndex(rawDocument, this);
+	          }
+	          catch (RegainException exc) {
+	            logError("Indexing failed for: " + rawDocument.getUrl(), exc, false);
+	          }
+	        } 
+	
+	        // Extract links form the document (parse=true). The real meaning of parse in this context
+	        // is link-extraction. The document is parsed anyway (building a html-node tree).
+	        if (shouldBeParsed) {
+	          if(!shouldBeIndexed){
+	            // The document is not parsed so parse it
+	            mIndexWriterManager.getDocumentFactory().createDocument(rawDocument, this);
+	          }
+	          try {
+	            //parseHtmlDocument(rawDocument);
+	            createCrawlerJobs(rawDocument);
+	          }
+	          catch (RegainException exc) {
+	            logError("CrawlerJob creation failed for: " + rawDocument.getUrl(), exc, false);
+	          }
+	        }
+	        mHtmlParsingProfiler.stopMeasuring(rawDocument.getLength());
+	      }
+	      // System-Ressourcen des RawDocument wieder frei geben.
+	      rawDocument.dispose();
+	
+	      // Zeitmessung stoppen
+	      mCrawlerJobProfiler.stopMeasuring(rawDocument.getLength());
+	      mCurrentJob = null;
+	      
+	      // Check whether to create a breakpoint
+	      int breakpointInterval = mConfiguration.getBreakpointInterval();
+	      boolean breakpointIntervalIsOver = (breakpointInterval > 0)
+	        && (System.currentTimeMillis() > lastBreakpointTime + breakpointInterval * 60 * 1000);
+	      if (mShouldPause || breakpointIntervalIsOver) {
+	        try {
+	          mIndexWriterManager.createBreakpoint();
+	        }
+	        catch (RegainException exc) {
+	          logError("Creating breakpoint failed", exc, false);
+	        }
+	        
+	        // Pause
+	        while (mShouldPause) {
+	          try {
+	            Thread.sleep(1000);
+	            mLog.info("The crawler sleeps for 1 second.");
+	          } catch (InterruptedException exc) {}
+	        }
+	        
+	        lastBreakpointTime = System.currentTimeMillis();
+	      }
+	    } // while (! mJobList.isEmpty())
+	
+	    // Remove documents from the index which no longer exists
+	    if (mConfiguration.getBuildIndex()) {
+	      mLog.info("Removing index entries of documents that do not exist any more...");
+	      try {
+	        mIndexWriterManager.removeObsoleteEntries(mUrlChecker);
+	      }
+	      catch (Throwable thr) {
+	        logError("Removing non-existing documents from index failed", thr, true);
+	      }
+	    }
+	
+	    // Check wether the index is empty
+	    try {
+	      entryCount = mIndexWriterManager.getIndexEntryCount();
+	      // NOTE: We've got to substract the errors, because for each failed
+	      //       document a substitute document is added to the index
+	      //       (which should not be counted).
+	      entryCount -= mErrorCount;
+	      if (entryCount < 0) {
+	        entryCount = 0;
+	      }
+	    }
+	    catch (Throwable thr) {
+	      logError("Counting index entries failed", thr, true);
+	    }
+	    if (entryCount == 0) {
+	      logError("The index is empty.", null, true);
+	      failedPercent = 1;
+	    } else {
+	      // Check wether the count of dead/errror links reached the limit
+	      double failedDocCount = mDeadlinkList.size() + mErrorCount;
+	      double totalDocCount = failedDocCount + entryCount;
+	      failedPercent = failedDocCount / totalDocCount;
+	      double maxAbortedPercent = mConfiguration.getMaxFailedDocuments();
+	      if (failedPercent > maxAbortedPercent) {
+	        logError("There are more failed documents than allowed (Failed: " +
+	          RegainToolkit.toPercentString(failedPercent) + ", allowed: " +
+	          RegainToolkit.toPercentString(maxAbortedPercent) + ").",
+	          null, true);
+	      }
+	    }
+	
+	    // Fehler und Deadlink-Liste schreiben
+	    writeDeadlinkAndErrorList();
+	    writeCrawledURLsList();
+	
+	    // finalize index
+	    if (mIndexWriterManager != null) {
+	      boolean thereWereFatalErrors = (mFatalErrorCount > 0);
+	      if (thereWereFatalErrors) {
+	        mLog.warn("There were " + mFatalErrorCount + " fatal errors. " +
+	          "The index will be finished but put into quarantine.");
+	      } else {
+	        mLog.info("Finishing the index and providing it to the search mask");
+	      }
+	      try {
+	        mIndexWriterManager.close(thereWereFatalErrors);
+	      } catch (RegainException exc) {
+	        logError("Finishing index failed!", exc, true);
+	      }
+	      mIndexWriterManager = null;
+	    }
     }
-    catch (Throwable thr) {
-      logError("Counting index entries failed", thr, true);
+    finally {
+	    pluginManager.eventFinishCrawling(this);
+	    mLog.info("... Finished crawling\n");
     }
-    double failedPercent;
-    if (entryCount == 0) {
-      logError("The index is empty.", null, true);
-      failedPercent = 1;
-    } else {
-      // Check wether the count of dead/errror links reached the limit
-      double failedDocCount = mDeadlinkList.size() + mErrorCount;
-      double totalDocCount = failedDocCount + entryCount;
-      failedPercent = failedDocCount / totalDocCount;
-      double maxAbortedPercent = mConfiguration.getMaxFailedDocuments();
-      if (failedPercent > maxAbortedPercent) {
-        logError("There are more failed documents than allowed (Failed: " +
-          RegainToolkit.toPercentString(failedPercent) + ", allowed: " +
-          RegainToolkit.toPercentString(maxAbortedPercent) + ").",
-          null, true);
-      }
-    }
-
-    // Fehler und Deadlink-Liste schreiben
-    writeDeadlinkAndErrorList();
-    writeCrawledURLsList();
-
-    // finalize index
-    if (mIndexWriterManager != null) {
-      boolean thereWereFatalErrors = (mFatalErrorCount > 0);
-      if (thereWereFatalErrors) {
-        mLog.warn("There were " + mFatalErrorCount + " fatal errors. " +
-          "The index will be finished but put into quarantine.");
-      } else {
-        mLog.info("Finishing the index and providing it to the search mask");
-      }
-      try {
-        mIndexWriterManager.close(thereWereFatalErrors);
-      } catch (RegainException exc) {
-        logError("Finishing index failed!", exc, true);
-      }
-      mIndexWriterManager = null;
-    }
-
-    mLog.info("... Finished crawling\n");
 
     mLog.info(Profiler.getProfilerResults());
 

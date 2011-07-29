@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-04-30 08:59:19 +0200 (Do, 30 Apr 2009) $
- *   $Author: thtesche $
- * $Revision: 387 $
+ *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 495 $
  */
 package net.sf.regain.crawler.config;
 
@@ -358,6 +358,16 @@ public class DummyCrawlerConfig implements CrawlerConfig {
       new PreparatorSettings(true, 0, "net.sf.regain.crawler.document.HtmlPreparator", null, new PreparatorConfig()),
       new PreparatorSettings(true, 0, "net.sf.regain.crawler.document.XmlPreparator", null, new PreparatorConfig())
     };
+  }
+  
+  /**
+   * Gets the list with the crawler plugin settings.
+   *
+   * @return The list with the crawler plugin settings.
+   */
+  public PreparatorSettings[] getCrawlerPluginSettingsList() {
+	  return new PreparatorSettings[] {
+	  };
   }
 
   

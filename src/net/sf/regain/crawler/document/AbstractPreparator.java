@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2010-11-07 16:02:14 +0100 (So, 07 Nov 2010) $
- *   $Author: thtesche $
- * $Revision: 465 $
+ *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 495 $
  */
 package net.sf.regain.crawler.document;
 
@@ -47,7 +47,7 @@ import org.apache.regexp.RESyntaxException;
  *
  * @author Til Schneider, www.murfman.de
  */
-public abstract class AbstractPreparator implements Preparator {
+public abstract class AbstractPreparator implements Preparator, WriteablePreparator {
 
   /**
    * The regular expression a URL must match to, to be prepared by this
@@ -264,7 +264,7 @@ public abstract class AbstractPreparator implements Preparator {
    *
    * @param title Der Titel.
    */
-  protected void setTitle(String title) {
+  public void setTitle(String title) {
     mTitle = title;
   }
 
@@ -284,7 +284,7 @@ public abstract class AbstractPreparator implements Preparator {
    *
    * @param The cleanedContent
    */
-  protected void setCleanedContent(String cleanedContent) {
+  public void setCleanedContent(String cleanedContent) {
     mCleanedContent = cleanedContent;
   }
 
@@ -321,7 +321,7 @@ public abstract class AbstractPreparator implements Preparator {
    *
    * @param summary Die Zusammenfassung
    */
-  protected void setSummary(String summary) {
+  public void setSummary(String summary) {
     mSummary = summary;
   }
 
@@ -349,7 +349,7 @@ public abstract class AbstractPreparator implements Preparator {
    *
    * @param headlines Die Zusammenfassung
    */
-  protected void setHeadlines(String headlines) {
+  public void setHeadlines(String headlines) {
     mHeadlines = headlines;
   }
 

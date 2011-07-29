@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2010-11-07 17:18:20 +0100 (So, 07 Nov 2010) $
+ *     $Date: 2011-07-30 21:19:08 +0200 (Sa, 30 Jul 2011) $
  *   $Author: thtesche $
- * $Revision: 468 $
+ * $Revision: 498 $
  */
 package net.sf.regain.search;
 
@@ -58,7 +58,6 @@ public class IndexSearcherManager {
    * Update-Pr�fungen schlafen soll.
    */
   private static final int INDEX_UPDATE_THREAD_SLEEPTIME = 10000;
-
   /**
    * Der Name des Index-Unterverzeichnisses, in das der neue Index gestellt
    * wird, sobald er fertig ist.
@@ -74,13 +73,11 @@ public class IndexSearcherManager {
    * werden soll.
    */
   private static final String BACKUP_INDEX_SUBDIR = "backup";
-
   /**
    * enthält für ein Index-Verzeichnis (key) den zust�ndigen
    * IndexWriterManager (value).
    */
-  private static HashMap mIndexManagerHash;
-
+  private static HashMap<String, IndexSearcherManager> mIndexManagerHash;
   /**
    * Das Verzeichnis, in das der neue Index gestellt wird, sobald er fertig ist.
    * <p>
@@ -92,7 +89,6 @@ public class IndexSearcherManager {
   private File mWorkingIndexDir;
   /** Das Verzeichnis, in das der letzte Index gesichert werden soll. */
   private File mBackupIndexDir;
-
   /**
    * Der IndexSearcher auf dem die Suchen erfolgen.
    * <p>
@@ -101,22 +97,17 @@ public class IndexSearcherManager {
    * laufenden Betrieb m�glich ist.
    */
   private IndexSearcher mIndexSearcher;
-
   /** The IndexReader to use for reading information from an index. */
   private IndexReader mIndexReader;
-
   /** Der Analyzer, der für Suchen verwendet werden soll. */
   private Analyzer mAnalyzer;
-
   /** Der Thread, der alle 10 Sekunden Prüft, ob ein neuer Suchindex vorhanden ist. */
   private Thread mIndexUpdateThread;
-
   /**
    * Holds for a field name (String) all distinct values the index has for that
    * field (String[]).
    */
   private HashMap mFieldTermHash;
-
 
   /**
    * Erzeugt eine neue IndexWriterManager-Instanz.
@@ -124,11 +115,12 @@ public class IndexSearcherManager {
    * @param indexDir Das Verzeichnis, in dem der Index steht.
    */
   private IndexSearcherManager(String indexDir) {
-    mNewIndexDir     = new File(indexDir + File.separator + NEW_INDEX_SUBDIR);
+    mNewIndexDir = new File(indexDir + File.separator + NEW_INDEX_SUBDIR);
     mWorkingIndexDir = new File(indexDir + File.separator + WORKING_INDEX_SUBDIR);
-    mBackupIndexDir  = new File(indexDir + File.separator + BACKUP_INDEX_SUBDIR);
+    mBackupIndexDir = new File(indexDir + File.separator + BACKUP_INDEX_SUBDIR);
 
     mIndexUpdateThread = new Thread() {
+
       @Override
       public void run() {
         indexUpdateThreadRun();
@@ -137,8 +129,6 @@ public class IndexSearcherManager {
     mIndexUpdateThread.setPriority(Thread.MIN_PRIORITY);
     mIndexUpdateThread.start();
   }
-
-
 
   /**
    * Gibt den IndexSearcherManager für das gegebene Index-Verzeichnis zurück.
@@ -149,7 +139,7 @@ public class IndexSearcherManager {
    */
   public static synchronized IndexSearcherManager getInstance(String indexDir) {
     if (mIndexManagerHash == null) {
-      mIndexManagerHash = new HashMap();
+      mIndexManagerHash = new HashMap<String, IndexSearcherManager>();
     }
 
     // Zust�ndigen IndexSearcherManager aus der Hash zu holen
@@ -176,14 +166,13 @@ public class IndexSearcherManager {
    */
   public synchronized ScoreDoc[] search(Query query) throws RegainException {
     if (getIndexSearcher() == null) {
-      if (! mWorkingIndexDir.exists()) {
+      if (!mWorkingIndexDir.exists()) {
         checkForIndexUpdate();
       }
 
       try {
-        mIndexSearcher = new IndexSearcher(FSDirectory.open(mWorkingIndexDir),true);
-      }
-      catch (IOException exc) {
+        mIndexSearcher = new IndexSearcher(FSDirectory.open(mWorkingIndexDir), true);
+      } catch (IOException exc) {
         throw new RegainException("Creating index searcher failed", exc);
       }
     }
@@ -208,21 +197,19 @@ public class IndexSearcherManager {
    */
   public IndexReader getIndexReader() throws RegainException {
     if (mIndexReader == null) {
-      if (! mWorkingIndexDir.exists()) {
+      if (!mWorkingIndexDir.exists()) {
         checkForIndexUpdate();
       }
 
       try {
-        mIndexReader = IndexReader.open(FSDirectory.open(mWorkingIndexDir),true);
-      }
-      catch (IOException exc) {
+        mIndexReader = IndexReader.open(FSDirectory.open(mWorkingIndexDir), true);
+      } catch (IOException exc) {
         throw new RegainException("Creating index reader failed", exc);
       }
     }
 
     return mIndexReader;
   }
-
 
   /**
    * Gets all distinct values a index has for a certain field. The values are
@@ -241,7 +228,7 @@ public class IndexSearcherManager {
     if (valueArr == null) {
       // Read the field values
       HashMap valueMap = RegainToolkit.readFieldValues(getIndexReader(),
-          new String[] { field }, mWorkingIndexDir);
+              new String[]{field}, mWorkingIndexDir);
       valueArr = (String[]) valueMap.get(field);
 
       // Copy the field values to our cache
@@ -250,7 +237,6 @@ public class IndexSearcherManager {
 
     return valueArr;
   }
-
 
   /**
    * Gets the total number of documents in the index.
@@ -262,7 +248,6 @@ public class IndexSearcherManager {
     return getIndexReader().numDocs();
   }
 
-
   /**
    * Gibt den Analyzer zurück, der für die Suche genutzt werden soll.
    *
@@ -271,15 +256,15 @@ public class IndexSearcherManager {
    */
   public synchronized Analyzer getAnalyzer() throws RegainException {
     if (mAnalyzer == null) {
-      if (! mWorkingIndexDir.exists()) {
+      if (!mWorkingIndexDir.exists()) {
         // There is no working index -> check whether there is a new one
         checkForIndexUpdate();
       }
 
-      if (! mWorkingIndexDir.exists()) {
+      if (!mWorkingIndexDir.exists()) {
         // There is no working and no new index -> throw exception
         throw new RegainException("No index found in "
-            + mWorkingIndexDir.getParentFile().getAbsolutePath());
+                + mWorkingIndexDir.getParentFile().getAbsolutePath());
       }
 
       // Read the stopWordList and the exclusionList
@@ -293,19 +278,18 @@ public class IndexSearcherManager {
       File untokenizedFieldNamesFile = new File(mWorkingIndexDir, "untokenizedFieldNames.txt");
       String[] untokenizedFieldNames;
       if (untokenizedFieldNamesFile.exists()) {
-          untokenizedFieldNames = RegainToolkit.readListFromFile(untokenizedFieldNamesFile);
+        untokenizedFieldNames = RegainToolkit.readListFromFile(untokenizedFieldNamesFile);
       } else {
-          untokenizedFieldNames = new String[0];
+        untokenizedFieldNames = new String[0];
       }
 
       // NOTE: Make shure to use the same analyzer as in the crawler
       mAnalyzer = RegainToolkit.createAnalyzer(analyzerType, stopWordList,
-                                               exclusionList, untokenizedFieldNames);
+              exclusionList, untokenizedFieldNames);
     }
 
     return mAnalyzer;
   }
-
 
   /**
    * Die run()-Methode des Index-Update-Thread.
@@ -316,19 +300,17 @@ public class IndexSearcherManager {
     while (true) {
       try {
         checkForIndexUpdate();
-      }
-      catch (RegainException exc) {
+      } catch (RegainException exc) {
         System.out.println("Updating index failed!");
         exc.printStackTrace(System.err);
       }
 
       try {
         Thread.sleep(INDEX_UPDATE_THREAD_SLEEPTIME);
+      } catch (InterruptedException exc) {
       }
-      catch (InterruptedException exc) {}
     }
   }
-
 
   /**
    * Prüft, ob ein neuer Index vorhanden ist. Wenn ja, dann wird die Suche auf den
@@ -347,8 +329,7 @@ public class IndexSearcherManager {
       if (mIndexSearcher != null) {
         try {
           mIndexSearcher.close();
-        }
-        catch (IOException exc) {
+        } catch (IOException exc) {
           throw new RegainException("Closing index searcher failed", exc);
         }
 
@@ -362,8 +343,7 @@ public class IndexSearcherManager {
       if (mIndexReader != null) {
         try {
           mIndexReader.close();
-        }
-        catch (IOException exc) {
+        } catch (IOException exc) {
           throw new RegainException("Closing index reader failed", exc);
         }
 
@@ -380,16 +360,16 @@ public class IndexSearcherManager {
 
       // Backup the current index (if there is one)
       if (mWorkingIndexDir.exists()) {
-        if (! mWorkingIndexDir.renameTo(mBackupIndexDir)) {
+        if (!mWorkingIndexDir.renameTo(mBackupIndexDir)) {
           throw new RegainException("Renaming " + mWorkingIndexDir + " to "
-            + mBackupIndexDir + " failed!");
+                  + mBackupIndexDir + " failed!");
         }
       }
 
       // Move the new index
-      if (! mNewIndexDir.renameTo(mWorkingIndexDir)) {
+      if (!mNewIndexDir.renameTo(mWorkingIndexDir)) {
         throw new RegainException("Renaming " + mNewIndexDir + " to "
-          + mWorkingIndexDir + " failed!");
+                + mWorkingIndexDir + " failed!");
       }
     }
   }
@@ -418,16 +398,15 @@ public class IndexSearcherManager {
    *
    * @return the IndexSearcher
    */
-  public IndexSearcher getIndexSearcher()  throws RegainException{
-   if (mIndexSearcher == null) {
-      if (! mWorkingIndexDir.exists()) {
+  public IndexSearcher getIndexSearcher() throws RegainException {
+    if (mIndexSearcher == null) {
+      if (!mWorkingIndexDir.exists()) {
         checkForIndexUpdate();
       }
 
       try {
-        mIndexSearcher = new IndexSearcher(FSDirectory.open(mWorkingIndexDir),true);
-      }
-      catch (IOException exc) {
+        mIndexSearcher = new IndexSearcher(FSDirectory.open(mWorkingIndexDir), true);
+      } catch (IOException exc) {
         throw new RegainException("Creating index searcher failed", exc);
       }
     }

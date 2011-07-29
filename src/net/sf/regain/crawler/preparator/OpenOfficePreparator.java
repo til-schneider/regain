@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
- *   $Author: thtesche $
- * $Revision: 325 $
+ *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 495 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -134,6 +134,10 @@ public class OpenOfficePreparator extends AbstractPreparator {
 
     // Read the content.xml
     ZipEntry entry = zipFile.getEntry("content.xml");
+    if (entry == null)
+        throw new RegainException("Opening OpenOffice file failed (no content.xml found inside): " +
+                file.getAbsolutePath());
+
     InputStream xmlStream = null;
     String content;
     try {

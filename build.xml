@@ -22,9 +22,9 @@
  | CVS information:
  |  $RCSfile$
  |   $Source$
- |     $Date: 2011-04-27 19:59:34 +0200 (Mi, 27 Apr 2011) $
- |   $Author: thtesche $
- | $Revision: 489 $
+ |     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ |   $Author: benjaminpick $
+ | $Revision: 495 $
  |
  | Author: Til Schneider, www.murfman.de
  +-->
@@ -643,8 +643,7 @@
       <include name="org/tartarus/**"/>
       <include name="org/apache/log4j/**"/>
       <include name="org/apache/regexp/**"/>
-      <include name="org/apache/commons/collections/**"/>
-      <include name="org/apache/commons/codec/**"/>
+      <include name="org/apache/commons/**"/>
     
       <!-- aperture -->
       <include name="org/semanticdesktop/aperture/**"/>
@@ -738,8 +737,7 @@
         <include name="org/tartarus/**"/>
         <include name="org/apache/log4j/**"/>
         <include name="org/apache/regexp/**"/>
-        <include name="org/apache/commons/collections/**"/>
-        <include name="org/apache/commons/codec/**"/>
+        <include name="org/apache/commons/**"/>
         
         <!-- aperture -->
         <include name="org/semanticdesktop/aperture/**"/>

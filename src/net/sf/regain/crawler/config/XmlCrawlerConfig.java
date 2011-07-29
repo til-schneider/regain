@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-04-27 19:58:02 +0200 (Mi, 27 Apr 2011) $
- *   $Author: thtesche $
- * $Revision: 488 $
+ *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 495 $
  */
 package net.sf.regain.crawler.config;
 
@@ -129,6 +129,9 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   /** The list with the preparator settings. */
   private PreparatorSettings[] mPreparatorSettingsArr;
 
+  /** The list with the crawler plugin settings. */
+  private PreparatorSettings[] mCrawlerPluginSettingsArr;
+
   /** The list of the auxiliary fields. May be null. */
   private AuxiliaryField[] mAuxiliaryFieldArr;
 
@@ -171,6 +174,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     readWhiteList(config);
     readUseLinkTextAsTitleRegexList(config);
     readPreparatorSettingsList(config, xmlFile);
+    readCrawlerPluginConfigSettingsList(config, xmlFile);
     readAuxiliaryFieldList(config);
     readCrawlerAccessController(config);
     readMaxCycleCount(config);
@@ -519,6 +523,44 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     }
   }
 
+  /**
+   * Reads the list of crawler plugin settings. (optional)
+   *
+   * @param config The configuration to read from
+   * @param xmlFile The file the configuration was read from.
+   * @throws RegainException If the configuration has errors.
+   */
+  private void readCrawlerPluginConfigSettingsList(Node config, File xmlFile)
+    throws RegainException
+  {
+    Node node = XmlToolkit.getChild(config, "crawlerPluginList", false);
+    if (node == null)
+    {
+    	mCrawlerPluginSettingsArr = new PreparatorSettings[]{};
+    	return;
+    }
+    Node[] nodeArr = XmlToolkit.getChildArr(node, "crawlerPlugin");
+    mCrawlerPluginSettingsArr = new PreparatorSettings[nodeArr.length];
+    for (int i = 0; i < nodeArr.length; i++) {
+      boolean enabled = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "enabled", true);
+      
+      int priority = XmlToolkit.getAttributeAsInt(nodeArr[i], "priority", 0);
+      
+      node = XmlToolkit.getChild(nodeArr[i], "class", true);
+      String className = XmlToolkit.getText(node, true);
+
+      node = XmlToolkit.getChild(nodeArr[i], "config");
+      PreparatorConfig prepConfig;
+      if (node != null) {
+        prepConfig = readPreparatorConfig(node, xmlFile, className);
+      } else {
+        prepConfig = new PreparatorConfig();
+      }
+
+      mCrawlerPluginSettingsArr[i] = new PreparatorSettings(enabled, priority, className, null, prepConfig);
+    }
+  }
+  
 
   /**
    * Reads the list of auxiliary fields.
@@ -992,6 +1034,15 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     return mPreparatorSettingsArr;
   }
 
+  /**
+   * Gets the list with the crawler plugin settings.
+   *
+   * @return The list with the crawler plugin settings.
+   */
+  @Override
+  public PreparatorSettings[] getCrawlerPluginSettingsList() {
+    return mCrawlerPluginSettingsArr;
+  }
   
   /**
    * Gets the list of the auxiliary fields.

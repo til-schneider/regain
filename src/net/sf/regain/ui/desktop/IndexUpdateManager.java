@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-04-08 20:04:01 +0200 (Fr, 08 Apr 2011) $
- *   $Author: thtesche $
- * $Revision: 479 $
+ *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 495 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -42,7 +42,8 @@ import net.sf.regain.crawler.config.XmlCrawlerConfig;
 import org.apache.log4j.Logger;
 
 /**
- *
+ * Handles automatic updating of index.
+ * 
  * @author Til Schneider, www.murfman.de
  */
 public class IndexUpdateManager implements DesktopConstants {

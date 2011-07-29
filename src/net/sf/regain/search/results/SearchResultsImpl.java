@@ -68,7 +68,6 @@ import org.apache.lucene.search.TopFieldCollector;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.QueryScorer;
 import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
-import org.apache.lucene.util.Version;
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
 
@@ -223,20 +222,25 @@ public class SearchResultsImpl implements SearchResults {
             String[] searchFieldArr = indexConfigs[k].getSearchFieldList();
             for (int i = 0; i < searchFieldArr.length; i++) {
 
-              QueryParser parser = new QueryParser(Version.LUCENE_30, searchFieldArr[i], mAnalyzer);
+              QueryParser parser = new QueryParser(IndexConfig.getLuceneVersion(), searchFieldArr[i], mAnalyzer);
               parser.setDefaultOperator(QueryParser.AND_OPERATOR);
               parser.setAllowLeadingWildcard(true);
-              Query fieldQuery = parser.parse(queryText);
 
-              // Add as OR
-              mQuery.add(fieldQuery, Occur.SHOULD);
+//              if (!searchFieldArr[i].equals("filename")) {
+                Query fieldQuery = parser.parse(queryText);
+                // Add as OR
+                mQuery.add(fieldQuery, Occur.SHOULD);
+//              } else {
+//                // The field filename is not stemmed
+//                mQuery.add(new TermQuery(new Term("filename", queryText)), Occur.SHOULD);
+//              }
             }
             //System.out.println("Query: '" + queryText + "' -> '" + mQuery.toString() + "'");
 
           }
         } catch (ParseException exc) {
-          throw new RegainException("Error while parsing search pattern '" + mQueryText +
-                  "': " + exc.getMessage(), exc);
+          throw new RegainException("Error while parsing search pattern '" + mQueryText
+                  + "': " + exc.getMessage(), exc);
         }
 
         // Check whether access control is used
@@ -276,7 +280,7 @@ public class SearchResultsImpl implements SearchResults {
       }
 
       if (mQuery != null) {
-        //System.out.println("Query: '" + mQueryText + "' -> '" + mQuery.toString() + "'");
+//        System.out.println("Query: '" + mQueryText + "' -> '" + mQuery.toString() + "'");
 
         try {
           SortingOption sortingOption = new SortingOption(request.getParameter("order"));

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2010-11-07 16:02:14 +0100 (So, 07 Nov 2010) $
- *   $Author: thtesche $
- * $Revision: 465 $
+ *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 495 $
  */
 package net.sf.regain.crawler.document;
 
@@ -36,6 +36,7 @@ import net.sf.regain.crawler.config.PreparatorConfig;
 
 /**
  * Prepares a document for indexing.
+ * This is a read-only interface.
  * <p>
  * This is done by extracting the raw text from a document. In other words the
  * document is stripped from formating information. Specific text parts like a
@@ -64,22 +65,12 @@ import net.sf.regain.crawler.config.PreparatorConfig;
  *
  * @author Til Schneider, www.murfman.de
  */
-public interface Preparator {
+public interface Preparator extends Pluggable {
 
   /** The default StringBuffer size that should be used for the content buffer. */
   public static final int DEFAULT_BUFFER_SIZE = 16384; // 16 k
   /** The default priority */
   
-
-  /**
-   * Initializes the preparator.
-   *
-   * @param config The configuration for this preparator.
-   * @throws RegainException When the regular expression or the configuration
-   *         has an error.
-   */
-  public void init(PreparatorConfig config) throws RegainException;
-
   /**
    * Sets the regular expression a URL must match to, to be prepared by this
    * preparator.

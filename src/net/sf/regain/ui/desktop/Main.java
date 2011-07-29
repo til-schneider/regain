@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-04-27 17:03:58 +0200 (Mi, 27 Apr 2011) $
- *   $Author: thtesche $
- * $Revision: 485 $
+ *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 495 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -47,112 +47,124 @@ import org.apache.log4j.PropertyConfigurator;
  */
 public class Main implements DesktopConstants {
 
-  /** The logger for this class */
-  private static Logger mLog = Logger.getLogger(Main.class);
+	/** The logger for this class */
+	private static Logger mLog = Logger.getLogger(Main.class);
 
-  /**
-   * The main entry point.
-   * 
-   * @param args The command line arguments.
-   */
-  public static void main(String[] args) {
-    boolean useTrayIcon = true;
-    for (int i = 0; i < args.length; i++) {
-      if (args[i].equalsIgnoreCase("-noTrayIcon")) {
-        useTrayIcon = false;
-      }
-    }
+	/**
+	 * The main entry point.
+	 * 
+	 * @param args The command line arguments.
+	 */
+	public static void main(String[] args) {
+		// Command line Options
+		boolean useTrayIcon = true;
+		for (int i = 0; i < args.length; i++) {
+			if (args[i].equalsIgnoreCase("-noTrayIcon")) {
+				useTrayIcon = false;
+			}
+		}
 
-    testIfFileExists(CONFIG_DIR, "conf");
-    testIfFileExists(DEFAULT_CONFIG_DIR, "conf/default");
+		initializeConfig();
+		initializeLogging();
+		intializeSearchMask();
 
-    // Initialize the configuration
-    // (Copy all files from the default dir that don't exist in the config dir)
-    String[] defaultFileArr = DEFAULT_CONFIG_DIR.list();
-    for (int i = 0; i < defaultFileArr.length; i++) {
-      File confFile = new File(CONFIG_DIR, defaultFileArr[i]);
-      if (!confFile.exists()) {
-        // This config file does not exist -> Copy the default file
-        File defaultConfFile = new File(DEFAULT_CONFIG_DIR, defaultFileArr[i]);
-        try {
-          RegainToolkit.copyFile(defaultConfFile, confFile);
-        } catch (RegainException exc) {
-          System.out.println("Copying default config file failed: "
-                  + defaultConfFile.getAbsolutePath());
-          exc.printStackTrace(System.err);
-          System.exit(1); // Abort
-        }
-      }
-    }
+		// Start the Tray icon
+		TrayIconHandler.getInstance().init(useTrayIcon);
 
-    // Initialize Logging
-    File logConfigFile = new File("conf/log4j.properties");
-    if (!logConfigFile.exists()) {
-      System.out.println("ERROR: Logging configuration file not found: "
-              + logConfigFile.getAbsolutePath());
-      System.exit(1); // Abort
-    }
+		// Start the webserver
+		try {
+			DesktopToolkit.checkWebserver();
+		} catch (RegainException exc) {
+			exc.printStackTrace(System.err);
+			System.exit(1); // Abort
+		}
 
-    LOG_DIR.mkdir();
-    PropertyConfigurator.configure(logConfigFile.getAbsolutePath());
-    mLog.info("Logging initialized");
+		// Start the index update manager
+		INDEX_DIR.mkdir();
+		IndexUpdateManager.getInstance().init();
 
-    // Initialize the search mask
-    URL baseurl;
-    try {
-      baseurl = new File("web").toURI().toURL();
-    } catch (MalformedURLException exc) {
-      exc.printStackTrace(System.err);
-      System.exit(1); // Abort
-      return;
-    }
-    SimplePageRequest.setResourceBaseUrl(baseurl);
-    SimplePageRequest.setWorkingDir(new File("."));
-    SimplePageRequest.setInitParameter("searchConfigFile", "conf/SearchConfiguration.xml");
-    ExecuterParser.registerNamespace("search", "net.sf.regain.search.sharedlib");
-    ExecuterParser.registerNamespace("config", "net.sf.regain.ui.desktop.config.sharedlib");
-    ExecuterParser.registerNamespace("status", "net.sf.regain.ui.desktop.status.sharedlib");
+		// Opening browser only in trayIcon-less mode
+		if (!useTrayIcon) {
+			DesktopToolkit.openPageInBrowser("welcome.jsp");
+		}
+	}
 
-    // Start the Tray icon
-    TrayIconHandler.getInstance().init(useTrayIcon);
+	public static void intializeSearchMask() {
+		// Initialize the search mask
+		URL baseurl;
+		try {
+			baseurl = new File("web").toURI().toURL();
+		} catch (MalformedURLException exc) {
+			exc.printStackTrace(System.err);
+			System.exit(1); // Abort
+			return;
+		}
+		SimplePageRequest.setResourceBaseUrl(baseurl);
+		SimplePageRequest.setWorkingDir(new File("."));
+		SimplePageRequest.setInitParameter("searchConfigFile", "conf/SearchConfiguration.xml");
+		ExecuterParser.registerNamespace("search", "net.sf.regain.search.sharedlib");
+		ExecuterParser.registerNamespace("config", "net.sf.regain.ui.desktop.config.sharedlib");
+		ExecuterParser.registerNamespace("status", "net.sf.regain.ui.desktop.status.sharedlib");
+	}
 
-    // Start the webserver
-    try {
-      DesktopToolkit.checkWebserver();
-    } catch (RegainException exc) {
-      exc.printStackTrace(System.err);
-      System.exit(1); // Abort
-    }
+	public static void initializeLogging() {
+		File logConfigFile = new File("conf/log4j.properties");
+		if (!logConfigFile.exists()) {
+			System.out.println("ERROR: Logging configuration file not found: "
+					+ logConfigFile.getAbsolutePath());
+			System.exit(1); // Abort
+		}
 
-    // Start the index update manager
-    INDEX_DIR.mkdir();
-    IndexUpdateManager.getInstance().init();
+		LOG_DIR.mkdir();
+		PropertyConfigurator.configure(logConfigFile.getAbsolutePath());
+		mLog.info("Logging initialized");
+	}
 
-    // Opening browser only in tryIcon-less mode
-    if (!useTrayIcon) {
-      DesktopToolkit.openPageInBrowser("welcome.jsp");
-    }
-  }
+	public static void initializeConfig() {
+		testIfFileExists(CONFIG_DIR, "conf");
+		testIfFileExists(DEFAULT_CONFIG_DIR, "conf/default");
 
-  /**
-   * Quits the desktop search.
-   */
-  public static void quit() {
-    System.exit(0);
-  }
+		// (Copy all files from the default dir that don't exist in the config dir)
+		String[] defaultFileArr = DEFAULT_CONFIG_DIR.list();
+		for (int i = 0; i < defaultFileArr.length; i++) {
+			File confFile = new File(CONFIG_DIR, defaultFileArr[i]);
+			if (!confFile.exists()) {
+				// This config file does not exist -> Copy the default file
+				File defaultConfFile = new File(DEFAULT_CONFIG_DIR, defaultFileArr[i]);
+				try {
+					RegainToolkit.copyFile(defaultConfFile, confFile);
+				} catch (RegainException exc) {
+					System.out.println("Copying default config file failed: "
+							+ defaultConfFile.getAbsolutePath());
+					exc.printStackTrace(System.err);
+					System.exit(1); // Abort
+				}
+			}
+		}
+	}
 
-  /**
-   * Checks whether the given file exists and notice the user with an
-   * appropriate message.
-   *
-   * @param file the file/dir to check
-   * @param label the file name for the message
-   */
-  private static void testIfFileExists(File file, String label) {
-    if (file == null || !file.exists()) {
-      System.out.println("Error: Config Dir '" + label + "' not found.\n"
-              + "Current Working Directory is: " + System.getProperty("user.dir"));
-      System.exit(1);
-    }
-  }
+	/**
+	 * Quits the desktop search.
+	 */
+	public static void quit() {
+		System.exit(0);
+	}
+
+	/**
+	 * Checks whether the given file exists and notice the user with an
+	 * appropriate message.
+	 *
+	 * @param file 	the file/dir to check
+	 * @param label 	the file name for the message
+	 */
+	private static void testIfFileExists(File file, String label) {
+		if (file == null || !file.exists()) {
+			if (file == null)
+				System.err.println("Error: Config Dir '" + label + "' not found.");
+			else
+				System.err.println("Error: Config Dir '" + file.getAbsolutePath() + "' (" + label + ") not found.");
+			System.err.println("Current Working Directory is: " + System.getProperty("user.dir"));
+			System.exit(1);
+		}
+	}
 }

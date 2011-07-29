@@ -104,7 +104,7 @@
    | Specifies the analyzer type to use.
    |
    | You may specify the class name of the analyzer or you use one of the
-   | following aliases: 
+   | following aliases:
    |  * english: For the english language
    |    (alias for org.apache.lucene.analysis.en.EnglishAnalyzer)
    |  * german or deutsch: For the german language
@@ -128,6 +128,28 @@
     wir und oder ohne mit am im in aus auf ist sein war wird ihr ihre ihres als
     für von mit dich dir mich mir mein sein kein durch wegen wird
     </stopwordList>
+  <!-- German long: from https://github.com/jdf/cue.language/ (/src/cue/lang/stop/)
+  <stopwordList>
+	aber alle allem allen aller alles als also am an ander andere anderem anderen
+	anderer anderes anderm andern anders auch auf aus bei bin bis bist da damit dann
+	das dass daß dasselbe dazu dein deine deinem deinen deiner deines dem demselben
+	den denn denselben der derer derselbe derselben des desselben dessen dich die
+	dies diese dieselbe dieselben diesem diesen dieser dieses dir doch dort du durch
+	ein eine einem einen einer eines einige einigem einigen einiger einiges einmal
+	er es etwas euch euer eure eurem euren eurer eures für gegen gewesen hab habe
+	haben hat hatte hatten hier hin hinter ich ihm ihm ihn ihnen ihr ihre ihrem
+	ihren ihrer ihres im in indem ins ist jede jedem jeden jeder jedes jene jenem
+	jenen jener jenes jetzt kann kein keine keinem keinen keiner keines können
+	könnte machen man manche manchem manchen mancher manches mein meine meinem
+	meinen meiner meines mich mir mit muss musste nach nicht nichts noch nun nur ob
+	oder ohne sehr sein seine seinem seinen seiner seines selbst sich sie sind so
+	solche solchem solchen solcher solches soll sollte sondern sonst über um und uns
+	unser unsere unserem unseren unseres unter viel vom von vor während war waren
+	warst was weg weil weiter welche welchem welchen welcher welches wenn werde
+	werden wie wieder will wir wird wirst wo wollen wollte würde würden zu zum zur
+	zwar zwischen
+  </stopwordList>
+  -->
   <!-- English short
   <stopwordList>
    a able about across after all almost also am among an and any are as at be
@@ -311,6 +333,30 @@
     </preparator>
   </preparatorList>
 
+<!--
+ | Crawler Plugins that hook into the crawling process.
+ |
+ | You can use this list...
+ |   ... to define the priority (= order) of the preparators
+ |   ... to disable preparators
+ |   ... to configure preparators
+ +-->
+  <crawlerPluginList>
+    <!-- 
+     | Example ... Create Thumbnails during Crawling.
+     +
+  	<crawlerPlugin enabled="true">
+  	  <class>de.uni_siegen.wineme.come_in.thumbnailer.plugin.ThumbnailerPlugin</class>
+  	  <config>
+  	    <section name="thumbnailing">
+   	      <param name="thumbnailFolder">thumbs/</param>
+  	      <param name="imageWidth">160</param>
+  	      <param name="imageHeight">120</param>
+  	    </section>
+  	  </config>
+  	</crawlerPlugin>
+  	-->
+  </crawlerPluginList>
 
 <!--
  | The index may be extended with auxiliary fields. These are fields that have

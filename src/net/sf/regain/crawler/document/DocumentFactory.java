@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2010-11-07 17:03:46 +0100 (So, 07 Nov 2010) $
+ *     $Date: 2011-07-30 21:19:08 +0200 (Sa, 30 Jul 2011) $
  *   $Author: thtesche $
- * $Revision: 467 $
+ * $Revision: 498 $
  */
 package net.sf.regain.crawler.document;
 
@@ -45,11 +45,13 @@ import net.sf.regain.crawler.access.CrawlerAccessController;
 import net.sf.regain.crawler.config.AuxiliaryField;
 import net.sf.regain.crawler.config.CrawlerConfig;
 import net.sf.regain.crawler.config.PreparatorSettings;
+import net.sf.regain.crawler.plugin.CrawlerPluginManager;
 
 import org.apache.log4j.Logger;
 import java.io.FileInputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import net.sf.regain.search.config.IndexConfig;
 import net.sf.regain.util.io.PathFilenamePair;
 import org.apache.lucene.analysis.WhitespaceTokenizer;
 import org.apache.lucene.document.CompressionTools;
@@ -74,47 +76,38 @@ public class DocumentFactory {
 
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(DocumentFactory.class);
-
   /** The crawler config. */
   private CrawlerConfig mConfig;
-
   /** The maximum amount of characters which will be copied from content to summary */
   private int mMaxSummaryLength;
-  
   /** should the whole content stored in the index for a preview on the result page */
   private boolean storeContentForPreview;
-  
   /**
    * Das Verzeichnis, in dem Analyse-Dateien erzeugt werden sollen. Ist
    * <CODE>null</CODE>, wenn keine Analyse-Dateien erzeugt werden sollen.
    */
   private File mAnalysisDir = null;
-
   /** The preparators. */
   private Preparator[] mPreparatorArr;
-
   /** Die Profiler, die die Bearbeitung durch die Präparatoren messen. */
   private Profiler[] mPreparatorProfilerArr;
-  
   /**
    * The {@link CrawlerAccessController} to use for identifying the groups that
    * are allowed to read a document. May be <code>null</code>.
    */
   private CrawlerAccessController mCrawlerAccessController;
-
   /**
    * Die regul�ren Ausdr�cke, auf die die URL eines Dokuments passen muss,
    * damit anstatt des wirklichen Dokumententitels der Text des Links, der auf
    * das Dokument gezeigt hat, als Dokumententitel genutzt wird.
    */
   private RE[] mUseLinkTextAsTitleReArr;
-
   /** Der Profiler der das Hinzuf�gen zum Index mi�t. */
-  private Profiler mWriteAnalysisProfiler
-    = new Profiler("Writing Analysis files", "files");
-
+  private Profiler mWriteAnalysisProfiler = new Profiler("Writing Analysis files", "files");
   /** The mimetype mimeTypeIdentifier */
   MimeTypeIdentifier mimeTypeIdentifier;
+  /** Crawler Plugin Manager instance */
+  private CrawlerPluginManager pluginManager = CrawlerPluginManager.getInstance();
 
   /**
    * Creates a new instance of DocumentFactory.
@@ -127,8 +120,7 @@ public class DocumentFactory {
    *         has a syntax error. 
    */
   public DocumentFactory(CrawlerConfig config, File analysisDir)
-    throws RegainException
-  {
+          throws RegainException {
     mConfig = config;
     mAnalysisDir = analysisDir;
 
@@ -136,8 +128,7 @@ public class DocumentFactory {
     try {
       PreparatorSettings[] prepConf = config.getPreparatorSettingsList();
       mPreparatorArr = PreparatorFactory.getInstance().createPreparatorArr(prepConf);
-    }
-    catch (RegainException exc) {
+    } catch (RegainException exc) {
       throw new RegainException("Creating the document preparators failed", exc);
     }
 
@@ -152,16 +143,15 @@ public class DocumentFactory {
     String accessClass = config.getCrawlerAccessControllerClass();
     if (accessClass != null) {
       String accessJar = config.getCrawlerAccessControllerJar();
-      mCrawlerAccessController = (CrawlerAccessController)
-        RegainToolkit.createClassInstance(accessClass, CrawlerAccessController.class,
-                                          accessJar);
-      
+      mCrawlerAccessController = (CrawlerAccessController) RegainToolkit.createClassInstance(accessClass, CrawlerAccessController.class,
+              accessJar);
+
       Properties accessControllerConfig = config.getCrawlerAccessControllerConfig();
       if (accessControllerConfig == null) {
         accessControllerConfig = new Properties();
       }
       mCrawlerAccessController.init(accessControllerConfig);
-      
+
       mLog.info("Using crawler access controller: " + accessClass);
     }
 
@@ -174,11 +164,10 @@ public class DocumentFactory {
       for (int i = 0; i < useLinkTextAsTitleRegexArr.length; i++) {
         try {
           mUseLinkTextAsTitleReArr[i] = new RE(useLinkTextAsTitleRegexArr[i]);
-        }
-        catch (RESyntaxException exc) {
+        } catch (RESyntaxException exc) {
           throw new RegainException("Regular expression of "
-            + "use-link-text-as-title-pattern #" + i + " has wrong syntax '"
-            + useLinkTextAsTitleRegexArr[i] + "'", exc);
+                  + "use-link-text-as-title-pattern #" + i + " has wrong syntax '"
+                  + useLinkTextAsTitleRegexArr[i] + "'", exc);
         }
       }
     }
@@ -191,7 +180,6 @@ public class DocumentFactory {
     mimeTypeIdentifier = factory.get();
 
   }
-
 
   /**
    * Creates a lucene {@link Document} from a {@link RawDocument}.
@@ -209,16 +197,16 @@ public class DocumentFactory {
     try {
       File file = rawDocument.getContentAsFile();
       if (file.canRead() == false) {
-        mLog.warn("canRead() on file return: false. Maybe no access rights for sourceURL: " + 
-          RegainToolkit.fileToUrl(file));
-    	  return null;
-      } 
+        mLog.warn("canRead() on file return: false. Maybe no access rights for sourceURL: "
+                + RegainToolkit.fileToUrl(file));
+        return null;
+      }
 
       FileInputStream fis = new FileInputStream(file);
       byte[] bytes = new byte[mimeTypeIdentifier.getMinArrayLength()];
       fis.read(bytes);
       mimeType = mimeTypeIdentifier.identify(bytes, file.getPath(),
-              new URIImpl(rawDocument.getUrl(),false)) ;
+              new URIImpl(rawDocument.getUrl(), false));
       if (mimeType == null || mimeType.length() == 0) {
         mimeType = "application/x-unknown-mime-type";
       }
@@ -232,54 +220,55 @@ public class DocumentFactory {
         mLog.debug("Detected mimetype cylcle 2: " + mimeType + ". " + "zip:mime:file:" + rawDocument.getUrl());
       }
     } catch (Exception exc) {
-      errorLogger.logError("Determine mime-type of " + rawDocument.getUrl() +
-                              " failed", exc, false);
+      errorLogger.logError("Determine mime-type of " + rawDocument.getUrl()
+              + " failed", exc, false);
       mimeType = "application/x-unknown-mime-type";
     }
 
-    rawDocument.setMimeType( mimeType );
-    
+    rawDocument.setMimeType(mimeType);
+
     // Find the preparator that will prepare this URL
     Document doc = null;
     boolean preparatorFound = false;
-    ArrayList <Integer>matchingPreperators = new ArrayList <Integer>();
+    ArrayList<Integer> matchingPreperators = new ArrayList<Integer>();
     for (int i = 0; i < mPreparatorArr.length; i++) {
       if (mPreparatorArr[i].accepts(rawDocument)) {
         // This preparator can prepare this URL
         preparatorFound = true;
         matchingPreperators.add(new Integer(i));
         if (mLog.isDebugEnabled()) {
-          mLog.debug("Found: " + mPreparatorArr[i].getClass().getSimpleName() +
-                   ", Prio: " + mPreparatorArr[i].getPriority() );
+          mLog.debug("Found: " + mPreparatorArr[i].getClass().getSimpleName()
+                  + ", Prio: " + mPreparatorArr[i].getPriority());
         }
       }
     }
-    
+
+    // TODO: Try several preperators in order of priority?
     if (preparatorFound) {
       // Find the preparator with the highest priority
       Iterator prepIdxIter = matchingPreperators.iterator();
-      int highestPriorityIdx = ((Integer)prepIdxIter.next()).intValue();
+      int highestPriorityIdx = ((Integer) prepIdxIter.next()).intValue();
       // In case of more than one matching preperator find the one with the highest prio
-      while( prepIdxIter.hasNext() ) {
-        int currI = ((Integer)prepIdxIter.next()).intValue();
-        if( mPreparatorArr[currI].getPriority() > mPreparatorArr[highestPriorityIdx].getPriority() )
+      while (prepIdxIter.hasNext()) {
+        int currI = ((Integer) prepIdxIter.next()).intValue();
+        if (mPreparatorArr[currI].getPriority() > mPreparatorArr[highestPriorityIdx].getPriority()) {
           highestPriorityIdx = currI;
+        }
       }
-      
+
       try {
         doc = createDocument(mPreparatorArr[highestPriorityIdx], mPreparatorProfilerArr[highestPriorityIdx], rawDocument);
-        mLog.info("Preparation with " + mPreparatorArr[highestPriorityIdx].getClass().getSimpleName() +
-                " done: " + rawDocument.getUrl());
-      }
-      catch (RegainException exc) {
-        errorLogger.logError("Preparing " + rawDocument.getUrl() +
-            " with preparator " + mPreparatorArr[highestPriorityIdx].getClass().getName() +
-            " failed", exc, false);
+        mLog.info("Preparation with " + mPreparatorArr[highestPriorityIdx].getClass().getSimpleName()
+                + " done: " + rawDocument.getUrl());
+      } catch (RegainException exc) {
+        errorLogger.logError("Preparing " + rawDocument.getUrl()
+                + " with preparator " + mPreparatorArr[highestPriorityIdx].getClass().getName()
+                + " failed", exc, false);
       }
     } else {
       mLog.info("No preparator feels responsible for " + rawDocument.getUrl());
     }
-    
+
     if (preparatorFound && (doc == null)) {
       // There were preparators that felt responsible for the document, but they
       // weren't able to process it
@@ -288,10 +277,9 @@ public class DocumentFactory {
       try {
         doc = createSubstituteDocument(rawDocument);
         mLog.info("Created substitute document: " + rawDocument.getUrl());
-      }
-      catch (RegainException exc) {
+      } catch (RegainException exc) {
         errorLogger.logError("Creating substitute document for "
-            + rawDocument.getUrl() + " failed", exc, false);
+                + rawDocument.getUrl() + " failed", exc, false);
       }
     }
 
@@ -299,7 +287,6 @@ public class DocumentFactory {
     return doc;
   }
 
-  
   /**
    * Creates a lucene {@link Document} from a {@link RawDocument} using a
    * certain Preparator.
@@ -311,11 +298,10 @@ public class DocumentFactory {
    * @throws RegainException If creating the document failed.
    */
   private Document createDocument(Preparator preparator, Profiler preparatorProfiler,
-    RawDocument rawDocument)
-    throws RegainException
-  {
+          RawDocument rawDocument)
+          throws RegainException {
     String url = rawDocument.getUrl();
-    
+
     // Extract the file type specific information
     String cleanedContent;
     String title;
@@ -326,44 +312,47 @@ public class DocumentFactory {
     Map additionalFieldMap;
     if (mLog.isDebugEnabled()) {
       mLog.debug("Using preparator " + preparator.getClass().getName()
-        + " for " + rawDocument + ", " + rawDocument.getMimeType());
+              + " for " + rawDocument + ", " + rawDocument.getMimeType());
     }
+
     preparatorProfiler.startMeasuring();
+    pluginManager.eventBeforePrepare(rawDocument, (WriteablePreparator) preparator);
+
     try {
       preparator.prepare(rawDocument);
 
-      cleanedContent     = preparator.getCleanedContent();
-      title              = preparator.getTitle();
-      summary            = preparator.getSummary();
-      metadata           = preparator.getCleanedMetaData();
-      headlines          = preparator.getHeadlines();
-      path               = preparator.getPath();
+      pluginManager.eventAfterPrepare(rawDocument, (WriteablePreparator) preparator);
+
+      cleanedContent = preparator.getCleanedContent();
+      title = preparator.getTitle();
+      summary = preparator.getSummary();
+      metadata = preparator.getCleanedMetaData();
+      headlines = preparator.getHeadlines();
+      path = preparator.getPath();
       additionalFieldMap = preparator.getAdditionalFields();
 
       preparator.cleanUp();
 
       preparatorProfiler.stopMeasuring(rawDocument.getLength());
-    }
-    catch (Throwable thr) {
+    } catch (Throwable thr) {
       preparatorProfiler.abortMeasuring();
       throw new RegainException("Preparing " + url
-        + " with preparator " + preparator.getClass().getName() + " failed", thr);
+              + " with preparator " + preparator.getClass().getName() + " failed", thr);
     }
 
     // Check the mandatory information
     if (cleanedContent == null) {
       throw new RegainException("Preparator " + preparator.getClass().getName()
-        + " did not extract the content of " + url);
+              + " did not extract the content of " + url);
     }
 
     // Preparing succeed -> Create the document
     Document doc = createDocument(rawDocument, cleanedContent, title,
-                                  summary, metadata, headlines, path, additionalFieldMap);
+            summary, metadata, headlines, path, additionalFieldMap);
 
     // return the document
     return doc;
   }
-
 
   /**
    * Creates a substitute lucene {@link Document} for a {@link RawDocument}.
@@ -379,12 +368,10 @@ public class DocumentFactory {
    *         document couldn't be determined. 
    */
   private Document createSubstituteDocument(RawDocument rawDocument)
-    throws RegainException
-  {
+          throws RegainException {
     return createDocument(rawDocument, null, null, null, null, null, null, null);
   }
 
-  
   /**
    * Create a lucene {@link Document}.
    * 
@@ -405,15 +392,14 @@ public class DocumentFactory {
    *         document couldn't be determined. 
    */
   private Document createDocument(RawDocument rawDocument, String cleanedContent,
-    String title, String summary, String metadata, String headlines, PathElement[] path,
-    Map additionalFieldMap)
-    throws RegainException
-  {
+          String title, String summary, String metadata, String headlines, PathElement[] path,
+          Map additionalFieldMap)
+          throws RegainException {
     String url = rawDocument.getUrl();
 
     // Create a new, empty document
     Document doc = new Document();
-    
+
     // Create the auxiliary fields
     // NOTE: We do this at first, because if someone defined an auxiliary field
     //       having the same name as a normal field, then the field will be
@@ -445,17 +431,17 @@ public class DocumentFactory {
             boolean token = auxiliaryFieldArr[i].isTokenized();
 
             doc.add(new Field(fieldName, value,
-                store ? Field.Store.YES : Field.Store.NO,
-                index ? (token ? Field.Index.ANALYZED : Field.Index.NOT_ANALYZED) : Field.Index.NO));
+                    store ? Field.Store.YES : Field.Store.NO,
+                    index ? (token ? Field.Index.ANALYZED : Field.Index.NOT_ANALYZED) : Field.Index.NO));
           }
         }
       }
     }
-    
+
     // Add the groups of the document
     if (mCrawlerAccessController != null) {
       String[] groupArr = mCrawlerAccessController.getDocumentGroups(rawDocument);
-      
+
       // Check the Group array
       RegainToolkit.checkGroupArray(mCrawlerAccessController, groupArr);
 
@@ -468,20 +454,23 @@ public class DocumentFactory {
         tokenBuilder.append((String) groupIter.next());
         tokenBuilder.append(" ");
       }
-    
+
       //doc.add(new Field("groups", new IteratorTokenStream(groupIter)));
-      doc.add(new Field("groups", new WhitespaceTokenizer(new StringReader(tokenBuilder.toString()))));
+      doc.add(new Field("groups", new WhitespaceTokenizer(IndexConfig.getLuceneVersion(),
+              new StringReader(tokenBuilder.toString()))));
     }
 
     // Add the URL of the document
     doc.add(new Field("url", url, Field.Store.YES, Field.Index.NOT_ANALYZED));
-    
+
     // Add the file name (without protocol, drive-letter and path)
     String filenameWithVariants = RegainToolkit.urlToWhitespacedFileName(url);
-    doc.add(new Field("filename", new WhitespaceTokenizer(new StringReader(filenameWithVariants))));
-    PathFilenamePair pfPair = RegainToolkit.fragmentUrl(url);
+//    doc.add(new Field("filename", new WhitespaceTokenizer(IndexConfig.getLuceneVersion(),
+//            new StringReader(filenameWithVariants))));
+    doc.add(new Field("filename", filenameWithVariants, Field.Store.YES, Field.Index.ANALYZED));
 
     // Add the filename field for sorting
+    PathFilenamePair pfPair = RegainToolkit.fragmentUrl(url);
     doc.add(new Field("filename_sort", pfPair.getFilename(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
     // Add the document's size
@@ -491,7 +480,7 @@ public class DocumentFactory {
     // Add the mime-type
     String mimeType = rawDocument.getMimeType();
     doc.add(new Field("mimetype", mimeType, Field.Store.YES, Field.Index.NOT_ANALYZED));
-    
+
     // Add last modified
     Date lastModified = rawDocument.getLastModified();
     if (lastModified == null) {
@@ -499,13 +488,13 @@ public class DocumentFactory {
       // -> Take the current time
       lastModified = new Date();
     }
-    doc.add(new Field("last-modified", 
-      DateTools.dateToString(lastModified, DateTools.Resolution.DAY), Field.Store.YES,
-        Field.Index.NOT_ANALYZED));
+    doc.add(new Field("last-modified",
+            DateTools.dateToString(lastModified, DateTools.Resolution.DAY), Field.Store.YES,
+            Field.Index.NOT_ANALYZED));
 
     // Write the raw content to an analysis file
     writeContentAnalysisFile(rawDocument);
-    
+
     // Add the additional fields
     if (additionalFieldMap != null) {
       Iterator iter = additionalFieldMap.keySet().iterator();
@@ -513,6 +502,9 @@ public class DocumentFactory {
         String fieldName = (String) iter.next();
         String fieldValue = (String) additionalFieldMap.get(fieldName);
         //doc.add(new Field(fieldName, fieldValue, Field.Store.COMPRESS, Field.Index.ANALYZED));
+
+        // DEBUG doc.add(new Field(fieldName, fieldValue, Field.Store.YES, Field.Index.ANALYZED));
+
         doc.add(new Field(fieldName, fieldValue, Field.Store.NO, Field.Index.ANALYZED));
         doc.add(new Field(fieldName, CompressionTools.compressString(fieldValue), Field.Store.YES));
       }
@@ -523,13 +515,13 @@ public class DocumentFactory {
       writeAnalysisFile(url, "clean", cleanedContent);
 
       // Add the cleaned content of the document
-      doc.add(new Field("content", cleanedContent, 
-        this.storeContentForPreview ? Field.Store.YES : Field.Store.NO, Field.Index.ANALYZED));
+      doc.add(new Field("content", cleanedContent,
+              this.storeContentForPreview ? Field.Store.YES : Field.Store.NO, Field.Index.ANALYZED));
     } else {
       // We have no content! This is a substitute document
       // -> Add a "preparation-error"-field
       doc.add(new Field("preparation-error", "true", Field.Store.YES,
-          Field.Index.NO));
+              Field.Index.NO));
     }
 
     // Check whether to use the link text as title
@@ -552,7 +544,7 @@ public class DocumentFactory {
     }
 
     // Add the document's summary
-    if (! hasContent(summary) && hasContent(cleanedContent)) {
+    if (!hasContent(summary) && hasContent(cleanedContent)) {
       summary = createSummaryFromContent(cleanedContent);
     }
     if (hasContent(summary)) {
@@ -560,7 +552,7 @@ public class DocumentFactory {
       doc.add(new Field("summary", CompressionTools.compressString(summary), Field.Store.YES));
     }
 
-   // Add the document's metadata
+    // Add the document's metadata
     if (hasContent(metadata)) {
       doc.add(new Field("metadata", metadata, Field.Store.YES, Field.Index.ANALYZED));
     }
@@ -568,7 +560,7 @@ public class DocumentFactory {
     // Add the document's headlines
     if (hasContent(headlines)) {
       doc.add(new Field("headlines", headlines, Field.Store.NO,
-          Field.Index.ANALYZED));
+              Field.Index.ANALYZED));
     }
 
     // Add the document's path
@@ -586,7 +578,6 @@ public class DocumentFactory {
     return doc;
   }
 
-
   /**
    * Gibt zurück, ob der String einen Inhalt hat. Dies ist der Fall, wenn er
    * weder <code>null</code> noch ein Leerstring ist.
@@ -597,8 +588,6 @@ public class DocumentFactory {
   private boolean hasContent(String str) {
     return (str != null) && (str.length() != 0);
   }
-
-
 
   /**
    * Erzeugt eine Zusammenfassung aus dem Inhalt eines Dokuments.
@@ -611,8 +600,8 @@ public class DocumentFactory {
    *         keine erzeugt werden konnte.
    */
   private String createSummaryFromContent(String content) {
-    
-    if( content.length() > mMaxSummaryLength ) {
+
+    if (content.length() > mMaxSummaryLength) {
       // cut the content only if it exceeds the max size for the summary
       int lastSpacePos = content.lastIndexOf(' ', mMaxSummaryLength);
 
@@ -624,9 +613,7 @@ public class DocumentFactory {
     } else {
       return content;
     }
-}
-
-
+  }
 
   /**
    * Wandelt einen Pfad in einen String um.
@@ -647,7 +634,6 @@ public class DocumentFactory {
     return builder.toString();
   }
 
-
   /**
    * Schreibt eine Ananlyse-Datei mit dem Inhalt des Roh-Dokuments.
    *
@@ -664,13 +650,11 @@ public class DocumentFactory {
     try {
       rawDocument.writeToFile(file);
       mWriteAnalysisProfiler.stopMeasuring(rawDocument.getLength());
-    }
-    catch (RegainException exc) {
+    } catch (RegainException exc) {
       mWriteAnalysisProfiler.abortMeasuring();
       mLog.error("Writing analysis file failed", exc);
     }
   }
-
 
   /**
    * Schreibt eine Analyse-Datei.
@@ -694,7 +678,7 @@ public class DocumentFactory {
 
     if (content == null) {
       throw new NullPointerException("Content for analysis file is null: "
-        + file.getAbsolutePath());
+              + file.getAbsolutePath());
     }
 
     mWriteAnalysisProfiler.startMeasuring();
@@ -708,22 +692,24 @@ public class DocumentFactory {
       writer.write(content);
 
       mWriteAnalysisProfiler.stopMeasuring(content.length());
-    }
-    catch (IOException exc) {
+    } catch (IOException exc) {
       mWriteAnalysisProfiler.abortMeasuring();
       mLog.error("Writing analysis file failed", exc);
-    }
-    finally {
+    } finally {
       if (writer != null) {
-        try { writer.close(); } catch (IOException exc) {}
+        try {
+          writer.close();
+        } catch (IOException exc) {
+        }
       }
       if (stream != null) {
-        try { stream.close(); } catch (IOException exc) {}
+        try {
+          stream.close();
+        } catch (IOException exc) {
+        }
       }
     }
   }
-
-
 
   /**
    * Erzeugt den Dateinamen einer Analyse-Datei.
@@ -749,7 +735,6 @@ public class DocumentFactory {
     }
   }
 
-
   /**
    * Gibt alle Ressourcen frei, die von den Präparatoren genutzt wurden.
    * <p>
@@ -761,15 +746,13 @@ public class DocumentFactory {
       mLog.info("Closing preparator " + mPreparatorArr[i].getClass().getName());
       try {
         mPreparatorArr[i].close();
-      }
-      catch (Throwable thr) {
+      } catch (Throwable thr) {
         mLog.error("Closing preparator failed: "
-          + mPreparatorArr[i].getClass().getName(), thr);
+                + mPreparatorArr[i].getClass().getName(), thr);
       }
     }
 
     // Ensure that no call of createDocument(RawDocument) is possible any more
     mPreparatorArr = null;
   }
-
 }
