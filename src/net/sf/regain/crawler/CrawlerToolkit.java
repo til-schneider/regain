@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-01-02 18:09:46 +0100 (So, 02 Jan 2011) $
- *   $Author: thtesche $
- * $Revision: 477 $
+ *     $Date: 2011-08-03 11:41:59 +0200 (Mi, 03 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 510 $
  */
 package net.sf.regain.crawler;
 
@@ -125,7 +125,7 @@ public class CrawlerToolkit {
 
       in = proc.getInputStream();
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-      ArrayList list = new ArrayList();
+      ArrayList<String> list = new ArrayList<String>();
       String line;
       while ((line = reader.readLine()) != null) {
         if (mLog.isDebugEnabled()) {
@@ -729,7 +729,6 @@ public class CrawlerToolkit {
    */
   public static String createURLWithoutPath(String completeUrl) throws RegainException {
 
-    String result = "";
     Matcher matcher = urlPatternLeft.matcher(completeUrl);
     matcher.find();
     if (matcher.groupCount() > 0) {

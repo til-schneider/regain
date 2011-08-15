@@ -1,6 +1,6 @@
 == Contributer ==
 
-This was contributed by Patrick Roessing.
+This was contributed by Patrick Roessing. (Now included in main distribution.)
 
 
 == Status ==

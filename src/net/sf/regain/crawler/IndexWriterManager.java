@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *     $Date: 2011-08-16 20:54:38 +0200 (Di, 16 Aug 2011) $
  *   $Author: benjaminpick $
- * $Revision: 495 $
+ * $Revision: 529 $
  */
 package net.sf.regain.crawler;
 
@@ -51,6 +51,7 @@ import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.search.IndexSearcher;
@@ -501,8 +502,14 @@ public class IndexWriterManager {
 
   private IndexWriter createIndexWriter(boolean createNewIndex)
           throws IOException {
-    IndexWriter indexWriter = new IndexWriter(mLuceneTempIndexDir, mAnalyzer,
-            createNewIndex, IndexWriter.MaxFieldLength.UNLIMITED);
+    IndexWriterConfig iConfig = new IndexWriterConfig(RegainToolkit.getLuceneVersion(), mAnalyzer);
+    
+    if (createNewIndex)
+      iConfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+    else
+      iConfig.setOpenMode(IndexWriterConfig.OpenMode.APPEND);
+    
+    IndexWriter indexWriter = new IndexWriter(mLuceneTempIndexDir, iConfig);
 
     int maxFieldLength = mConfig.getMaxFieldLength();
     if (maxFieldLength > 0) {

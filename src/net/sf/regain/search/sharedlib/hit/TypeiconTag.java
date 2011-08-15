@@ -49,7 +49,7 @@ public class TypeiconTag extends AbstractHitTag {
    * A map holding for a lowercase extension (String) whether there is an icon
    * for that extension (Boolean).
    */
-  private static HashMap mExtensionAvailableMap = new HashMap();
+  private static HashMap<String, Boolean> mExtensionAvailableMap = new HashMap<String, Boolean>();
 
 
   /**
@@ -85,7 +85,7 @@ public class TypeiconTag extends AbstractHitTag {
     String imgFile = imgpath + "/ext_" + extension + "." + iconextension;
     Boolean available;
     synchronized (mExtensionAvailableMap) {
-      available = (Boolean) mExtensionAvailableMap.get(extension);
+      available = mExtensionAvailableMap.get(extension);
       if (available == null) {
         // This entry is not yet cached -> Check whether there is an icon for
         // that extension (e.g. img/ext/ext_pdf.gif)

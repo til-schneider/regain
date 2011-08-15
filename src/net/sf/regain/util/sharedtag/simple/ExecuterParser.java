@@ -21,17 +21,21 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-11-21 11:20:09 +0100 (Mo, 21 Nov 2005) $
- *   $Author: til132 $
- * $Revision: 180 $
+ *     $Date: 2011-08-09 11:39:03 +0200 (Di, 09 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 517 $
  */
 package net.sf.regain.util.sharedtag.simple;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
+import net.sf.regain.ui.desktop.DesktopConstants;
 import net.sf.regain.util.sharedtag.SharedTag;
 
 import org.apache.regexp.RE;
@@ -43,7 +47,7 @@ import org.apache.regexp.RESyntaxException;
  * @see Executer
  * @author Til Schneider, www.murfman.de
  */
-public class ExecuterParser {
+public class ExecuterParser implements DesktopConstants {
   
   /** The regex that matches a include tag. */
   private RE mIncludeRegex;
@@ -331,13 +335,16 @@ public class ExecuterParser {
       + cutTagName.substring(1) + "Tag";
     
     // Get the tag class
-    Class tagClass;
+    Class<?> tagClass;
     try {
       tagClass = Class.forName(className);
     }
     catch (ClassNotFoundException exc) {
-      throw new RegainException("Class for tag " + namespace + ":" + tagName
-          + " not found: " + className, exc);
+      tagClass = loadTagClassDynamically(namespace, className);
+      
+      if (tagClass == null)
+        throw new RegainException("Class for tag " + namespace + ":" + tagName
+            + " not found: " + className, exc);
     }
 
     // Create the tag instance
@@ -361,6 +368,39 @@ public class ExecuterParser {
     }
     
     return tag;
+  }
+
+
+  /**
+   * Tries to load the missing tag class dynamically.
+   * It may be inside /web/taglib/namespace.jar 
+   *
+   * @param namespace Namespace of the Tag
+   * @param className Classname to load
+   * @return  Class (or null if not found).
+   */
+  private Class<?> loadTagClassDynamically(String namespace, String className)
+  {
+    File taglib = new File(TAGLIB_DIR, namespace + ".jar");
+    Class<?> clazz = null;
+    
+    if (taglib.exists())
+    {
+      URL taglibURL = null;
+      try
+      {
+        taglibURL = taglib.toURI().toURL();
+      }
+      catch (MalformedURLException e) { return null; }
+      ClassLoader classLoader = new URLClassLoader(new URL[] { taglibURL });
+      try
+      {
+        clazz = classLoader.loadClass(className);
+      }
+      catch (ClassNotFoundException e) { return null; }
+    }
+    
+    return clazz;
   }
   
 }

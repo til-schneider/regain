@@ -10,7 +10,7 @@
  | Configuration for the regain crawler (for creating a search index)
  |
  | You can find a detailed description of all configuration tags here:
- | http://regain.murfman.de/wiki/en/index.php/CrawlerConfiguration.xml
+ | http://regain.murfman.de/wiki/doku.php?id=config:crawlerconfiguration.xml
  |
  | You can find more configration examples in the CrawlerConfiguration_examples.xml.
  +-->
@@ -349,7 +349,7 @@
   	  <class>de.uni_siegen.wineme.come_in.thumbnailer.plugin.ThumbnailerPlugin</class>
   	  <config>
   	    <section name="thumbnailing">
-   	      <param name="thumbnailFolder">thumbs/</param>
+   	      <param name="thumbnailFolder">web/thumbs/</param>
   	      <param name="imageWidth">160</param>
   	      <param name="imageHeight">120</param>
   	    </section>

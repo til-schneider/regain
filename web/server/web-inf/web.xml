@@ -20,7 +20,7 @@
    | own SearchConfigFactory class and create the config on your own.
    | Specify this class here.
    |
-   | The parameter "searchConfigFactoryJar" is optional. If it is mising the class
+   | The parameter "searchConfigFactoryJar" is optional. If it is missing the class
    | must be included in the .war file.
    +-->
   <!--

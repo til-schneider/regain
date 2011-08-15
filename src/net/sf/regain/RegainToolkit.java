@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-07-30 21:19:08 +0200 (Sa, 30 Jul 2011) $
- *   $Author: thtesche $
- * $Revision: 498 $
+ *     $Date: 2011-08-16 20:54:38 +0200 (Di, 16 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 529 $
  */
 package net.sf.regain;
 
@@ -56,13 +56,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
 import jcifs.smb.SmbFile;
-import net.sf.regain.search.config.IndexConfig;
 import net.sf.regain.util.io.PathFilenamePair;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -103,6 +102,11 @@ public class RegainToolkit {
   /** Der gecachte, systemspeziefische Zeilenumbruch. */
   private static String mLineSeparator;
 
+  /** The current version matching to the embedded lucene jars. */
+  private static final Version LUCENE_VERSION = Version.LUCENE_31;
+
+  public static Version getLuceneVersion() { return LUCENE_VERSION; }
+  
   /**
    * Löscht ein Verzeichnis mit allen Unterverzeichnissen und -dateien.
    *
@@ -350,7 +354,7 @@ public class RegainToolkit {
       reader = new FileReader(file);
       buffReader = new BufferedReader(reader);
 
-      ArrayList list = new ArrayList();
+      ArrayList<String> list = new ArrayList<String>();
       String line;
       while ((line = buffReader.readLine()) != null) {
         list.add(line);
@@ -498,15 +502,15 @@ public class RegainToolkit {
    * @throws RegainException If reading from the index failed. Or if reading or
    *         writing a cache file failed.
    */
-  public static HashMap readFieldValues(IndexReader indexReader,
+  public static HashMap<String, String[]> readFieldValues(IndexReader indexReader,
           String[] fieldNameArr, File indexDir)
           throws RegainException {
     // Create the result map
-    HashMap resultMap = new HashMap();
+    HashMap<String, String[]> resultMap = new HashMap<String, String[]>();
 
     // Try to read the field values from the cache files
     // and remember the failed field names in a set
-    HashSet fieldsToReadSet = new HashSet();
+    HashMap<String, ArrayList<String>> fieldsToReadSet = new HashMap<String, ArrayList<String>>();
     for (int i = 0; i < fieldNameArr.length; i++) {
       String field = fieldNameArr[i];
 
@@ -522,10 +526,7 @@ public class RegainToolkit {
         resultMap.put(field, fieldValueArr);
       } else {
         // There is no cache file -> We have to read the values from the index
-        fieldsToReadSet.add(field);
-
-        // Add an empty ArrayList that can hold the values
-        resultMap.put(field, new ArrayList());
+        fieldsToReadSet.put(field, new ArrayList<String>());
       }
     }
 
@@ -540,9 +541,10 @@ public class RegainToolkit {
         while (termEnum.next()) {
           Term term = termEnum.term();
           String field = term.field();
-          if (fieldsToReadSet.contains(field)) {
+
+          ArrayList<String> valueList = fieldsToReadSet.get(field);
+          if (valueList != null) {
             // This is a value of a wanted field
-            ArrayList valueList = (ArrayList) resultMap.get(field);
             valueList.add(term.text());
           }
         }
@@ -552,18 +554,17 @@ public class RegainToolkit {
     }
 
     // Convert the lists into arrays.
-    Iterator readFieldIter = fieldsToReadSet.iterator();
-    while (readFieldIter.hasNext()) {
-      String field = (String) readFieldIter.next();
+    for(Map.Entry<String, ArrayList<String>> entry : fieldsToReadSet.entrySet()) {
+      String field = entry.getKey();
 
-      ArrayList valueList = (ArrayList) resultMap.get(field);
+      ArrayList<String> valueList = entry.getValue();
       String[] valueArr = new String[valueList.size()];
       valueList.toArray(valueArr);
 
       // Sort the array
       Arrays.sort(valueArr);
 
-      // Overwrite the list with the array
+      // Add the array to results
       resultMap.put(field, valueArr);
 
       // Write the results to a file
@@ -614,7 +615,7 @@ public class RegainToolkit {
     }
 
     // Get the analyzer class
-    Class analyzerClass;
+    Class<?> analyzerClass;
     try {
       analyzerClass = Class.forName(analyzerClassName);
     } catch (ClassNotFoundException exc) {
@@ -629,7 +630,7 @@ public class RegainToolkit {
     Analyzer analyzer;
     if ((stopWordList != null) && (stopWordList.length != 0)) {
       // Copy
-      Constructor ctor;
+      Constructor<?> ctor;
       try {
         ctor = analyzerClass.getConstructor(
                 new Class[]{Version.class, Set.class});
@@ -638,7 +639,7 @@ public class RegainToolkit {
                 + " does not support stop words", thr);
       }
       try {
-        analyzer = (Analyzer) ctor.newInstance(new Object[]{IndexConfig.getLuceneVersion(), stopWordSet});
+        analyzer = (Analyzer) ctor.newInstance(new Object[]{getLuceneVersion(), stopWordSet});
       } catch (Throwable thr) {
         throw new RegainException("Creating analyzer instance failed", thr);
       }
@@ -646,7 +647,7 @@ public class RegainToolkit {
     } else {
       // instantiate analyser whitout stopwords.
       try {
-        Constructor analyzerWithoutStopWords;
+        Constructor<?> analyzerWithoutStopWords;
         try {
           analyzerWithoutStopWords = analyzerClass.getConstructor(
                   new Class[]{Version.class});
@@ -655,7 +656,7 @@ public class RegainToolkit {
                   + " is not supported.", thr);
         }
 
-        analyzer = (Analyzer) analyzerWithoutStopWords.newInstance(new Object[]{IndexConfig.getLuceneVersion()});
+        analyzer = (Analyzer) analyzerWithoutStopWords.newInstance(new Object[]{getLuceneVersion()});
       } catch (Throwable thr) {
         throw new RegainException("Creating analyzer instance failed", thr);
       }
@@ -1175,10 +1176,10 @@ public class RegainToolkit {
    *         failed or if the class is no instance of the given super class. 
    */
   public static Object createClassInstance(String className,
-          Class superClass, ClassLoader classLoader)
+          Class<?> superClass, ClassLoader classLoader)
           throws RegainException {
     // Load the class
-    Class clazz;
+    Class<?> clazz;
     try {
       if (classLoader == null) {
         clazz = Class.forName(className);
@@ -1219,7 +1220,7 @@ public class RegainToolkit {
    * @throws RegainException If loading the class or creating the instance
    *         failed or if the class is no instance of the given super class. 
    */
-  public static Object createClassInstance(String className, Class superClass,
+  public static Object createClassInstance(String className, Class<?> superClass,
           String jarFileName)
           throws RegainException {
     // Create a class loader for the jar file
@@ -1552,7 +1553,7 @@ public class RegainToolkit {
      *        tokenized.
      */
     public WrapperAnalyzer(Analyzer nestedAnalyzer, String[] untokenizedFieldNames) {
-      mNoStemmingAnalyzer = new WhitespaceAnalyzer(IndexConfig.getLuceneVersion());
+      mNoStemmingAnalyzer = new WhitespaceAnalyzer(getLuceneVersion());
       mNestedAnalyzer = nestedAnalyzer;
 
       mUntokenizedFieldNames = new HashSet<String>();

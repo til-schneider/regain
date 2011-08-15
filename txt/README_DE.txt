@@ -1,4 +1,15 @@
-Version 1.7.8 am XX.XX.2011 PREVIEW
+Version 1.7.9 am 16.08.2011 PREVIEW
+-----------------------------------NEU
+ * (Desktop) Es können nun Tags hinzugefügt werden.
+   (Registrieren in DesktopConfiguration.xml, dann als namespace.jar unter web/taglib ablegen)
+
+BUGFIX
+ * (Crawler) Funktionierte in 1.7.8 nicht (da kein Zugriff auf IndexConfig möglich)
+ * LastModifiedTag hatte eine NullpointerException geworfen falls das entsprechende Lucene-Feld leer war
+ * Wenn kein Index vorhanden ist, wird nun auf noindex.jsp weitergeleitet (statt Nullpointerexception)
+ * Links in der CrawlerConfiguration.xml und auf die Query Syntax (errorpage.jsp) aktualisiert
+
+Version 1.7.8 am 31.07.2011 PREVIEW
 -----------------------------------
 NEU 
  * Crawler-Plugin-Infrastruktur

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-12-20 21:52:30 +0100 (So, 20 Dez 2009) $
- *   $Author: thtesche $
- * $Revision: 452 $
+ *     $Date: 2011-08-02 22:13:37 +0200 (Di, 02 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 509 $
  */
 package net.sf.regain;
 
@@ -531,7 +531,7 @@ public class XmlToolkit {
    * @return Die Kindknoten.
    */
   public static Node[] getChildArr(Node node, String childNodeName) {
-    ArrayList list = new ArrayList();
+    ArrayList<Node> list = new ArrayList<Node>();
 
     NodeList nodeList = node.getChildNodes();
     for (int i = 0; i < nodeList.getLength(); i++) {

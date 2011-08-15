@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-07-30 21:19:08 +0200 (Sa, 30 Jul 2011) $
- *   $Author: thtesche $
- * $Revision: 498 $
+ *     $Date: 2011-08-16 20:54:38 +0200 (Di, 16 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 529 $
  */
 package net.sf.regain.crawler.document;
 
@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
@@ -235,7 +236,7 @@ public class DocumentFactory {
       if (mPreparatorArr[i].accepts(rawDocument)) {
         // This preparator can prepare this URL
         preparatorFound = true;
-        matchingPreperators.add(new Integer(i));
+        matchingPreperators.add(i);
         if (mLog.isDebugEnabled()) {
           mLog.debug("Found: " + mPreparatorArr[i].getClass().getSimpleName()
                   + ", Prio: " + mPreparatorArr[i].getPriority());
@@ -246,11 +247,11 @@ public class DocumentFactory {
     // TODO: Try several preperators in order of priority?
     if (preparatorFound) {
       // Find the preparator with the highest priority
-      Iterator prepIdxIter = matchingPreperators.iterator();
-      int highestPriorityIdx = ((Integer) prepIdxIter.next()).intValue();
+      Iterator<Integer> prepIdxIter = matchingPreperators.iterator();
+      int highestPriorityIdx = (prepIdxIter.next()).intValue();
       // In case of more than one matching preperator find the one with the highest prio
       while (prepIdxIter.hasNext()) {
-        int currI = ((Integer) prepIdxIter.next()).intValue();
+        int currI = (prepIdxIter.next()).intValue();
         if (mPreparatorArr[currI].getPriority() > mPreparatorArr[highestPriorityIdx].getPriority()) {
           highestPriorityIdx = currI;
         }
@@ -309,7 +310,7 @@ public class DocumentFactory {
     String metadata;
     String headlines;
     PathElement[] path;
-    Map additionalFieldMap;
+    Map<String, String> additionalFieldMap;
     if (mLog.isDebugEnabled()) {
       mLog.debug("Using preparator " + preparator.getClass().getName()
               + " for " + rawDocument + ", " + rawDocument.getMimeType());
@@ -393,7 +394,7 @@ public class DocumentFactory {
    */
   private Document createDocument(RawDocument rawDocument, String cleanedContent,
           String title, String summary, String metadata, String headlines, PathElement[] path,
-          Map additionalFieldMap)
+          Map<String, String> additionalFieldMap)
           throws RegainException {
     String url = rawDocument.getUrl();
 
@@ -448,15 +449,15 @@ public class DocumentFactory {
       // Add the field
       // NOTE: The field "groups" is tokenized, but not stemmed.
       //       See: RegainToolkit.WrapperAnalyzer
-      Iterator groupIter = Arrays.asList(groupArr).iterator();
+      Iterator<String> groupIter = Arrays.asList(groupArr).iterator();
       StringBuilder tokenBuilder = new StringBuilder();
       while (groupIter.hasNext()) {
-        tokenBuilder.append((String) groupIter.next());
+        tokenBuilder.append(groupIter.next());
         tokenBuilder.append(" ");
       }
 
       //doc.add(new Field("groups", new IteratorTokenStream(groupIter)));
-      doc.add(new Field("groups", new WhitespaceTokenizer(IndexConfig.getLuceneVersion(),
+      doc.add(new Field("groups", new WhitespaceTokenizer(RegainToolkit.getLuceneVersion(),
               new StringReader(tokenBuilder.toString()))));
     }
 
@@ -497,16 +498,14 @@ public class DocumentFactory {
 
     // Add the additional fields
     if (additionalFieldMap != null) {
-      Iterator iter = additionalFieldMap.keySet().iterator();
-      while (iter.hasNext()) {
-        String fieldName = (String) iter.next();
-        String fieldValue = (String) additionalFieldMap.get(fieldName);
+      for (Entry<String, String> entry : additionalFieldMap.entrySet()) {
+        String fieldName = entry.getKey();
+        String fieldValue = entry.getValue();
         //doc.add(new Field(fieldName, fieldValue, Field.Store.COMPRESS, Field.Index.ANALYZED));
-
         // DEBUG doc.add(new Field(fieldName, fieldValue, Field.Store.YES, Field.Index.ANALYZED));
 
         doc.add(new Field(fieldName, fieldValue, Field.Store.NO, Field.Index.ANALYZED));
-        doc.add(new Field(fieldName, CompressionTools.compressString(fieldValue), Field.Store.YES));
+        doc.add(new Field(fieldName, CompressionTools.compressString(fieldValue)));
       }
     }
 
@@ -549,7 +548,7 @@ public class DocumentFactory {
     }
     if (hasContent(summary)) {
       doc.add(new Field("summary", summary, Field.Store.NO, Field.Index.ANALYZED));
-      doc.add(new Field("summary", CompressionTools.compressString(summary), Field.Store.YES));
+      doc.add(new Field("summary", CompressionTools.compressString(summary)));
     }
 
     // Add the document's metadata

@@ -166,7 +166,7 @@ Thomas Tesche (thtesche), cluster:Systems CSG GmbH
   PDFBox 1.5 --> 1.6
   * pdfbox, jempbox, fontbox
 Benjamin Pick
-  * commons-beanutils 1.8.2 --> 1.8.3
+  * commons-beanutils 1.8.3
 
 Websites:
 =========

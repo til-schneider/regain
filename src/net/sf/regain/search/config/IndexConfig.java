@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-07-30 21:19:08 +0200 (Sa, 30 Jul 2011) $
- *   $Author: thtesche $
- * $Revision: 498 $
+ *     $Date: 2011-08-16 20:54:38 +0200 (Di, 16 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 529 $
  */
 package net.sf.regain.search.config;
 
@@ -73,8 +73,6 @@ public class IndexConfig {
   /** The sorting options for the results. */
   private SortingOption[] mSortingOptions;
   private boolean mShowSortFieldContent;
-  /** The current version matching to the embedded lucene jars. */
-  private static final Version LUCENE_VERSION = Version.LUCENE_31;
 
   /**
    * Creates a new instance of IndexConfig.
@@ -294,12 +292,5 @@ public class IndexConfig {
    */
   public boolean getShowSortFieldContent() {
     return mShowSortFieldContent;
-  }
-
-  /**
-   * @return the LUCENE_VERSION
-   */
-  public static Version getLuceneVersion() {
-    return LUCENE_VERSION;
   }
 }

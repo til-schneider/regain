@@ -21,11 +21,13 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
- *   $Author: thtesche $
- * $Revision: 325 $
+ *     $Date: 2011-08-09 11:39:03 +0200 (Di, 09 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 517 $
  */
 package net.sf.regain.ui.desktop.config;
+
+import java.util.Map;
 
 import net.sf.regain.RegainException;
 
@@ -70,4 +72,11 @@ public interface DesktopConfig {
    */
   public boolean getExternalAccessAllowed() throws RegainException; 
 
+  /**
+   * Gets Tag namespaces that should be registered so they can be used in the JSP-File.
+   * 
+   * @return  A map of Alias - Package Name
+   * @throws RegainException  If loading the config failed.
+   */
+  public Map<String, String> getSimpleNamespaces() throws RegainException;
 }

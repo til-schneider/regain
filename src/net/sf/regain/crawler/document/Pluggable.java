@@ -31,15 +31,17 @@ package net.sf.regain.crawler.document;
 import net.sf.regain.RegainException;
 import net.sf.regain.crawler.config.PreparatorConfig;
 
+/**
+ * Common interface of CrawlerPlugins and Preparators
+ * @author Benjamin
+ */
 public interface Pluggable {
-
-	 /**
-	   * Initializes the preparator/plugin.
+	  /**
+	   * Initializes the preparator or plugin.
 	   *
-	   * @param config The configuration for this preparator.
+	   * @param 	config 	The configuration for this preparator or plugin.
 	   * @throws RegainException When the regular expression or the configuration
-	   *         has an error.
+	   *         				 has an error.
 	   */
 	  public void init(PreparatorConfig config) throws RegainException;
-
 }

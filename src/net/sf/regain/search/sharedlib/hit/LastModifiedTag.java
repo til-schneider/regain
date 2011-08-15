@@ -30,7 +30,6 @@ package net.sf.regain.search.sharedlib.hit;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import net.sf.regain.RegainException;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
@@ -59,12 +58,12 @@ public class LastModifiedTag extends AbstractHitTag {
 
     String value = hit.get("last-modified");
 
-    if (value != null || value.length() > 0) {
+    if (value != null && value.length() > 0) {
       DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.DEFAULT, request.getLocale());
       DateFormat formatter = new SimpleDateFormat("yyyyMMdd");
 
       try {
-        response.print(dateFormatter.format((Date) formatter.parse(value)));
+        response.print(dateFormatter.format(formatter.parse(value)));
 
       } catch (ParseException ex) {
         throw new RegainException("Couldn't parse last-modified date.", ex);

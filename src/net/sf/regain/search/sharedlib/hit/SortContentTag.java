@@ -31,7 +31,6 @@ import net.sf.regain.RegainException;
 import net.sf.regain.search.SearchConstants;
 import net.sf.regain.search.SearchToolkit;
 import net.sf.regain.search.config.IndexConfig;
-import net.sf.regain.search.results.SortingOption;
 import net.sf.regain.util.io.Localizer;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;

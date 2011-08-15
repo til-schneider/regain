@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
- *   $Author: thtesche $
- * $Revision: 325 $
+ *     $Date: 2011-08-13 15:15:43 +0200 (Sa, 13 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 525 $
  */
 package net.sf.regain.util.sharedtag.taglib;
 
@@ -82,6 +82,18 @@ public class ExtendedJspException extends JspException {
   }
 
 
+  /**
+   * Show cause as part of the Message
+   * 
+   * @return Message of this exception, with message of cause (if available)
+   */
+  @Override
+  public String getMessage() {
+    String msg = super.getMessage();
+    if (mCause != null)
+      msg += " (" + mCause.getMessage() + ")";
+    return msg;
+  }
 
   /**
    * Prints the stack trace of this exception an of the nested exception, if

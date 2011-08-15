@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-02-22 10:25:37 +0100 (Di, 22 Feb 2005) $
- *   $Author: til132 $
- * $Revision: 24 $
+ *     $Date: 2011-08-05 21:13:49 +0200 (Fr, 05 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 512 $
  */
 package net.sf.regain.crawler.config;
 
@@ -43,9 +43,9 @@ public class PreparatorConfig {
    * 0 (String): The name of the section<br>
    * 1 (Map): The key-value-pairs of the section.
    * <p>
-   * We use no HashMap here, because two sections may have the same name.
+   * We use no HashMap here, because two sections may have the same name. --> ChainedHashtable?
    */
-  private ArrayList mSectionList;
+  private ArrayList<Object []> mSectionList;
   
   
   /**
@@ -54,9 +54,9 @@ public class PreparatorConfig {
    * @param name The name of the section to add.
    * @param content The key-value-pairs of the section to add.
    */
-  void addSection(String name, Map content) {
+  void addSection(String name, Map<String, String> content) {
     if (mSectionList == null) {
-      mSectionList = new ArrayList();
+      mSectionList = new ArrayList<Object []>();
     }
     
     mSectionList.add(new Object[] { name, content });
@@ -84,7 +84,7 @@ public class PreparatorConfig {
    * @return The name of the section.
    */
   public String getSectionName(int index) {
-    Object[] section = (Object[]) mSectionList.get(index);
+    Object[] section = mSectionList.get(index);
     return (String) section[0];
   }
 
@@ -95,9 +95,9 @@ public class PreparatorConfig {
    * @param index The index of the section.
    * @return The key-value-pairs of the section.
    */
-  public Map getSectionContent(int index) {
-    Object[] section = (Object[]) mSectionList.get(index);
-    return (Map) section[1];
+  public Map<String, String> getSectionContent(int index) {
+    Object[] section = mSectionList.get(index);
+    return (Map<String, String>) section[1];
   }
 
   
@@ -108,7 +108,7 @@ public class PreparatorConfig {
    * @return The first section with the given name or <code>null</code> if there
    *         is no such section.
    */
-  public Map getSectionWithName(String name) {
+  public Map<String, String> getSectionWithName(String name) {
     for (int i = 0; i < getSectionCount(); i++) {
       if (name.equalsIgnoreCase(getSectionName(i))) {
         return getSectionContent(i);
@@ -126,7 +126,7 @@ public class PreparatorConfig {
    * @return All sections with the given name.
    */
   public Map[] getSectionsWithName(String name) {
-    ArrayList list = new ArrayList();
+    ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
     for (int i = 0; i < getSectionCount(); i++) {
       if (name.equalsIgnoreCase(getSectionName(i))) {
         list.add(getSectionContent(i));
@@ -135,7 +135,7 @@ public class PreparatorConfig {
     
     // Convert the list into an array
     Map[] sectionArr = new Map[list.size()];
-    list.toArray(sectionArr);
+    sectionArr = list.toArray(sectionArr);
     return sectionArr;
   }
   

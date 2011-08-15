@@ -13,7 +13,7 @@
  | holds only examples.
  |
  | You can find a detailed description of all configuration tags here:
- | http://regain.murfman.de/wiki/en/index.php/CrawlerConfiguration.xml
+ | http://regain.murfman.de/wiki/doku.php?id=config:crawlerconfiguration.xml
  +-->
 <configuration>
 

@@ -21,18 +21,20 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *     $Date: 2011-08-09 11:39:03 +0200 (Di, 09 Aug 2011) $
  *   $Author: benjaminpick $
- * $Revision: 495 $
+ * $Revision: 517 $
  */
 package net.sf.regain.ui.desktop;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
+import net.sf.regain.ui.desktop.config.DesktopConfig;
 import net.sf.regain.util.sharedtag.simple.ExecuterParser;
 import net.sf.regain.util.sharedtag.simple.SimplePageRequest;
 
@@ -99,12 +101,36 @@ public class Main implements DesktopConstants {
 			System.exit(1); // Abort
 			return;
 		}
+		
+		DesktopConfig mConfig = DesktopToolkit.getDesktopConfig();
+		
 		SimplePageRequest.setResourceBaseUrl(baseurl);
 		SimplePageRequest.setWorkingDir(new File("."));
 		SimplePageRequest.setInitParameter("searchConfigFile", "conf/SearchConfiguration.xml");
-		ExecuterParser.registerNamespace("search", "net.sf.regain.search.sharedlib");
-		ExecuterParser.registerNamespace("config", "net.sf.regain.ui.desktop.config.sharedlib");
-		ExecuterParser.registerNamespace("status", "net.sf.regain.ui.desktop.status.sharedlib");
+
+		// Set Namespaces of Tags.
+		Map<String,String> namespaces = null;
+		try
+    {
+		  namespaces = mConfig.getSimpleNamespaces();
+    }
+    catch (RegainException e)
+    {
+      e.printStackTrace(System.err);
+      System.exit(1);
+    }
+    if (namespaces.isEmpty())
+    {
+      System.out.println("Warning: No Tag Namespaces found in DesktopConfiguration.xml. For backwards compability, default namespaces are used.");
+      namespaces.put("search", "net.sf.regain.search.sharedlib");
+      namespaces.put("config", "net.sf.regain.ui.desktop.config.sharedlib");
+      namespaces.put("status", "net.sf.regain.ui.desktop.status.sharedlib");
+    }
+
+    for (Map.Entry<String, String> entry : namespaces.entrySet())
+    {
+      ExecuterParser.registerNamespace(entry.getKey(), entry.getValue());
+    }
 	}
 
 	public static void initializeLogging() {

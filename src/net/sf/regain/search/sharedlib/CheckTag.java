@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-11-26 18:14:25 +0100 (Do, 26 Nov 2009) $
- *   $Author: thtesche $
- * $Revision: 430 $
+ *     $Date: 2011-08-13 15:15:43 +0200 (Sa, 13 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 525 $
  */
 package net.sf.regain.search.sharedlib;
 
@@ -62,26 +62,38 @@ public class CheckTag extends SharedTag {
     throws RegainException
   {
     // Check whether the indexes exist
-    IndexConfig[] indexConfigArr = SearchToolkit.getIndexConfigArr(request);
-    for (int i = 0; i < indexConfigArr.length; i++) {
-      File indexdir = new File(indexConfigArr[i].getDirectory());
-      File newFile = new File(indexdir, "new");
-      File indexFile = new File(indexdir, "index");
+    boolean indexFound = false;
+    String noIndexUrl = getParameter("noIndexUrl", true);
+
+    for (IndexConfig config : SearchToolkit.getIndexConfigArr(request)) {
+      File indexDir = new File(config.getDirectory());
+      File newFile = new File(indexDir, "new");
+      File indexFile = new File(indexDir, "index");
       
-      if (indexdir.exists() && ! indexFile.exists() && ! newFile.exists()) {
-        // There is no index -> Forward to the noIndexUrl
-        String noIndexUrl = getParameter("noIndexUrl", true);
-        response.sendRedirect(noIndexUrl);
-        return;
+      if (indexDir.exists()) {
+        if (indexFile.exists() || newFile.exists()) {
+          indexFound = true;
+        } else {        
+          // There is no index -> Forward to the noIndexUrl
+          response.sendRedirect(noIndexUrl);
+          return;
+        }
       }
+    }
+    if (!indexFound)
+    {
+      // There is no index -> Forward to the noIndexUrl
+      response.sendRedirect(noIndexUrl);
+      return;
     }
     
     // Check whether there is a query
-    String query = SearchToolkit.getSearchQuery(request);
-    if ((query == null) || (query.length() == 0)) {
-      // There was no query specified -> Forward to the noQueryUrl
-      String noQueryUrl = getParameter("noQueryUrl", false);
-      if (noQueryUrl != null) {
+    String noQueryUrl = getParameter("noQueryUrl", false);
+    if (noQueryUrl != null)
+    {
+      String query = SearchToolkit.getSearchQuery(request);
+      if ((query == null) || (query.length() == 0)) {
+        // There was no query specified -> Forward to the noQueryUrl
         response.sendRedirect(noQueryUrl);
         return;
       }

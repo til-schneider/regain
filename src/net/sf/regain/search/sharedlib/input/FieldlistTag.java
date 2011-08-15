@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-24 22:58:51 +0100 (Mo, 24 Nov 2008) $
- *   $Author: thtesche $
- * $Revision: 365 $
+ *     $Date: 2011-08-02 21:44:37 +0200 (Di, 02 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 507 $
  */
 package net.sf.regain.search.sharedlib.input;
 
@@ -59,7 +59,7 @@ public class FieldlistTag extends SharedTag {
       fieldValues = manager.getFieldValues(fieldName);
     } else {
       // We have multiple indexes -> Get the values of each index and merge them
-      HashSet valueSet = new HashSet();
+      HashSet<String> valueSet = new HashSet<String>();
       for (int i = 0; i < configArr.length; i++) {
         IndexSearcherManager manager = IndexSearcherManager.getInstance(configArr[i].getDirectory());
         String[] currFieldValues = manager.getFieldValues(fieldName);

@@ -28,7 +28,7 @@
 package net.sf.regain;
 
 import com.sun.mail.imap.IMAPFolder;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -109,7 +109,7 @@ public class ImapToolkit {
   public static Map<String, Integer> getAllFolders(IMAPFolder entryFolder, boolean recursive)
     throws Exception {
 
-    Map<String, Integer> result = new Hashtable<String, Integer>();
+    Map<String, Integer> result = new HashMap<String, Integer>();
 
     IMAPFolder currFolder = entryFolder;
 
@@ -132,7 +132,7 @@ public class ImapToolkit {
           }
           // estimate recursive the subfolders
           if (recursive) {
-            Map<String, Integer> subFolders = (Hashtable) getAllFolders(folder, true);
+            Map<String, Integer> subFolders = getAllFolders(folder, true);
 
             for (Map.Entry<String, Integer> entry : subFolders.entrySet()) {
               result.put(entry.getKey(), entry.getValue());

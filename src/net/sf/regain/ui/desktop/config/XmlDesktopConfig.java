@@ -21,13 +21,15 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-06 16:04:27 +0200 (Mi, 06 Aug 2008) $
- *   $Author: thtesche $
- * $Revision: 325 $
+ *     $Date: 2011-08-09 11:39:03 +0200 (Di, 09 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 517 $
  */
 package net.sf.regain.ui.desktop.config;
 
 import java.io.File;
+import java.util.Hashtable;
+import java.util.Map;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.XmlToolkit;
@@ -68,6 +70,11 @@ public class XmlDesktopConfig implements DesktopConfig, DesktopConstants {
    * be auto-detected.
    */
   private String mBrowser;
+
+  /**
+   * Namespaces that should be registered for the simple server.
+   */
+  private Map<String, String> mNamespaces;
   
   
   /**
@@ -154,9 +161,36 @@ public class XmlDesktopConfig implements DesktopConfig, DesktopConstants {
 
       node = XmlToolkit.getChild(config, "allow_external_access");
       mExternalAccessAllowed = ( node == null ) ? false : XmlToolkit.getTextAsBoolean(node);
-              
+      
+      mNamespaces = new Hashtable<String, String>();
+      node = XmlToolkit.getChild(config, "simple_register_namespace");
+      if (node != null)
+      {
+        Node[] nodes = XmlToolkit.getChildArr(node, "namespace");
+        for (Node n : nodes)
+        {
+          String name = XmlToolkit.getAttribute(n, "name", true);
+          if (name.isEmpty())
+            throw new RegainException("Node 'namespace' has an empty attribute 'name'");
+          mNamespaces.put(name, XmlToolkit.getText(n, true));
+        }
+      }
+      
       mConfigFileLastModified = lastModified;
     }
+  }
+
+
+  /**
+   * Gets Tag namespaces that should be registered so they can be used in the JSP-File.
+   * 
+   * @return  A map of Alias - Package Name
+   * @throws RegainException  If loading the config failed.
+   */
+  public Map<String, String> getSimpleNamespaces() throws RegainException
+  {
+    loadConfig();
+    return mNamespaces;
   }
   
 }

@@ -21,11 +21,13 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-30 12:30:03 +0200 (Mi, 30 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 111 $
+ *     $Date: 2011-08-13 15:15:43 +0200 (Sa, 13 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 525 $
  */
 package net.sf.regain.util.sharedtag.taglib;
+
+import java.io.IOException;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -152,7 +154,7 @@ public abstract class SharedTagWrapperTag
         bodyContent = null;
       }
     }
-    catch(java.io.IOException exc) {
+    catch(IOException exc) {
       throw new ExtendedJspException("Writing end tag failed", exc);
     }
 

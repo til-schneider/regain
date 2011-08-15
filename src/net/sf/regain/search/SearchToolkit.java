@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.zip.DataFormatException;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
@@ -42,6 +43,8 @@ import net.sf.regain.util.sharedtag.PageResponse;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
+import org.apache.lucene.document.CompressionTools;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
@@ -175,9 +178,8 @@ public class SearchToolkit {
       }
       // Rebuild array from list
       configArr = new IndexConfig[configList.size()];
-      for (int i = 0; i < configList.size(); i++) {
-        configArr[i] = (IndexConfig) configList.get(i);
-      }
+      configList.toArray(configArr);
+
       // Store the IndexConfig in the page context
       request.setContextAttribute(INDEX_CONFIG_CONTEXT_ARRAY_ATTR_NAME, configArr);
     }
@@ -297,23 +299,12 @@ public class SearchToolkit {
     SearchResults results = (SearchResults) request.getContextAttribute(SEARCH_RESULTS_ATTR_NAME);
     if (results == null) {
       // Get the index configurations
-      // bis 1.5.1 getIndexConfigArr(request);
       IndexConfig[] indexConfigArr = getIndexConfigArrWithParent(request);
 
-      /*if (indexConfigArr.length == 1) {
-      results = createSingleSearchResults(indexConfigArr[0], request);
-      } else {
-      SingleSearchResults[] childResultsArr = new SingleSearchResults[indexConfigArr.length];
-      for (int i = 0; i < childResultsArr.length; i++) {
-      childResultsArr[i] = createSingleSearchResults(indexConfigArr[i], request);
-      }
-      results = new MultipleSearchResults(childResultsArr);
-      }*/
       results = new SearchResultsImpl(indexConfigArr, request);
 
       // Store the SearchResults in the page context
       request.setContextAttribute(SEARCH_RESULTS_ATTR_NAME, results);
-
     }
 
     return results;
@@ -349,6 +340,41 @@ public class SearchToolkit {
 
     // Assemble the file URL
     return RegainToolkit.fileNameToUrl(fileName);
+  }
+  
+  /**
+   * Create a URL that targets the file-to-http-bridge
+   * Counterpart to extractFileUrl
+   * 
+   * @param url			URL of the file that should be encoded
+   * @param encoding 	Character encoding to use
+   * @return Encoded File URL
+   * @throws RegainException If encoding the file URL failed.
+   */
+  public static String encodeFileUrl(String url, String encoding) throws RegainException
+  {
+      // Get the file name
+      String fileName = RegainToolkit.urlToFileName(url);
+
+      // Workaround: Double slashes have to be prevented, because tomcat
+      // merges two slashes to one (even if one of them is URL-encoded and even
+      // if one of them is a backslash or an encoded backslash)
+      // -> We escape the second slashe with "$/$" and normal "$" with "$$"
+      //    (This should work in all cases: "a//b" -> "a/$/$b",
+      //    "a///b" -> "a/$/$/b", "a$b" -> "a$$b", "a$/$b" -> "a$$/$$b")
+      String decodedHref = RegainToolkit.replace("file/" + fileName,
+          new String[] {"//",   "$"},
+          new String[] {"/$/$", "$$"});
+
+      // Create a URL (encoded with the page encoding)
+      String href = RegainToolkit.urlEncode(decodedHref, encoding);
+
+      // Now decode the forward slashes
+      // NOTE: This step is only for beautifing the URL, the above workaround is
+      //       also nessesary without this step
+      href = RegainToolkit.replace(href, "%2F", "/");
+      
+      return href;
   }
 
   /**
@@ -390,8 +416,8 @@ public class SearchToolkit {
         }
 
         // Check whether the document is in the index
-        Analyzer analyzer = new WhitespaceAnalyzer(IndexConfig.getLuceneVersion());
-        QueryParser parser = new QueryParser(IndexConfig.getLuceneVersion(), "url", analyzer);
+        Analyzer analyzer = new WhitespaceAnalyzer(RegainToolkit.getLuceneVersion());
+        QueryParser parser = new QueryParser(RegainToolkit.getLuceneVersion(), "url", analyzer);
         String queryString = "\"" + transformedFileUrl + "\"";
 
         try {
@@ -487,7 +513,7 @@ public class SearchToolkit {
       int lastDot = filename.lastIndexOf('.');
       if (lastDot != -1) {
         String extension = filename.substring(lastDot + 1);
-        String mimeType = (String) mMimeTypeHash.get(extension);
+        String mimeType = mMimeTypeHash.get(extension);
         if (mimeType != null) {
           response.setHeader("Content-Type", mimeType);
         }
@@ -519,6 +545,27 @@ public class SearchToolkit {
     }
   }
 
+  /**
+   * Get the content of a compressed lucene field.
+   * 
+   * @param doc		    Lucene Index entry
+   * @param fieldname	Index entry name
+   * @return String that was in this field
+   * @throws RegainException	If decompression failed.
+   */
+  public static String getCompressedFieldValue(Document doc, String fieldname) throws RegainException {
+	  byte[] compressedFieldValue = doc.getBinaryValue(fieldname);
+	  String value = "";
+	  if (compressedFieldValue != null) {
+		  try {
+			  value = CompressionTools.decompressString(compressedFieldValue);
+		  } catch (DataFormatException dataFormatException) {
+			  throw new RegainException("Couldn't uncompress field value.", dataFormatException);
+		  }
+	  }
+	  return value;
+  }
+  
   /**
    * Loads the configuration of the search mask.
    * <p>

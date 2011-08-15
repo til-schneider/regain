@@ -22,9 +22,9 @@
  | CVS information:
  |  $RCSfile$
  |   $Source$
- |     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ |     $Date: 2011-08-09 17:19:05 +0200 (Di, 09 Aug 2011) $
  |   $Author: benjaminpick $
- | $Revision: 495 $
+ | $Revision: 518 $
  |
  | Author: Til Schneider, www.murfman.de
  +-->
@@ -130,10 +130,10 @@
     <echo message="  installer            Creates a Windows installer for the project."/>
     <echo message="  public               Creates all the stuff that can be downloaded."/>
     <echo message="  public-no-installer  Creates all the stuff that can be downloaded except for the installer."/>
-    <echo message="  deploy-web           Deploys the web content at the servlet engine."/>
-    <echo message="  deploy-classes       Deploys the web content at the servlet engine."/>
-    <echo message="  deploy-config        Deploys the config at the servlet engine."/>
     <echo message="  deploy-war           Deploys the war file at the servlet engine."/>
+    <echo message="  deploy-web           Deploys only the web content at the servlet engine."/>
+    <echo message="  deploy-classes       Deploys only the compiled classes at the servlet engine."/>
+    <echo message="  deploy-config        Deploys only the config at the servlet engine."/>
     <echo message="  all                  Creates all (Same as public)."/>
   </target>
 
@@ -545,6 +545,9 @@
     <copy todir="build/runtime/desktop/linux/conf/default">
       <fileset dir="build/runtime/desktop/win/conf/default"/>
     </copy>
+    <mkdir dir="build/runtime/desktop/win/plugins" />
+    <mkdir dir="build/runtime/desktop/linux/plugins" />
+
     <copy todir="build/runtime/desktop/win/web">
       <fileset dir="web/common">
         <exclude name="msg*.properties"/>
@@ -608,6 +611,7 @@
   <target name="runtime-server-fast" depends="preparators">
     <echo message="Creating the server runtime ..." />
     <mkdir dir="build/runtime/crawler/log"/>
+    <mkdir dir="build/runtime/crawler/plugins" />
     <copy todir="build/runtime/crawler">
       <fileset dir="lib/win" includes="jacob.dll"/>
       <fileset dir="lib/win" includes="ifilter_wrapper.dll"/>
@@ -616,6 +620,7 @@
       <fileset dir="txt" includes="authentication.properties"/>
     </copy>
     <mkdir dir="build/runtime/search/conf/regain"/>
+    
     <copy todir="build/runtime/search/conf/regain">
       <fileset dir="txt" includes="SearchConfiguration.xml"/>
     </copy>
@@ -719,6 +724,12 @@
       <param name="target" value="build/web-temps"/>
     </antcall>
     <echo message="${version}" file="build/web-temps/version"/>
+    <mkdir dir="build/web-temps/taglib"/>
+    <copy todir="build/web-temps/taglib">
+      <fileset dir="web/taglib">
+        <include name="*.tld"/>
+      </fileset>
+    </copy>
   </target>
 
 
@@ -782,6 +793,7 @@
         <include name="jakarta-regexp-*.jar"/>
         <include name="log4j-*.jar"/>
         <include name="commons-collections*.jar"/>
+        <include name="../web/taglib/*.jar"/>
       </lib>
       <fileset dir="web/common">
         <exclude name="msg*.properties"/>
@@ -1097,6 +1109,11 @@
         <exclude name="**/CVS/*"/>
       </fileset>
       <fileset dir="build/web-temps"/>
+    </copy>
+    <copy todir="${deploy-target.dir}/${programname.file}/WEB-INF/lib">
+      <fileset dir="web/taglib">
+        <include name="*.jar"/>
+      </fileset>
     </copy>
     <echo message="${version}" file="${deploy-target.dir}/${programname.file}/version"/>
   </target>

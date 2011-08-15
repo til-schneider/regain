@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-08-07 11:35:53 +0200 (Do, 07 Aug 2008) $
- *   $Author: thtesche $
- * $Revision: 328 $
+ *     $Date: 2011-08-06 14:57:30 +0200 (Sa, 06 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 515 $
  */
 package net.sf.regain.util.sharedtag;
 
@@ -52,7 +52,7 @@ public abstract class SharedTag {
   private static MultiLocalizer mMultiLocalizer;
 
   /** The parameters for this tag. May be null. */
-  private HashMap mParamMap;
+  private HashMap<String, String> mParamMap;
   
   /**
    * The current Localizer. Is <code>null</code> when the is currently not
@@ -114,7 +114,7 @@ public abstract class SharedTag {
    */
   public void setParameter(String name, String value) {
     if (mParamMap == null) {
-      mParamMap = new HashMap();
+      mParamMap = new HashMap<String, String>();
     }
     
     mParamMap.put(name, value);
@@ -132,7 +132,7 @@ public abstract class SharedTag {
     if (mParamMap == null) {
       return null;
     } else {
-      String value = (String) mParamMap.get(name);
+      String value = mParamMap.get(name);
       if (value != null) {
         value = localize(value);
       }

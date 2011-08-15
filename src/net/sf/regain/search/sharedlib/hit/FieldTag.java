@@ -21,13 +21,12 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-11-26 18:14:25 +0100 (Do, 26 Nov 2009) $
- *   $Author: thtesche $
- * $Revision: 430 $
+ *     $Date: 2011-08-05 11:36:46 +0200 (Fr, 05 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 511 $
  */
 package net.sf.regain.search.sharedlib.hit;
 
-import java.util.zip.DataFormatException;
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.search.SearchToolkit;
@@ -35,7 +34,6 @@ import net.sf.regain.search.results.SearchResults;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
 
-import org.apache.lucene.document.CompressionTools;
 import org.apache.lucene.document.Document;
 
 /**
@@ -65,26 +63,19 @@ public class FieldTag extends AbstractHitTag {
     SearchResults results = SearchToolkit.getSearchResults(request);
     boolean shouldHighlight = results.getShouldHighlight(hitIndex);
 
-    String field = getParameter("field", true);
+    String fieldname = getParameter("field", true);
     String value = null;
     if (shouldHighlight) {
-      value = hit.get(RegainToolkit.createHighlightedFieldIdent(field));
+      value = hit.get(RegainToolkit.createHighlightedFieldIdent(fieldname));
     }
 
     if (value == null || value.length() == 0) {
-      value = hit.get(field);
+      value = hit.get(fieldname);
     }
 
     // Maybe this is a compressed field
     if (value == null) {
-      byte[] compressedFieldValue = hit.getBinaryValue(field);
-      if (compressedFieldValue != null) {
-        try {
-          value = CompressionTools.decompressString(compressedFieldValue);
-        } catch (DataFormatException dataFormatException) {
-          throw new RegainException("Couldn't uncompress field value." + dataFormatException);
-        }
-      }
+      value = SearchToolkit.getCompressedFieldValue(hit, fieldname);
     }
 
     if (value != null) {
@@ -95,4 +86,6 @@ public class FieldTag extends AbstractHitTag {
       }
     }
   }
+
+
 }

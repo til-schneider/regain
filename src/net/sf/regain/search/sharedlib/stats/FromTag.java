@@ -21,14 +21,16 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-01 17:04:30 +0100 (Di, 01 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 46 $
+ *     $Date: 2011-08-13 15:06:03 +0200 (Sa, 13 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 524 $
  */
 package net.sf.regain.search.sharedlib.stats;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.search.SearchConstants;
+import net.sf.regain.search.SearchToolkit;
+import net.sf.regain.search.results.SearchResults;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
 import net.sf.regain.util.sharedtag.SharedTag;
@@ -51,8 +53,14 @@ public class FromTag extends SharedTag implements SearchConstants {
     throws RegainException
   {
     int fromResult = request.getParameterAsInt(PARAM_FROM_RESULT, 0);
-
-    response.print(Integer.toString(fromResult + 1));
+    
+    SearchResults results = SearchToolkit.getSearchResults(request);
+    int totalResults = results.getHitCount();
+    
+    if (totalResults == 0)
+      response.print(Integer.toString(0));
+    else
+      response.print(Integer.toString(fromResult + 1));
   }
 
 }

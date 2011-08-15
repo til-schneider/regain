@@ -34,7 +34,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.DataFormatException;
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.search.IndexSearcherManager;
@@ -222,7 +221,7 @@ public class SearchResultsImpl implements SearchResults {
             String[] searchFieldArr = indexConfigs[k].getSearchFieldList();
             for (int i = 0; i < searchFieldArr.length; i++) {
 
-              QueryParser parser = new QueryParser(IndexConfig.getLuceneVersion(), searchFieldArr[i], mAnalyzer);
+              QueryParser parser = new QueryParser(RegainToolkit.getLuceneVersion(), searchFieldArr[i], mAnalyzer);
               parser.setDefaultOperator(QueryParser.AND_OPERATOR);
               parser.setAllowLeadingWildcard(true);
 
@@ -344,6 +343,8 @@ public class SearchResultsImpl implements SearchResults {
    */
   @Override
   public int getDocumentCount() {
+    if (mMultiReader == null)
+      return 0;
     return mMultiReader.numDocs() - mMultiReader.numDeletedDocs();
   }
 
@@ -504,30 +505,21 @@ public class SearchResultsImpl implements SearchResults {
    */
   @Override
   public void shortenSummary(int index) throws RegainException {
+	  Document document = getHitDocument(index);
+	  String text = SearchToolkit.getCompressedFieldValue(document, "summary");
 
-    try {
-      Document document = getHitDocument(index);
-      byte[] compressedFieldValue = document.getBinaryValue("summary");
-      String text = null;
-      if (compressedFieldValue != null) {
-        text = CompressionTools.decompressString(compressedFieldValue);
-      }
 
-      if (text != null) {
-        // Overwrite the content with a shortend summary
-        String resSummary = RegainToolkit.createSummaryFromContent(text, 200);
-        document.removeField("summary");
-        if (resSummary != null) {
-          document.add(new Field("summary", resSummary, Field.Store.NO, Field.Index.NOT_ANALYZED));
-          document.add(new Field("summary", CompressionTools.compressString(resSummary), Field.Store.YES));
-          // write back the transformed document
-          setHitDocument(index, document);
-        }
-      }
-    } catch (DataFormatException dataFormatException) {
-      throw new RegainException("Error while searching pattern: " + mQueryText, dataFormatException);
-    }
-
+	  if (text != null) {
+		  // Overwrite the content with a shortend summary
+		  String resSummary = RegainToolkit.createSummaryFromContent(text, 200);
+		  document.removeField("summary");
+		  if (resSummary != null) {
+			  document.add(new Field("summary", resSummary, Field.Store.NO, Field.Index.NOT_ANALYZED));
+			  document.add(new Field("summary", CompressionTools.compressString(resSummary)));
+			  // write back the transformed document
+			  setHitDocument(index, document);
+		  }
+	  }
   }
 
   /**
@@ -559,11 +551,7 @@ public class SearchResultsImpl implements SearchResults {
 //      int docId = hitScoreDocs[index].doc;
 
       Document document = getHitDocument(index);
-      byte[] compressedFieldValue = document.getBinaryValue("summary");
-      String text = null;
-      if (compressedFieldValue != null) {
-        text = CompressionTools.decompressString(compressedFieldValue);
-      }
+      String text = SearchToolkit.getCompressedFieldValue(document, "summary");
 
       if (text != null) {
         // Overwrite the content with a shortend summary
@@ -572,7 +560,7 @@ public class SearchResultsImpl implements SearchResults {
         if (resSummary != null) {
           //System.out.println("resSummary " + resSummary);
           document.add(new Field("summary", resSummary, Field.Store.NO, Field.Index.NOT_ANALYZED));
-          document.add(new Field("summary", CompressionTools.compressString(resSummary), Field.Store.YES));
+          document.add(new Field("summary", CompressionTools.compressString(resSummary)));
 
         }
 
@@ -590,7 +578,7 @@ public class SearchResultsImpl implements SearchResults {
           //System.out.println("Highlighted summary: " + resHighlSummary);
           // write the result back to the document in a new field
           document.add(new Field("highlightedSummary", resHighlSummary, Field.Store.NO, Field.Index.NOT_ANALYZED));
-          document.add(new Field("highlightedSummary", CompressionTools.compressString(resHighlSummary), Field.Store.YES));
+          document.add(new Field("highlightedSummary", CompressionTools.compressString(resHighlSummary)));
         }
       }
       // Highlight the title
@@ -624,9 +612,7 @@ public class SearchResultsImpl implements SearchResults {
     } catch (IOException exIO) {
       throw new RegainException("Error while searching pattern: " + mQueryText, exIO);
 
-    } catch (DataFormatException ex) {
-      throw new RegainException("Error while searching pattern: " + mQueryText, ex);
-    }
+    } 
 
   }
 

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *     $Date: 2011-08-05 21:13:49 +0200 (Fr, 05 Aug 2011) $
  *   $Author: benjaminpick $
- * $Revision: 495 $
+ * $Revision: 512 $
  */
 package net.sf.regain.crawler.config;
 
@@ -663,7 +663,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
       String sectionName = XmlToolkit.getAttribute(sectionArr[secIdx], "name", true);
 
       // Read the params
-      HashMap paramMap = new HashMap();
+      HashMap<String, String> paramMap = new HashMap<String, String>();
       Node[] paramArr = XmlToolkit.getChildArr(sectionArr[secIdx], "param");
       for (int paramIdx = 0; paramIdx < paramArr.length; paramIdx++) {
         String paramName = XmlToolkit.getAttribute(paramArr[paramIdx], "name", true);

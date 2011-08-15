@@ -13,4 +13,14 @@
   <!-- Allow/Disallow external access to the running desktop instance -->
   <allow_external_access>true</allow_external_access>
 
+  <!-- Port of the Simple Search Server -->
+  <port>8020</port>
+
+  <!-- Register namespaces for Simple Server -->
+  <simple_register_namespace>
+    <!-- Default namespaces: search, config, status -->
+    <namespace name="search">net.sf.regain.search.sharedlib</namespace>
+	<namespace name="config">net.sf.regain.ui.desktop.config.sharedlib</namespace>
+	<namespace name="status">net.sf.regain.ui.desktop.status.sharedlib</namespace>
+  </simple_register_namespace>
 </configuration>

@@ -1,4 +1,16 @@
-Version 1.7.8 on 2011/XXX/XX PREVIEW
+Version 1.7.9 on 2011/Aug/16 PREVIEW
+-------------------------------------
+NEW
+ * CONFIGURATION: Namespaces of Desktop Taglib are now in DesktopConfiguration.xml
+ * Taglib Classes can be added in web/taglib as namespace.jar (Desktop)
+
+BUGFIX
+ * Crawler didn't work (could not access to search.IndexConfig.getLuceneVersion())
+ * LastModifiedTag could throw an NullpointerException (if lucene field last-modified is not set)
+ * Redirect to noindex.jsp instead of NullpointerException when no index given
+ * Fix Links: CrawlerConfiguration.xml Help and Query Syntax Help (errorpage.jsp)
+ 
+Version 1.7.8 on 2011/Jul/31 PREVIEW
 -------------------------------------
 NEW
  * Capability for Crawler Plugins

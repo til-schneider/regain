@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-07-30 21:19:08 +0200 (Sa, 30 Jul 2011) $
- *   $Author: thtesche $
- * $Revision: 498 $
+ *     $Date: 2011-08-06 14:58:42 +0200 (Sa, 06 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 516 $
  */
 package net.sf.regain.search;
 
@@ -107,18 +107,22 @@ public class IndexSearcherManager {
    * Holds for a field name (String) all distinct values the index has for that
    * field (String[]).
    */
-  private HashMap mFieldTermHash;
+  private HashMap<String,String[]> mFieldTermHash;
 
   /**
    * Erzeugt eine neue IndexWriterManager-Instanz.
    *
    * @param indexDir Das Verzeichnis, in dem der Index steht.
+   * @throws RegainException Wenn kein Index-Verzeichnis existiert.
    */
-  private IndexSearcherManager(String indexDir) {
+  private IndexSearcherManager(String indexDir) throws RegainException {
     mNewIndexDir = new File(indexDir + File.separator + NEW_INDEX_SUBDIR);
     mWorkingIndexDir = new File(indexDir + File.separator + WORKING_INDEX_SUBDIR);
     mBackupIndexDir = new File(indexDir + File.separator + BACKUP_INDEX_SUBDIR);
 
+    if (!(new File(indexDir).exists()))
+      throw new RegainException("No index folder found at " + indexDir);
+    
     mIndexUpdateThread = new Thread() {
 
       @Override
@@ -136,8 +140,9 @@ public class IndexSearcherManager {
    * @param indexDir Das Verzeichnis, in dem der Index steht.
    *
    * @return Der IndexWriterManager für das Index-Verzeichnis.
+   * @throws RegainException Wenn kein Index in diesem Verzeichnis ist (Verzeichnis existiert nicht)
    */
-  public static synchronized IndexSearcherManager getInstance(String indexDir) {
+  public static synchronized IndexSearcherManager getInstance(String indexDir) throws RegainException {
     if (mIndexManagerHash == null) {
       mIndexManagerHash = new HashMap<String, IndexSearcherManager>();
     }
@@ -221,15 +226,15 @@ public class IndexSearcherManager {
    */
   public synchronized String[] getFieldValues(String field) throws RegainException {
     if (mFieldTermHash == null) {
-      mFieldTermHash = new HashMap();
+      mFieldTermHash = new HashMap<String,String[]>();
     }
 
-    String[] valueArr = (String[]) mFieldTermHash.get(field);
+    String[] valueArr = mFieldTermHash.get(field);
     if (valueArr == null) {
       // Read the field values
-      HashMap valueMap = RegainToolkit.readFieldValues(getIndexReader(),
+      HashMap<String,String[]> valueMap = RegainToolkit.readFieldValues(getIndexReader(),
               new String[]{field}, mWorkingIndexDir);
-      valueArr = (String[]) valueMap.get(field);
+      valueArr = valueMap.get(field);
 
       // Copy the field values to our cache
       mFieldTermHash.put(field, valueArr);

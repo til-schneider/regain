@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-11-16 22:23:54 +0100 (So, 16 Nov 2008) $
- *   $Author: thtesche $
- * $Revision: 360 $
+ *     $Date: 2011-08-09 11:39:03 +0200 (Di, 09 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 517 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -75,5 +75,6 @@ public interface DesktopConstants {
   /** The authentication properties. */
   public static final File AUTH_PROPS_FILE = new File(CONFIG_DIR, "authentication.properties");
   
-
+  /** The directory where additional taglibraries may be located. */
+  public static final File TAGLIB_DIR = new File("web/taglib");
 }
