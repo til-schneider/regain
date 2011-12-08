@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *     $Date: 2011-08-20 11:16:33 +0200 (Sa, 20 Aug 2011) $
  *   $Author: benjaminpick $
- * $Revision: 495 $
+ * $Revision: 533 $
  */
 package net.sf.regain.crawler.document;
 
@@ -162,7 +162,7 @@ public interface Preparator extends Pluggable {
    * 
    * @return The additional fields or <code>null</code>.
    */
-  public Map getAdditionalFields();
+  public Map<String, String> getAdditionalFields();
 
   /**
    * Gibt alle Ressourcen frei, die für die Informationen über das Dokument

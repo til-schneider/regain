@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-30 13:10:44 +0200 (Mi, 30 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 112 $
+ *     $Date: 2011-09-20 16:25:38 +0200 (Di, 20 Sep 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 536 $
  */
 package net.sf.regain.ui.server.taglib.hit;
 
@@ -53,6 +53,15 @@ public class FieldTag extends SharedTagWrapperTag {
    */
   public void setField(String field) {
     getNestedTag().setParameter("field", field);
+  }
+  
+  /**
+   * Override highlight settings of index
+   * @param bool
+   */
+  public void setHighlight(String bool)
+  {
+    getNestedTag().setParameter("highlight", bool);
   }
 
 }

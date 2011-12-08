@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
- *   $Author: thtesche $
- * $Revision: 349 $
+ *     $Date: 2011-11-17 09:50:08 +0100 (Do, 17 Nov 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 545 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -52,23 +52,23 @@ public abstract class AbstractJacobMsOfficePreparator extends AbstractPreparator
    * Holds the document properties that may be extracted from a word document.
    * (key: The property name (String), value: The property constant (Variant))
    */
-  private HashMap mPropertyMap;
+  private HashMap<String, Variant> mPropertyMap;
 
 
   /**
    * Creates a new instance of JacobMsWordPreparator.
    * 
-   * @param extentionArr The file extensions a URL must have one to be accepted
+   * @param extensionArr The file extensions a URL must have one to be accepted
    *        by this preparator.
    * @throws RegainException If creating the preparator failed.
    */
-  public AbstractJacobMsOfficePreparator(String[] extentionArr)
+  public AbstractJacobMsOfficePreparator(String[] extensionArr)
     throws RegainException
   {
-    super(extentionArr);
+    super(extensionArr);
     
     // NOTE: See: http://mypage.bluewin.ch/reprobst/WordFAQ/DokEigen.htm#DokEigen04
-    mPropertyMap = new HashMap();
+    mPropertyMap = new HashMap<String, Variant>();
     mPropertyMap.put("propTitle",       new Variant(1));  // german: Titel
     mPropertyMap.put("subject",         new Variant(2));  // german: Thema
     mPropertyMap.put("author",          new Variant(3));  // german: Autor
@@ -109,9 +109,9 @@ public abstract class AbstractJacobMsOfficePreparator extends AbstractPreparator
    * @throws RegainException If the configuration has an error.
    */
   public void init(PreparatorConfig config) throws RegainException {
-    Map main = config.getSectionWithName("main");
+    Map<String, String> main = config.getSectionWithName("main");
     if (main != null) {
-      String properties = (String) main.get("properties");
+      String properties = main.get("properties");
       if (properties != null) {
         mWantedPropertiesArr = RegainToolkit.splitString(properties, ";", true);
         
@@ -121,9 +121,9 @@ public abstract class AbstractJacobMsOfficePreparator extends AbstractPreparator
             // This propery does not exist -> Show an error that lists the
             // properties
             StringBuffer possProp = new StringBuffer();
-            Iterator iter = mPropertyMap.keySet().iterator();
+            Iterator<String> iter = mPropertyMap.keySet().iterator();
             while (iter.hasNext()) {
-              String property = (String) iter.next();
+              String property = iter.next();
               if (possProp.length() > 0) {
                 possProp.append(", ");
               }
@@ -153,7 +153,7 @@ public abstract class AbstractJacobMsOfficePreparator extends AbstractPreparator
         // NOTE: We should always get a propertyConstant here since we checked
         //       it in the readConfig method.
         String propertyName = mWantedPropertiesArr[i];
-        Variant propertyConstant = (Variant) mPropertyMap.get(propertyName);
+        Variant propertyConstant = mPropertyMap.get(propertyName);
         Object property = Dispatch.call(document, "BuiltInDocumentProperties", propertyConstant).getDispatch();
         String value = Dispatch.get(property, "Value").toString();
         

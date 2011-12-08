@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *     $Date: 2011-09-20 13:52:46 +0200 (Di, 20 Sep 2011) $
  *   $Author: benjaminpick $
- * $Revision: 495 $
+ * $Revision: 534 $
  */
 package net.sf.regain.crawler;
 
@@ -95,7 +95,7 @@ public class Crawler implements ErrorLogger {
   private UrlChecker mUrlChecker;
 
   /** Die Liste der noch zu bearbeitenden Jobs. */
-  private LinkedList mJobList;
+  private LinkedList<CrawlerJob> mJobList;
 
   /** The number of occured errors. */
   private int mErrorCount;
@@ -158,11 +158,11 @@ public class Crawler implements ErrorLogger {
     Profiler.clearRegisteredProfilers();
     
     mCrawlerJobProfiler = new Profiler("Whole crawler jobs", "jobs");
-    mHtmlParsingProfiler = new Profiler("Parsed HTML documents", "docs");
+    mHtmlParsingProfiler = new Profiler("Parsed documents", "docs");
     
     mConfiguration = config;
 
-    mJobList = new LinkedList();
+    mJobList = new LinkedList<CrawlerJob>();
     mDeadlinkList = new LinkedList();
 
     mFatalErrorCount = 0;
@@ -445,7 +445,7 @@ public class Crawler implements ErrorLogger {
 	    while (! mJobList.isEmpty()) {
 	      mCrawlerJobProfiler.startMeasuring();
 	
-	      mCurrentJob = (CrawlerJob) mJobList.removeFirst();
+	      mCurrentJob = mJobList.removeFirst();
 	      String url = mCurrentJob.getUrl();
 	
 	      boolean shouldBeParsed = mCurrentJob.shouldBeParsed();
@@ -612,7 +612,7 @@ public class Crawler implements ErrorLogger {
 	      // Check whether to create a breakpoint
 	      int breakpointInterval = mConfiguration.getBreakpointInterval();
 	      boolean breakpointIntervalIsOver = (breakpointInterval > 0)
-	        && (System.currentTimeMillis() > lastBreakpointTime + breakpointInterval * 60 * 1000);
+	        && (System.currentTimeMillis() > lastBreakpointTime + breakpointInterval * 60 * 1000L);
 	      if (mShouldPause || breakpointIntervalIsOver) {
 	        try {
 	          mIndexWriterManager.createBreakpoint();
@@ -724,10 +724,8 @@ public class Crawler implements ErrorLogger {
     }
     try {
       // Create the directory if doesn't exist
-      if (!listDir.exists()) {
-        if (!listDir.mkdir()) {
-          throw new IOException("Creating directory failed: " + listDir.getAbsolutePath());
-        }
+      if (!listDir.exists() && !listDir.mkdir()) {
+        throw new IOException("Creating directory failed: " + listDir.getAbsolutePath());
       }
     } catch (IOException exc) {
       logError("Writing deadlink list and error list failed", exc, false);
@@ -795,10 +793,10 @@ public class Crawler implements ErrorLogger {
         keys.add((String) e.nextElement());
       }
 
-      Iterator iter = keys.iterator();
+      Iterator<String> iter = keys.iterator();
       // Iterate over all keys
       while (iter.hasNext()) {
-        String key = (String) iter.next();
+        String key = iter.next();
         String parts[] = key.split("\\.");
 
         String url = CrawlerToolkit.createURLFromProps(parts);
@@ -897,17 +895,16 @@ public class Crawler implements ErrorLogger {
       FileOutputStream stream = null;
       PrintStream printer = null;
 
-      Iterator crawledURLsIter = mUrlChecker.getmAcceptedUrlSet().iterator();
+      Set<String> crawledURLs = mUrlChecker.getmAcceptedUrlSet();
       try {
         stream = new FileOutputStream(new File(listDir, "crawledURLs.txt"));
         printer = new PrintStream(stream);
 
-        while (crawledURLsIter.hasNext()) {
-          printer.println((String) crawledURLsIter.next());
+        for (String url : crawledURLs) {
+          printer.println(url);
         }
         printer.close();
         stream.close();
-
       } catch (IOException exc) {
         logError("Writing crawled URLs failed", exc, false);
       } finally {
@@ -1144,9 +1141,9 @@ public class Crawler implements ErrorLogger {
         // It's a directory -> Add a parse job
         String newFolder;
         if( folderUrl == null || folderUrl.length() == 0 || !folderUrl.endsWith("/")) {
-          newFolder =  "/" + (String) entry.getKey();
+          newFolder = "/" + entry.getKey();
         } else {
-          newFolder =  (String) entry.getKey();
+          newFolder = entry.getKey();
         }
         addJob(folderUrl + newFolder, folderUrl, true, false, null);
       }

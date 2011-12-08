@@ -164,6 +164,8 @@ public abstract class PluggableFactory {
           Pluggable prep = (Pluggable) RegainToolkit.createClassInstance(className, Pluggable.class, loader);
           preparatorHash.put(className, prep);
         }
+        else
+          mLog.info(className + " is disabled in configuration");
       }
     }
     catch (Throwable thr) {
@@ -203,7 +205,7 @@ public abstract class PluggableFactory {
     return true;
   }
 
-  class ExtensionFilter implements FilenameFilter {
+  static class ExtensionFilter implements FilenameFilter {
 	  private String ext;
 
 	  ExtensionFilter(String ext) { this.ext = ext; }

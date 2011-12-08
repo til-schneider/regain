@@ -56,9 +56,9 @@ package net.sf.regain.util.io;
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
- *   $Author: thtesche $
- * $Revision: 349 $
+ *     $Date: 2011-10-18 09:21:09 +0200 (Di, 18 Okt 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 540 $
  */
 
 import java.util.Hashtable;
@@ -77,7 +77,7 @@ public class HtmlEntities {
    * enthält für eine Entit�t (key als String) seine Entsprechung (value als
    * Character).
    */  
-  static final Hashtable decoder = new Hashtable(300);
+  static final Hashtable<String, String> decoder = new Hashtable<String, String>(300);
   
   /**
    * enthält für einen char-Wert (index) eine Entit�t (als String) oder
@@ -108,11 +108,10 @@ public class HtmlEntities {
         start++;
         radix = 16;
       }
-      Character c =
-      new Character((char)Integer.parseInt(entity.substring(start), radix));
+      Character c = Character.valueOf((char) Integer.parseInt(entity.substring(start), radix));
       return c.toString();
     } else {
-      String s = (String)decoder.get(entity);
+      String s = decoder.get(entity);
       if (s != null)
         return s;
       else return "";
@@ -141,6 +140,8 @@ public class HtmlEntities {
       if (j < 0x100 && encoder[j] != null) {
         buffer.append(encoder[j]);  // have a named encoding
         buffer.append(';');
+      } else if (j < 0x20 && j != 13 && j != 10) { // ignore control characters except \r\n
+        // Do nothing
       } else if (j < 0x80) {
         buffer.append(c);           // use ASCII value
       } else {
@@ -161,7 +162,7 @@ public class HtmlEntities {
    * @param value Der Unicode-Wert ihrer Klartext-Entsprechung.
    */  
   static final void add(String entity, int value) {
-    decoder.put(entity, (new Character((char)value)).toString());
+    decoder.put(entity, (Character.valueOf((char)value)).toString());
     if (value < 0x100)
       encoder[value] = entity;
   }
@@ -421,6 +422,5 @@ public class HtmlEntities {
     add("&lsaquo", 8249);
     add("&rsaquo", 8250);
     add("&euro",   8364);
-    
   }
 }

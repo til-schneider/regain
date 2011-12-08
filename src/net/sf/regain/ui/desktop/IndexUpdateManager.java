@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *     $Date: 2011-08-17 12:17:12 +0200 (Mi, 17 Aug 2011) $
  *   $Author: benjaminpick $
- * $Revision: 495 $
+ * $Revision: 531 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -52,13 +52,13 @@ public class IndexUpdateManager implements DesktopConstants {
   private static Logger mLog = Logger.getLogger(IndexUpdateManager.class);
 
   /** The singleton. */
-  private static IndexUpdateManager mSingleton;
+  private static volatile IndexUpdateManager mSingleton;
   
   /** The check thread. */
   private Thread mCheckThread;
   
   /** The crawler. Is <code>null</code> if there is currently no index update running. */
-  private Crawler mCrawler;
+  private volatile Crawler mCrawler;
   
   
   /**
@@ -181,12 +181,16 @@ public class IndexUpdateManager implements DesktopConstants {
       CrawlerConfig config = new XmlCrawlerConfig(CRAWLER_CONFIG_FILE);
     
       Properties authProps = new Properties();
+      FileInputStream fis = null;
       try {
-        authProps.load(new FileInputStream(AUTH_PROPS_FILE));
-    
+        fis = new FileInputStream(AUTH_PROPS_FILE);
+        authProps.load(fis);
       } catch( Exception ex ) {
         mLog.error("Couldn't load authentication.properties", ex);
-     
+      } finally {
+        if (fis != null) { 
+          try { fis.close(); } catch (IOException e) { }
+        }
       }
       
       // Check whether to show the welcome page

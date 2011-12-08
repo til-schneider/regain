@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-03-08 18:45:00 +0100 (So, 08 Mrz 2009) $
- *   $Author: thtesche $
- * $Revision: 382 $
+ *     $Date: 2011-11-27 10:36:43 +0100 (So, 27 Nov 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 549 $
  */
 package net.sf.regain.crawler.config;
 
@@ -79,9 +79,10 @@ public class RegexUrlMatcher extends UrlMatcherResult {
   @Override
   public boolean matches(String url) {
     Matcher matcher = mUrlRegex.matcher(url);
-    mLog.debug("Matches with pattern: " + mUrlRegexAsString + ", " + mUrlRegex.pattern());
+    boolean result = matcher.matches();
+    mLog.debug("Exact match with pattern: " + mUrlRegexAsString + ", " + mUrlRegex.pattern() + ": " + (result ? "yes" : "no"));
     
-    return matcher.matches();
+    return result;
   }
 
 

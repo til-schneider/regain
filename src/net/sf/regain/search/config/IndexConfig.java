@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-16 20:54:38 +0200 (Di, 16 Aug 2011) $
+ *     $Date: 2011-08-17 10:06:11 +0200 (Mi, 17 Aug 2011) $
  *   $Author: benjaminpick $
- * $Revision: 529 $
+ * $Revision: 530 $
  */
 package net.sf.regain.search.config;
 
@@ -14,7 +14,6 @@ import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.search.access.SearchAccessController;
 import net.sf.regain.search.results.SortingOption;
-import org.apache.lucene.util.Version;
 
 /**
  * The configuration for one index.

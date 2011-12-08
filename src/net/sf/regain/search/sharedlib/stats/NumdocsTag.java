@@ -35,7 +35,7 @@ import net.sf.regain.util.sharedtag.PageResponse;
 import net.sf.regain.util.sharedtag.SharedTag;
 
 /**
- * Generates the total number of hits.
+ * Generates the total number of documents in the index.
  *
  * @author Til Schneider, www.murfman.de
  */

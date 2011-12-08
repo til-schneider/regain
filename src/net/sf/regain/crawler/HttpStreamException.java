@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-25 18:35:21 +0200 (Sa, 25 Okt 2008) $
- *   $Author: thtesche $
- * $Revision: 349 $
+ *     $Date: 2011-08-17 12:17:12 +0200 (Mi, 17 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 531 $
  */
 package net.sf.regain.crawler;
 
@@ -85,9 +85,7 @@ public class HttpStreamException extends RegainException {
       try {
         httpReturnCode = hconn.getResponseCode();
         message += " (HTTP response code: " + httpReturnCode + ")";
-        
-      }
-      catch (Exception exc) {}
+      } catch (Exception exc) {}
     }
     
     return new HttpStreamException(message, cause, httpReturnCode);

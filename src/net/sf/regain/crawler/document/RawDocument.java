@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-05-17 21:20:00 +0200 (So, 17 Mai 2009) $
- *   $Author: thtesche $
- * $Revision: 391 $
+ *     $Date: 2011-08-20 11:16:33 +0200 (Sa, 20 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 533 $
  */
 package net.sf.regain.crawler.document;
 
@@ -138,7 +138,7 @@ public class RawDocument {
   private String mMimeType;
 
   /** HashMap links containing the URL as key and the linktext as value. */
-  private HashMap <String,String>mLinks;
+  private HashMap <String,String> mLinks;
   
   /** account-password entry for the url in processing. */
   AccountPasswordEntry mAccountPasswordEntry;
@@ -206,7 +206,7 @@ public class RawDocument {
   private byte[] loadIMAPMessage(String url) throws RegainException {
     
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    byte[] bytearrayMessage = null;
+    byte[] bytearrayMessage = new byte[0];
 
     try {
       Matcher matcher = ImapToolkit.getMessagePattern().matcher(url);
@@ -443,7 +443,7 @@ public class RawDocument {
       // Das Dokument befindet sich in einer Datei -> Diese laden
       FILE_LOADING_PROFILER.startMeasuring();
       try {
-        byte[] content = null;
+        byte[] content = new byte[0];
         if( mUrl.startsWith("file://")) {
           content = CrawlerToolkit.loadFile(mContentAsFile);
         } else if( mUrl.startsWith("smb://")) {
@@ -564,14 +564,14 @@ public class RawDocument {
 
   /**
    * Gibt den Datei des Dokuments zurück. Falls das Dokument nicht als Datei
-   * existiert, wird eine tempor�re Datei erzeugt.
+   * existiert, wird eine temporäre Datei erzeugt.
    *
-   * @param forceTempFile Bigt an, ob erzwungen werden soll, dass eine
-   *        tempor�re Datei erzeugt wird. Auf diese Weise kann man sicher sein,
-   *        dass die Datei von niemandem ge�ffnet ist.
+   * @param forceTempFile gibt an, ob erzwungen werden soll, dass eine
+   *        temporäre Datei erzeugt wird. Auf diese Weise kann man sicher sein,
+   *        dass die Datei von niemandem geöffnet ist.
    * @return Die Datei des Dokuments.
-   * @throws RegainException Wenn entweder keine tempor�re Datei erstellt werden
-   *         konnte oder wenn nicht in die tempor�re Datei geschrieben werden
+   * @throws RegainException Wenn entweder keine temporäre Datei erstellt werden
+   *         konnte oder wenn nicht in die temporäre Datei geschrieben werden
    *         konnte.
    */
   public File getContentAsFile(boolean forceTempFile) throws RegainException {
@@ -583,7 +583,7 @@ public class RawDocument {
       String extension = "";
       URL url;
       String path;
-      if( mUrl.toLowerCase().startsWith("http") | mUrl.toLowerCase().startsWith("https") ) {
+      if( mUrl.toLowerCase().startsWith("http") /* || mUrl.toLowerCase().startsWith("https") */) {
         try {
           url = new URL(mUrl);
           path = url.getPath();
@@ -604,7 +604,7 @@ public class RawDocument {
         } else {
           extension = path.substring(lastDot);
         }
-      } else if( mUrl.toLowerCase().startsWith("imap") | mUrl.toLowerCase().startsWith("imaps") ) {
+      } else if( mUrl.toLowerCase().startsWith("imap") /* || mUrl.toLowerCase().startsWith("imaps") */ ) {
         // @todo: consider extensions for attachments too
         extension = ".mht";
         
@@ -681,7 +681,7 @@ public class RawDocument {
    * @return true if the document contains at least one link
    */
   public boolean hasLinks() {
-    if( this.mLinks.isEmpty() )
+    if( mLinks.isEmpty() )
       return false;
     else
       return true;
@@ -697,7 +697,7 @@ public class RawDocument {
    * Gets the links
    * @return Hashmap of links. key is the URL, value the link text
    */
-  public HashMap getLinks(){
+  public HashMap<String, String> getLinks(){
     return mLinks;
   }
 }

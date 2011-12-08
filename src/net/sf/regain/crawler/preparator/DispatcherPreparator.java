@@ -42,7 +42,7 @@ public class DispatcherPreparator extends AbstractPreparator {
 
 	HashMap signatures = new HashMap(); // table with signatures associated with
 
-	// Prreparators
+	// Preparators
 
 	/** The logger for this class */
 	private static Logger mLog = Logger.getLogger(DispatcherPreparator.class);

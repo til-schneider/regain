@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-01-22 13:08:20 +0100 (So, 22 Jan 2006) $
- *   $Author: til132 $
- * $Revision: 199 $
+ *     $Date: 2011-08-17 12:17:12 +0200 (Mi, 17 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 531 $
  */
 package net.sf.regain.ui.desktop.status.sharedlib;
 
@@ -58,7 +58,7 @@ public class LogTag extends SharedTag {
     throws RegainException
   {
     if (mMemoryAppender == null) {
-      Appender app = (MemoryAppender) Logger.getRootLogger().getAppender("memory");
+      Appender app = Logger.getRootLogger().getAppender("memory");
       if (app instanceof MemoryAppender) {
         mMemoryAppender = (MemoryAppender) app;
       } else {

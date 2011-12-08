@@ -576,7 +576,7 @@ public class StripEntities {
         for ( int i = 0; i < entityKeys.length; i++ )
             {
             entityToChar.put( entityKeys[ i ],
-                              new Character( entityValues[ i ] ) );
+                              Character.valueOf( entityValues[ i ] ) );
             }
         }
 

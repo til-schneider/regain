@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-05 21:13:49 +0200 (Fr, 05 Aug 2011) $
+ *     $Date: 2011-08-20 11:16:33 +0200 (Sa, 20 Aug 2011) $
  *   $Author: benjaminpick $
- * $Revision: 512 $
+ * $Revision: 533 $
  */
 package net.sf.regain.crawler.config;
 
@@ -1135,7 +1135,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   @Override
   public String[] getUntokenizedFieldNames() {
     AuxiliaryField[] auxFieldArr = getAuxiliaryFieldList();
-    ArrayList list = new ArrayList();
+    ArrayList<String> list = new ArrayList<String>();
     for (int i = 0; i < auxFieldArr.length; i++) {
       if (! auxFieldArr[i].isTokenized()) {
         list.add(auxFieldArr[i].getFieldName());

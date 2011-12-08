@@ -210,6 +210,19 @@ public class SortingOption implements Comparable {
     int otherId = ((SortingOption) sortingOption).getId();
     return this.id - otherId;
   }
+  
+  /**
+   * Equal if same id.
+   */
+  public boolean equals(Object object)
+  {    
+    return compareTo(object) == 0;
+  }
+  
+  public int hashCode()
+  {
+    return id;
+  }
 
   @Override
   public String toString() {

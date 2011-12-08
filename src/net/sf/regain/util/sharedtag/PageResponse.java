@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-04-12 16:44:20 +0200 (Mi, 12 Apr 2006) $
- *   $Author: til132 $
- * $Revision: 209 $
+ *     $Date: 2011-10-18 09:21:09 +0200 (Di, 18 Okt 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 540 $
  */
 package net.sf.regain.util.sharedtag;
 
@@ -31,6 +31,7 @@ import java.io.OutputStream;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
+import net.sf.regain.util.io.HtmlEntities;
 import net.sf.regain.util.io.Printer;
 
 /**
@@ -39,6 +40,28 @@ import net.sf.regain.util.io.Printer;
  * @author Til Schneider, www.murfman.de
  */
 public abstract class PageResponse implements Printer {
+  
+  enum EscapeType { none, html, xml };
+  protected EscapeType escapeType = EscapeType.none;
+  
+  /**
+   * Escape all output.
+   * 
+   * @param type  One of: none, html, xml (Null/Default : none)
+   */
+  public void setEscapeType(String type)
+  {
+    if (type == null)
+      escapeType = EscapeType.none;
+    else
+    {
+      escapeType = EscapeType.valueOf(type);
+      if (escapeType == null)
+        escapeType = EscapeType.none;
+    }
+  }
+  
+  public String getEscapeType() { return escapeType.toString(); } 
   
   /**
    * Gets the character encoding of the response.
@@ -74,13 +97,43 @@ public abstract class PageResponse implements Printer {
    */
   public abstract OutputStream getOutputStream() throws RegainException;
   
+  
+  private static final String[] xmlToReplace = new String[]{"<",    ">",    "&",     "\"",     "'"};
+  private static final String[] xmlReplace = new String[]{  "&lt;", "&gt;", "&amp;", "&quot;", "&#039;"};
+
+  private static final String[] htmlToReplace = new String[]{"<",    ">"};
+  private static final String[] htmlReplace = new String[]{  "&lt;", "&gt;"};
+
   /**
-   * Prints text to a page.
+   * Prints text to a page (escaping when necessary).
    * 
    * @param text The text to print.
    * @throws RegainException If printing failed.
    */
-  public abstract void print(String text) throws RegainException;
+  public final void print(String text) throws RegainException
+  {
+    if (text != null && !escapeType.equals(EscapeType.none))
+    {
+      text = HtmlEntities.encode(text);
+      switch(escapeType)
+      {
+        case xml:
+          RegainToolkit.replace(text, xmlToReplace, xmlReplace);
+          break;
+        case html:
+          RegainToolkit.replace(text, htmlToReplace, htmlReplace);
+          break;
+      }
+    }
+    rawPrint(text);
+  }
+  
+  /**
+   * Do the real printing
+   * @param text The text to print
+   * @throws RegainException  If printing failed.
+   */
+  public abstract void rawPrint(String text) throws RegainException;
 
   /**
    * Prints text to a page and escapes all HTML tags. 

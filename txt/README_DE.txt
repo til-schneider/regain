@@ -1,5 +1,25 @@
-Version 1.7.9 am 16.08.2011 PREVIEW
------------------------------------NEU
+Version 1.7.10 am 10.12.2011 PREVIEW
+------------------------------------
+
+NEU
+ * Die Suchergebnisse können jetzt als XML ausgegeben werden (search_xml.jsp).
+     Die URL-Parameter entsprechen search.jsp
+ * Alle tags haben jetzt ein optionales Attribut "escape" (html, xml or none)
+ * JarPreparator zum Indizieren der Dateinamen aus *.jar, *.war, *.ear Archiven.
+ * ZipPreparator zum Indizieren der Dateinamen aus *.zip Archiven.
+
+BUGFIX
+ * DocumentFactory.createDocument(): Datei wurde nicht geschlossen
+ * IndexUpdateManager.checkUpdate(): Datei wurde nicht geschlossen
+ * Keine NullpointerException wenn AnalyzerType unbekannt ist; stattdessen, re-indizieren.
+ * build.xml: Kompilieren mit JAVA_HOME möglich (falls java.dir unbekannt)
+ * build.xml: Fehlermeldung falls kein build.properties gefunden wurde
+ * File2Http-Bridge funktionierte nicht in 1.7.9
+ 
+
+Version 1.7.9 am 16.08.2011 PREVIEW (r529)
+-----------------------------------
+NEU
  * (Desktop) Es können nun Tags hinzugefügt werden.
    (Registrieren in DesktopConfiguration.xml, dann als namespace.jar unter web/taglib ablegen)
 
@@ -9,7 +29,7 @@ BUGFIX
  * Wenn kein Index vorhanden ist, wird nun auf noindex.jsp weitergeleitet (statt Nullpointerexception)
  * Links in der CrawlerConfiguration.xml und auf die Query Syntax (errorpage.jsp) aktualisiert
 
-Version 1.7.8 am 31.07.2011 PREVIEW
+Version 1.7.8 am 30.07.2011 PREVIEW (r499)
 -----------------------------------
 NEU 
  * Crawler-Plugin-Infrastruktur

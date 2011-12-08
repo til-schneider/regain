@@ -58,25 +58,24 @@ public class LinkTag extends AbstractHitTag {
     // Get the search results
     SearchResults results = SearchToolkit.getSearchResults(request);
     boolean shouldHighlight = results.getShouldHighlight(hitIndex);
+    boolean onlyUrl = getParameterAsBoolean("onlyUrl", false);
 
     String url = results.getHitUrl(hitIndex);
     boolean openInNewWindow = results.getOpenHitInNewWindow(hitIndex);
-
-    String title = linkTitle(hit, shouldHighlight, url);
 
     // Pass file URLs to the file servlet
     String href = url;
     String encoding = response.getEncoding();
     boolean useFileToHttpBridge = results.getUseFileToHttpBridgeForHit(hitIndex);
     if (url.startsWith("file://") && useFileToHttpBridge) {
-      SearchToolkit.encodeFileUrl(url, encoding);
+      href = SearchToolkit.encodeFileUrl(url, encoding);
 
       // Add the index name
       // NOTE: This is needed to ensure that only documents can be loaded that
       //       are in the indexes
       String indexName = results.getHitIndexName(hitIndex);
-      String encodedIndexName = RegainToolkit.urlEncode(indexName, encoding);
       // @todo: refactor this 
+      //String encodedIndexName = RegainToolkit.urlEncode(indexName, encoding);
       //href += "?index=" + encodedIndexName;
     } else {
       href = RegainToolkit.urlDecode(url, RegainToolkit.INDEX_ENCODING);
@@ -86,6 +85,11 @@ public class LinkTag extends AbstractHitTag {
       href = RegainToolkit.replace(href, "%", "%25");
     }
 
+    if (onlyUrl)
+    {
+      response.print(href);
+      return;
+    }
     // Generate the link
     response.print("<a href=\"" + href + "\"");
     if (openInNewWindow) {
@@ -96,6 +100,8 @@ public class LinkTag extends AbstractHitTag {
       response.print(" class=\"" + styleSheetClass + "\"");
     }
     response.print(">");
+    
+    String title = linkTitle(hit, shouldHighlight, url);
     if(shouldHighlight)
       response.print(title);
     else

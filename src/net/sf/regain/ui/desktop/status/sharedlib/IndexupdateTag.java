@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-04-18 22:01:07 +0200 (Mo, 18 Apr 2011) $
- *   $Author: thtesche $
- * $Revision: 483 $
+ *     $Date: 2011-08-17 12:17:12 +0200 (Mi, 17 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 531 $
  */
 package net.sf.regain.ui.desktop.status.sharedlib;
 
@@ -82,11 +82,11 @@ public class IndexupdateTag extends SharedTag {
       String currentJobUrl = crawler.getCurrentJobUrl();
       
       Object[] args = new Object[] {
-        new Integer(crawler.getFinishedJobCount()),
+        crawler.getFinishedJobCount(),
         sizeAsString,
-        new Integer(crawler.getInitialDocCount()),
-        new Integer(crawler.getAddedDocCount()),
-        new Integer(crawler.getRemovedDocCount()),
+        crawler.getInitialDocCount(),
+        crawler.getAddedDocCount(),
+        crawler.getRemovedDocCount(),
         (currentJobUrl == null) ? "?" : currentJobUrl,
         RegainToolkit.toTimeString(crawler.getCurrentJobTime())
       };

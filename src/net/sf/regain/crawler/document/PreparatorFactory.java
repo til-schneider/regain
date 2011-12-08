@@ -60,6 +60,7 @@ public class PreparatorFactory extends PluggableFactory {
 		return mSingleton;
 	}
 
+  @Override
 	protected void pluggableAfterInit(Pluggable pluggable,
 			PreparatorSettings preparatorSettings) throws RegainException {
 
@@ -87,6 +88,7 @@ public class PreparatorFactory extends PluggableFactory {
 
 	}
 
+  @Override
 	protected File getPluggableDir() throws RegainException {
 		File preparatorDir = new File("preparator");
 		if (! preparatorDir.exists()) {
@@ -96,6 +98,7 @@ public class PreparatorFactory extends PluggableFactory {
 		return preparatorDir;
 	}
 
+  @Override
 	protected String[] getClassNames(File pluggableFile, Attributes attributes)
 	throws RegainException {
 		String classNameCsv = attributes.getValue("Preparator-Classes");

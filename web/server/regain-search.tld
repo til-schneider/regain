@@ -71,6 +71,23 @@
 
   <tag>
     <info>
+      Override the Content Type for this request.
+    </info>
+    <name>contenttype</name>
+    <tagclass>net.sf.regain.ui.server.taglib.ContenttypeTag</tagclass>
+    <bodycontent>empty</bodycontent>
+
+    <attribute>
+      <description>
+        The MIME Content-Type ("text/html" if not given)
+      </description>
+      <name>contentType</name>
+      <required>true</required>
+    </attribute>
+  </tag>
+
+  <tag>
+    <info>
       Creates hyperlinks to navigate through the search result pages.
     </info>
     <name>navigation</name>
@@ -247,6 +264,13 @@
     <name>stats_query</name>
     <tagclass>net.sf.regain.ui.server.taglib.stats.QueryTag</tagclass>
     <bodycontent>empty</bodycontent>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
+      <required>false</required>
+    </attribute>
   </tag>
 
   <tag>
@@ -256,6 +280,13 @@
     <name>stats_from</name>
     <tagclass>net.sf.regain.ui.server.taglib.stats.FromTag</tagclass>
     <bodycontent>empty</bodycontent>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
+      <required>false</required>
+    </attribute>
   </tag>
 
   <tag>
@@ -265,6 +296,13 @@
     <name>stats_to</name>
     <tagclass>net.sf.regain.ui.server.taglib.stats.ToTag</tagclass>
     <bodycontent>empty</bodycontent>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
+      <required>false</required>
+    </attribute>
   </tag>
 
   <tag>
@@ -274,6 +312,13 @@
     <name>stats_total</name>
     <tagclass>net.sf.regain.ui.server.taglib.stats.TotalTag</tagclass>
     <bodycontent>empty</bodycontent>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
+      <required>false</required>
+    </attribute>
   </tag>
 
   <tag>
@@ -283,6 +328,13 @@
     <name>stats_numdocs</name>
     <tagclass>net.sf.regain.ui.server.taglib.stats.NumdocsTag</tagclass>
     <bodycontent>empty</bodycontent>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
+      <required>false</required>
+    </attribute>
   </tag>
 
   <tag>
@@ -292,6 +344,13 @@
     <name>stats_searchtime</name>
     <tagclass>net.sf.regain.ui.server.taglib.stats.SearchtimeTag</tagclass>
     <bodycontent>empty</bodycontent>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
+      <required>false</required>
+    </attribute>
   </tag>
 
   <tag>
@@ -309,6 +368,20 @@
         The CSS style sheet class to use for the link.
       </description>
       <name>class</name>
+      <required>false</required>
+    </attribute>
+    <attribute>
+      <description>
+        Show only URL instead of entire a-Link.
+      </description>
+      <name>onlyUrl</name>
+      <required>false</required>
+    </attribute>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
       <required>false</required>
     </attribute>
   </tag>
@@ -334,6 +407,13 @@
         The extension used by the type icons (default is "gif").
       </description>
       <name>iconextension</name>
+      <required>false</required>
+    </attribute>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
       <required>false</required>
     </attribute>
   </tag>
@@ -377,6 +457,13 @@
       <name>after</name>
       <required>false</required>
     </attribute>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
+      <required>false</required>
+    </attribute>
   </tag>
 
   <tag>
@@ -387,6 +474,13 @@
     <name>hit_score</name>
     <tagclass>net.sf.regain.ui.server.taglib.hit.ScoreTag</tagclass>
     <bodycontent>empty</bodycontent>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
+      <required>false</required>
+    </attribute>
   </tag>
 
   <tag>
@@ -397,6 +491,13 @@
     <name>hit_sortContent</name>
     <tagclass>net.sf.regain.ui.server.taglib.hit.SortContentTag</tagclass>
     <bodycontent>empty</bodycontent>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
+      <required>false</required>
+    </attribute>
   </tag>
 
   <tag>
@@ -407,6 +508,13 @@
     <name>hit_size</name>
     <tagclass>net.sf.regain.ui.server.taglib.hit.SizeTag</tagclass>
     <bodycontent>empty</bodycontent>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
+      <required>false</required>
+    </attribute>
   </tag>
 
   <tag>
@@ -416,6 +524,13 @@
     <name>hit_content</name>
     <tagclass>net.sf.regain.ui.server.taglib.hit.ContentTag</tagclass>
     <bodycontent>empty</bodycontent>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
+      <required>false</required>
+    </attribute>
   </tag>
 
   <tag>
@@ -425,6 +540,13 @@
     <name>hit_cached</name>
     <tagclass>net.sf.regain.ui.server.taglib.hit.CachedTag</tagclass>
     <bodycontent>empty</bodycontent>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
+      <required>false</required>
+    </attribute>
   </tag>
 
   <tag>
@@ -442,6 +564,31 @@
         (for http-URLs: URL decoded, for file-URLs: The file name).
       </description>
       <name>beautified</name>
+      <required>false</required>
+    </attribute>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
+      <required>false</required>
+    </attribute>
+  </tag>
+
+  <tag>
+    <info>
+      Writes the filename of the current hit's document.
+      This tag must be inside a link tag.
+    </info>
+    <name>hit_filename</name>
+    <tagclass>net.sf.regain.ui.server.taglib.hit.FilenameTag</tagclass>
+    <bodycontent>empty</bodycontent>
+
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
       <required>false</required>
     </attribute>
   </tag>
@@ -462,6 +609,20 @@
       <name>field</name>
       <required>true</required>
     </attribute>
+    <attribute>
+      <description>
+        Override highlight preferences (Default: use index preference)
+      </description>
+      <name>highlight</name>
+      <required>false</required>
+    </attribute>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
+      <required>false</required>
+    </attribute>
   </tag>
 
  <tag>
@@ -472,6 +633,13 @@
     <name>hit_lastModified</name>
     <tagclass>net.sf.regain.ui.server.taglib.hit.LastModifiedTag</tagclass>
     <bodycontent>empty</bodycontent>
+    <attribute>
+      <description>
+        Escape output (xml, html, none) (Default: none)
+      </description>
+      <name>escape</name>
+      <required>false</required>
+    </attribute>
 
   </tag>
 

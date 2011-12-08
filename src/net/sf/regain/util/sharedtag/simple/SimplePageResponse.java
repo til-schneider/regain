@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-16 13:30:31 +0100 (Mi, 16 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 89 $
+ *     $Date: 2011-09-20 15:34:40 +0200 (Di, 20 Sep 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 535 $
  */
 package net.sf.regain.util.sharedtag.simple;
 
@@ -138,7 +138,7 @@ public class SimplePageResponse extends PageResponse {
    * @param text The text to print.
    * @throws RegainException If printing failed.
    */
-  public void print(String text) throws RegainException {
+  public void rawPrint(String text) throws RegainException {
     if (mPrintStream == null) {
       try {
         mPrintStream = mResponse.getPrintStream();

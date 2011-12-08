@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-16 20:54:38 +0200 (Di, 16 Aug 2011) $
+ *     $Date: 2011-08-17 12:17:12 +0200 (Mi, 17 Aug 2011) $
  *   $Author: benjaminpick $
- * $Revision: 529 $
+ * $Revision: 531 $
  */
 package net.sf.regain.crawler.document;
 
@@ -52,7 +52,6 @@ import org.apache.log4j.Logger;
 import java.io.FileInputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
-import net.sf.regain.search.config.IndexConfig;
 import net.sf.regain.util.io.PathFilenamePair;
 import org.apache.lucene.analysis.WhitespaceTokenizer;
 import org.apache.lucene.document.CompressionTools;
@@ -195,6 +194,7 @@ public class DocumentFactory {
 
     // Determine the mime-type 
     String mimeType;
+    FileInputStream fis = null;
     try {
       File file = rawDocument.getContentAsFile();
       if (file.canRead() == false) {
@@ -203,7 +203,7 @@ public class DocumentFactory {
         return null;
       }
 
-      FileInputStream fis = new FileInputStream(file);
+      fis = new FileInputStream(file);
       byte[] bytes = new byte[mimeTypeIdentifier.getMinArrayLength()];
       fis.read(bytes);
       mimeType = mimeTypeIdentifier.identify(bytes, file.getPath(),
@@ -224,6 +224,10 @@ public class DocumentFactory {
       errorLogger.logError("Determine mime-type of " + rawDocument.getUrl()
               + " failed", exc, false);
       mimeType = "application/x-unknown-mime-type";
+    } finally {
+      if (fis != null) {
+        try { fis.close(); } catch(IOException e) {}
+      }
     }
 
     rawDocument.setMimeType(mimeType);

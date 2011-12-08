@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-02-24 16:31:49 +0100 (Do, 24 Feb 2005) $
- *   $Author: til132 $
- * $Revision: 30 $
+ *     $Date: 2011-11-18 09:00:34 +0100 (Fr, 18 Nov 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 546 $
  */
 package net.sf.regain.ui.server.taglib.hit;
 
@@ -55,4 +55,13 @@ public class LinkTag extends SharedTagWrapperTag {
     getNestedTag().setParameter("class", styleSheetClass);
   }
 
+  /**
+   * Do not show the entire <a href="url">title</a>, but only url.
+   * 
+   * @param onlyUrl If true, only show url.
+   */
+  public void setOnlyUrl(String onlyUrl) {
+    getNestedTag().setParameter("onlyUrl", onlyUrl);
+  }  
+  
 }

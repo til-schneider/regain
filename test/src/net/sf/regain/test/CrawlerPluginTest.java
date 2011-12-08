@@ -234,7 +234,7 @@ class TestPlugin extends AbstractCrawlerPlugin {
     nbCalled++;
 
     if (throwException) {
-      throw new RuntimeException("Test Exception");
+      throw new RuntimeException("Test Exception (catch me if you can!)");
     }
   }
 }

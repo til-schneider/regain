@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-12-20 21:52:30 +0100 (So, 20 Dez 2009) $
- *   $Author: thtesche $
- * $Revision: 452 $
+ *     $Date: 2011-09-20 15:34:40 +0200 (Di, 20 Sep 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 535 $
  */
 package net.sf.regain.search.sharedlib.stats;
 
@@ -35,7 +35,7 @@ import net.sf.regain.util.sharedtag.PageResponse;
 import net.sf.regain.util.sharedtag.SharedTag;
 
 /**
- * Generates the total number of hits.
+ * Generates the total number of hits found.
  *
  * @author Til Schneider, www.murfman.de
  */

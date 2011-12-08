@@ -21,14 +21,14 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *     $Date: 2011-08-20 11:16:33 +0200 (Sa, 20 Aug 2011) $
  *   $Author: benjaminpick $
- * $Revision: 495 $
+ * $Revision: 533 $
  */
 package net.sf.regain.crawler.document;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.sf.regain.RegainException;
@@ -67,7 +67,7 @@ public abstract class AbstractPreparator implements Preparator, WriteablePrepara
   /** Der Pfad, über den das Dokument zu erreichen ist. */
   private PathElement[] mPath;
   /** The additional fields that should be indexed. */
-  private HashMap mAdditionalFieldMap;
+  private HashMap<String, String> mAdditionalFieldMap;
   /** The assigned mimetypes for the preparator */
   private String[] mMimeTypes;
   /** The priority of the preparator. Used for the selection of preparators */
@@ -382,7 +382,7 @@ public abstract class AbstractPreparator implements Preparator, WriteablePrepara
    * @return The additional fields or <code>null</code>.
    */
   @Override
-  public Map getAdditionalFields() {
+  public Map<String, String> getAdditionalFields() {
     return mAdditionalFieldMap;
   }
 
@@ -396,7 +396,7 @@ public abstract class AbstractPreparator implements Preparator, WriteablePrepara
    */
   public void addAdditionalField(String fieldName, String fieldValue) {
     if (mAdditionalFieldMap == null) {
-      mAdditionalFieldMap = new HashMap();
+      mAdditionalFieldMap = new HashMap<String, String>();
     }
     mAdditionalFieldMap.put(fieldName, fieldValue);
   }
@@ -434,15 +434,15 @@ public abstract class AbstractPreparator implements Preparator, WriteablePrepara
 
   /**
    * Concatenate all parts together, use ', ' as delimiter. If a parts is empty or consists
-   * only of whitespaces the part will be negleted.
+   * only of whitespaces the part will be neglected.
    * 
    * @param parts for concatenation
    * @param maxPartsUsed number of partsused for concatenation
    * @return the resulting string whith all single parts concatenated
    */
-  protected String concatenateStringParts(ArrayList<String> parts, int maxPartsUsed) {
+  protected String concatenateStringParts(List<String> parts, int maxPartsUsed) {
 
-    String result = "";
+    StringBuilder result = new StringBuilder();
 
     if (parts.size() > 0) {
       int end = parts.size();
@@ -452,14 +452,14 @@ public abstract class AbstractPreparator implements Preparator, WriteablePrepara
       for (int i = 0; i < end; i++) {
         // Iterate over single parts
         if (parts.get(i).length() > 0) {
-          result += parts.get(i);
+          result.append(parts.get(i));
           if (i < end - 1) {
-            result += ", ";
+            result.append(", ");
           }
         }
       }
     }
-    return result;
+    return result.toString();
   }
 
   /**

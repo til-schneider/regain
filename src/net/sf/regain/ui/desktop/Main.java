@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-09 11:39:03 +0200 (Di, 09 Aug 2011) $
+ *     $Date: 2011-09-20 13:52:46 +0200 (Di, 20 Sep 2011) $
  *   $Author: benjaminpick $
- * $Revision: 517 $
+ * $Revision: 534 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -141,7 +141,9 @@ public class Main implements DesktopConstants {
 			System.exit(1); // Abort
 		}
 
-		LOG_DIR.mkdir();
+		if (!LOG_DIR.mkdir() && !LOG_DIR.exists())
+		  throw new RuntimeException("Could not create log directory.");
+		
 		PropertyConfigurator.configure(logConfigFile.getAbsolutePath());
 		mLog.info("Logging initialized");
 	}

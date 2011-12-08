@@ -1,3 +1,20 @@
+Version 1.7.10 on 2011/Dec/10 PREVIEW
+-------------------------------------
+
+NEW
+ * Add XML interface to search results (search_xml.jsp). The URL parameters are identical to search.jsp.
+ * All tags now have an optional attribute 'escape' to escape its output (html, xml or none)
+ * JarPreparator which indexes the filenames in *.jar, *.war, *.ear archives.
+ * ZipPreparator which indexes the filenames in *.zip archives.
+
+BUGFIX
+ * DocumentFactory.createDocument(): IO-Stream was never closed
+ * IndexUpdateManager.checkUpdate(): IO-Stream was never closed
+ * No NullpointerException if AnalyzerType unknown; instead, re-index
+ * build.xml: Allow compiling when only JAVA_HOME is set
+ * build.xml: Throw message when build.properties not found
+ * Regression from 1.7.9: File2Http-Bridge failed to work
+
 Version 1.7.9 on 2011/Aug/16 PREVIEW
 -------------------------------------
 NEW
@@ -10,7 +27,7 @@ BUGFIX
  * Redirect to noindex.jsp instead of NullpointerException when no index given
  * Fix Links: CrawlerConfiguration.xml Help and Query Syntax Help (errorpage.jsp)
  
-Version 1.7.8 on 2011/Jul/31 PREVIEW
+Version 1.7.8 on 2011/Jul/30 PREVIEW
 -------------------------------------
 NEW
  * Capability for Crawler Plugins

@@ -301,8 +301,7 @@ public class MessagePreparator extends AbstractPreparator {
     // "Illegal semicolon, not in group in string".?
     try {
       String[] toArray = message.getHeader(headerName);
-      CharSequence cs = new String("Illegal semicolon, not in group");
-      if (toArray != null && ae.getMessage().contains(cs)) {
+      if (toArray != null && ae.getMessage().contains("Illegal semicolon, not in group")) {
         // replace semi-colon with comma, and try to build a From Address[]
         toArray[0] = toArray[0].replace(';', ',');
         message.setHeader(headerName, toArray[0]);

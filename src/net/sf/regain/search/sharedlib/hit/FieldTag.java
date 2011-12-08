@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-05 11:36:46 +0200 (Fr, 05 Aug 2011) $
+ *     $Date: 2011-09-20 16:33:10 +0200 (Di, 20 Sep 2011) $
  *   $Author: benjaminpick $
- * $Revision: 511 $
+ * $Revision: 537 $
  */
 package net.sf.regain.search.sharedlib.hit;
 
@@ -60,8 +60,18 @@ public class FieldTag extends AbstractHitTag {
   protected void printEndTag(PageRequest request, PageResponse response,
           Document hit, int hitIndex)
           throws RegainException {
-    SearchResults results = SearchToolkit.getSearchResults(request);
-    boolean shouldHighlight = results.getShouldHighlight(hitIndex);
+    boolean shouldHighlight;
+    
+    String highlight = getParameter("highlight");
+    if (highlight != null)
+    {
+        shouldHighlight = Boolean.parseBoolean(highlight);
+    }
+    else
+    {
+      SearchResults results = SearchToolkit.getSearchResults(request);
+      shouldHighlight = results.getShouldHighlight(hitIndex);
+    }
 
     String fieldname = getParameter("field", true);
     String value = null;
@@ -69,7 +79,7 @@ public class FieldTag extends AbstractHitTag {
       value = hit.get(RegainToolkit.createHighlightedFieldIdent(fieldname));
     }
 
-    if (value == null || value.length() == 0) {
+    if (value == null || value.isEmpty()) {
       value = hit.get(fieldname);
     }
 

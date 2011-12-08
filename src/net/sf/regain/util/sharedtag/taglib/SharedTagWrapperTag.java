@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-13 15:15:43 +0200 (Sa, 13 Aug 2011) $
+ *     $Date: 2011-09-20 16:25:38 +0200 (Di, 20 Sep 2011) $
  *   $Author: benjaminpick $
- * $Revision: 525 $
+ * $Revision: 536 $
  */
 package net.sf.regain.util.sharedtag.taglib;
 
@@ -90,6 +90,9 @@ public abstract class SharedTagWrapperTag
       // Set the context
       mNestedTag.setContext(request);
       
+      // Set Escaping
+      response.setEscapeType(mNestedTag.getParameter("escape"));
+
       // Print the start tag
       int result = mNestedTag.printStartTag(request, response);
       
@@ -161,6 +164,10 @@ public abstract class SharedTagWrapperTag
     // Print the end tag
     PageRequest request = getPageRequest();
     PageResponse response = new JspPageResponse(pageContext);
+    
+    // Set Escaping
+    response.setEscapeType(mNestedTag.getParameter("escape"));
+
     try {
       // Print the end tag
       mNestedTag.printEndTag(request, response);
@@ -197,6 +204,15 @@ public abstract class SharedTagWrapperTag
     }
     
     return request;
+  }
+  
+  /**
+   * All Tags may have an optional escape attribute.
+   * @param escapeType
+   */
+  public void setEscape(String escapeType)
+  {
+    getNestedTag().setParameter("escape", escapeType);
   }
 
 }

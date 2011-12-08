@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-10 08:26:23 +0200 (Mi, 10 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 154 $
+ *     $Date: 2011-08-17 12:17:12 +0200 (Mi, 17 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 531 $
  */
 package net.sf.regain.util.io;
 
@@ -101,7 +101,7 @@ public class MultiLocalizer {
   /**
    * A factory that creates localizers for a specific class.
    */
-  private class ClassLocalizerFactory implements LocalizerFactory {
+  private static class ClassLocalizerFactory implements LocalizerFactory {
 
     /** The class to create localizers for. */
     private Class mClazz;
@@ -131,7 +131,7 @@ public class MultiLocalizer {
   /**
    * A factory that creates localizers for a specific base.
    */
-  private class BaseLocalizerFactory implements LocalizerFactory {
+  private static class BaseLocalizerFactory implements LocalizerFactory {
     
     /** The base URL where the properties files are located. */
     private URL mBaseUrl;

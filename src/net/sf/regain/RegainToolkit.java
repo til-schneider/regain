@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-16 20:54:38 +0200 (Di, 16 Aug 2011) $
+ *     $Date: 2011-11-27 10:36:43 +0100 (So, 27 Nov 2011) $
  *   $Author: benjaminpick $
- * $Revision: 529 $
+ * $Revision: 549 $
  */
 package net.sf.regain;
 
@@ -101,12 +101,13 @@ public class RegainToolkit {
   private static String mSystemDefaultEncoding;
   /** Der gecachte, systemspeziefische Zeilenumbruch. */
   private static String mLineSeparator;
-
   /** The current version matching to the embedded lucene jars. */
   private static final Version LUCENE_VERSION = Version.LUCENE_31;
 
-  public static Version getLuceneVersion() { return LUCENE_VERSION; }
-  
+  public static Version getLuceneVersion() {
+    return LUCENE_VERSION;
+  }
+
   /**
    * Löscht ein Verzeichnis mit allen Unterverzeichnissen und -dateien.
    *
@@ -227,12 +228,16 @@ public class RegainToolkit {
           boolean copySubDirs, String excludeExtension)
           throws RegainException {
     File[] indexFiles = fromDir.listFiles();
+
     for (int i = 0; i < indexFiles.length; i++) {
       String fileName = indexFiles[i].getName();
       File targetFile = new File(toDir, fileName);
       if (indexFiles[i].isDirectory()) {
         if (copySubDirs) {
-          targetFile.mkdir();
+          if (!targetFile.mkdir() && !targetFile.exists()) {
+            throw new RegainException("Could not create target dir " + targetFile.getAbsolutePath());
+          }
+
           copyDirectory(indexFiles[i], targetFile, copySubDirs, excludeExtension);
         }
       } else if ((excludeExtension == null) || (!fileName.endsWith(excludeExtension))) {
@@ -554,7 +559,7 @@ public class RegainToolkit {
     }
 
     // Convert the lists into arrays.
-    for(Map.Entry<String, ArrayList<String>> entry : fieldsToReadSet.entrySet()) {
+    for (Map.Entry<String, ArrayList<String>> entry : fieldsToReadSet.entrySet()) {
       String field = entry.getKey();
 
       ArrayList<String> valueList = entry.getValue();
@@ -719,7 +724,7 @@ public class RegainToolkit {
           // Analyze the call
           TokenStream stream = nestedAnalyzer.tokenStream(fieldName,
                   new StringReader(asString));
-          TermAttribute termAtt = (TermAttribute) stream.addAttribute(TermAttribute.class);
+          TermAttribute termAtt = stream.addAttribute(TermAttribute.class);
 
           System.out.println("Tokens for '" + asString + "':");
           while (stream.incrementToken()) {
@@ -1096,9 +1101,9 @@ public class RegainToolkit {
   }
 
   /**
-   * Gibt den systemspeziefischen Zeilenumbruch zurï¿½ck.
+   * Returns the line seperator of this operating system.
    *
-   * @return Der Zeilenumbruch.
+   * @return \n or \r\n or \n\r, according to what JVM specifies.
    */
   public static String getLineSeparator() {
     if (mLineSeparator == null) {
@@ -1322,7 +1327,11 @@ public class RegainToolkit {
       pfPair.setPath(path);
     } else {
       pfPair.setPath("");
-      pfPair.setFilename("");
+      if (url != null && url.length() > 0) {
+        pfPair.setFilename(url);
+      } else {
+        pfPair.setFilename("");
+      }
     }
 
     return pfPair;

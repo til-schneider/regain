@@ -21,32 +21,44 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-05 21:13:49 +0200 (Fr, 05 Aug 2011) $
+ *     $Date: 2011-11-18 11:46:23 +0100 (Fr, 18 Nov 2011) $
  *   $Author: benjaminpick $
- * $Revision: 512 $
+ * $Revision: 547 $
  */
 package net.sf.regain.crawler.config;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import net.sf.regain.util.ChainedHashMap;
 
 /**
  * The configuration of a preparator. Consists of a set of sections which
  * contain a set of key-value-pairs.
  * 
+ * Is the order of sections relevant? Currently, it isn't guaranteed.
+ * Ignores Case of section name.
+ * 
  * @author Til Schneider, www.murfman.de
  */
-public class PreparatorConfig {
+public class PreparatorConfig implements Iterable<Map.Entry<String, Map<String, String>>>{
 
   /**
-   * The sections of this config. A section is a Object[] with two elements:<br>
-   * 0 (String): The name of the section<br>
-   * 1 (Map): The key-value-pairs of the section.
+   * The sections of this config.<br>
+   * String: The name of the section<br>
+   * Map<String,String>: The key-value-pairs of the section.
    * <p>
-   * We use no HashMap here, because two sections may have the same name. --> ChainedHashtable?
+   * We use no HashMap here, because two sections may have the same name.
    */
-  private ArrayList<Object []> mSectionList;
+  private ChainedHashMap<String, Map<String, String>> mSectionList;
   
+  public PreparatorConfig()
+  {
+    mSectionList = new ChainedHashMap<String, Map<String, String>>(5, 5);
+  }
   
   /**
    * Adds a section to the config
@@ -55,11 +67,7 @@ public class PreparatorConfig {
    * @param content The key-value-pairs of the section to add.
    */
   void addSection(String name, Map<String, String> content) {
-    if (mSectionList == null) {
-      mSectionList = new ArrayList<Object []>();
-    }
-    
-    mSectionList.add(new Object[] { name, content });
+    mSectionList.put(name.toLowerCase(), content);
   }
   
   
@@ -69,38 +77,10 @@ public class PreparatorConfig {
    * @return The number of sections.
    */
   public int getSectionCount() {
-    if (mSectionList == null) {
-      return 0;
-    } else {
-      return mSectionList.size();
-    }
+    return mSectionList.size();
   }
   
-  
-  /**
-   * Gets the name of a section.
-   * 
-   * @param index The index of the section.
-   * @return The name of the section.
-   */
-  public String getSectionName(int index) {
-    Object[] section = mSectionList.get(index);
-    return (String) section[0];
-  }
 
-  
-  /**
-   * Gets the key-value-pairs of a section.
-   * 
-   * @param index The index of the section.
-   * @return The key-value-pairs of the section.
-   */
-  public Map<String, String> getSectionContent(int index) {
-    Object[] section = mSectionList.get(index);
-    return (Map<String, String>) section[1];
-  }
-
-  
   /**
    * Gets the first section with the given name.
    * 
@@ -109,13 +89,7 @@ public class PreparatorConfig {
    *         is no such section.
    */
   public Map<String, String> getSectionWithName(String name) {
-    for (int i = 0; i < getSectionCount(); i++) {
-      if (name.equalsIgnoreCase(getSectionName(i))) {
-        return getSectionContent(i);
-      }
-    }
-    
-    return null;
+    return mSectionList.get(name.toLowerCase());
   }
   
   
@@ -125,18 +99,103 @@ public class PreparatorConfig {
    * @param name The name of the sections
    * @return All sections with the given name.
    */
-  public Map[] getSectionsWithName(String name) {
-    ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
-    for (int i = 0; i < getSectionCount(); i++) {
-      if (name.equalsIgnoreCase(getSectionName(i))) {
-        list.add(getSectionContent(i));
-      }
-    }
+  public List<Map<String, String>> getSectionsWithNameList(String name) {
+    if (name == null)
+        return new ArrayList<Map<String, String>>();
+    
+    return mSectionList.getList(name.toLowerCase());
+  }
+
+
+  /**
+   * Iterate through all section-Parameter pairs.
+   * Section names will be lowercase. 
+   * The order that the sections are given isn't guaranteed.
+   * 
+   * Usage:
+   * 
+   * <code>
+   * for (Map.Entry<String, Map<String, String>> section : config)
+   * {
+   *    String sectionName = section.getEntry();
+   *    Map<String,Strin> params = section.getValue();
+   * }
+   * </code>
+   */
+  public Iterator<Entry<String, Map<String, String>>> iterator()
+  {
+    return mSectionList.iterator();
+  }
+
+  // -------------- For Backward compability only ... --------------
+  
+  /**
+   * Gets all sections with the given name.
+   * 
+   * @param name The name of the sections
+   * @return All sections with the given name.
+   * @deprecated Use getSectionsWithNameList() instead.
+   */
+  @Deprecated
+  public Map<String, String>[] getSectionsWithName(String name) {
+    List<Map<String, String>> list = getSectionsWithNameList(name);
     
     // Convert the list into an array
-    Map[] sectionArr = new Map[list.size()];
+    Map<String,String>[] sectionArr = new Map[list.size()];
     sectionArr = list.toArray(sectionArr);
     return sectionArr;
   }
+  
+  
+  @Deprecated
+  private String[] sectionNames = null;
+  @Deprecated
+  private Map<String, String>[] sectionContents = null;
+  
+  @Deprecated
+  private void fillSectionCache()
+  {
+    int i = 0;
+    sectionNames = new String[mSectionList.size()];
+    sectionContents = new Map[mSectionList.size()];
+    for (Map.Entry<String, Map<String, String>> entry : this)
+    {
+      sectionNames[i] = entry.getKey();
+      sectionContents[i] = entry.getValue();
+      i++;
+    }
+  }
+  
+  
+  /**
+   * Gets the name of a section.
+   * 
+   * @param index The index of the section.
+   * @return The name of the section.
+   * @deprecated This method assumes that the config won't change anymore. Use iterator() instead. 
+   */
+  @Deprecated
+  public String getSectionName(int index) {
+    if (sectionNames == null)
+      fillSectionCache();
+    
+    return sectionNames[index];
+  }
+
+
+  /**
+   * Gets the key-value-pairs of a section.
+   * 
+   * @param index The index of the section.
+   * @return The key-value-pairs of the section.
+   * @deprecated This method assumes that the config won't change anymore. Use iterator() instead. 
+   */
+  @Deprecated
+  public Map<String, String> getSectionContent(int index) {
+    if (sectionContents == null)
+      fillSectionCache();
+    
+    return sectionContents[index];
+  }  
   
 }

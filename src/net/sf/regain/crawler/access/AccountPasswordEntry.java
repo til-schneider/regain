@@ -37,17 +37,6 @@ public class AccountPasswordEntry {
   private String accountName;
   private String password;
 
-  /**
-   * constructor for class.
-   * 
-   * @param name accountName of the entry
-   * @param password of the entry
-   */
-  public void UsernamePasswordEntry(String name, String passw) {
-    this.setAccountName(name);
-    this.setPassword(passw);
-  }
-
   public String getAccountName() {
     return accountName;
   }

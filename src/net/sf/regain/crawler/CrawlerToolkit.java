@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-03 11:41:59 +0200 (Mi, 03 Aug 2011) $
+ *     $Date: 2011-11-18 11:46:23 +0100 (Fr, 18 Nov 2011) $
  *   $Author: benjaminpick $
- * $Revision: 510 $
+ * $Revision: 547 $
  */
 package net.sf.regain.crawler;
 
@@ -31,6 +31,7 @@ import java.io.*;
 import java.net.*;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -58,31 +59,30 @@ public class CrawlerToolkit {
 
   public static String createURLFromProps(String[] parts) {
     
-    String result = "";
+    StringBuilder result = new StringBuilder(32);
     if( parts.length >= 4 ) {
       // We need at least protocol, sld, tld, account/password
-      result = parts[0] + "://";
+      result.append(parts[0]).append("://");
       for( int i=1; i< parts.length-2;i++) {
         // aggregate domain name
-        result += parts[i] + ".";
+        result.append(parts[i]);
+        if (i< parts.length-3)
+          result.append(".");
       }
-      
-      // Remove the last dot
-      result = result.substring(0, result.length()-1);
       
       // Analyze length-2 part for portnumber
       if( Pattern.matches("^\\d*$", parts[parts.length-2]) ) {
-        result += ":";
+        result.append(":");
       } else {
-        result += ".";
+        result.append(".");
       }
-      result += parts[parts.length-2] + "/";
+      result.append(parts[parts.length-2]).append("/");
 
     } else {
-      mLog.error("This is not a valid authentication entry: " + parts );
+      mLog.error("This is not a valid authentication entry: " + Arrays.toString(parts) );
     }
     
-    return result;
+    return result.toString();
   }
   
   /**
@@ -693,7 +693,7 @@ public class CrawlerToolkit {
       mLog.debug("Found an authentication entry for " + leftUrlPart);
       return authMap.get(leftUrlPart);
     } else {
-      mLog.debug("Don't found an authentication entry for " + leftUrlPart);
+      mLog.debug("Didn't find an authentication entry for " + leftUrlPart);
       return null;
     }
   }

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-01-03 12:25:03 +0100 (Di, 03 Jan 2006) $
- *   $Author: til132 $
- * $Revision: 187 $
+ *     $Date: 2011-09-20 15:34:40 +0200 (Di, 20 Sep 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 535 $
  */
 package net.sf.regain.util.sharedtag.taglib;
 
@@ -124,7 +124,7 @@ public class JspPageResponse extends PageResponse {
    * @param text The text to print.
    * @throws RegainException If printing failed.
    */
-  public void print(String text) throws RegainException {
+  public void rawPrint(String text) throws RegainException {
     try {
       if (mJspWriter == null) {
         mJspWriter = mPageContext.getOut();

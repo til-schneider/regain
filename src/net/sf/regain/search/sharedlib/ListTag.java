@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-11-28 23:02:27 +0100 (Sa, 28 Nov 2009) $
- *   $Author: thtesche $
- * $Revision: 443 $
+ *     $Date: 2011-08-17 12:17:12 +0200 (Mi, 17 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 531 $
  */
 package net.sf.regain.search.sharedlib;
 
@@ -131,8 +131,8 @@ public class ListTag extends SharedTag implements SearchConstants {
       }
       request.setContextAttribute(ATTR_CURRENT_HIT, hit);
       float score = results.getHitScore(hitIndex);
-      request.setContextAttribute(ATTR_CURRENT_HIT_SCORE, new Float(score));
-      request.setContextAttribute(ATTR_CURRENT_HIT_INDEX, new Integer(hitIndex));
+      request.setContextAttribute(ATTR_CURRENT_HIT_SCORE, score);
+      request.setContextAttribute(ATTR_CURRENT_HIT_INDEX, hitIndex);
 
       String order = request.getParameter("order");
       //System.out.println("order: " + order);
@@ -147,8 +147,7 @@ public class ListTag extends SharedTag implements SearchConstants {
         if (fieldContent == null) {
           fieldContent = "not set";
         }
-        request.setContextAttribute(ATTR_CURRENT_HIT_SORT_CONTENT,
-                new String(fieldContent));
+        request.setContextAttribute(ATTR_CURRENT_HIT_SORT_CONTENT, fieldContent);
       }
 
     }

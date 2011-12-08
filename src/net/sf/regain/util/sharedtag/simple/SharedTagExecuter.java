@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-09 16:47:07 +0100 (Mi, 09 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 60 $
+ *     $Date: 2011-09-20 15:34:40 +0200 (Di, 20 Sep 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 535 $
  */
 package net.sf.regain.util.sharedtag.simple;
 
@@ -65,6 +65,9 @@ public class SharedTagExecuter extends Executer {
   {
     // Set the context
     mTag.setContext(request);
+    
+    // Set Escaping
+    response.setEscapeType(mTag.getParameter("escape"));
     
     // Print the start tag
     int result = mTag.printStartTag(request, response);

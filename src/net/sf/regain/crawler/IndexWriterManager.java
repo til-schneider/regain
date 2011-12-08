@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-16 20:54:38 +0200 (Di, 16 Aug 2011) $
+ *     $Date: 2011-09-20 13:52:46 +0200 (Di, 20 Sep 2011) $
  *   $Author: benjaminpick $
- * $Revision: 529 $
+ * $Revision: 534 $
  */
 package net.sf.regain.crawler;
 
@@ -217,7 +217,7 @@ public class IndexWriterManager {
    * <p>
    * Die URL bildet den key, der LastUpdated-String die value.
    */
-  private HashMap mUrlsToDeleteHash;
+  private HashMap<String, String> mUrlsToDeleteHash;
   
   /** Crawler Plugin Manager instance */
   private CrawlerPluginManager pluginManager = CrawlerPluginManager.getInstance();
@@ -247,7 +247,8 @@ public class IndexWriterManager {
     if (!indexDir.exists()) {
       // The index directory does not exist -> Create it
       mLog.info("Creating index directory " + indexDir.getAbsolutePath());
-      indexDir.mkdirs();
+      if (!indexDir.mkdirs())
+        throw new RegainException("Could not create index directory!");
     }
 
     mNewIndexDir = new File(indexDir, NEW_INDEX_SUBDIR);
@@ -325,7 +326,7 @@ public class IndexWriterManager {
     if (config.getWriteAnalysisFiles()) {
       mAnalysisDir = new File(mTempIndexDir.getAbsolutePath() + File.separator + "analysis");
 
-      if (!mAnalysisDir.mkdir()) {
+      if (!mAnalysisDir.mkdir() && !mAnalysisDir.exists()) {
         throw new RegainException("Creating analysis directory failed: " + mAnalysisDir.getAbsolutePath());
       }
     }
@@ -371,7 +372,7 @@ public class IndexWriterManager {
   public int getRemovedDocCount() {
     // NOTE: We get a local pointer to the mUrlsToDeleteHash, if the hash should
     //       be set to null in the same time.
-    HashMap hash = mUrlsToDeleteHash;
+    HashMap<String, String> hash = mUrlsToDeleteHash;
     return (hash == null) ? 0 : hash.size();
   }
 
@@ -547,10 +548,17 @@ public class IndexWriterManager {
       return false;
     }
 
-    // Analyzer-Typ des alten Index pr�en
+    // Check analyzer type of the old index
     File analyzerTypeFile = new File(oldIndexDir, "analyzerType.txt");
     String analyzerTypeOfIndex = RegainToolkit.readStringFromFile(analyzerTypeFile);
-    if ((analyzerTypeOfIndex == null) || (!analyzerType.equals(analyzerTypeOfIndex.trim()))) {
+    if (analyzerTypeOfIndex == null)
+    {
+      mLog.warn("Can't update index, because the index was created using " +
+              "an unknown analyzer type, configured type '" + analyzerType + "'). " +
+              "A complete new index will be created...");
+      return false;
+    }
+    if (!analyzerType.equals(analyzerTypeOfIndex.trim())) {
       mLog.warn("Can't update index, because the index was created using " +
               "another analyzer type (index type: '" + analyzerTypeOfIndex.trim() +
               "', configured type '" + analyzerType + "'). " +
@@ -909,7 +917,7 @@ public class IndexWriterManager {
    */
   private void markForDeletion(Document doc) {
     if (mUrlsToDeleteHash == null) {
-      mUrlsToDeleteHash = new HashMap();
+      mUrlsToDeleteHash = new HashMap<String, String>();
     }
 
     String url = doc.get("url");
@@ -943,7 +951,7 @@ public class IndexWriterManager {
 
     // Prüfen, ob es einen Eintrag für diese URL gibt und ob er dem
     // last-modified des Dokuments entspricht
-    String lastModifiedToDelete = (String) mUrlsToDeleteHash.get(url);
+    String lastModifiedToDelete = mUrlsToDeleteHash.get(url);
     return lastModified.equals(lastModifiedToDelete);
   }
 
@@ -1051,11 +1059,13 @@ public class IndexWriterManager {
     // Prefetch destinct field values
     String[] prefetchFields = mConfig.getValuePrefetchFields();
     if (prefetchFields != null && prefetchFields.length != 0) {
-      String msg = "Prefetching destinct field values for: ";
+      StringBuilder msg = new StringBuilder();
+      msg.append("Prefetching destinct field values for: ");
       for (int i = 0; i < prefetchFields.length; i++) {
-        msg += (i != 0 ? ", " : "") + prefetchFields[i];
+        msg.append(i != 0 ? ", " : "");
+        msg.append(prefetchFields[i]);
       }
-      mLog.info(msg);
+      mLog.info(msg.toString());
 
       setIndexMode(READING_MODE);
       RegainToolkit.readFieldValues(mIndexReader, prefetchFields, mTempIndexDir);
@@ -1218,7 +1228,7 @@ public class IndexWriterManager {
   private int writeTermsSorted(TermEnum termEnum, PrintWriter writer)
           throws IOException {
     // Put all terms in a list for a later sorting
-    ArrayList list = new ArrayList();
+    ArrayList<String> list = new ArrayList<String>();
     while (termEnum.next()) {
       Term term = termEnum.term();
       list.add(term.text());

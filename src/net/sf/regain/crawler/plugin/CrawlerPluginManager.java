@@ -143,7 +143,7 @@ public class CrawlerPluginManager {
 	 */
 	public void unregisterPlugin(CrawlerPlugin plugin)
 	{
-		plugins.remove(plugin);
+		plugins.values().remove(plugin);
 	}
 
 	/**
@@ -355,13 +355,15 @@ public class CrawlerPluginManager {
 	 * Lists contained plugins for debugging purposes
 	 */
 	public String toString() {
-		String str = "Contains " + plugins.size() + " Plugins: \n";
+		StringBuilder str = new StringBuilder();
+		str.append("Contains ").append(plugins.size()).append(" Plugins: \n");
 		
 		for (Map.Entry<Integer, CrawlerPlugin> entry : plugins.entrySet())
 		{
-			str += "Plugin " + entry.getValue().getClass().getName() + " with order " + entry.getKey() + "\n";
+			str.append("Plugin ").append(entry.getValue().getClass().getName());
+			str.append(" with order ").append(entry.getKey()).append("\n");
 		}
 		
-		return str;
+		return str.toString();
 	}
 }

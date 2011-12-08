@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-10-18 09:51:30 +0200 (Di, 18 Okt 2005) $
- *   $Author: til132 $
- * $Revision: 175 $
+ *     $Date: 2011-10-18 09:21:09 +0200 (Di, 18 Okt 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 540 $
  */
 package net.sf.regain.util.sharedtag.simple;
 
@@ -150,7 +150,7 @@ public class SharedTagResource extends BasicResource {
     }
     
     // The page has been generated without exception -> Send it to the user
-    resp.set("Content-Type", "text/html; charset=" + SIMPLE_TAG_ENCODING);
+    setHeaderIfUnset(resp, "Content-Type", "text/html; charset=" + SIMPLE_TAG_ENCODING);
     PrintStream pageStream = resp.getPrintStream();
     try {
       stream.writeTo(pageStream);
@@ -158,6 +158,13 @@ public class SharedTagResource extends BasicResource {
     finally {
       pageStream.close();
     }
+  }
+
+  private void setHeaderIfUnset(Response resp, String name, String value)
+  {
+    int index = resp.indexOf(name);
+    if (index == -1)
+       resp.set(name, value);
   }
 
 

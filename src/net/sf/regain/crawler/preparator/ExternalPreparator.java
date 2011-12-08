@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-04-26 09:47:02 +0200 (So, 26 Apr 2009) $
- *   $Author: thtesche $
- * $Revision: 385 $
+ *     $Date: 2011-08-17 12:17:12 +0200 (Mi, 17 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 531 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -128,6 +128,8 @@ public class ExternalPreparator extends AbstractPreparator {
         break;
       }
     }
+    if (commandLine == null)
+      throw new RegainException("Running external command failed: no Regex matched, so I don't know which command to use.");
 
     // Execute the command
     String filename = rawDocument.getContentAsFile().getAbsolutePath();

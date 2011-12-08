@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2010-04-13 12:47:22 +0200 (Di, 13 Apr 2010) $
- *   $Author: thtesche $
- * $Revision: 456 $
+ *     $Date: 2011-08-20 11:16:33 +0200 (Sa, 20 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 533 $
  */
 package net.sf.regain.crawler;
 
@@ -136,7 +136,7 @@ public class UrlChecker {
     
     if (foundPrefix) {
       // There were entries removed -> We have to build a new array
-      ArrayList list = new ArrayList(urlArr.length);
+      ArrayList<StartUrl> list = new ArrayList<StartUrl>(urlArr.length);
       for (int i = 0; i < urlArr.length; i++) {
         if (urlArr[i] != null) {
           list.add(urlArr[i]);
@@ -177,7 +177,7 @@ public class UrlChecker {
       }
 
       String[] mParts = RegainToolkit.splitString(mPath, "/");
-      HashSet uniqueParts = new HashSet();
+      HashSet<String> uniqueParts = new HashSet<String>();
       // Add every part to a hashmap. The idea behind: only the first occurence 
       // will resists in the map (because of the same hash value).
       for (int i = 0; i < mParts.length; i++) {
@@ -258,7 +258,7 @@ public class UrlChecker {
    * @see WhiteListEntry#shouldBeUpdated()
    */
   public UrlMatcher[] createPreserveUrlMatcherArr() {
-    ArrayList list = new ArrayList();
+    ArrayList<UrlMatcher> list = new ArrayList<UrlMatcher>();
     for (int i = 0; i < mWhiteListEntryArr.length; i++) {
       if (! mWhiteListEntryArr[i].shouldBeUpdated()) {
         list.add(mWhiteListEntryArr[i].getUrlMatcher());
@@ -382,7 +382,7 @@ public class UrlChecker {
    *
    * @return the mAcceptedUrlSet
    */
-  public HashSet getmAcceptedUrlSet() {
+  public HashSet<String> getmAcceptedUrlSet() {
     return mAcceptedUrlSet;
   }
 

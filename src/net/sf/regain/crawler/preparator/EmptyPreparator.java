@@ -38,9 +38,8 @@ import net.sf.regain.crawler.document.RawDocument;
  */
 public class EmptyPreparator extends AbstractPreparator {
 
-  // overridden
+  @Override
   public void prepare(RawDocument rawDocument) throws RegainException {
     setCleanedContent("");
   }
-
 }

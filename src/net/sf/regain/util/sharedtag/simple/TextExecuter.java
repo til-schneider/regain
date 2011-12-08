@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-01 17:04:30 +0100 (Di, 01 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 46 $
+ *     $Date: 2011-09-20 15:34:40 +0200 (Di, 20 Sep 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 535 $
  */
 package net.sf.regain.util.sharedtag.simple;
 
@@ -63,7 +63,7 @@ public class TextExecuter extends Executer {
     throws RegainException
   {
     executeChildren(request, response);
-    response.print(mText);
+    response.rawPrint(mText);
   }
   
 

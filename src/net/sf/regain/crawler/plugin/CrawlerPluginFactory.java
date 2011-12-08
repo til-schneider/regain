@@ -49,6 +49,7 @@ public class CrawlerPluginFactory extends PluggableFactory {
 	
 	protected CrawlerPluginFactory()
 	{
+	  super();
 		pluginManager = CrawlerPluginManager.getInstance();
 	}
 	
@@ -81,6 +82,7 @@ public class CrawlerPluginFactory extends PluggableFactory {
 			pluginManager.registerPlugin((CrawlerPlugin) pluggable);
 		else
 			pluginManager.registerPlugin((CrawlerPlugin) pluggable, preparatorSettings.getPriority());
+		mLog.info("Plugin " + pluggable.getClass().getName() + " was registered.");
 	}
 
 	@Override

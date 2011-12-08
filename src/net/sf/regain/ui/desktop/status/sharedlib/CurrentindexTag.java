@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2010-09-25 18:32:21 +0200 (Sa, 25 Sep 2010) $
- *   $Author: thtesche $
- * $Revision: 458 $
+ *     $Date: 2011-08-17 12:17:12 +0200 (Mi, 17 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 531 $
  */
 package net.sf.regain.ui.desktop.status.sharedlib;
 
@@ -93,7 +93,7 @@ public class CurrentindexTag extends SharedTag implements DesktopConstants {
       
       // Print the results
       response.print(localizer.msg("indexInfo", "Last update: {0}<br/>Size: {1}<br/>Document count: {2}",
-          lastUpdate, sizeAsString, new Integer(docCount)));
+          lastUpdate, sizeAsString, docCount));
     } else {
       response.print(localizer.msg("noIndex", "There was no search index created so far."));
     }

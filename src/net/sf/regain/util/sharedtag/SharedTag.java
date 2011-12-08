@@ -21,14 +21,15 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-06 14:57:30 +0200 (Sa, 06 Aug 2011) $
+ *     $Date: 2011-09-20 15:34:40 +0200 (Di, 20 Sep 2011) $
  *   $Author: benjaminpick $
- * $Revision: 515 $
+ * $Revision: 535 $
  */
 package net.sf.regain.util.sharedtag;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.util.io.Localizer;
@@ -52,7 +53,7 @@ public abstract class SharedTag {
   private static MultiLocalizer mMultiLocalizer;
 
   /** The parameters for this tag. May be null. */
-  private HashMap<String, String> mParamMap;
+  private Map<String, String> mParamMap;
   
   /**
    * The current Localizer. Is <code>null</code> when the is currently not
@@ -284,7 +285,7 @@ public abstract class SharedTag {
    * <p>
    * Note: The localizer is only not null, when the tag is currently executed.
    * Which is in the {@link #printStartTag(PageRequest, PageResponse)}, the
-   * {@link #printAfterBody(PageRequest, PageResponse)} ant the
+   * {@link #printAfterBody(PageRequest, PageResponse)} and the
    * {@link #printEndTag(PageRequest, PageResponse)}.
    * 
    * @return The localizer.

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-08-10 16:00:46 +0200 (Mi, 10 Aug 2005) $
- *   $Author: til132 $
- * $Revision: 155 $
+ *     $Date: 2011-09-27 09:21:07 +0200 (Di, 27 Sep 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 539 $
  */
 package net.sf.regain.util.sharedtag.simple;
 
@@ -47,7 +47,7 @@ import simple.util.net.Parameters;
 public class SimplePageRequest extends PageRequest {
 
   /** The init parameters. May be null. */
-  private static HashMap mInitParameterHash;
+  private static HashMap<String, String> mInitParameterHash;
   
   /** The base URL where the JSP files and resources are located. */
   private static URL mResourceBaseUrl;
@@ -59,7 +59,7 @@ public class SimplePageRequest extends PageRequest {
   private Request mRequest;
   
   /** The page context. May be null. */
-  private HashMap mPageContext;
+  private HashMap<String, Object> mPageContext;
   
 
   /**
@@ -115,7 +115,7 @@ public class SimplePageRequest extends PageRequest {
    * @return The names of the given parameters.
    * @throws RegainException If getting the parameter names failed.
    */
-  public Enumeration getParameterNames() throws RegainException {
+  public Enumeration<?> getParameterNames() throws RegainException {
     try {
       Parameters params = mRequest.getParameters();
       return params.getParameterNames();
@@ -169,7 +169,7 @@ public class SimplePageRequest extends PageRequest {
    */
   public void setContextAttribute(String name, Object value) {
     if (mPageContext == null) {
-      mPageContext = new HashMap();
+      mPageContext = new HashMap<String, Object>();
     }
     mPageContext.put(name, value);
   }
@@ -239,7 +239,7 @@ public class SimplePageRequest extends PageRequest {
    */
   public static void setInitParameter(String name, String value) {
     if (mInitParameterHash == null) {
-      mInitParameterHash = new HashMap();
+      mInitParameterHash = new HashMap<String, String>();
     }
     mInitParameterHash.put(name, value);
   }

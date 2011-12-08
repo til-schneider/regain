@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-04-18 22:01:07 +0200 (Mo, 18 Apr 2011) $
- *   $Author: thtesche $
- * $Revision: 483 $
+ *     $Date: 2011-08-17 10:06:11 +0200 (Mi, 17 Aug 2011) $
+ *   $Author: benjaminpick $
+ * $Revision: 530 $
  */
 package net.sf.regain.ui.desktop.config.sharedlib;
 
@@ -31,6 +31,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
@@ -201,25 +202,36 @@ public class FormTag extends SharedTag implements DesktopConstants {
    * @param errorList The list where to store the error messages.
    * @param sitelist The list to check.
    */
-  private void checkWebsiteList(ArrayList<String> errorList, String[] sitelist, Localizer localizer) {
+  private void checkWebsiteList(List<String> errorList, String[] sitelist, Localizer localizer) {
     for (int i = 0; i < sitelist.length; i++) {
-      try {
         String urlAsString = sitelist[i];
         if (!urlAsString.startsWith(HTTP_PROTOCOL)) {
           urlAsString = HTTP_PROTOCOL + urlAsString;
         }
-        // variable is not used. Only instantiated to produce an exception
-        // in case of a malformed URL
-        URL dummyURL = new URL(urlAsString);
-      } catch (MalformedURLException exc) {
-        StringBuilder tmpString = new StringBuilder();
-        tmpString.append(localizer.msg("checkWebsite1", "'"));
-        tmpString.append(sitelist[i]);
-        tmpString.append(localizer.msg("checkWebsite2", "' is not a valid http URL"));
-        errorList.add(tmpString.toString());
-//        errorList.add("'" + sitelist[i] + "' ist keine HTTP URL");
-        System.err.println(exc.getMessage());
-      }
+      checkValidUrl(errorList, sitelist[i], urlAsString, localizer.msg("checkWebsite1", "'"), localizer.msg("checkWebsite2", "' is not a valid http URL"));
+    }
+  }
+
+  /**
+   * Build Url to test if it is valid.
+   * 
+   * @param errorList  The list where to store the error messages.
+   * @param origUrl    The URL as it was added
+   * @param urlAsString The URL to build
+   * @param msg1      First part of the error message
+   * @param msg2      Second part of the error message
+   */
+  private void checkValidUrl(List<String> errorList, String origUrl, String urlAsString, String msg1, String msg2)
+  {
+    try {
+      // Only instantiated to produce an exception
+      // in case of a malformed URL
+      new URL(urlAsString);
+    } catch (MalformedURLException exc) {
+      StringBuilder tmpString = new StringBuilder();
+      tmpString.append(msg1).append(origUrl).append(msg2);
+      errorList.add(tmpString.toString());
+      System.err.println(exc.getMessage());
     }
   }
 
@@ -229,23 +241,9 @@ public class FormTag extends SharedTag implements DesktopConstants {
    * @param errorList The list where to store the error messages.
    * @param imaplist The list to check.
    */
-  private void checkImapList(ArrayList<String> errorList, String[] imaplist, Localizer localizer) {
+  private void checkImapList(List<String> errorList, String[] imaplist, Localizer localizer) {
     for (int i = 0; i < imaplist.length; i++) {
-      try {
-        String urlAsString = imaplist[i];
-        // variable is not used. Only instantiated to produce an exception
-        // in case of a malformed URL
-        URL dummyURL = new URL(urlAsString);
-      } catch (Exception exc) {
-
-        StringBuilder tmpString = new StringBuilder();
-        tmpString.append(localizer.msg("checkIMAP1", "'"));
-        tmpString.append(imaplist[i]);
-        tmpString.append(localizer.msg("checkIMAP2", "' is not a valid IMAP URL"));
-        errorList.add(tmpString.toString());
-        System.err.println(exc.getMessage());
-//        errorList.add("'" + imaplist[i] + "' ist keine IMAP URL");
-      }
+        checkValidUrl(errorList, imaplist[i], imaplist[i], localizer.msg("checkIMAP1", "'"), localizer.msg("checkIMAP2", "' is not a valid IMAP URL"));
     }
   }
 

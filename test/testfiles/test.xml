@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+
+
+
+  
+<response>
+	<query>
+   		<lucene_query>test</lucene_query>
+	</query>
+	<count_documents>17</count_documents>
+
+	<results>
+		<count_hits>17</count_hits>
+		<from>1</from>
+		<to>10</to>
+		<queryTime>0.013</queryTime>
+		   
+
+		<result>
+			<link_url>file/%24/%24home/.shared/text/uni/0809/java/eclipse-workspace-new/regain-svn/./test/testfiles/test.ppt</link_url>
+
+			<filename>test.ppt</filename>
+			<title></title>
+			<relevance>17%</relevance>
+			<summary>
+Test
+
+			</summary>
+			<content>
+Test
+
+			</content>
+			<mimetype>application/vnd.ms-powerpoint</mimetype>
+
+			<filesize>86528</filesize>
+			<filesize_human>84.50 kB</filesize_human>
+			<lastModified>20110613</lastModified>
+		</result>
+
+		<result>
+			<link_url>file/%24/%24home/.shared/text/uni/0809/java/eclipse-workspace-new/regain-svn/./test/testfiles/test.odp</link_url>
+
+			<filename>test.odp</filename>
+			<title></title>
+			<relevance>17%</relevance>
+			<summary>
+Test 
+			</summary>
+			<content>
+Test 
+			</content>
+			<mimetype>application/vnd.oasis.opendocument.presentation</mimetype>
+
+			<filesize>28430</filesize>
+			<filesize_human>27.76 kB</filesize_human>
+			<lastModified>20110806</lastModified>
+		</result>
+
+		<result>
+			<link_url>file/%24/%24home/.shared/text/uni/0809/java/eclipse-workspace-new/regain-svn/./test/testfiles/test.pptx</link_url>
+
+			<filename>test.pptx</filename>
+			<title></title>
+			<relevance>17%</relevance>
+			<summary>
+Test
+
+			</summary>
+			<content>
+Test
+
+			</content>
+			<mimetype>application/vnd.openxmlformats-officedocument.presentationml</mimetype>
+
+			<filesize>8331</filesize>
+			<filesize_human>8.14 kB</filesize_human>
+			<lastModified>20110613</lastModified>
+		</result>
+
+		<result>
+			<link_url>file/%24/%24home/.shared/text/uni/0809/java/eclipse-workspace-new/regain-svn/./test/testfiles/test.ods</link_url>
+
+			<filename>test.ods</filename>
+			<title></title>
+			<relevance>9%</relevance>
+			<summary>
+Test bla very big asdf 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 
+			</summary>
+			<content>
+Test bla very big asdf 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 
+			</content>
+			<mimetype>application/vnd.oasis.opendocument.spreadsheet</mimetype>
+
+			<filesize>14708</filesize>
+			<filesize_human>14.36 kB</filesize_human>
+			<lastModified>20110613</lastModified>
+		</result>
+
+		<result>
+			<link_url>file/%24/%24home/.shared/text/uni/0809/java/eclipse-workspace-new/regain-svn/./test/testfiles/test.xls</link_url>
+
+			<filename>test.xls</filename>
+			<title></title>
+			<relevance>8%</relevance>
+			<summary>
+Tabelle1
+&amp;A
+Test
+bla 
+very
+big
+asdf 1.0
+2.0
+3.0
+4.0
+5.0
+6.0
+7.0
+8.0
+9.0
+10.0
+11.0
+12.0
+13.0
+14.0
+15.0
+Seite &amp;P
+Tabelle2
+&amp;A
+Seite &amp;P
+Tabelle3
+&amp;A
+Seite &amp;P
+
+			</summary>
+
+			<content>
+Tabelle1
+&amp;A
+Test
+bla 
+very
+big
+asdf 1.0
+2.0
+3.0
+4.0
+5.0
+6.0
+7.0
+8.0
+9.0
+10.0
+11.0
+12.0
+13.0
+14.0
+15.0
+Seite &amp;P
+Tabelle2
+&amp;A
+Seite &amp;P
+Tabelle3
+&amp;A
+Seite &amp;P
+
+			</content>
+			<mimetype>application/vnd.ms-excel</mimetype>
+			<filesize>8704</filesize>
+			<filesize_human>8.50 kB</filesize_human>
+
+			<lastModified>20110613</lastModified>
+		</result>
+
+		<result>
+			<link_url>file/%24/%24home/.shared/text/uni/0809/java/eclipse-workspace-new/regain-svn/./test/testfiles/test.xlsx</link_url>
+			<filename>test.xlsx</filename>
+			<title></title>
+			<relevance>8%</relevance>
+
+			<summary>
+Tabelle1
+&amp;A
+Test
+bla 
+very
+big
+asdf 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+Seite &amp;P
+Tabelle2
+&amp;A
+Seite &amp;P
+Tabelle3
+&amp;A
+Seite &amp;P
+
+			</summary>
+			<content>
+Tabelle1
+&amp;A
+Test
+bla 
+very
+big
+asdf 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+Seite &amp;P
+Tabelle2
+&amp;A
+Seite &amp;P
+Tabelle3
+
+&amp;A
+Seite &amp;P
+
+			</content>
+			<mimetype>application/vnd.openxmlformats-officedocument.spreadsheetml</mimetype>
+			<filesize>8844</filesize>
+			<filesize_human>8.64 kB</filesize_human>
+			<lastModified>20110613</lastModified>
+		</result>
+
+
+
+		<result>
+			<link_url>file/%24/%24home/.shared/text/uni/0809/java/eclipse-workspace-new/regain-svn/./test/testfiles/test.pdf</link_url>
+			<filename>test.pdf</filename>
+			<title></title>
+			<relevance>7%</relevance>
+			<summary>
+test
+Das ist ein Testsatz und 
+so weiter. Das ist ein 
+Testsatz und so 
+weiter.Das ist ein 
+Testsatz und so 
+weiter.Das ist ein 
+Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein ...
+			</summary>
+
+			<content>
+test
+Das ist ein Testsatz und 
+so weiter. Das ist ein 
+Testsatz und so 
+weiter.Das ist ein 
+Testsatz und so 
+weiter.Das ist ein 
+Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein 
+Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein 
+Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein 
+Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein 
+Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so 
+weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein 
+Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so 
+weiter.
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein 
+Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so 
+weiter.
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein 
+Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so 
+weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+
+			</content>
+			<mimetype>application/pdf</mimetype>
+			<filesize>46338</filesize>
+			<filesize_human>45.25 kB</filesize_human>
+			<lastModified>20110520</lastModified>
+		</result>
+
+		<result>
+			<link_url>file/%24/%24home/.shared/text/uni/0809/java/eclipse-workspace-new/regain-svn/./test/testfiles/test.rtf</link_url>
+			<filename>test.rtf</filename>
+			<title></title>
+			<relevance>7%</relevance>
+			<summary>
+test
+
+Das ist ein Testsatz und so weiter. Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein ...
+			</summary>
+
+			<content>
+test
+
+Das ist ein Testsatz und so weiter. Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+
+
+
+
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+
+
+
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+
+
+
+
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+
+
+
+
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+
+
+Das ist ein Testsatz und so weiter.
+
+			</content>
+			<mimetype>text/rtf</mimetype>
+			<filesize>9552</filesize>
+			<filesize_human>9.33 kB</filesize_human>
+			<lastModified>20110519</lastModified>
+		</result>
+
+		<result>
+			<link_url>file/%24/%24home/.shared/text/uni/0809/java/eclipse-workspace-new/regain-svn/./test/testfiles/test.txt</link_url>
+			<filename>test.txt</filename>
+			<title></title>
+			<relevance>7%</relevance>
+			<summary>
+&#65279;test
+
+Das ist ein Testsatz und so weiter. Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein ...
+			</summary>
+
+			<content>
+&#65279;test
+
+Das ist ein Testsatz und so weiter. Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+
+
+
+
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+
+
+
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+
+
+
+
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+
+
+
+
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
+
+
+Das ist ein Testsatz und so weiter.
+
+			</content>
+			<mimetype>text/plain</mimetype>
+			<filesize>2137</filesize>
+			<filesize_human>2.09 kB</filesize_human>
+			<lastModified>20110519</lastModified>
+		</result>
+
+	</results>
+</response>

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-06 14:58:42 +0200 (Sa, 06 Aug 2011) $
+ *     $Date: 2011-11-27 10:36:43 +0100 (So, 27 Nov 2011) $
  *   $Author: benjaminpick $
- * $Revision: 516 $
+ * $Revision: 549 $
  */
 package net.sf.regain.search;
 
@@ -376,6 +376,8 @@ public class IndexSearcherManager {
         throw new RegainException("Renaming " + mNewIndexDir + " to "
                 + mWorkingIndexDir + " failed!");
       }
+      
+      System.out.println("Finished loading new index.");
     }
   }
 
