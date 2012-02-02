@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-11-27 10:36:43 +0100 (So, 27 Nov 2011) $
+ *     $Date: 2012-01-07 12:26:43 +0100 (Sa, 07 Jan 2012) $
  *   $Author: benjaminpick $
- * $Revision: 549 $
+ * $Revision: 558 $
  */
 package net.sf.regain;
 
@@ -1317,7 +1317,10 @@ public class RegainToolkit {
   public static PathFilenamePair fragmentUrl(String url) throws RegainException {
 
     PathFilenamePair pfPair = new PathFilenamePair();
-    int lastSlash = url.lastIndexOf("/");
+    
+    int lastSlash = 0;
+    if (url != null)
+       lastSlash = url.lastIndexOf("/");
     // Cut file name from path
     if (lastSlash > 0 && lastSlash + 1 < url.length()) {
       String fileName = url.substring(lastSlash + 1);

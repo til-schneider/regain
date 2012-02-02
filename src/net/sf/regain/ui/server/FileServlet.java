@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2008-10-05 16:21:50 +0200 (So, 05 Okt 2008) $
- *   $Author: thtesche $
- * $Revision: 341 $
+ *     $Date: 2012-01-07 12:22:45 +0100 (Sa, 07 Jan 2012) $
+ *   $Author: benjaminpick $
+ * $Revision: 557 $
  */
 package net.sf.regain.ui.server;
 
@@ -94,7 +94,8 @@ public class FileServlet extends HttpServlet {
       }
     }
     catch (Exception exc) {
-      pageContext.handlePageException(exc);
+      if (pageContext != null)
+        pageContext.handlePageException(exc);
     } finally {
       factory.releasePageContext(pageContext);
     }

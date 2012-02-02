@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-09-20 13:52:46 +0200 (Di, 20 Sep 2011) $
+ *     $Date: 2012-01-23 15:46:44 +0100 (Mo, 23 Jan 2012) $
  *   $Author: benjaminpick $
- * $Revision: 534 $
+ * $Revision: 563 $
  */
 package net.sf.regain.crawler;
 
@@ -335,7 +335,12 @@ public class Crawler implements ErrorLogger {
       UrlMatcher urlMatch = mUrlChecker.isUrlAccepted(url);
       boolean accepted;
       if( urlMatch.getShouldBeParsed() || urlMatch.getShouldBeIndexed() )
-        accepted = true;
+      {
+        if (pluginManager.eventAskDynamicBlacklist(url, sourceUrl, sourceLinkText))
+          accepted = false;
+        else
+          accepted = true;
+      }
       else
         accepted = false;
       
@@ -365,7 +370,7 @@ public class Crawler implements ErrorLogger {
 
         CrawlerJob job = new CrawlerJob(url, sourceUrl, sourceLinkText,
                                       shouldBeParsed, shouldBeIndexed);
-    	pluginManager.eventAcceptURL(url, job);
+        pluginManager.eventAcceptURL(url, job);
         
         // NOTE: This is a little trick: We put documents that aren't parsed at
         //       the beginning of the job list and documents that are parsed at

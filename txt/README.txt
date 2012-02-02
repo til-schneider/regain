@@ -1,3 +1,15 @@
+Version 1.7.11 on 2012/Feb/03 PREVIEW
+-------------------------------------
+
+NEW
+ * Dynamic blacklisting.
+
+UPDATE
+ * Crawler Thumbnailer in version 0.3 Stable
+
+CLEANUP
+ * Removal of no longer used libraries (bcmail und bcprov)
+
 Version 1.7.10 on 2011/Dec/10 PREVIEW
 -------------------------------------
 

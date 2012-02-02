@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-07-29 12:42:00 +0200 (Fr, 29 Jul 2011) $
+ *     $Date: 2012-01-23 15:46:44 +0100 (Mo, 23 Jan 2012) $
  *   $Author: benjaminpick $
- * $Revision: 495 $
+ * $Revision: 563 $
  */
 
 package net.sf.regain.crawler.document;
@@ -122,4 +122,9 @@ public class PreparatorFactory extends PluggableFactory {
 		  return createPluggables(preparatorSettingsArr).toArray(new Preparator[]{});
 	  }
 
+    @Override
+    protected String getDefaultPackage()
+    {
+      return PreparatorSettings.DEFAULT_PREPARATOR_PACKAGE;
+    }
 }

@@ -74,7 +74,8 @@
   <blacklist>
   <!--
   <prefix>http://www.mydomain.de/some/dynamic/content/</prefix>
-  <regex>/backup/[^/]*$</regex>
+  <regex>.*/backup/[^/]*</regex>
+  <regex>.*/\.svn/.*</regex>
   -->
   </blacklist>
 
@@ -356,6 +357,19 @@
   	  </config>
   	</crawlerPlugin>
   	-->
+  	<!--
+  	 | Filter files by filesize.
+  	 +-->
+  	<crawlerPlugin enabled="false">
+  	  <class>net.sf.regain.crawler.plugin.plugin.FilesizeFilterPlugin</class> <!-- TODO: Allow .FilesizeFilterPlugin. For that, we need to modify PreparatorSettings -->
+  	  <config>
+  	    <section name="limits">
+   	      <param name="filesizeMinimumBytes">1</param> <!-- 0: No minimum size. -->
+  	      <param name="filesizeMaximumBytes">-1</param> <!-- -1: No maximum size. -->
+  	    </section>
+  	  </config>
+  	</crawlerPlugin>
+  	
   </crawlerPluginList>
 
 <!--

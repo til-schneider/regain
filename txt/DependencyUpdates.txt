@@ -168,6 +168,10 @@ Thomas Tesche (thtesche), cluster:Systems CSG GmbH
 Benjamin Pick
   * commons-beanutils 1.8.3
 
+TODO & Test:
+  * Lucene 3.2 --> 3.6
+  * aperture-core 1.5 --> 1.6 (Word Files Detection!)
+
 Websites:
 =========
   jakarta regexp: http://jakarta.apache.org/site/downloads/downloads_regexp.cgi

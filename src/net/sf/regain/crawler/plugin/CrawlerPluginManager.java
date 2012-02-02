@@ -158,27 +158,33 @@ public class CrawlerPluginManager {
 	
 	/**
 	 * Trigger an event: call the corresponding plugins.
+	 * Collect return values.
 	 * TODO : Profiling?
 	 * 
 	 * (This is done via Reflection API to avoid code duplication)
 	 * 
 	 * @param methodName	Name of Event (as in the interface: onEvent)
 	 * @param args		Args of Event (as in the interface)
+	 * @return Return Values of the called methods. Null if the called method threw an exception.
 	 */
-	protected void triggerEvent(String methodName, Class<?>[] argTypes, Object... args)
+	protected List<Object> triggerEvent(String methodName, Class<?>[] argTypes, Object... args)
 	{
-		checkIfEventExists(methodName, argTypes);
-		checkArgsNotNull(args);
+		List<Object> returns = new ArrayList<Object>();
+	  
+	  checkIfEventExists(methodName, argTypes);
+		//checkArgsNotNull(args);
 		
 		for (Map.Entry<Integer, CrawlerPlugin> entry : plugins.entrySet())
 		{
+		  Object ret = null;
+		  
 			CrawlerPlugin plugin = entry.getValue();
 			String pluginName = plugin.getClass().getName();
 			
 			mLog.info("Send " + methodName + "-Event to " + pluginName);
 			
 			try {
-				MethodUtils.invokeMethod(plugin, methodName, args, argTypes);
+				ret = MethodUtils.invokeMethod(plugin, methodName, args, argTypes);
 			} catch (IllegalAccessException e) 	{ mLog.error("Reflection Error:", e);
 			} catch (SecurityException e) 		{ mLog.error("Reflection Error:", e); 
 			} catch (NoSuchMethodException e)	{ mLog.error("Reflection Error:", e);
@@ -187,7 +193,10 @@ public class CrawlerPluginManager {
 			} catch (Throwable e) {
 				mLog.error(pluginName + " has thrown an exception:", e);
 			}
+			returns.add(ret);
 		}
+		
+		return returns;
 	}
 
 	/**
@@ -350,9 +359,58 @@ public class CrawlerPluginManager {
 				url);		
 	}
 
+	/**
+	 * Trigger Event: checkDynamicBlacklist
+	 * (This is not lazy: all plugins are called even if the first returns true.)
+	 * 
+	 * @param url
+	 * @param sourceUrl
+	 * @param sourceLinkText
+	 * @see CrawlerPlugin#checkDynamicBlacklist(String, String, String)
+	 * @return True if blacklisted by at least one of the plugins.
+	 */
+  public boolean eventAskDynamicBlacklist(String url, String sourceUrl, String sourceLinkText)
+  {
+    List<Object> returns;
+    
+    returns = triggerEvent("checkDynamicBlacklist", 
+        new Class[]{String.class, String.class, String.class}, 
+        url, sourceUrl, sourceLinkText);
+    
+    int i = 0;
+    for (Object ret : returns)
+    {
+      if (! (ret instanceof Boolean))
+        continue;
+      
+      boolean blacklist = ((Boolean) ret).booleanValue();
+      
+      if (blacklist)
+      {
+        if (mLog.isDebugEnabled())
+        {
+          // Find out which plugin was the cause
+          CrawlerPlugin cp = null;
+          for (Map.Entry<Integer, CrawlerPlugin> entry : plugins.entrySet())
+          {
+            cp = entry.getValue();
+            if (i == 0)
+              break;
+            i--;
+          }
+          mLog.debug("URL dynamically blacklisted by CrawlerPlugin " + cp.getClass().getName());
+        }
+        return true;
+      }
+      i++;
+    }
+    
+    return false;
+  }
 	
 	/**
 	 * Lists contained plugins for debugging purposes
+	 * @return Debugging output: contained plugins.
 	 */
 	public String toString() {
 		StringBuilder str = new StringBuilder();
@@ -366,4 +424,5 @@ public class CrawlerPluginManager {
 		
 		return str.toString();
 	}
+
 }

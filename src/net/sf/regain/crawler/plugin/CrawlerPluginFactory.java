@@ -42,7 +42,9 @@ import net.sf.regain.crawler.document.PluggableFactory;
  * @author adapted by Benjamin
  */
 public class CrawlerPluginFactory extends PluggableFactory {
-	/** The singleton. */
+	private static final String DEFAULT_CRAWLERPLUGIN_PACKAGE = "net.sf.regain.crawler.plugin.plugin";
+
+  /** The singleton. */
 	private static CrawlerPluginFactory mSingleton = null;
 
 	private CrawlerPluginManager pluginManager = null;
@@ -93,6 +95,12 @@ public class CrawlerPluginFactory extends PluggableFactory {
 			throw new RegainException("The plugin file " + pluggableFile + " did not have the required attribute 'Plugin-Class' in its manifest.xml.");
 		return new String[]{clazz};
 	}
+
+  @Override
+  protected String getDefaultPackage()
+  {
+    return DEFAULT_CRAWLERPLUGIN_PACKAGE;
+  }
   
   
 

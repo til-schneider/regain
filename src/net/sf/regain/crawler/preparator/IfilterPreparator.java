@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-06-19 18:05:10 +0200 (Mo, 19 Jun 2006) $
- *   $Author: til132 $
- * $Revision: 218 $
+ *     $Date: 2012-01-23 15:44:54 +0100 (Mo, 23 Jan 2012) $
+ *   $Author: benjaminpick $
+ * $Revision: 562 $
  */
 package net.sf.regain.crawler.preparator;
 
@@ -58,13 +58,13 @@ public class IfilterPreparator extends AbstractPreparator {
   private static String[] mExtensionArr;
 
   /** Contains a IfilterWrapper for a file extension (String, e.g. ".doc") */
-  private HashMap mExtensionToIFilterHash;
+  private HashMap<String, IfilterWrapper> mExtensionToIFilterHash;
 
   /**
    * Contains a IfilterWrapper for a GUID (String,
    * e.g. "clsid:f07f3920-7b8c-11cf-9be8-00aa004b9986")
    */
-  private HashMap mGuidToIFilterHash;
+  private HashMap<String, IfilterWrapper> mGuidToIFilterHash;
 
   /** The regex that matches a registry value. */
   private static RE mValueRegex;
@@ -103,7 +103,7 @@ public class IfilterPreparator extends AbstractPreparator {
         throw new RegainException("Reading windows registry failed");
       }
 
-      ArrayList list = new ArrayList();
+      ArrayList<String> list = new ArrayList<String>();
       for (int i = 0; i < classChildren.length; i++) {
         if (classChildren[i].startsWith(".")) {
           // This is a definition for an extension -> Check whether it has a
@@ -141,8 +141,8 @@ public class IfilterPreparator extends AbstractPreparator {
   public void init(PreparatorConfig config) throws RegainException {
     IfilterWrapper.initCom();
 
-    mExtensionToIFilterHash = new HashMap();
-    mGuidToIFilterHash = new HashMap();
+    mExtensionToIFilterHash = new HashMap<String, IfilterWrapper>();
+    mGuidToIFilterHash = new HashMap<String, IfilterWrapper>();
   }
 
 
@@ -177,7 +177,7 @@ public class IfilterPreparator extends AbstractPreparator {
   private IfilterWrapper getIfilterWrapperForExtension(String extension)
     throws RegainException
   {
-    IfilterWrapper ifilter = (IfilterWrapper) mExtensionToIFilterHash.get(extension);
+    IfilterWrapper ifilter = mExtensionToIFilterHash.get(extension);
     if (ifilter != null) {
       // We already have a cached one -> Return it
       return ifilter;
@@ -276,7 +276,7 @@ public class IfilterPreparator extends AbstractPreparator {
   private IfilterWrapper getIfilterWrapperForGuid(String ifilterGuid)
     throws RegainException
   {
-    IfilterWrapper ifilter = (IfilterWrapper) mGuidToIFilterHash.get(ifilterGuid);
+    IfilterWrapper ifilter = mGuidToIFilterHash.get(ifilterGuid);
     if (ifilter == null) {
       ifilter = new IfilterWrapper(ifilterGuid);
       mGuidToIFilterHash.put(ifilterGuid, ifilter);
@@ -289,9 +289,9 @@ public class IfilterPreparator extends AbstractPreparator {
   // overridden
   public void close() throws RegainException {
     // Close all ifilters
-    Iterator ifilterIter = mGuidToIFilterHash.values().iterator();
+    Iterator<IfilterWrapper> ifilterIter = mGuidToIFilterHash.values().iterator();
     while (ifilterIter.hasNext()) {
-      IfilterWrapper ifilter = (IfilterWrapper) ifilterIter.next();
+      IfilterWrapper ifilter = ifilterIter.next();
       ifilter.close();
     }
 
@@ -403,7 +403,7 @@ public class IfilterPreparator extends AbstractPreparator {
     }
 
     // Get the children
-    ArrayList list = new ArrayList();
+    ArrayList<String> list = new ArrayList<String>();
     String childPrefix = regKey + "\\";
     for (int i = 0; i < output.length; i++) {
       if (output[i].startsWith(childPrefix)) {

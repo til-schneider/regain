@@ -22,9 +22,9 @@
  | CVS information:
  |  $RCSfile$
  |   $Source$
- |     $Date: 2011-11-27 10:36:43 +0100 (So, 27 Nov 2011) $
+ |     $Date: 2012-01-23 15:46:44 +0100 (Mo, 23 Jan 2012) $
  |   $Author: benjaminpick $
- | $Revision: 549 $
+ | $Revision: 563 $
  |
  | Author: Til Schneider, www.murfman.de
  | How to use this file: http://regain.murfman.de/wiki/doku.php?id=project_info:howto_regain_in_an_ide#ant
@@ -56,6 +56,9 @@
   </condition>
   <condition property="version" value="${version.prefix}-STABLE">
     <isfalse value="${is-preview}"/>
+  </condition>
+  <condition property="do_skip_integration_tests" value="true">
+  	<istrue value="${skip_integration_tests}"/>
   </condition>
   <property name="version.file" value="${version}"/>
   <property name="programname" value="Regain"/>
@@ -124,6 +127,8 @@
     <echo message="  clean-web             Deletes the deployed stuff (Without the config)."/>
     <echo message="  prepare               Prepares the compilation. (Extracts the libs)"/>
     <echo message="  prepare-once          Prepares the compilation if needed. (Extracts the libs)"/>
+    <echo message="  preparators           Create preperator jars."/>
+    <echo message="  plugins	           Create crawler plugin jars."/>
     <echo message="  doc                   Generates the JavaDoc documentation."/>
     <echo message="  make                  Compiles the source code."/>
     <echo message="  make-test             Compiles the test source code."/>
@@ -189,6 +194,7 @@
   <target name="clean-runtime">
     <delete dir="build/runtime"/>
     <delete dir="build/preparator"/>
+    <delete dir="build/plugins"/>
     <delete dir="build/web-temps"/>
     <delete dir="test/build/runtime"/>
   </target>
@@ -353,7 +359,8 @@
   <!--
    | Compiles the integration test source code.
    +-->
-  <target name="make-test-integration" > <!-- depends="runtime" -->
+  <target name="make-test-integration" unless="do_skip_integration_tests"> <!-- depends="runtime" -->
+  
     <echo message="Compiling the integration test source code ..." />
     <fail if="java_dir_empty">
   		Neither 'java.dir' nor JAVA_HOME is set, so no compiling is possible. Please copy build.properties.sample to build.properties and edit its values.
@@ -567,8 +574,9 @@
   </target>
 
 
+
   <!--
-   | Helper target for runtime-fast.
+   | Helper target for preparators.
    |
    | Creates a simple preparator jar. A simple preparator is a preparator
    | having one class and no libs.
@@ -587,9 +595,37 @@
 
 
   <!--
+   | Creates the crawler plugin jars.
+   +-->
+   <target name="plugins" depends="make, prepare-once">
+    <mkdir dir="build/plugins"/>
+    <antcall target="-simple-plugin">
+    	<param name="classname" value="FilesizeFilterPlugin" />
+    </antcall>
+  </target>
+
+
+  <!--
+   | Helper target for plugins.
+   |
+   | Create a simple crawler plugin jar. (1 class, no libs.)
+   +-->
+  <target name="-simple-plugin" if="classname">
+    <jar jarfile="build/plugins/${classname}.jar"
+         compress="false" index="true">
+      <manifest>
+        <attribute name="Plugin-Class" value=".${classname}"/>
+      </manifest>
+      <fileset dir="build/classes">
+        <include name="net/sf/regain/crawler/plugin/plugin/${classname}.*"/>
+      </fileset>
+    </jar>  
+  </target>
+
+  <!--
    | Creates the desktop runtime directory for fast running (without jars).
    +-->
-  <target name="runtime-desktop-fast" depends="preparators">
+  <target name="runtime-desktop-fast" depends="preparators, plugins">
     <copy todir="build/runtime/desktop/win">
       <fileset dir="lib/win" includes="jacob.dll"/>
       <fileset dir="lib/win" includes="ifilter_wrapper.dll"/>
@@ -648,6 +684,14 @@
         <!--exclude name="JavaPreparator.jar"/-->
       </fileset>
     </copy>
+    <copy todir="build/runtime/desktop/win/plugins">
+      <fileset dir="build/plugins">
+      </fileset>
+    </copy>
+    <copy todir="build/runtime/desktop/linux/plugins">
+      <fileset dir="build/plugins">
+      </fileset>
+    </copy>
   </target>
 
 
@@ -670,7 +714,7 @@
   <!--
    | Creates the server runtime directory for fast running (without jars).
    +-->
-  <target name="runtime-server-fast" depends="preparators">
+  <target name="runtime-server-fast" depends="preparators, plugins">
     <echo message="Creating the server runtime ..." />
     <mkdir dir="build/runtime/crawler/log"/>
     <mkdir dir="build/runtime/crawler/plugins" />
@@ -690,6 +734,9 @@
     <!-- Copy the preparator jars -->
     <copy todir="build/runtime/crawler/preparator">
       <fileset dir="build/preparator"/>
+    </copy>
+    <copy todir="build/runtime/crawler/plugins">
+      <fileset dir="build/plugins"/>
     </copy>
   </target>
 
@@ -998,9 +1045,10 @@
    | "lib/ant" in your ANT_HOME/lib directory.
    | (ANT_HOME/lib is on my machine "/usr/share/ant/lib")
    +-->
-  <target name="test-integration" depends="make-test-integration">
+  <target name="test-integration" depends="make-test-integration" unless="do_skip_integration_tests">
     <echo message="Running integration tests ..." />
-    <junit haltonfailure="true" fork="true"> <!-- showoutput="true" -->
+    <echo message="(You can skip these tests by setting the property 'skip_integration_tests' to true, e.g. ant -Dskip_integration_tests=true public)" />
+    <junit haltonerror="true" haltonfailure="true" fork="true"> <!-- showoutput="true" -->
       <classpath>
         <path refid="classpath"/>
         <path refid="testlibs-classpath"/>
@@ -1105,8 +1153,7 @@
    | This target depends on clean-runtime to be sure that the runtime
    | directory contains no stuff we don't want to be destributed.
    +-->
-  <!--target name="public-no-installer" depends="clean-all, runtime, test-integration, doc"-->
-  <target name="public-no-installer" depends="clean-all, runtime, doc">
+  <target name="public-no-installer" depends="clean-all, runtime, test-integration, doc">
     <mkdir dir="build/public"/>
     <zip destfile="build/public/${programname.file}_v${version}_server.zip">
       <zipfileset prefix="${programname.file}/runtime/crawler"

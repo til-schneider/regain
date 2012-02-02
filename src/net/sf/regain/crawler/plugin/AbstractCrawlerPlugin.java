@@ -55,6 +55,9 @@ public abstract class AbstractCrawlerPlugin implements CrawlerPlugin {
 	public void onFinishCrawling(Crawler crawler) { }
 
 	@Override
+	public boolean checkDynamicBlacklist(String url, String sourceUrl, String sourceLinkText) { return false; };
+	
+	@Override
 	public void onAcceptURL(String url, CrawlerJob job) { }
 
 	@Override

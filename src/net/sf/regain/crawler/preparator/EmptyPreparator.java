@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2007-12-01 12:44:05 +0100 (Sa, 01 Dez 2007) $
- *   $Author: til132 $
- * $Revision: 261 $
+ *     $Date: 2011-12-09 19:28:00 +0100 (Fr, 09 Dez 2011) $
+ *   $Author: thtesche $
+ * $Revision: 550 $
  */
 package net.sf.regain.crawler.preparator;
 

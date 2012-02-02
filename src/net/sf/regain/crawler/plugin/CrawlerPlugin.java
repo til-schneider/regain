@@ -93,6 +93,18 @@ public interface CrawlerPlugin extends Pluggable {
 		void onFinishCrawling(Crawler crawler);
 	
 		/**
+		 * Allows to blacklist specific URLs.
+		 * This function is called when the URL would normally be accepted,
+		 * i.e. included in whitelist, not included in blacklist.
+		 * 
+		 * @param url       URL of the crawling job that should normally be added.
+		 * @param sourceUrl The URL where the url above has been found (a-Tag, PDF or similar)
+		 * @param sourceLinkText  The label of the URL in the document where the url above has been found.
+		 * @return  True: blacklist this URL. False: Allow this URL.
+		 */
+		boolean checkDynamicBlacklist(String url, String sourceUrl, String sourceLinkText);
+		
+		/**
 		 * Called during the crawling process when a new URL is added to the processing Queue.
 		 * 
 		 * As the queue is filled recursively, these calls can come between prepare Calls.

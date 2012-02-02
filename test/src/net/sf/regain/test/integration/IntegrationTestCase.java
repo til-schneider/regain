@@ -26,6 +26,7 @@ public class IntegrationTestCase extends TestCase
   protected static final File root = new File(System.getProperty("user.dir"));
   protected static final File runtime = new File(root, "build/runtime");
   protected static final File runtimeTest = new File(root, "test/build/runtime");
+  protected static final long SLEEP_WAIT_MILLIS = 300;
 
   protected File environment;  
   protected DefaultExecuteResultHandler resultHandler;
@@ -46,9 +47,8 @@ public class IntegrationTestCase extends TestCase
     // TODO : Test under Windows
     File env = new File(runtimeTest, "desktop/"+getPlatform());
     
-    FileUtils.cleanDirectory(new File(env, "log"));
-    FileUtils.cleanDirectory(new File(env, "searchindex"));
-    FileUtils.cleanDirectory(new File(env, "plugins"));
+    cleanDirectory(new File(env, "log"));
+    cleanDirectory(new File(env, "searchindex"));
     
     cleanDirectoryKeepSubdirectories(new File(env, "conf"));
     FileUtils.copyDirectory(new File(env, "conf/default"), new File(env, "conf"));
@@ -56,6 +56,12 @@ public class IntegrationTestCase extends TestCase
     return env;
   }
   
+  private void cleanDirectory(File dir) throws IOException
+  {
+    dir.mkdirs();
+    FileUtils.cleanDirectory(dir);
+  }
+
   private boolean fileNewerThan(File file, File file2)
   {
     return file.lastModified() > file2.lastModified();
@@ -77,6 +83,27 @@ public class IntegrationTestCase extends TestCase
     lines.add("log4j.category.net.sf.regain=DEBUG");
     lines.add("log4j.category.net.sf.regain.crawler.Crawler=DEBUG");
     FileUtils.writeLines(debugFile, null, lines, null, true);
+  }
+  
+  protected void enableCrawlerPlugin(File crawlerConfig, String pluginName, boolean enable) throws IOException
+  {
+    List<String> lines = FileUtils.readLines(crawlerConfig);
+    
+    int i = 0;
+    for (String str : lines)
+    {
+      if (str.contains(pluginName))
+      {
+        String before = lines.get(i - 1);
+        if (before != null && before.contains("enabled=\""))
+        {
+          before = before.replaceFirst("enabled=\"[a-z]*\"", "enabled=\"" + Boolean.toString(enable) + "\"");
+          lines.set(i - 1, before);
+        }
+      }
+      i++;
+    }
+   FileUtils.writeLines(crawlerConfig, lines);
   }
 
   protected void addStartDirectoryToCrawlerConfig(File crawlerConfig, File crawlingDir) throws IOException
@@ -173,6 +200,7 @@ public class IntegrationTestCase extends TestCase
     }
   }
 
+ /*
   private String lastLines(String output, int nb)
   {    
     int pos = output.length();
@@ -185,7 +213,8 @@ public class IntegrationTestCase extends TestCase
         return output;
      return output.substring(pos);
   }
-
+*/
+  
   protected void assertContains(String message, String expected, String actual)
   {
     boolean cond = actual.contains(expected);
@@ -196,11 +225,32 @@ public class IntegrationTestCase extends TestCase
     }
   }
 
-  private ByteArrayOutputStream startUp(String cmd, File workingDir) throws ExecuteException, IOException
+  /**
+   * Wrapper function for commons-exec:
+   * Execute a Command as a background process.
+   * 
+   * @param cmd         Command to execute
+   * @param workingDir  Working directory
+   * @return  An outputstream that contains the output of the process into stdout/stderr
+   * @throws ExecuteException Error during execution
+   * @throws IOException    File does not exist, and so could not be executed.
+   */
+  protected ByteArrayOutputStream startUp(String cmd, File workingDir) throws ExecuteException, IOException
   {
     return startUp(cmd, workingDir, 0);
   }
 
+  /**
+   * Wrapper function for commons-exec:
+   * Execute a Command as a background process.
+   * 
+   * @param cmd         Command to execute
+   * @param workingDir  Working directory
+   * @param timeout     Kill process after this time (in sec) (0: no timeout)
+   * @return  An outputstream that contains the output of the process into stdout/stderr
+   * @throws ExecuteException Error during execution
+   * @throws IOException    File does not exist, and so could not be executed.
+   */
   protected ByteArrayOutputStream startUp(String cmd, File workingDir, int timeout) throws ExecuteException, IOException
   {
     CommandLine cmdLine = CommandLine.parse(cmd);
@@ -229,6 +279,55 @@ public class IntegrationTestCase extends TestCase
   }
 
   /**
+   * Idle until outputstream contains a magic String.
+   * 
+   * @param os          Outputstream to check periodically.
+   * @param waitForStr  Magic string to wait for
+   * @param maxMillisWait Abort waiting if we waited longer than this.
+   *                      If 0, wait infinitely.
+   * @return  Content of output stream.
+   * @see SLEEP_WAIT_MILLIS Duration of sleeping period in ms.
+   */
+  protected String waitForContains(OutputStream os, String waitForStr, long maxMillisWait)
+  {
+    String str;
+    long begin = System.currentTimeMillis();
+    
+    do
+    {
+      try {
+        Thread.sleep(SLEEP_WAIT_MILLIS);
+      } catch (InterruptedException e) { /* ignore */ }
+      str = os.toString();
+  
+      if (maxMillisWait > 0)
+      {
+        long now = System.currentTimeMillis();
+        if (now - begin > maxMillisWait)
+          return str;
+      }
+      
+      assertProcessAlive(resultHandler, str);
+    } 
+    while (!str.contains(waitForStr));
+    
+    return str;
+  }
+
+  /**
+   * Idle until outputstream contains a magic String.
+   * 
+   * @param os          Outputstream to check periodically.
+   * @param waitForStr  Magic string to wait for
+   * @return  Content of output stream.
+   * @see SLEEP_WAIT_MILLIS Duration of sleeping period in ms.
+   */
+  protected String waitForContains(OutputStream os, String waitForStr)
+  {
+    return waitForContains(os, waitForStr, 0);
+  }
+
+  /**
    * Clean a directoy without deleting it,
    * but don't delete subdirectories and their content.
    * 
@@ -238,6 +337,8 @@ public class IntegrationTestCase extends TestCase
    */
   protected static void cleanDirectoryKeepSubdirectories(File directory) throws IOException
   {
+    directory.mkdirs();
+    
     File[] files = directory.listFiles();
     if (files == null) {  // null if security restricted
         throw new IOException("Failed to list contents of " + directory);
@@ -248,7 +349,8 @@ public class IntegrationTestCase extends TestCase
       // ADD Check:
         if (file.isDirectory())
           continue;
-      // End ADD
+      // End ADD (The rest is copied from commons-io)
+
         try {
             FileUtils.forceDelete(file);
         } catch (IOException ioe) {

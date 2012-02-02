@@ -1,4 +1,16 @@
-Version 1.7.10 am 10.12.2011 PREVIEW
+Version 1.7.11 am 03.02.2012 PREVIEW (r)
+-------------------------------------------
+
+NEU
+ * Dynamisches Blacklisting
+
+UPDATE
+ * Crawler Thumbnailer in Version 0.3 Stable
+
+Cleanup
+ * Entfernen nicht genutzten Bilbliotheken (bcmail und bcprov)
+
+Version 1.7.10 am 10.12.2011 PREVIEW (r551)
 ------------------------------------
 
 NEU

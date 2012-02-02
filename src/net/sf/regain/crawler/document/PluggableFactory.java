@@ -36,6 +36,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -71,7 +72,16 @@ public abstract class PluggableFactory {
     File[] jarFileArr = preparatorDir.listFiles(new ExtensionFilter(".jar"));
     for (File jarFile : jarFileArr) {
     	loadPreparatorJar(jarFile, preparatorHash, preparatorSettingsArr);
-    }    
+    }
+    if (mLog.isDebugEnabled())
+    {
+      mLog.debug("Found " + preparatorHash.size() + " Preperators or Plugins in .jars:");
+      for (String entry : preparatorHash.keySet())
+      {
+        mLog.debug(entry);
+      }
+    }
+    
     // Create the preparator array
     List<Pluggable> preparatorArr = new ArrayList<Pluggable>(preparatorHash.size());
 
@@ -89,7 +99,6 @@ public abstract class PluggableFactory {
         } else {
           // Initialize the preparator
           prep.init(preparatorSettingsArr[i].getPreparatorConfig());
-          
           pluggableAfterInit(prep, preparatorSettingsArr[i]);
           
           // Add it to the array
@@ -151,7 +160,7 @@ public abstract class PluggableFactory {
         // Get the class name
         String className = classNameArr[i];
         if (className.startsWith(".")) {
-          className = PreparatorSettings.DEFAULT_PREPARATOR_PACKAGE + className;
+          className = getDefaultPackage() + className;
         }
         
         if (isPreparatorEnabled(className, preparatorSettingsArr)) {
@@ -179,6 +188,7 @@ public abstract class PluggableFactory {
     }
   }
 
+  protected abstract String getDefaultPackage();
 
   protected abstract String[] getClassNames(File pluggableFile, Attributes attributes) throws RegainException;
 
