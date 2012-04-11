@@ -1,5 +1,6 @@
 /.classpath
 /.project
+/.idea/
 /build.properties
 /build/
 /jacobgen/classes/

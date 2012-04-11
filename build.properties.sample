@@ -1,7 +1,7 @@
 # To use this file, rename it to "build.properties"
 
 # The current Version
-version.prefix=1.6
+version.prefix=1.7.12
 
 # Is the version a preview version (an inofficial realease)
 is-preview=true
@@ -23,4 +23,4 @@ deploy-target.dir=C:/Programme/jakarta-tomcat-6.0/webapps
 installer.executable=C:\\.....fill_in_the_correct_path.....\\regain\\installer\\makensis.exe
 
 # Skip Integration Tests
-skip_integration_tests=false
+skip_integration_tests=true

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-10-18 09:21:09 +0200 (Di, 18 Okt 2011) $
+ *     $Date: 2012-04-04 14:03:52 +0200 (Mi, 04 Apr 2012) $
  *   $Author: benjaminpick $
- * $Revision: 540 $
+ * $Revision: 578 $
  */
 package net.sf.regain.util.sharedtag;
 
@@ -97,13 +97,6 @@ public abstract class PageResponse implements Printer {
    */
   public abstract OutputStream getOutputStream() throws RegainException;
   
-  
-  private static final String[] xmlToReplace = new String[]{"<",    ">",    "&",     "\"",     "'"};
-  private static final String[] xmlReplace = new String[]{  "&lt;", "&gt;", "&amp;", "&quot;", "&#039;"};
-
-  private static final String[] htmlToReplace = new String[]{"<",    ">"};
-  private static final String[] htmlReplace = new String[]{  "&lt;", "&gt;"};
-
   /**
    * Prints text to a page (escaping when necessary).
    * 
@@ -114,14 +107,13 @@ public abstract class PageResponse implements Printer {
   {
     if (text != null && !escapeType.equals(EscapeType.none))
     {
-      text = HtmlEntities.encode(text);
       switch(escapeType)
       {
         case xml:
-          RegainToolkit.replace(text, xmlToReplace, xmlReplace);
+          text = HtmlEntities.encodeXML(text);
           break;
         case html:
-          RegainToolkit.replace(text, htmlToReplace, htmlReplace);
+          text = HtmlEntities.encode(text);
           break;
       }
     }

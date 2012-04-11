@@ -21,17 +21,17 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-17 12:17:12 +0200 (Mi, 17 Aug 2011) $
+ *     $Date: 2012-04-04 10:23:07 +0200 (Mi, 04 Apr 2012) $
  *   $Author: benjaminpick $
- * $Revision: 531 $
+ * $Revision: 576 $
  */
 package net.sf.regain.crawler.document;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
@@ -97,12 +97,12 @@ public class DocumentFactory {
    */
   private CrawlerAccessController mCrawlerAccessController;
   /**
-   * Die regul�ren Ausdr�cke, auf die die URL eines Dokuments passen muss,
-   * damit anstatt des wirklichen Dokumententitels der Text des Links, der auf
-   * das Dokument gezeigt hat, als Dokumententitel genutzt wird.
+   * The regular expressions that, when one of them applies, cause
+   * that instead of the document title the link to that document
+   * is used as title.
    */
   private RE[] mUseLinkTextAsTitleReArr;
-  /** Der Profiler der das Hinzuf�gen zum Index mi�t. */
+  /** The profile that measures the addition to index. */
   private Profiler mWriteAnalysisProfiler = new Profiler("Writing Analysis files", "files");
   /** The mimetype mimeTypeIdentifier */
   MimeTypeIdentifier mimeTypeIdentifier;
@@ -453,15 +453,15 @@ public class DocumentFactory {
       // Add the field
       // NOTE: The field "groups" is tokenized, but not stemmed.
       //       See: RegainToolkit.WrapperAnalyzer
-      Iterator<String> groupIter = Arrays.asList(groupArr).iterator();
       StringBuilder tokenBuilder = new StringBuilder();
-      while (groupIter.hasNext()) {
-        tokenBuilder.append(groupIter.next());
-        tokenBuilder.append(" ");
+      for (String group : groupArr)
+      {
+        tokenBuilder.append(group)
+                    .append(" ");
       }
 
-      //doc.add(new Field("groups", new IteratorTokenStream(groupIter)));
-      doc.add(new Field("groups", new WhitespaceTokenizer(RegainToolkit.getLuceneVersion(),
+      //doc.add(new Field(RegainToolkit.FIELD_ACCESS_CONTROL_GROUPS, new IteratorTokenStream(groupIter)));
+      doc.add(new Field(RegainToolkit.FIELD_ACCESS_CONTROL_GROUPS, new WhitespaceTokenizer(RegainToolkit.getLuceneVersion(),
               new StringReader(tokenBuilder.toString()))));
     }
 
@@ -757,5 +757,19 @@ public class DocumentFactory {
 
     // Ensure that no call of createDocument(RawDocument) is possible any more
     mPreparatorArr = null;
+    
+    // Close CrawlerAccessControl if possible
+    if (mCrawlerAccessController != null && mCrawlerAccessController instanceof Closeable)
+    {
+      Closeable c = (Closeable) mCrawlerAccessController;
+      try
+      {
+        c.close();
+      }
+      catch (IOException e)
+      {
+        mLog.error("Closing CrawlerAccessController failed:", e);
+      }
+    }
   }
 }

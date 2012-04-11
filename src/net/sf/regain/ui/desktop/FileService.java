@@ -63,7 +63,17 @@ public class FileService extends BasicService {
             SharedTagResource.SIMPLE_TAG_ENCODING);
         
     // Check the file URL
-    if (SearchToolkit.allowFileAccess(request, fileUrl)) {
+    boolean allow = SearchToolkit.allowFileAccess(request, fileUrl);
+    
+    if ("1".equals(request.getParameter("askPermission")))
+    {
+      response.setHeader("Content-Type", "text/plain");
+      response.printNoHtml(Boolean.toString(allow));
+      handle(req, resp, 200);
+      return;
+    }
+    
+    if (allow) {
       // This file is allowed -> Send it
       SearchToolkit.sendFile(request, response, RegainToolkit.urlToFile(fileUrl));
     } else {

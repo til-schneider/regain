@@ -1,10 +1,10 @@
-<%@page contentType="text/html; charset=UTF-8" errorPage="errorpage.jsp"%>
+<%@page contentType="text/html; charset=UTF-8" errorPage="errorpage.jsp" pageEncoding="UTF-8" %>
 <%@taglib uri="regain-search.tld" prefix="search" %>
 
 <html>
   <head>
     <title>regain - <search:msg key="search"/></title>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <script src="regain.js" type="text/javascript"></script>
     <link href="regain.css" rel="stylesheet" type="text/css">
   </head>

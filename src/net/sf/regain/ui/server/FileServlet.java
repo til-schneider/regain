@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2012-01-07 12:22:45 +0100 (Sa, 07 Jan 2012) $
+ *     $Date: 2012-04-10 15:24:12 +0200 (Di, 10 Apr 2012) $
  *   $Author: benjaminpick $
- * $Revision: 557 $
+ * $Revision: 582 $
  */
 package net.sf.regain.ui.server;
 
@@ -79,9 +79,19 @@ public class FileServlet extends HttpServlet {
       String encoding = "utf-8"; // We use utf-8 in our JSPs
       String fileUrl = SearchToolkit.extractFileUrl(req.getRequestURI(), encoding);
 
-      // Check the file
+      // Check the file URL
       try {
-        if (SearchToolkit.allowFileAccess(request, fileUrl)) {
+        boolean allow = SearchToolkit.allowFileAccess(request, fileUrl);
+        
+        if ("1".equals(request.getParameter("askPermission")))
+        {
+          response.setHeader("Content-Type", "text/plain");
+          response.printNoHtml(Boolean.toString(allow));
+          return;
+        }
+      
+        // Check the file
+        if (allow) {
           // Access allowed -> Send the file
           SearchToolkit.sendFile(request, response, RegainToolkit.urlToFile(fileUrl));
         } else {

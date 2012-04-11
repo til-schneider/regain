@@ -119,11 +119,8 @@ public class SearchResultsImpl implements SearchResults {
    * Creates an instanz of SearchResults. This class can search over a single
    * or multiple indexes.
    *
-   * @param indexConfig the array of index configs
-   * @param queryText The query text to search for.
-   * @param groupArr The groups the searching user has reading rights for.
-   *        See {@link net.sf.regain.search.access.SearchAccessController}.
-   *        Is <code>null</code>, if no access control should be used.
+   * @param indexConfigs The array of index configs
+   * @param request The request parameters
    *
    * @throws RegainException If searching failed.
    */
@@ -159,11 +156,13 @@ public class SearchResultsImpl implements SearchResults {
     // If there is at least on index
     if (indexConfigs.length >= 1) {
 
+      boolean useAccessController = false;
       for (int i = 0; i < indexConfigs.length; i++) {
         // Get the groups the current user has reading rights for
         String[] groupArr = null;
         SearchAccessController accessController = indexConfigs[i].getSearchAccessController();
         if (accessController != null) {
+          useAccessController = true;
           groupArr = accessController.getUserGroups(request);
           // Check the Group array
           RegainToolkit.checkGroupArray(accessController, groupArr);
@@ -243,22 +242,8 @@ public class SearchResultsImpl implements SearchResults {
         }
 
         // Check whether access control is used
-        if (allGroups != null && allGroups.length > 0) {
-          // Create a query that matches any group
-          BooleanQuery groupQuery = new BooleanQuery();
-          for (int i = 0; i < allGroups.length; i++) {
-            // Add as OR
-            groupQuery.add(new TermQuery(new Term("groups", allGroups[i])), Occur.SHOULD);
-          }
-
-          // Create a main query that contains the group query and the search query
-          // combined with AND
-          BooleanQuery mainQuery = new BooleanQuery();
-          mainQuery.add(mQuery, Occur.MUST);
-          mainQuery.add(groupQuery, Occur.MUST);
-
-          // Set the main query as query to use
-          mQuery = mainQuery;
+        if (useAccessController) {
+          mQuery = SearchToolkit.addAccessControlToQuery(mQuery, allGroups);
         }
       }
 

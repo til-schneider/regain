@@ -36,7 +36,6 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -75,7 +74,7 @@ public abstract class PluggableFactory {
     }
     if (mLog.isDebugEnabled())
     {
-      mLog.debug("Found " + preparatorHash.size() + " Preperators or Plugins in .jars:");
+      mLog.debug("Found " + preparatorHash.size() + " Preperator(s) or Plugin(s) in Jar-Files:");
       for (String entry : preparatorHash.keySet())
       {
         mLog.debug(entry);

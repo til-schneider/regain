@@ -1,8 +1,27 @@
-Version 1.7.11 am 03.02.2012 PREVIEW (r)
--------------------------------------------
+Version 1.7.12 am 12.04.2012 PREVIEW
+------------------------------------
+
+NEU
+ * File2Http-Bridge: /file/$/$...file.txt?askPermission=1 gibt "true"/"false" zurück, um zu überprüfen, ob ein Download möglich wäre
+   (Datei muss im Index existieren, und ggf. von SearchAccessController erlaubt werden)   
+ * CrawlerAccessController: Wenn es das Interface "Closeable" implementiert, wird nach Ende des Crawling-Prozesses close() aufgerufen.
+
+UPDATE
+ * Crawler Thumbnailer in Version 0.5 Stable
+  * POI Library 3.7 -> 3.8
+
+BUGFIX
+ * Regression: search_xml.jsp funktionierte nicht in Regain Server Version
+ * XML wird nun korrekt encodiert (keine HTML-Entities)
+ * Die File2Http-Bridge respektiert jetzt auch die Gruppen von SearchAccessController (vorher hat sie den Download komplett untersagt)
+ * FilesizeFilterPlugin: Verzeichnisse werden nicht geblacklistet.
+
+Version 1.7.11 am 03.02.2012 PREVIEW (r567)
+------------------------------------
 
 NEU
  * Dynamisches Blacklisting
+ * Neues CrawlerPlugin: Lehne Dateien aufgrund ihrer Dateigröße ab (FilesizeFilterPlugin)
 
 UPDATE
  * Crawler Thumbnailer in Version 0.3 Stable

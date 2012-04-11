@@ -32,6 +32,7 @@ import java.util.zip.DataFormatException;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
+import net.sf.regain.search.access.SearchAccessController;
 import net.sf.regain.search.config.DefaultSearchConfigFactory;
 import net.sf.regain.search.config.IndexConfig;
 import net.sf.regain.search.config.SearchConfig;
@@ -45,10 +46,14 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.document.CompressionTools;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
 
 /**
  * A toolkit for the search JSPs containing helper methods.
@@ -322,7 +327,7 @@ public class SearchToolkit {
    */
   public static String extractFileUrl(String requestPath, String encoding)
           throws RegainException {
-    // NOTE: This is the counterpart to net.sf.regain.search.sharedlib.hit.LinkTag
+    // NOTE: This is the counterpart to encodeFileUrl
     // NOTE: Removing index GET Parameter not nessesary: We already have the requestPath
 
     // Decode the URL
@@ -331,6 +336,7 @@ public class SearchToolkit {
     // Cut off "http://domain/file/"
     int filePos = decodedHref.indexOf("file/");
     String fileName = decodedHref.substring(filePos + 5);
+
 
     // Restore the double slashes
     // See workaround in net.sf.regain.search.sharedlib.hit.LinkTag
@@ -371,7 +377,7 @@ public class SearchToolkit {
 
       // Now decode the forward slashes
       // NOTE: This step is only for beautifing the URL, the above workaround is
-      //       also nessesary without this step
+      //       also necessary without this step
       href = RegainToolkit.replace(href, "%2F", "/");
       
       return href;
@@ -395,49 +401,95 @@ public class SearchToolkit {
 
     // Check whether one of the indexes contains the file
     for (int i = 0; i < configArr.length; i++) {
-      // NOTE: We only allow the file access if there is no access controller
-      if (configArr[i].getSearchAccessController() == null) {
-        String dir = configArr[i].getDirectory();
-        IndexSearcherManager manager = IndexSearcherManager.getInstance(dir);
+      String dir = configArr[i].getDirectory();
+      IndexSearcherManager manager = IndexSearcherManager.getInstance(dir);
 
-        String transformedFileUrl = fileUrl;
-        // back transform the file url according to given rewrite rules
-        String[][] rewriteRules = configArr[i].getRewriteRules();
-        if (rewriteRules != null) {
-          for (int ii = 0; ii < rewriteRules.length; ii++) {
-            String[] rule = rewriteRules[ii];
-            String prefix = rule[1];
-            if (fileUrl.startsWith(prefix)) {
-              String replacement = rule[0];
-              transformedFileUrl = replacement + fileUrl.substring(prefix.length());
-              break;
-            }
+      String transformedFileUrl = fileUrl;
+      // back transform the file url according to given rewrite rules
+      String[][] rewriteRules = configArr[i].getRewriteRules();
+      if (rewriteRules != null) {
+        for (int ii = 0; ii < rewriteRules.length; ii++) {
+          String[] rule = rewriteRules[ii];
+          String prefix = rule[1];
+          if (fileUrl.startsWith(prefix)) {
+            String replacement = rule[0];
+            transformedFileUrl = replacement + fileUrl.substring(prefix.length());
+            break;
           }
         }
+      }
 
-        // Check whether the document is in the index
-        Analyzer analyzer = new WhitespaceAnalyzer(RegainToolkit.getLuceneVersion());
-        QueryParser parser = new QueryParser(RegainToolkit.getLuceneVersion(), "url", analyzer);
-        String queryString = "\"" + transformedFileUrl + "\"";
+      // Check whether the document is in the index
+      Analyzer analyzer = new WhitespaceAnalyzer(RegainToolkit.getLuceneVersion());
+      QueryParser parser = new QueryParser(RegainToolkit.getLuceneVersion(), "url", analyzer);
+      String queryString = "\"" + transformedFileUrl + "\"";
 
-        try {
-          query = parser.parse(queryString);
-        } catch (ParseException ex) {
-          throw new RegainException("Parsing of url lookup-query failed.", ex);
-        }
-
-        ScoreDoc[] hits = manager.search(query);
-        // Allow the access if we found the file in the index
-        if (hits.length > 0) {
-          return true;
-        }
+      try {
+        query = parser.parse(queryString);
+      } catch (ParseException ex) {
+        throw new RegainException("Parsing of url lookup-query failed.", ex);
+      }
+      if (configArr[i].getSearchAccessController() != null) {
+        SearchAccessController accessController = configArr[i].getSearchAccessController();
+        String[] allGroups = accessController.getUserGroups(request);
+        RegainToolkit.checkGroupArray(accessController, allGroups);
+        query = addAccessControlToQuery(query, allGroups);
+      }
+      
+      ScoreDoc[] hits = manager.search(query);
+      
+      // Allow the access if we found the file in the index
+      if (hits.length > 0) {
+        return true;
       }
     }
 
     // We didn't find the file in the indexes -> File access is not allowed
     return false;
   }
+  
+  /**
+   * Restrict query: only allow documents that have one group of allGroups
+   * (To be used together with SearchAccessController)
+   * 
+   * @param query     Query to be modified
+   * @param allGroups Groups of the user
+   * @return Modified Query
+   */
+  public static BooleanQuery addAccessControlToQuery(Query query, String[] allGroups)
+  {
+    // Create a query that matches any group
+    BooleanQuery groupQuery = new BooleanQuery();
 
+    // Not very logical behaviour, in my opinion: If no groups are returned by the SearchAccessController, all files are shown.
+    // However, if one of the Controllers returns a group, then suddenly this super-admin-capability vanished. Maybe allow "null" as Super-Admin, "empty array" as No-Permissions-At-All?
+    if ((allGroups == null || allGroups.length == 0))
+    {
+      if (query instanceof BooleanQuery)
+        return (BooleanQuery) query;
+      else
+      {
+        groupQuery.add(query, Occur.MUST);
+        return groupQuery;
+      }
+    }
+
+    for (String group : allGroups) {
+      // Add as OR
+      groupQuery.add(new TermQuery(new Term(RegainToolkit.FIELD_ACCESS_CONTROL_GROUPS, group)), 
+                                            Occur.SHOULD);
+    }
+
+    // Create a main query that contains the group query and the search query
+    // combined with AND
+    BooleanQuery mainQuery = new BooleanQuery();
+    mainQuery.add(query, Occur.MUST);
+    mainQuery.add(groupQuery, Occur.MUST);
+
+    // Set the main query as query to use
+    return mainQuery;
+  }
+  
   /**
    * Sends a file to the client.
    *
@@ -460,6 +512,7 @@ public class SearchToolkit {
       if (mMimeTypeHash == null) {
         // Source: http://de.selfhtml.org/diverses/mimetypen.htm
         HashMap<String, String> mimeTypeHash = new HashMap<String, String>();
+        
         mimeTypeHash.put("html", "text/html");
         mimeTypeHash.put("htm", "text/html");
         mimeTypeHash.put("gif", "image/gif");

@@ -56,9 +56,9 @@ package net.sf.regain.util.io;
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-10-18 09:21:09 +0200 (Di, 18 Okt 2011) $
+ *     $Date: 2012-04-04 14:03:52 +0200 (Mi, 04 Apr 2012) $
  *   $Author: benjaminpick $
- * $Revision: 540 $
+ * $Revision: 578 $
  */
 
 import java.util.Hashtable;
@@ -78,6 +78,11 @@ public class HtmlEntities {
    * Character).
    */  
   static final Hashtable<String, String> decoder = new Hashtable<String, String>(300);
+  /**
+   * enthält für eine Entit�t (key als String) seine Entsprechung (value als
+   * Character).
+   */  
+  static final Hashtable<String, String> decoderXML = new Hashtable<String, String>(300);
   
   /**
    * enthält für einen char-Wert (index) eine Entit�t (als String) oder
@@ -85,6 +90,11 @@ public class HtmlEntities {
    */
   static final String[]  encoder = new String[0x100];
   
+  /**
+   * enthält für einen char-Wert (index) eine Entit�t (als String) oder
+   * <CODE>null</CODE>.
+   */
+  static final String[]  encoderXML = new String[0x100];
   
   
   /**
@@ -99,6 +109,15 @@ public class HtmlEntities {
    * @return Die Klartext-Entsprechung.
    */  
   public static final String decode(String entity) {
+    return _decode(decoder, entity);
+  }
+  
+  public static final String decodeXML(String entity) {
+    return _decode(decoderXML, entity); 
+  }
+  
+  private static final String _decode(Hashtable<String, String> decoder, String entity)
+  {
     if (entity.charAt(entity.length()-1) == ';')  // remove trailing semicolon
       entity = entity.substring(0, entity.length()-1);
     if (entity.charAt(1) == '#') {
@@ -117,9 +136,7 @@ public class HtmlEntities {
       else return "";
     }
   }
-  
-  
-  
+
   /**
    * Kodiert alle Sonderzeichen in einem String zu HTML-Entit�ten.
    * <p>
@@ -130,8 +147,15 @@ public class HtmlEntities {
    *
    * @return Die Entsprechung zum gegebenen String, wobei alle Sonderzeichen
    *         durch entsprechende HTML-Entit�ten ersetzt wurden.
-   */  
-  static final public String encode(String s) {
+   */
+  public static final String encode(String s) {
+    return _encode(encoder, s, true);
+  }
+  
+  public static final String encodeXML(String s) {
+    return _encode(encoderXML, s, false);
+  } 
+  private static final String _encode(String[] encoder, String s, boolean encodeUnknownEntities) {
     int length = s.length();
     StringBuffer buffer = new StringBuffer(length * 2);
     for (int i = 0; i < length; i++) {
@@ -142,7 +166,7 @@ public class HtmlEntities {
         buffer.append(';');
       } else if (j < 0x20 && j != 13 && j != 10) { // ignore control characters except \r\n
         // Do nothing
-      } else if (j < 0x80) {
+      } else if (j < 0x80 || !encodeUnknownEntities) {
         buffer.append(c);           // use ASCII value
       } else {
         buffer.append("&#");        // use numeric encoding
@@ -166,7 +190,12 @@ public class HtmlEntities {
     if (value < 0x100)
       encoder[value] = entity;
   }
-
+  
+  static final void addXML(String entity, int value) {
+    decoderXML.put(entity, (Character.valueOf((char)value)).toString());
+    if (value < 0x100)
+      encoderXML[value] = entity;
+  }
   
   
   static {
@@ -422,5 +451,11 @@ public class HtmlEntities {
     add("&lsaquo", 8249);
     add("&rsaquo", 8250);
     add("&euro",   8364);
+    
+    addXML("&quot",   34);
+    addXML("&amp",    38);
+    addXML("&lt",     60);
+    addXML("&gt",     62);
+    addXML("&apos",   39);
   }
 }

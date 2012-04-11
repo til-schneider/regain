@@ -1,7 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<%@page contentType="text/xml; charset=UTF-8" errorPage="errorpage.jsp"%>
+<%@page contentType="text/xml; charset=UTF-8" errorPage="errorpage.jsp" pageEncoding="UTF-8" %><?xml version="1.0" encoding="UTF-8" ?>
 <%@taglib uri="regain-search.tld" prefix="search" %>
-<%@taglib uri="taglib/regain-thumbnailer.tld" prefix="thumbnailer" %>
 <search:contenttype contentType="text/xml; charset=UTF-8"/>
 <search:check noIndexUrl="noindex.jsp" noQueryUrl="searchinput.jsp"/>  
 <response>

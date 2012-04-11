@@ -172,7 +172,6 @@ public class CrawlerPluginManager {
 		List<Object> returns = new ArrayList<Object>();
 	  
 	  checkIfEventExists(methodName, argTypes);
-		//checkArgsNotNull(args);
 		
 		for (Map.Entry<Integer, CrawlerPlugin> entry : plugins.entrySet())
 		{

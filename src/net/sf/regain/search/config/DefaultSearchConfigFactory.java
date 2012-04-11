@@ -2,15 +2,16 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-07-30 21:19:08 +0200 (Sa, 30 Jul 2011) $
- *   $Author: thtesche $
- * $Revision: 498 $
+ *     $Date: 2012-04-10 14:35:24 +0200 (Di, 10 Apr 2012) $
+ *   $Author: benjaminpick $
+ * $Revision: 580 $
  */
 package net.sf.regain.search.config;
 
 import java.io.File;
 
 import net.sf.regain.RegainException;
+import net.sf.regain.RegainToolkit;
 import net.sf.regain.util.sharedtag.PageRequest;
 
 /**
@@ -39,6 +40,7 @@ public class DefaultSearchConfigFactory implements SearchConfigFactory {
     }
 
     File configFile = new File(request.getWorkingDir(), configFileName);
+    RegainToolkit.addLibraryJarPath(configFile.getParentFile());
     try {
       return new XmlSearchConfig(configFile);
     }

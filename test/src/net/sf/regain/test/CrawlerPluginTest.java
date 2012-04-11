@@ -36,14 +36,7 @@ public class CrawlerPluginTest extends TestCase {
     TestPlugin.nbCalled = 0;
   }
 
-  // ------------- Tests -------------------
-  public void testArgumentNull() {
-    try {
-      pluginManager.eventDeclineURL(null);
-      fail("Null may not be passed as argument to the plugin manager, yet no exception was thrown");
-    } catch (IllegalArgumentException e) {
-    }
-  }
+  // ------------- Tests ------------------
 
   public void testOrderDefault() {
     /*

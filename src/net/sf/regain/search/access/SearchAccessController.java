@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-04-14 10:15:34 +0200 (Do, 14 Apr 2005) $
- *   $Author: til132 $
- * $Revision: 130 $
+ *     $Date: 2012-03-31 10:56:20 +0200 (Sa, 31 Mrz 2012) $
+ *   $Author: benjaminpick $
+ * $Revision: 575 $
  */
 package net.sf.regain.search.access;
 
@@ -45,9 +45,9 @@ import net.sf.regain.util.sharedtag.PageRequest;
 public interface SearchAccessController {
 
   /**
-   * Initializes the CrawlerAccessController.
+   * Initializes the SearchAccessController.
    * <p>
-   * This method is called once right after the CrawlerAccessController instance
+   * This method is called once right after the SearchAccessController instance
    * was created.
    *  
    * @param config The configuration.
@@ -61,6 +61,9 @@ public interface SearchAccessController {
    * <p>
    * Note: The group array must not be <code>null</code> and the group names
    * must not contain whitespace.
+   * <p>
+   * Note: For backwards compability, when this method returns null, ALL groups
+   * are allowed. Return a non-existing group to restrict access to nothing.
    * 
    * @param request The page request to use for identifying the user.
    * @return The groups of the current user.

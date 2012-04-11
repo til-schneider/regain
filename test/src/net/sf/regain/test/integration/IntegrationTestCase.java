@@ -36,22 +36,14 @@ public class IntegrationTestCase extends TestCase
    * Prepare a test environment
    * @throws IOException
    */
-  protected File copyDefaultConfig() throws IOException
-  {
-    if (fileNewerThan(new File(runtime, "desktop/"+getPlatform()+"/regain.jar"), new File(runtimeTest, "desktop/"+getPlatform()+"/regain.jar")))
-    {
-      FileUtils.copyDirectory(new File(runtime, "desktop/"+getPlatform()), new File(runtimeTest, "desktop/"+getPlatform()));
-      FileUtils.copyDirectory(new File(root, "web/common"), new File(runtimeTest, "desktop/"+getPlatform() + "/web"));
-    }
-    
+  
+  protected File prepareTestEnvironment(String destFolder) throws IOException
+  {  
     // TODO : Test under Windows
-    File env = new File(runtimeTest, "desktop/"+getPlatform());
+    File env = new File(runtimeTest, destFolder);
     
     cleanDirectory(new File(env, "log"));
     cleanDirectory(new File(env, "searchindex"));
-    
-    cleanDirectoryKeepSubdirectories(new File(env, "conf"));
-    FileUtils.copyDirectory(new File(env, "conf/default"), new File(env, "conf"));
     
     return env;
   }
@@ -62,16 +54,16 @@ public class IntegrationTestCase extends TestCase
     FileUtils.cleanDirectory(dir);
   }
 
-  private boolean fileNewerThan(File file, File file2)
+  protected boolean fileNewerThan(File file, File file2)
   {
     return file.lastModified() > file2.lastModified();
   }
 
-  private String getPlatform()
+  protected String getPlatform()
   {
     String os = System.getProperty("os.name");
     if (os.contains("indows"))
-       return "windows";
+       return "win";
     else
       return "linux";
   }
@@ -237,7 +229,7 @@ public class IntegrationTestCase extends TestCase
    */
   protected ByteArrayOutputStream startUp(String cmd, File workingDir) throws ExecuteException, IOException
   {
-    return startUp(cmd, workingDir, 0);
+    return startUp(cmd, workingDir, 0, false);
   }
 
   /**
@@ -252,6 +244,24 @@ public class IntegrationTestCase extends TestCase
    * @throws IOException    File does not exist, and so could not be executed.
    */
   protected ByteArrayOutputStream startUp(String cmd, File workingDir, int timeout) throws ExecuteException, IOException
+  {
+    
+    return startUp(cmd, workingDir, timeout, false);
+  }
+
+  /**
+   * Wrapper function for commons-exec:
+   * Execute a Command as a background or blocking process.
+   * 
+   * @param cmd         Command to execute
+   * @param workingDir  Working directory
+   * @param timeout     Kill process after this time (in sec) (0: no timeout)
+   * @param blocking    Synchronous/blocking (true) or asynchronous/background startup (false).
+   * @return  An outputstream that contains the output of the process into stdout/stderr
+   * @throws ExecuteException Error during execution
+   * @throws IOException    File does not exist, and so could not be executed.
+   */
+  protected ByteArrayOutputStream startUp(String cmd, File workingDir, int timeout, boolean blocking) throws ExecuteException, IOException
   {
     CommandLine cmdLine = CommandLine.parse(cmd);
     Executor executor = new DefaultExecutor();
@@ -274,6 +284,15 @@ public class IntegrationTestCase extends TestCase
     
     executor.setWorkingDirectory(workingDir);
     executor.execute(cmdLine, resultHandler);
+    
+    if (blocking)
+    {
+      while (!resultHandler.hasResult()) {
+        try {
+          resultHandler.waitFor();
+        } catch (InterruptedException e) { }
+      }
+    }
     
     return os;
   }

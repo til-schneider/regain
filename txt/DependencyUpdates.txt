@@ -170,7 +170,7 @@ Benjamin Pick
 
 TODO & Test:
   * Lucene 3.2 --> 3.6
-  * aperture-core 1.5 --> 1.6 (Word Files Detection!)
+  // * aperture-core 1.5 --> 1.6 (Word Files Detection!) (Tika is too slow)
 
 Websites:
 =========

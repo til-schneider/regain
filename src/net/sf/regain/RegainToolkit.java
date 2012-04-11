@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2012-01-07 12:26:43 +0100 (Sa, 07 Jan 2012) $
+ *     $Date: 2012-04-10 14:35:24 +0200 (Di, 10 Apr 2012) $
  *   $Author: benjaminpick $
- * $Revision: 558 $
+ * $Revision: 580 $
  */
 package net.sf.regain;
 
@@ -56,6 +56,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -86,6 +87,10 @@ public class RegainToolkit {
 
   /** The encoding used for storing URLs in the index */
   public static final String INDEX_ENCODING = "UTF-8";
+
+  /** The field name where the access control groups are stored */
+  public static final String FIELD_ACCESS_CONTROL_GROUPS = "groups";
+
   /**
    * Gibt an, ob die Worte, die der Analyzer identifiziert ausgegeben werden
    * sollen.
@@ -104,6 +109,8 @@ public class RegainToolkit {
   /** The current version matching to the embedded lucene jars. */
   private static final Version LUCENE_VERSION = Version.LUCENE_31;
 
+
+  
   public static Version getLuceneVersion() {
     return LUCENE_VERSION;
   }
@@ -1145,8 +1152,8 @@ public class RegainToolkit {
   /**
    * Checks an array of group names.
    * 
-   * @param accessController The access controller that returned the array of
-   *        group names.
+   * @param accessController The (search or crawler) access controller
+   *                         that returned the array of group names.
    * @param groupArr The array of group names to check.
    * @throws RegainException If the array of group names is not valid.
    */
@@ -1214,13 +1221,36 @@ public class RegainToolkit {
     return obj;
   }
 
+  private static List<File> jarFolders = new ArrayList<File>();
+  
+  /**
+   * Add a new library path where Jars can be loaded from.
+   * @param file  Filename of a directory - non-existing directory are silently discarded.
+   */
+  public static void addLibraryJarPath(File file)
+  {
+    if (file != null && file.exists() && !jarFolders.contains(file))
+      jarFolders.add(file);
+  }
+  
+  private static File searchJarFile(String jarFileName)
+  {
+    for(File folder : jarFolders)
+    {
+      File file = new File(folder, jarFileName);
+      if (file.exists())
+         return file;
+    }
+    return null;
+  }
+  
   /**
    * Loads a class and creates an instance.
    * 
    * @param className The name of the class to load and create an instance of.
    * @param superClass The super class the class must extend.
    * @param jarFileName The name of the jar file to load the class from.
-   *        May be <code>null</code>.
+   *        May be <code>null</code> or relative to a library path.
    * @return An object of the class.
    * @throws RegainException If loading the class or creating the instance
    *         failed or if the class is no instance of the given super class. 
@@ -1233,8 +1263,12 @@ public class RegainToolkit {
     if (jarFileName != null) {
       File jarFile = new File(jarFileName);
       if (!jarFile.exists()) {
-        throw new RegainException("Jar file does not exist: "
-                + jarFile.getAbsolutePath());
+        File jarFileNew = searchJarFile(jarFileName);
+        if (jarFileNew == null)
+          throw new RegainException("Jar file does not exist: "
+                + jarFile.getAbsolutePath() + " (Also looked for it in:" + jarFolders + ")");
+        else
+          jarFile = jarFileNew;
       }
 
       try {
@@ -1581,7 +1615,7 @@ public class RegainToolkit {
       boolean useStemming = true;
       // NOTE: For security reasons we explicitely check for the groups field
       //       and don't use the mUntokenizedFieldNames for this implicitely
-      if (fieldName.equals("groups") || mUntokenizedFieldNames.contains(fieldName)) {
+      if (fieldName.equals(RegainToolkit.FIELD_ACCESS_CONTROL_GROUPS) || mUntokenizedFieldNames.contains(fieldName)) {
         useStemming = false;
       }
 

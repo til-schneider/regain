@@ -1,14 +1,34 @@
+Version 1.7.12 on 2012/Apr/12 PREVIEW
+-------------------------------------
+
+NEW
+ * File2Http-Bridge: /file/$/$...file.txt?askPermission=1 returns "true"/"false" to indicate whether the file could be downloaded
+   (exists in index and is permitted by SearchAccessController) 
+ * CrawlerAccessController: Is closed after crawling, if interface "Closeable" is implemented
+
+UPDATE
+ * Crawler Thumbnailer in version 0.5 Stable
+ * POI Library 3.7 -> 3.8
+
+BUGFIX
+ * Regression: search_xml.jsp didn't work as Server Version
+ * Xml escaping doesn't give invalid entities like &copy; anymore
+ * allowFileAccess: Don't block file access when SearchAccessController is used, but respect its groups.
+ * FilesizeFilterPlugin: Do not filter directories.
+
 Version 1.7.11 on 2012/Feb/03 PREVIEW
 -------------------------------------
 
 NEW
- * Dynamic blacklisting.
+ * CrawlerPlugin allows dynamic blacklisting (new method checkDynamicBlacklist()
+ * Add FilesizeFilterPlugin
 
 UPDATE
  * Crawler Thumbnailer in version 0.3 Stable
 
 CLEANUP
  * Removal of no longer used libraries (bcmail und bcprov)
+
 
 Version 1.7.10 on 2011/Dec/10 PREVIEW
 -------------------------------------

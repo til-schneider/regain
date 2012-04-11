@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-17 12:17:12 +0200 (Mi, 17 Aug 2011) $
+ *     $Date: 2012-04-04 15:06:49 +0200 (Mi, 04 Apr 2012) $
  *   $Author: benjaminpick $
- * $Revision: 531 $
+ * $Revision: 579 $
  */
 package net.sf.regain.util.io;
 
@@ -42,7 +42,7 @@ public class MultiLocalizer {
   private LocalizerFactory mFactory;
   
   /** Holds for a locale (Locale) a localizer (Localizer) */
-  private HashMap mLocalizerHash;
+  private HashMap<Locale, Localizer> mLocalizerHash;
   
 
   /**
@@ -50,9 +50,9 @@ public class MultiLocalizer {
    * 
    * @param clazz The class to create the MultiLocalizer for.
    */
-  public MultiLocalizer(Class clazz) {
+  public MultiLocalizer(Class<?> clazz) {
     mFactory = new ClassLocalizerFactory(clazz);
-    mLocalizerHash = new HashMap();
+    mLocalizerHash = new HashMap<Locale, Localizer>();
   }
   
   
@@ -64,7 +64,7 @@ public class MultiLocalizer {
    */
   public MultiLocalizer(URL baseurl, String basename) {
     mFactory = new BaseLocalizerFactory(baseurl, basename);
-    mLocalizerHash = new HashMap();
+    mLocalizerHash = new HashMap<Locale, Localizer>();
   }
   
   
@@ -75,7 +75,7 @@ public class MultiLocalizer {
    * @return The localizer.
    */
   public Localizer getLocalizer(Locale locale) {
-    Localizer localizer = (Localizer) mLocalizerHash.get(locale);
+    Localizer localizer = mLocalizerHash.get(locale);
     if (localizer == null) {
       localizer = mFactory.createLocalizer(locale);
       mLocalizerHash.put(locale, localizer);
@@ -104,14 +104,14 @@ public class MultiLocalizer {
   private static class ClassLocalizerFactory implements LocalizerFactory {
 
     /** The class to create localizers for. */
-    private Class mClazz;
+    private Class<?> mClazz;
     
     /**
      * Creates a new instance of ClassLocalizerFactory.
      * 
      * @param clazz The class to create localizers for.
      */
-    public ClassLocalizerFactory(Class clazz) {
+    public ClassLocalizerFactory(Class<?> clazz) {
       mClazz = clazz;
     }
     

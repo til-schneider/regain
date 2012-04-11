@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-09-20 13:52:46 +0200 (Di, 20 Sep 2011) $
+ *     $Date: 2012-03-29 14:42:38 +0200 (Do, 29 Mrz 2012) $
  *   $Author: benjaminpick $
- * $Revision: 534 $
+ * $Revision: 570 $
  */
 package net.sf.regain.crawler;
 
@@ -1051,7 +1051,7 @@ public class IndexWriterManager {
     // Index optimieren
     try {
       setIndexMode(WRITING_MODE);
-      mIndexWriter.optimize();
+      mIndexWriter.optimize(); // TODO: Use maybeMerge instead?
     } catch (IOException exc) {
       throw new RegainException("Finishing IndexWriter failed", exc);
     }
