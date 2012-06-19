@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.lucene.analysis.Token;
-import org.apache.lucene.analysis.TokenStream;
 
 /**
  * A token stream reading tokens from an iterator.

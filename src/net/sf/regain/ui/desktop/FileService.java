@@ -65,7 +65,7 @@ public class FileService extends BasicService {
     // Check the file URL
     boolean allow = SearchToolkit.allowFileAccess(request, fileUrl);
     
-    if ("1".equals(request.getParameter("askPermission")))
+    if ("1".equals(request.getParameter("askPermission")) || "1".equals(request.getParameter("askpermission")))
     {
       response.setHeader("Content-Type", "text/plain");
       response.printNoHtml(Boolean.toString(allow));

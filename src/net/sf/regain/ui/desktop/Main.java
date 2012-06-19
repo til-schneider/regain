@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-09-20 13:52:46 +0200 (Di, 20 Sep 2011) $
+ *     $Date: 2012-06-20 17:45:58 +0200 (Mi, 20 Jun 2012) $
  *   $Author: benjaminpick $
- * $Revision: 534 $
+ * $Revision: 609 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -45,7 +45,7 @@ import org.apache.log4j.PropertyConfigurator;
  * Starts the desktop search.
  *
  * @author Til Schneider, www.murfman.de
- * @auther Thomas Tesche, www.clustersystems.de
+ * @author Thomas Tesche, www.clustersystems.de
  */
 public class Main implements DesktopConstants {
 

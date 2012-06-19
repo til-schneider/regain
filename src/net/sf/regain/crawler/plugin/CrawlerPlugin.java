@@ -43,8 +43,6 @@ import net.sf.regain.crawler.document.Pluggable;
  * If you want to implement only some of these method,
  * you can inherit empty stub methods from AbstractCrawlerPlugin.
  * 
- * It is guaranteed that none of the arguments is 'null'.
- * 
  * A typical call order may be:
  * 
  * onStartCrawling
@@ -65,9 +63,6 @@ import net.sf.regain.crawler.document.Pluggable;
  * onDeleteIndexEntry
  * ...
  * onFinishCrawling
- * 
- * 
- * WARNING: Don't consider this API stable yet, the method signatures may still change.
  * 
  * @author Benjamin
  */
@@ -128,7 +123,7 @@ public interface CrawlerPlugin extends Pluggable {
 		 * This may be a newly indexed document, or a document that has changed since
 		 * and, thus, is reindexed.
 		 *  
-		 * @param doc			Document to write
+		 * @param doc			  Document to write
 		 * @param index			Lucene Index Writer
 		 */
 		void onCreateIndexEntry(Document doc, IndexWriter index);
@@ -138,7 +133,7 @@ public interface CrawlerPlugin extends Pluggable {
 		 * Note that when being replaced by another document ("update index"),
 		 * the old document is added to index first, deleting is part of the cleaning-up-at-the-end-Phase.
 		 * 
-		 * @param doc			Document to read
+		 * @param doc			  Document to read
 		 * @param index			Luce Index Reader
 		 */
 		void onDeleteIndexEntry(Document doc, IndexReader index);
@@ -148,7 +143,7 @@ public interface CrawlerPlugin extends Pluggable {
 		 * (Good point to fill in default values.)
 		 * 
 		 * @param document		Regain document that will be analysed
-		 * @param preparator	Preperator that was chosen to analyse this document
+		 * @param preparator	Preparator that was chosen to analyse this document
 		 */
 		void onBeforePrepare(RawDocument document, WriteablePreparator preparator);
 	
@@ -157,7 +152,7 @@ public interface CrawlerPlugin extends Pluggable {
 		 * Here you can override the results of the preperator, if necessary.
 		 * 
 		 * @param document		Regain document that was analysed
-		 * @param preparator	Preperator that has analysed this document
+		 * @param preparator	Preparator that has analysed this document
 		 */
 		void onAfterPrepare(RawDocument document, WriteablePreparator preparator);
 }

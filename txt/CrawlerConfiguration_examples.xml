@@ -435,9 +435,14 @@
     <class>.EmptyPreparator</class>
   </preparator>
  
-  <!-- CatchAll-preparator on basis of EmptyPreparator -->
+  <!-- CatchAll-preparator -->
   <preparator priority="-10">
     <class>.EmptyPreparator</class>
+    <urlPattern>.*</urlPattern>
+  </preparator>
+
+  <preparator priority="-10">
+    <class>.FilenamePreparator</class>
     <urlPattern>.*</urlPattern>
   </preparator>
 

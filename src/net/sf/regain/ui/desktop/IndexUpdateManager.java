@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-17 12:17:12 +0200 (Mi, 17 Aug 2011) $
+ *     $Date: 2012-06-09 09:24:07 +0200 (Sa, 09 Jun 2012) $
  *   $Author: benjaminpick $
- * $Revision: 531 $
+ * $Revision: 603 $
  */
 package net.sf.regain.ui.desktop;
 
@@ -48,6 +48,8 @@ import org.apache.log4j.Logger;
  */
 public class IndexUpdateManager implements DesktopConstants {
   
+  private static final long MAX_CRAWLER_WAIT_MILLIS = 1500;
+
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(IndexUpdateManager.class);
 
@@ -59,6 +61,8 @@ public class IndexUpdateManager implements DesktopConstants {
   
   /** The crawler. Is <code>null</code> if there is currently no index update running. */
   private volatile Crawler mCrawler;
+
+  private volatile boolean welcomePageShown = false;
   
   
   /**
@@ -124,9 +128,11 @@ public class IndexUpdateManager implements DesktopConstants {
     mCheckThread.interrupt();
     
     // Wait until the crawler runs
-    while (mCrawler == null) {
+    long now = System.currentTimeMillis();
+    while (mCrawler == null && System.currentTimeMillis() - now < MAX_CRAWLER_WAIT_MILLIS) {
       try {
         Thread.sleep(100);
+        
       }
       catch (InterruptedException exc) {}
     }
@@ -195,12 +201,15 @@ public class IndexUpdateManager implements DesktopConstants {
       
       // Check whether to show the welcome page
       if (config.getStartUrls().length == 0) {
-        // There are no start URLs defined -> Show the welcome page
-        mLog.info("There is nothing configured. Showing the welcome page.");
-        DesktopToolkit.openPageInBrowser("welcome.jsp");
-        
-        // Show the welcome page again, when the next update period is finished
-        saveIndexLastUpdate();
+        if (!welcomePageShown)
+        {
+          // There are no start URLs defined -> Show the welcome page
+          mLog.info("There is nothing configured. Showing the welcome page.");
+          DesktopToolkit.openPageInBrowser("welcome.jsp");
+          
+          // Show the welcome page only once per start
+          welcomePageShown  = true;
+        }
       } else {
         // Update the index
 
@@ -227,6 +236,9 @@ public class IndexUpdateManager implements DesktopConstants {
           System.gc();
   
           TrayIconHandler.getInstance().setIndexUpdateRunning(false);
+          
+          // Allow showing of welcome page again
+          welcomePageShown = false;
         }
       }
     }

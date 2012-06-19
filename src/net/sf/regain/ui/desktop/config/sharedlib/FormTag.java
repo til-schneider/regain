@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-17 10:06:11 +0200 (Mi, 17 Aug 2011) $
+ *     $Date: 2012-06-09 12:15:25 +0200 (Sa, 09 Jun 2012) $
  *   $Author: benjaminpick $
- * $Revision: 530 $
+ * $Revision: 605 $
  */
 package net.sf.regain.ui.desktop.config.sharedlib;
 
@@ -36,6 +36,7 @@ import java.util.List;
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
 import net.sf.regain.XmlToolkit;
+import net.sf.regain.search.NoncesManager;
 import net.sf.regain.ui.desktop.DesktopConstants;
 import net.sf.regain.ui.desktop.DesktopToolkit;
 import net.sf.regain.ui.desktop.IndexUpdateManager;
@@ -66,7 +67,15 @@ public class FormTag extends SharedTag implements DesktopConstants {
   private static final String IMAP_PROTOCOL = "imap";
   /** The MultiLocalizer for this class. */
   private static MultiLocalizer mMultiLocalizer = new MultiLocalizer(FormTag.class);
+  
+  /** Create and check nonces */ 
+  private static final String FORM_ACTION_NONCE = "config";
 
+  public FormTag()
+  {
+    super();
+  }
+  
   /**
    * Called when the parser reaches the start tag.
    * <p>
@@ -89,6 +98,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
     String[] imaplist;
 
     Localizer localizer = mMultiLocalizer.getLocalizer(request.getLocale());
+    NoncesManager nonces = new NoncesManager();
 
     int port;
     if (interval == -1) {
@@ -104,6 +114,12 @@ public class FormTag extends SharedTag implements DesktopConstants {
       imaplist = getCompleteStartlistEntries(crawlerDoc, IMAP_PROTOCOL);
       port = desktopConfig.getPort();
     } else {
+      if (!nonces.checkNonce(request, FORM_ACTION_NONCE))
+      {
+        response.sendError(403);
+        return SKIP_TAG_BODY;
+      }
+      
       // There were new settings sent -> Check the input
       ArrayList<String> errorList = new ArrayList<String>();
 
@@ -121,6 +137,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
       checkWebsiteList(errorList, sitelist, localizer);
       checkWebsiteList(errorList, siteblacklist, localizer);
       checkImapList(errorList, imaplist, localizer);
+      checkStartUrlLists(errorList, dirlist, sitelist, imaplist, localizer);
 
       if (errorList.isEmpty()) {
         // There were no errors -> Save the values
@@ -152,6 +169,8 @@ public class FormTag extends SharedTag implements DesktopConstants {
     response.print("<form name=\"settings\" action=\"" + action + "\" "
             + "method=\"post\" onsubmit=\"prepareEditListsForSubmit()\">");
 
+    response.print(nonces.generateHTML(request, FORM_ACTION_NONCE));
+    
     return EVAL_TAG_BODY;
   }
 
@@ -176,19 +195,23 @@ public class FormTag extends SharedTag implements DesktopConstants {
    */
   private void checkDirectoryList(ArrayList<String> errorList, String[] dirlist, Localizer localizer) {
     for (int i = 0; i < dirlist.length; i++) {
+      if (dirlist[i] == null)
+         continue;
+
       File dir = new File(dirlist[i]);
       StringBuilder tmpString = new StringBuilder();
       if (!dir.exists()) {
         tmpString.append(localizer.msg("checkDir1", "The directory '"));
         tmpString.append(dirlist[i].toString());
         tmpString.append(localizer.msg("checkDir2", "' doesn't exist"));
+        
         errorList.add(tmpString.toString());
-//        errorList.add("Das Verzeichnis '" + dirlist[i] + "' existiert nicht");
       } else if (!dir.isDirectory()) {
         tmpString.append(localizer.msg("checkDir3", "'"));
         tmpString.append(dirlist[i].toString());
         tmpString.append(localizer.msg("checkDir4", "' is not a directory"));
-//        errorList.add("'" + dirlist[i] + "' ist kein Verzeichnis");
+        
+        errorList.add(tmpString.toString());
       }
 
       // Make the path URL conform
@@ -211,6 +234,24 @@ public class FormTag extends SharedTag implements DesktopConstants {
       checkValidUrl(errorList, sitelist[i], urlAsString, localizer.msg("checkWebsite1", "'"), localizer.msg("checkWebsite2", "' is not a valid http URL"));
     }
   }
+
+  /**
+   * Check if at least one of the whitelists contains some entry
+   * 
+   * @param errorList The list where to store the error messages.
+   * @param dirlist
+   * @param sitelist
+   * @param imaplist
+   * @param localizer
+   */
+  private void checkStartUrlLists(ArrayList<String> errorList, String[] dirlist, String[] sitelist, String[] imaplist, Localizer localizer)
+  {
+    if (dirlist.length == 0 && sitelist.length == 0 && imaplist.length == 0)
+    {
+      errorList.add(localizer.msg("checkDirWhitelistsEmpty", "No directory/website/imap found to start crawling!"));
+    }
+  }
+
 
   /**
    * Build Url to test if it is valid.

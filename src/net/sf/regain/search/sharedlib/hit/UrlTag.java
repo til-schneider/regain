@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2006-09-11 20:12:53 +0200 (Mo, 11 Sep 2006) $
- *   $Author: til132 $
- * $Revision: 234 $
+ *     $Date: 2012-05-29 09:59:28 +0200 (Di, 29 Mai 2012) $
+ *   $Author: benjaminpick $
+ * $Revision: 602 $
  */
 package net.sf.regain.search.sharedlib.hit;
 
@@ -68,9 +68,9 @@ public class UrlTag extends AbstractHitTag {
 
     boolean beautified = getParameterAsBoolean("beautified", false);
     if (beautified && url.startsWith("file://")) {
-      response.print(RegainToolkit.urlToFileName(url));
+      response.printNoHtml(RegainToolkit.urlToFileName(url));
     } else {
-      response.print(RegainToolkit.urlDecode(url, RegainToolkit.INDEX_ENCODING));
+      response.printNoHtml(RegainToolkit.urlDecode(url, RegainToolkit.INDEX_ENCODING));
     }
   }
 

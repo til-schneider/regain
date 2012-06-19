@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-17 12:17:12 +0200 (Mi, 17 Aug 2011) $
+ *     $Date: 2012-05-21 18:04:19 +0200 (Mo, 21 Mai 2012) $
  *   $Author: benjaminpick $
- * $Revision: 531 $
+ * $Revision: 598 $
  */
 package net.sf.regain.search.sharedlib;
 
@@ -37,7 +37,7 @@ import net.sf.regain.util.sharedtag.PageResponse;
 import net.sf.regain.util.sharedtag.SharedTag;
 
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Fieldable;
 
 /**
  * The list tag encloses the JSP code that should be repeated for every shown
@@ -139,7 +139,7 @@ public class ListTag extends SharedTag implements SearchConstants {
       if (!(order == null || order.length() == 0 || order.startsWith(SortingOption.RELEVANCE))) {
         String fieldName = order.substring(0, order.lastIndexOf("_"));
         //System.out.println("none standard order. fieldname: " + fieldName);
-        Field field = hit.getField(fieldName);
+        Fieldable field = hit.getFieldable(fieldName);
         String fieldContent = null;
         if (field != null) {
           fieldContent = field.stringValue();

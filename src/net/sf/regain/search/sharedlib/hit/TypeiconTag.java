@@ -109,7 +109,7 @@ public class TypeiconTag extends AbstractHitTag {
     if (! available.booleanValue()) {
       imgFile = imgpath + "/no_ext" + "." + iconextension;
     } 
-    response.print("<img src=\"" + imgFile + "\"></img>");
+    response.print("<img src=\"" + imgFile + "\" />");
   }
 
 }

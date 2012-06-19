@@ -5,6 +5,8 @@ import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sf.regain.RegainException;
+
 import org.apache.commons.io.FileUtils;
 
 
@@ -45,7 +47,7 @@ public class StartDesktopTest extends IntegrationTestCase
   public void testFirstStart() throws Exception
   {
     // When starting the desktop version
-    ByteArrayOutputStream os = startUp("java -jar regain.jar", environment, 120);
+    ByteArrayOutputStream os = startUp("java -jar regain.jar", environment, 160);
     
     // Then it's getting ready within 20 seconds
     String str = waitForContains(os, "Finished crawling");
@@ -97,7 +99,13 @@ public class StartDesktopTest extends IntegrationTestCase
     // When adding a file to the index
     FileUtils.copyFile(new File(root, "test/testfiles/test.txt"), new File(root, "test/testfiles/test2.txt"));
     
-    getUrlContent("http://localhost:8020/status.jsp?indexaction=start", true, true); // Trigger re-index
+    try {
+      FileOutputStream out = new FileOutputStream(new File(environment, "searchindex/needsupdate"));
+      out.close();
+    }
+    catch (IOException exc) {
+      throw new RegainException("Creating needsupdate file failed", exc);
+    }
     os.reset();
     str = waitForContains(os, "Finished loading new index.");
     Thread.sleep(SLEEP_WAIT_MILLIS);

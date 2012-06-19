@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2012-04-10 15:24:12 +0200 (Di, 10 Apr 2012) $
+ *     $Date: 2012-05-17 10:28:42 +0200 (Do, 17 Mai 2012) $
  *   $Author: benjaminpick $
- * $Revision: 582 $
+ * $Revision: 595 $
  */
 package net.sf.regain.ui.server;
 
@@ -83,7 +83,7 @@ public class FileServlet extends HttpServlet {
       try {
         boolean allow = SearchToolkit.allowFileAccess(request, fileUrl);
         
-        if ("1".equals(request.getParameter("askPermission")))
+        if ("1".equals(request.getParameter("askPermission")) || "1".equals(request.getParameter("askpermission")))
         {
           response.setHeader("Content-Type", "text/plain");
           response.printNoHtml(Boolean.toString(allow));

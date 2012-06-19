@@ -339,7 +339,6 @@ public class SearchToolkit {
 
 
     // Restore the double slashes
-    // See workaround in net.sf.regain.search.sharedlib.hit.LinkTag
     fileName = RegainToolkit.replace(fileName,
             new String[]{"$/$", "$$"},
             new String[]{"/", "$"});

@@ -21,14 +21,15 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-16 14:57:16 +0100 (Mi, 16 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 92 $
+ *     $Date: 2012-06-09 09:24:07 +0200 (Sa, 09 Jun 2012) $
+ *   $Author: benjaminpick $
+ * $Revision: 603 $
  */
 package net.sf.regain.ui.desktop.status.sharedlib;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.crawler.Crawler;
+import net.sf.regain.search.NoncesManager;
 import net.sf.regain.ui.desktop.IndexUpdateManager;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
@@ -50,6 +51,8 @@ import net.sf.regain.util.sharedtag.SharedTag;
  */
 public class IndexupdatecontrolTag extends SharedTag {
 
+  private static final String FORM_ACTION_NONCE = "status.indexupdate";
+
   /**
    * Called when the parser reaches the end tag.
    *  
@@ -61,25 +64,38 @@ public class IndexupdatecontrolTag extends SharedTag {
     throws RegainException
   {
     Crawler crawler = IndexUpdateManager.getInstance().getCurrentCrawler();
+    NoncesManager nonces = new NoncesManager();
 
     // Check whether there was an indexaction
     String indexaction = request.getParameter("indexaction");
-    if ("start".equals(indexaction)) {
-      IndexUpdateManager.getInstance().startIndexUpdate();
-      crawler = IndexUpdateManager.getInstance().getCurrentCrawler();
+    if (indexaction != null)
+    {
+      if (!nonces.checkNonce(request, FORM_ACTION_NONCE))
+      {
+        response.sendError(403);
+        return;
+      }
+      
+      if ("start".equals(indexaction)) {
+        IndexUpdateManager.getInstance().startIndexUpdate();
+        crawler = IndexUpdateManager.getInstance().getCurrentCrawler();
+      }
+      else if ("resume".equals(indexaction)) {
+        IndexUpdateManager.getInstance().setShouldPause(false);
+      }
+      else if ("pause".equals(indexaction)) {
+        IndexUpdateManager.getInstance().setShouldPause(true);
+      }
     }
-    else if ("resume".equals(indexaction)) {
-      IndexUpdateManager.getInstance().setShouldPause(false);
-    }
-    else if ("pause".equals(indexaction)) {
-      IndexUpdateManager.getInstance().setShouldPause(true);
-    } 
     
     // Generate the form
     String url = getParameter("url", true);
     String msgBefore = getParameter("msgBefore", "");
     response.print("<form name=\"control\" action=\"" + url + "\" " +
         "style=\"display:inline;\" method=\"post\">" + msgBefore + " ");
+
+    response.print(nonces.generateHTML(request, FORM_ACTION_NONCE));
+
     if (crawler == null) {
       // There is currently no index update running -> Provide a start button
       String msgStart = getParameter("msgStart", true);

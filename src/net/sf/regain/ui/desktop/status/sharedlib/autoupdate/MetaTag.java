@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-01 17:04:30 +0100 (Di, 01 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 46 $
+ *     $Date: 2012-06-09 12:15:25 +0200 (Sa, 09 Jun 2012) $
+ *   $Author: benjaminpick $
+ * $Revision: 605 $
  */
 package net.sf.regain.ui.desktop.status.sharedlib.autoupdate;
 
@@ -49,8 +49,8 @@ public class MetaTag extends SharedTag {
   public void printEndTag(PageRequest request, PageResponse response)
     throws RegainException
   {
-    String autoupdate = request.getParameter("autoupdate");
-    if (autoupdate != null) {
+    int autoupdate = request.getParameterAsInt("autoupdate", 0);
+    if (autoupdate > 0) {
       response.print("<meta http-equiv=\"refresh\" content=\"" + autoupdate + "\"/>");
     }
   }

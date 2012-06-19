@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-09-27 09:21:07 +0200 (Di, 27 Sep 2011) $
+ *     $Date: 2012-06-09 12:15:25 +0200 (Sa, 09 Jun 2012) $
  *   $Author: benjaminpick $
- * $Revision: 539 $
+ * $Revision: 605 $
  */
 package net.sf.regain.util.sharedtag.simple;
 
@@ -37,6 +37,7 @@ import java.util.Locale;
 import net.sf.regain.RegainException;
 import net.sf.regain.util.sharedtag.PageRequest;
 import simple.http.Request;
+import simple.http.session.Session;
 import simple.util.net.Parameters;
 
 /**
@@ -61,6 +62,8 @@ public class SimplePageRequest extends PageRequest {
   /** The page context. May be null. */
   private HashMap<String, Object> mPageContext;
   
+  /** The session. */
+  private Session mSession;
 
   /**
    * Creates a new instance of SimplePageRequest.
@@ -69,6 +72,7 @@ public class SimplePageRequest extends PageRequest {
    */
   public SimplePageRequest(Request request) {
     mRequest = request;
+    mSession = null;
   }
 
 
@@ -199,7 +203,11 @@ public class SimplePageRequest extends PageRequest {
    */
   public void setSessionAttribute(String name, Object value) {
     // TODO: implement
-    throw new IllegalStateException("Not yet implemented");
+    //throw new IllegalStateException("Not yet implemented");
+    if (mSession == null)
+      mSession = mRequest.getSession();
+    
+    mSession.put(name, value);
   }
 
 
@@ -212,7 +220,11 @@ public class SimplePageRequest extends PageRequest {
    */
   public Object getSessionAttribute(String name) {
     // TODO: implement
-    throw new IllegalStateException("Not yet implemented");
+    //throw new IllegalStateException("Not yet implemented");
+    if (mSession == null)
+      mSession = mRequest.getSession();
+    
+    return mSession.get(name);
   }
 
 
@@ -227,7 +239,7 @@ public class SimplePageRequest extends PageRequest {
       return null;
     }
     
-    return (String) mInitParameterHash.get(name);
+    return mInitParameterHash.get(name);
   }
 
   

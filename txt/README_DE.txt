@@ -1,4 +1,25 @@
-Version 1.7.12 am 12.04.2012 PREVIEW
+Version 1.8.0 am 20.06.2012 PREVIEW (r609)
+-----------------------------------
+
+NEU
+ * FilenamePreparator: wie EmptyPreparator, nur wird der Dateiname auch als Inhalt indiziert
+
+UPDATE
+ * Lucene Core 3.1 -> 3.6 (+Entfernung von "veralteten" Funktionsaufrufen)
+
+BUGFIX
+ * HTML-Kodierung der folgenden Tags verbessert: hit_filename, hit_sortContent, hit_typeicon, hit_url, input_query, stats_query, status:autoupdate_meta
+ * Desktop Version: Für Konfiguration werden nun one-time Tokens benutzt (gegen CSRF-Angriffe)
+ * Desktop Version: Zeige die Willkommens-Seite nur einmal pro Start (nicht alle 10 Sekunden!)
+ * Desktop Version: Konfiguration: Zeige eine Fehlermeldung, wenn keine Orte angegeben wurden, die indexiert werden sollen
+ * Desktop Version: antwortete auf manche Anfragen mit AlreadyClosedException
+ * Mache Stacktrace der Fehlermeldungen auffindbarer ("Zeige Details")
+
+Upgrade Notes:
+- Dadurch, dass Lucene aktualisiert wurde, werden die Index-Dateien automatisch mit aktulisiert. Wird anschließend eine frühere von Regain Version installiert, muss der Ordner des Indexes (idR. /searchindex/) gelöscht werden, damit der Index neu erstellt wird.
+- Server Version: Beim aktualisieren darauf Acht geben, dass die alten Lucene-Bibliotheken (lucene-*-3.1.0.jar) aus WEB-INF/lib gelöscht werden! 
+
+Version 1.7.12 am 12.04.2012 PREVIEW (r580)
 ------------------------------------
 
 NEU
@@ -8,7 +29,7 @@ NEU
 
 UPDATE
  * Crawler Thumbnailer in Version 0.5 Stable
-  * POI Library 3.7 -> 3.8
+ * POI Library 3.7 -> 3.8
 
 BUGFIX
  * Regression: search_xml.jsp funktionierte nicht in Regain Server Version

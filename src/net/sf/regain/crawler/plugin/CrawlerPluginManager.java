@@ -180,7 +180,7 @@ public class CrawlerPluginManager {
 			CrawlerPlugin plugin = entry.getValue();
 			String pluginName = plugin.getClass().getName();
 			
-			mLog.info("Send " + methodName + "-Event to " + pluginName);
+			mLog.debug("Send " + methodName + "-Event to " + pluginName);
 			
 			try {
 				ret = MethodUtils.invokeMethod(plugin, methodName, args, argTypes);

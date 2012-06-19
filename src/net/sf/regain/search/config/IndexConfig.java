@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-08-17 10:06:11 +0200 (Mi, 17 Aug 2011) $
+ *     $Date: 2012-05-21 18:09:21 +0200 (Mo, 21 Mai 2012) $
  *   $Author: benjaminpick $
- * $Revision: 530 $
+ * $Revision: 599 $
  */
 package net.sf.regain.search.config;
 
@@ -40,7 +40,7 @@ public class IndexConfig {
    * <p>
    * NOTE: The user may search in other fields also using the "field:"-operator.
    * Read the
-   * <a href="http://jakarta.apache.org/lucene/docs/queryparsersyntax.html">lucene query syntax</a>
+   * <a href="https://lucene.apache.org/core/3_6_0/queryparsersyntax.html">lucene query syntax</a>
    * for details.
    */
   private String[] mSearchFieldList;
@@ -172,7 +172,7 @@ public class IndexConfig {
    * <p>
    * NOTE: The user may search in other fields also using the "field:"-operator.
    * Read the
-   * <a href="http://jakarta.apache.org/lucene/docs/queryparsersyntax.html">lucene query syntax</a>
+   * <a href="https://lucene.apache.org/core/3_6_0/queryparsersyntax.html">lucene query syntax</a>
    * for details.
    * 
    * @return The index fields to search by default.

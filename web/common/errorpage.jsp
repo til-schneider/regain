@@ -25,6 +25,12 @@
       </p>
       <p>
       <search:msg key="errorMessage"/>: <code><search:error_message/></code>
+	  <%-- Add the stack trace as hidden text --%>
+	  <div style="display:none; color:grey; " id="stacktrace">  
+	  Stacktrace:
+	  <pre><search:msg key="errorMessage"/>:<search:error_stacktrace/></pre>
+	  </div>
+	  <small><a href="#" onclick="document.getElementById('stacktrace').style.display=''; return false;"><search:msg key="error.showDetails"/></a></small>
       </p>
       <p>
       <search:msg key="error.moreInfo"/><br>
@@ -37,12 +43,6 @@
   </table>
 
   <%@include file="footer.jsp" %>
-
-  <%-- Add the stack trace as hidden text --%>
-  <pre style="color:FFFFFF; font-size:small;">  
-  Stacktrace:
-  <search:msg key="errorMessage"/>:<search:error_stacktrace/>
-  </pre>
 
 </body>
 </html>

@@ -67,7 +67,7 @@ public class SortContentTag extends SharedTag implements SearchConstants {
       response.print("&nbsp;");
       response.print(localizer.msg("sortContent", "sort field content"));
       response.print(":&nbsp;");
-      response.print(sortContent);
+      response.printNoHtml(sortContent);
     }
   }
 }

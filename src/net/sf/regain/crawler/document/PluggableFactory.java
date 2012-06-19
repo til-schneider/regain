@@ -74,7 +74,7 @@ public abstract class PluggableFactory {
     }
     if (mLog.isDebugEnabled())
     {
-      mLog.debug("Found " + preparatorHash.size() + " Preperator(s) or Plugin(s) in Jar-Files:");
+      mLog.debug("Found " + preparatorHash.size() + " Preparator(s) or Plugin(s) in Jar-Files:");
       for (String entry : preparatorHash.keySet())
       {
         mLog.debug(entry);

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2011-11-27 10:36:43 +0100 (So, 27 Nov 2011) $
+ *     $Date: 2012-05-21 18:04:19 +0200 (Mo, 21 Mai 2012) $
  *   $Author: benjaminpick $
- * $Revision: 549 $
+ * $Revision: 598 $
  */
 package net.sf.regain.search;
 
@@ -176,7 +176,7 @@ public class IndexSearcherManager {
       }
 
       try {
-        mIndexSearcher = new IndexSearcher(FSDirectory.open(mWorkingIndexDir), true);
+        mIndexSearcher = new IndexSearcher(IndexReader.open(FSDirectory.open(mWorkingIndexDir)));
       } catch (IOException exc) {
         throw new RegainException("Creating index searcher failed", exc);
       }
@@ -207,7 +207,7 @@ public class IndexSearcherManager {
       }
 
       try {
-        mIndexReader = IndexReader.open(FSDirectory.open(mWorkingIndexDir), true);
+        mIndexReader = IndexReader.open(FSDirectory.open(mWorkingIndexDir));
       } catch (IOException exc) {
         throw new RegainException("Creating index reader failed", exc);
       }
@@ -412,7 +412,7 @@ public class IndexSearcherManager {
       }
 
       try {
-        mIndexSearcher = new IndexSearcher(FSDirectory.open(mWorkingIndexDir), true);
+        mIndexSearcher = new IndexSearcher(IndexReader.open(FSDirectory.open(mWorkingIndexDir)));
       } catch (IOException exc) {
         throw new RegainException("Creating index searcher failed", exc);
       }

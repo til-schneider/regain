@@ -22,9 +22,9 @@
  | CVS information:
  |  $RCSfile$
  |   $Source$
- |     $Date: 2012-04-12 16:00:49 +0200 (Do, 12 Apr 2012) $
+ |     $Date: 2012-06-20 17:45:58 +0200 (Mi, 20 Jun 2012) $
  |   $Author: benjaminpick $
- | $Revision: 588 $
+ | $Revision: 609 $
  |
  | Author: Til Schneider, www.murfman.de
  | How to use this file: http://regain.murfman.de/wiki/doku.php?id=project_info:howto_regain_in_an_ide#ant
@@ -197,6 +197,7 @@
     <delete dir="build/plugins"/>
     <delete dir="build/web-temps"/>
     <delete dir="test/build/runtime"/>
+    <delete dir="log"/>
   </target>
 
 
@@ -561,6 +562,9 @@
     </antcall>
     <antcall target="-simple-preparator">
       <param name="classname" value="EmptyPreparator"/>
+    </antcall>
+    <antcall target="-simple-preparator">
+      <param name="classname" value="FilenamePreparator"/>
     </antcall>
     <antcall target="-simple-preparator">
       <param name="classname" value="JarPreparator"/>
@@ -1153,7 +1157,7 @@
    | This target depends on clean-runtime to be sure that the runtime
    | directory contains no stuff we don't want to be destributed.
    +-->
-  <target name="public-no-installer" depends="clean-all, runtime, test-integration, doc">
+  <target name="public-no-installer"> <!-- depends="clean-all, runtime, test-integration, doc"-->
     <mkdir dir="build/public"/>
     <zip destfile="build/public/${programname.file}_v${version}_server.zip">
       <zipfileset prefix="${programname.file}/runtime/crawler"
@@ -1195,8 +1199,19 @@
     <zip destfile="build/public/${programname.file}_v${version}_src.zip">
       <zipfileset prefix="${programname.file}"
                   dir="">
+        <!-- Exclude Eclipse Files -->
+        <exclude name=".*"/>
+        <exclude name=".settings/**"/>
+        <exclude name="bin/**"/>
+
+	<!-- Exclude Integration Test Files -->
+        <exclude name="log/**"/>
+        <exclude name="test/build/**"/>
+
+	<!-- Exclude any temporary files -->
         <exclude name="**/*.bak"/>
         <exclude name="**/*~"/>
+
         <exclude name="build.properties"/>
         <exclude name="build/**"/>
         <exclude name="test/docs/**"/>
@@ -1275,6 +1290,7 @@
       <fileset dir="lib">
         <include name="lucene-*.jar"/>
         <include name="jakarta-regexp-*.jar"/>
+        <include name="commons-collections*.jar"/>
         <include name="log4j-*.jar"/>
       </fileset>
     </copy>

@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2012-04-10 14:35:24 +0200 (Di, 10 Apr 2012) $
+ *     $Date: 2012-05-21 18:04:19 +0200 (Mo, 21 Mai 2012) $
  *   $Author: benjaminpick $
- * $Revision: 580 $
+ * $Revision: 598 $
  */
 package net.sf.regain;
 
@@ -71,7 +71,7 @@ import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.fr.FrenchAnalyzer;
 import org.apache.lucene.analysis.it.ItalianAnalyzer;
-import org.apache.lucene.analysis.tokenattributes.TermAttribute;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;
@@ -107,7 +107,7 @@ public class RegainToolkit {
   /** Der gecachte, systemspeziefische Zeilenumbruch. */
   private static String mLineSeparator;
   /** The current version matching to the embedded lucene jars. */
-  private static final Version LUCENE_VERSION = Version.LUCENE_31;
+  private static final Version LUCENE_VERSION = Version.LUCENE_36;
 
 
   
@@ -731,11 +731,11 @@ public class RegainToolkit {
           // Analyze the call
           TokenStream stream = nestedAnalyzer.tokenStream(fieldName,
                   new StringReader(asString));
-          TermAttribute termAtt = stream.addAttribute(TermAttribute.class);
+          CharTermAttribute termAtt = stream.addAttribute(CharTermAttribute.class);
 
           System.out.println("Tokens for '" + asString + "':");
           while (stream.incrementToken()) {
-            System.out.println(" '" + termAtt.term() + "'");
+            System.out.println(" '" + termAtt.toString() + "'");
           }
           stream.reset();
           return stream;

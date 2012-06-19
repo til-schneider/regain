@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2005-03-01 17:04:30 +0100 (Di, 01 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 46 $
+ *     $Date: 2012-05-29 09:59:28 +0200 (Di, 29 Mai 2012) $
+ *   $Author: benjaminpick $
+ * $Revision: 602 $
  */
 package net.sf.regain.search.sharedlib;
 
@@ -58,7 +58,7 @@ public class ParamTag extends SharedTag {
     String name = getParameter("name", true);
     String value = request.getParameter(name);
     if (value != null) {
-      response.print(value);
+      response.printNoHtml(value);
     }
   }
   

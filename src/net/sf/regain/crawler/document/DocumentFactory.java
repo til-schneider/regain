@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2012-04-04 10:23:07 +0200 (Mi, 04 Apr 2012) $
+ *     $Date: 2012-06-20 14:33:07 +0200 (Mi, 20 Jun 2012) $
  *   $Author: benjaminpick $
- * $Revision: 576 $
+ * $Revision: 607 $
  */
 package net.sf.regain.crawler.document;
 
@@ -212,13 +212,13 @@ public class DocumentFactory {
         mimeType = "application/x-unknown-mime-type";
       }
 
-      mLog.debug("Detected mimetype cylcle 1: " + mimeType + ". " + rawDocument.getUrl());
+      mLog.debug("Detected mimetype cycle 1: " + mimeType + ". " + rawDocument.getUrl());
       if (mimeType.equalsIgnoreCase("application/zip")) {
         // some new files like MS Office documents are zip files
         // so rewrite the URL for the correct mimetype detection
         mimeType = mimeTypeIdentifier.identify(bytes, null,
                 new URIImpl("zip:mime:file:" + rawDocument.getUrl()));
-        mLog.debug("Detected mimetype cylcle 2: " + mimeType + ". " + "zip:mime:file:" + rawDocument.getUrl());
+        mLog.debug("Detected mimetype cycle 2: " + mimeType + ". " + "zip:mime:file:" + rawDocument.getUrl());
       }
     } catch (Exception exc) {
       errorLogger.logError("Determine mime-type of " + rawDocument.getUrl()
@@ -235,12 +235,12 @@ public class DocumentFactory {
     // Find the preparator that will prepare this URL
     Document doc = null;
     boolean preparatorFound = false;
-    ArrayList<Integer> matchingPreperators = new ArrayList<Integer>();
+    ArrayList<Integer> matchingPreparators = new ArrayList<Integer>();
     for (int i = 0; i < mPreparatorArr.length; i++) {
       if (mPreparatorArr[i].accepts(rawDocument)) {
         // This preparator can prepare this URL
         preparatorFound = true;
-        matchingPreperators.add(i);
+        matchingPreparators.add(i);
         if (mLog.isDebugEnabled()) {
           mLog.debug("Found: " + mPreparatorArr[i].getClass().getSimpleName()
                   + ", Prio: " + mPreparatorArr[i].getPriority());
@@ -251,7 +251,7 @@ public class DocumentFactory {
     // TODO: Try several preperators in order of priority?
     if (preparatorFound) {
       // Find the preparator with the highest priority
-      Iterator<Integer> prepIdxIter = matchingPreperators.iterator();
+      Iterator<Integer> prepIdxIter = matchingPreparators.iterator();
       int highestPriorityIdx = (prepIdxIter.next()).intValue();
       // In case of more than one matching preperator find the one with the highest prio
       while (prepIdxIter.hasNext()) {

@@ -55,11 +55,10 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.FieldValueHitQueue;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MultiSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocsCollector;
@@ -79,7 +78,7 @@ import org.apache.regexp.RESyntaxException;
 public class SearchResultsImpl implements SearchResults {
 
   /** The searcher (single or multi). */
-  private Searcher mIndexSearcher;
+  private IndexSearcher mIndexSearcher;
   /** The reader (multi). */
   private MultiReader mMultiReader;
   /** The Query text. */
@@ -91,7 +90,8 @@ public class SearchResultsImpl implements SearchResults {
   /** The hits of this search. */
   private ScoreDoc[] hitScoreDocs;
   /** The DocCollector. */
-  TopDocsCollector topDocsCollector;
+  private TopDocsCollector<FieldValueHitQueue.Entry> topDocsCollector;
+  
   private static Pattern mimetypeFieldPattern = Pattern.compile("(mimetype:\".*\")");
   /**
    * Der Reguläre Ausdruck, zu dem eine URL passen muss, damit sie in einem
@@ -104,16 +104,15 @@ public class SearchResultsImpl implements SearchResults {
   private Analyzer mAnalyzer;
   /** The current config. */
   private IndexConfig mIndexConfig;
-  /** Factory for create a new LazyList-entry. */
-  Factory factory = new Factory() {
-
+  
+  /** held the transformed hits. */
+  private List lazyHitList = ListUtils.lazyList(new ArrayList(), new Factory() {
+    /** Factory for create a new LazyList-entry. */
     @Override
     public Object create() {
       return new Document();
     }
-  };
-  /** held the transformed hits. */
-  private List lazyHitList = ListUtils.lazyList(new ArrayList(), factory);
+  });
 
   /**
    * Creates an instanz of SearchResults. This class can search over a single
@@ -183,7 +182,7 @@ public class SearchResultsImpl implements SearchResults {
         mAnalyzer = indexSearcherManagers[0].getAnalyzer();
         mIndexName = indexConfigs[0].getName();
         IndexReader[] readerArray = {indexSearcherManagers[0].getIndexReader()};
-        mMultiReader = new MultiReader(readerArray);
+        mMultiReader = new MultiReader(readerArray, false);
 
       } else {
         // Collect all IndexSearchers and instantiate a MultiSearcher
@@ -193,18 +192,12 @@ public class SearchResultsImpl implements SearchResults {
           searchers[j] = indexSearcherManagers[j].getIndexSearcher();
           readerArray[j] = indexSearcherManagers[j].getIndexReader();
         }
-        try {
-          mIndexSearcher = new MultiSearcher(searchers);
-          mMultiReader = new MultiReader(readerArray);
-          // get the 'first' analyzer (in fact it is a random choice)
-          // All indexes has to be build with the same analyzer
-          mAnalyzer = indexSearcherManagers[0].getAnalyzer();
-          mIndexName = "multiindex";
-
-        } catch (IOException ex) {
-          throw new RegainException("Couldn't instantiate MultiSearcher.", ex);
-        }
-
+        mMultiReader = new MultiReader(readerArray, false);
+        mIndexSearcher = new IndexSearcher(mMultiReader);
+        // get the 'first' analyzer (in fact it is a random choice)
+        // All indexes has to be build with the same analyzer
+        mAnalyzer = indexSearcherManagers[0].getAnalyzer();
+        mIndexName = "multiindex";
       }
 
       mIndexConfig = indexConfigs[0];

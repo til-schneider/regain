@@ -1,3 +1,24 @@
+Version 1.8.0 on 2012/June/20 PREVIEW
+-------------------------------------
+
+NEW
+ * FilenamePreparator: Behaves like EmptyPreparator, but indexes the filename as content
+
+UPDATE
+ * Lucene Core 3.1 -> 3.6 (and rewrite deprecated function calls)
+ 
+BUGFIX
+ * Improve HTML Escaping of the following tags: hit_filename, hit_sortContent, hit_typeicon, hit_url, input_query, stats_query, status:autoupdate_meta
+ * Desktop Version: Use a time-sensitive token for configuration to avoid CSRF
+ * Desktop Version: Show welcome page only once per start (every 10 seconds was too much!)
+ * Desktop Version: Add error message if config is left empty (no index places found)
+ * Desktop Version: Try to fix AlreadyClosedException
+ * error.jsp: Show debug details when clicking on a link (instead of white text on white background)
+ 
+Upgrade Notes:
+- The upgrade of lucene implicitely upgrades the searchindex as well. So in case you need to downgrade to an earlier regain version afterwards, delete the searchindex folder(s) and regain will start a complete re-index.
+- Server Version: Please make sure the old libraries (lucene-*-3.1.0.jar) get deleted from the WEB-INF/lib-Folder!
+ 
 Version 1.7.12 on 2012/Apr/12 PREVIEW
 -------------------------------------
 

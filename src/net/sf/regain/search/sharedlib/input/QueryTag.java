@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-11-26 18:14:25 +0100 (Do, 26 Nov 2009) $
- *   $Author: thtesche $
- * $Revision: 430 $
+ *     $Date: 2012-05-29 09:59:28 +0200 (Di, 29 Mai 2012) $
+ *   $Author: benjaminpick $
+ * $Revision: 602 $
  */
 package net.sf.regain.search.sharedlib.input;
 
@@ -66,7 +66,8 @@ public class QueryTag extends SharedTag {
 
     String query = SearchToolkit.getSearchQuery(request);
     if (query != null) {
-      response.print(RegainToolkit.replace(query, "\"", "&quot;"));
+      query = RegainToolkit.replace(query, "\"", "&quot;");
+      response.printNoHtml(query);
     }
 
     response.print("\"/>");
