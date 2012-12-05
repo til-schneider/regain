@@ -30,24 +30,25 @@ package net.sf.regain.crawler.preparator.java;
 import java.util.ArrayList;
 
 /**
- * Represents a Java class
- * <p>
- * @author  Renuka Sindhgatta, http://www.oreillynet.com/pub/au/2554
+ * Represents a Java class or an Enum <p>
  *
- * Modifications by Thomas Tesche, http://clusterconsult.thtesche.com/
+ * @author Renuka Sindhgatta, http://www.oreillynet.com/pub/au/2554
+ *
+ * @author Thomas Tesche <thomas.tesche@clustersystems.de>
  */
-public class JClass {
+public class JClassEnum {
 
   private String className = null;
-  private boolean isInterface = false;
+  private Type _type = Type.CLASS;
   private ArrayList methodDeclarations = new ArrayList();
   private ArrayList innerClasses = new ArrayList();
   private String superClass = null;
   private ArrayList interfaces = new ArrayList();
+  private ArrayList constants = new ArrayList();
 
   /**
    * Returns the class name.
-   * 
+   *
    * @return the class name
    */
   public String getClassName() {
@@ -56,7 +57,7 @@ public class JClass {
 
   /**
    * Sets the class name.
-   * 
+   *
    * @param className the name of the class
    */
   public void setClassName(String className) {
@@ -64,21 +65,8 @@ public class JClass {
   }
 
   /**
-   * Returns if the class is an interface.
-   * 
-   * @return true if the class is an interface
-   */
-  public boolean isInterface() {
-    return isInterface;
-  }
-
-  public void setIsInterface(boolean isInterface) {
-    this.isInterface = isInterface;
-  }
-
-  /**
    * Returns the method declarations.
-   * 
+   *
    * @return method declarations
    */
   public ArrayList getMethodDeclarations() {
@@ -87,16 +75,16 @@ public class JClass {
 
   /**
    * Sets the method declarations.
-   * 
+   *
    * @param methodDeclarations
    */
   public void setMethodDeclarations(ArrayList methodDeclarations) {
     this.methodDeclarations = methodDeclarations;
   }
 
-  /** 
+  /**
    * Gets the inner classes of a class.
-   * 
+   *
    * @return the inner classes
    */
   public ArrayList getInnerClasses() {
@@ -105,16 +93,16 @@ public class JClass {
 
   /**
    * Sets the inner classes.
-   * 
+   *
    * @param innerClasses
    */
   public void setInnerClasses(ArrayList innerClasses) {
     this.innerClasses = innerClasses;
   }
 
-  /** 
+  /**
    * Returns the super class.
-   * 
+   *
    * @return the super class
    */
   public String getSuperClass() {
@@ -123,7 +111,7 @@ public class JClass {
 
   /**
    * Sets the super class.
-   * 
+   *
    * @param superClass
    */
   public void setSuperClass(String superClass) {
@@ -132,7 +120,7 @@ public class JClass {
 
   /**
    * Return all interfaces
-   * 
+   *
    * @return the interfaces
    */
   public ArrayList getInterfaces() {
@@ -141,10 +129,31 @@ public class JClass {
 
   /**
    * Sets the interfaces.
-   * 
+   *
    * @param interfaces
    */
   public void setInterfaces(ArrayList interfaces) {
     this.interfaces = interfaces;
+  }
+
+  /**
+   * @return the constants
+   */
+  public ArrayList getConstants() {
+    return constants;
+  }
+
+  /**
+   * @return the _type
+   */
+  public Type getType() {
+    return _type;
+  }
+
+  /**
+   * @param type the _type to set
+   */
+  public void setType(Type type) {
+    this._type = type;
   }
 }

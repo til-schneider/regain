@@ -43,6 +43,7 @@ import net.sf.regain.search.config.IndexConfig;
 import net.sf.regain.util.sharedtag.PageRequest;
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.ListUtils;
+import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.CompressionTools;
@@ -63,6 +64,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocsCollector;
 import org.apache.lucene.search.TopFieldCollector;
+import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.QueryScorer;
 import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
@@ -92,7 +94,8 @@ public class SearchResultsImpl implements SearchResults {
   /** The DocCollector. */
   private TopDocsCollector<FieldValueHitQueue.Entry> topDocsCollector;
   
-  private static Pattern mimetypeFieldPattern = Pattern.compile("(mimetype:\".*\")");
+  private static Pattern mimetypeFieldPattern = Pattern.compile("(mimetype:\"([^:]*)\")");
+  private static Pattern negativeMimetypeFieldPattern = Pattern.compile("((-|!|NOT )mimetype:\"([^:]*)\")");
   /**
    * Der Reguläre Ausdruck, zu dem eine URL passen muss, damit sie in einem
    * neuen Fenster geöffnet wird.
@@ -104,6 +107,9 @@ public class SearchResultsImpl implements SearchResults {
   private Analyzer mAnalyzer;
   /** The current config. */
   private IndexConfig mIndexConfig;
+  
+  /** The logger for this class */
+  private static Logger mLog = Logger.getLogger(SearchResultsImpl.class);
   
   /** held the transformed hits. */
   private List lazyHitList = ListUtils.lazyList(new ArrayList(), new Factory() {
@@ -129,29 +135,18 @@ public class SearchResultsImpl implements SearchResults {
     long startTime = System.currentTimeMillis();
     ArrayList<String> groupsArr = new ArrayList<String>();
     IndexSearcherManager[] indexSearcherManagers = new IndexSearcherManager[indexConfigs.length];
+    IndexSearcher[] searchers = new IndexSearcher[indexConfigs.length];
+    IndexReader[] readerArray = new IndexReader[indexConfigs.length];
 
     mQueryText = SearchToolkit.getSearchQuery(request);
-    //System.out.println("Initial query: " + mQueryText);
+    mLog.debug("Initial Query: " + mQueryText);
 
-    String mimeTypeFieldText = null;
     String queryText = null;
 
-    if (mQueryText != null) {
-      // Remove the mimetype field if the query contains it
-
-      Matcher matcher = mimetypeFieldPattern.matcher(mQueryText);
-      boolean found = matcher.find();
-      if (found && matcher.groupCount() > 0) {
-        // the first group is the mimetype field identifier
-        mimeTypeFieldText = matcher.group(1);
-        queryText = mQueryText.replace(mimeTypeFieldText, "");
-        //System.out.println("Query after mimetype removing: " + queryText);
-
-      } else {
-        queryText = mQueryText;
-      }
-    }
-
+    BooleanQuery mimeQuery = new BooleanQuery();
+    queryText = removeMimetypeQuery(mQueryText, mimeQuery);
+    
+    try {
     // If there is at least on index
     if (indexConfigs.length >= 1) {
 
@@ -181,16 +176,14 @@ public class SearchResultsImpl implements SearchResults {
         mIndexSearcher = indexSearcherManagers[0].getIndexSearcher();
         mAnalyzer = indexSearcherManagers[0].getAnalyzer();
         mIndexName = indexConfigs[0].getName();
-        IndexReader[] readerArray = {indexSearcherManagers[0].getIndexReader()};
+        readerArray[0] = mIndexSearcher.getIndexReader();
         mMultiReader = new MultiReader(readerArray, false);
 
       } else {
         // Collect all IndexSearchers and instantiate a MultiSearcher
-        IndexSearcher[] searchers = new IndexSearcher[indexConfigs.length];
-        IndexReader[] readerArray = new IndexReader[indexConfigs.length];
         for (int j = 0; j < indexSearcherManagers.length; j++) {
           searchers[j] = indexSearcherManagers[j].getIndexSearcher();
-          readerArray[j] = indexSearcherManagers[j].getIndexReader();
+          readerArray[j] = searchers[j].getIndexReader();
         }
         mMultiReader = new MultiReader(readerArray, false);
         mIndexSearcher = new IndexSearcher(mMultiReader);
@@ -202,7 +195,7 @@ public class SearchResultsImpl implements SearchResults {
 
       mIndexConfig = indexConfigs[0];
       mQuery = null;
-      if (queryText != null && queryText.length() > 0) {
+      if (queryText != null && queryText.trim().length() > 0) {
         // start the creation of the lucene query object
 
         try {
@@ -241,28 +234,24 @@ public class SearchResultsImpl implements SearchResults {
       }
 
       // Add the mimetype field search
-      if (mimeTypeFieldText != null) {
-        BooleanQuery mimetypeFieldQuery = new BooleanQuery();
-        mimetypeFieldQuery.add(new TermQuery(new Term("mimetype",
-                mimeTypeFieldText.substring(9).replace("\"", ""))),
-                Occur.SHOULD);
-        BooleanQuery mainQuery = new BooleanQuery();
+      if (mimeQuery.getClauses().length > 0) {
+        
         if (mQuery != null) {
-          mainQuery.add(mQuery, Occur.MUST);
+          mimeQuery.add(mQuery, Occur.MUST);
         }
-        mainQuery.add(mimetypeFieldQuery, Occur.MUST);
-
+          
         // Set the main query as query to use
-        mQuery = mainQuery;
+        mQuery = mimeQuery;
       }
+      
 
       if (mQuery != null) {
-//        System.out.println("Query: '" + mQueryText + "' -> '" + mQuery.toString() + "'");
+        mLog.debug("Lucene Query: " + mQuery.toString());
 
         try {
           SortingOption sortingOption = new SortingOption(request.getParameter("order"));
           Sort sort = new Sort(sortingOption.getSortField());
-          //System.out.println(sortingOption.toString());
+          mLog.debug("Sort by:" + sortingOption.toString());
 
           topDocsCollector = TopFieldCollector.create(sort, 10000, true, true, true, false);
 
@@ -287,9 +276,104 @@ public class SearchResultsImpl implements SearchResults {
     } else {
       // no index given
     }
+    } finally {
+      if (indexSearcherManagers[0] != null)
+        indexSearcherManagers[0].releaseIndexSearcher(mIndexSearcher);
+      for (int i = 0; i < indexSearcherManagers.length; i++)
+      {
+        if (indexSearcherManagers[i] != null)
+          indexSearcherManagers[i].releaseIndexSearcher(searchers[i]);
+      }
+    }
 
     mSearchTime = (int) (System.currentTimeMillis() - startTime);
 
+  }
+
+  /**
+   * Create a Query from mime type terms and remove them from the query text
+   * @param queryText   Original query text
+   * @param mainQuery   MIME clauses that were extracted from the query
+   * @return  New query text (old query without the mime clauses)
+   */
+  private String removeMimetypeQuery(String queryText, BooleanQuery mainQuery)
+  {
+    if (queryText == null)
+      return null;
+    
+    // Remove the mimetype field if the query contains it
+    String mimeTypeFieldText = null;
+    Matcher matcher = null;
+    boolean found;
+    
+    // First, negative mime Types
+    do
+    {
+      matcher = negativeMimetypeFieldPattern.matcher(queryText);
+      found = matcher.find();
+      
+      if (found && matcher.groupCount() > 0) {
+        // the first group is the mimetype field identifier
+        mimeTypeFieldText = matcher.group(3);
+        queryText = queryText.replace(matcher.group(1), "");
+        //System.out.println("Query after mimetype removing: " + queryText);
+        
+        mainQuery.add(getAtomicMimeTypeQuery(mimeTypeFieldText), Occur.MUST_NOT);
+      }
+    } while (found);
+
+    // Now positive mimes
+    
+    BooleanQuery positiveMimes = new BooleanQuery();
+    do
+    {
+      matcher = mimetypeFieldPattern.matcher(queryText);
+      found = matcher.find();
+
+      if (found && matcher.groupCount() > 0) {
+        // the first group is the mimetype field identifier
+        mimeTypeFieldText = matcher.group(2);
+        queryText = queryText.replace(matcher.group(1), "");
+        //System.out.println("Query after mimetype removing: " + queryText);
+
+        positiveMimes.add(getAtomicMimeTypeQuery(mimeTypeFieldText), Occur.SHOULD);
+      }
+    } while (found);
+    if (positiveMimes.getClauses().length > 0)
+      mainQuery.add(positiveMimes, Occur.MUST);
+    
+    // Remove empty clauses that remained
+    Pattern emptyMatcherPattern = Pattern.compile("(\\(\\s*\\))");
+    do
+    {
+      matcher = emptyMatcherPattern.matcher(queryText);
+      found = matcher.find();
+      
+      if (found && matcher.groupCount() > 0)
+        queryText = queryText.replace(matcher.group(1), "");
+    } while (found);
+    
+    return queryText;
+  }
+
+  /**
+   * Helper method for removeMimetypeQuery
+   * @param mimeTypeFieldText   The value of a mime Type
+   * @return  The corresponding query
+   */
+  private BooleanQuery getAtomicMimeTypeQuery(String mimeTypeFieldText)
+  {
+    BooleanQuery mimetypeFieldQuery = new BooleanQuery();
+    Term term = new Term("mimetype", mimeTypeFieldText);
+    
+    Query query;
+    if (mimeTypeFieldText.contains("*"))
+      query = new WildcardQuery(term);
+    else
+      query = new TermQuery(term);
+    
+    mimetypeFieldQuery.add(query, Occur.SHOULD);
+    return mimetypeFieldQuery;
   }
 
   /**
@@ -483,21 +567,21 @@ public class SearchResultsImpl implements SearchResults {
    */
   @Override
   public void shortenSummary(int index) throws RegainException {
-	  Document document = getHitDocument(index);
-	  String text = SearchToolkit.getCompressedFieldValue(document, "summary");
+    Document document = getHitDocument(index);
+    String text = SearchToolkit.getCompressedFieldValue(document, "summary");
 
 
-	  if (text != null) {
-		  // Overwrite the content with a shortend summary
-		  String resSummary = RegainToolkit.createSummaryFromContent(text, 200);
-		  document.removeField("summary");
-		  if (resSummary != null) {
-			  document.add(new Field("summary", resSummary, Field.Store.NO, Field.Index.NOT_ANALYZED));
-			  document.add(new Field("summary", CompressionTools.compressString(resSummary)));
-			  // write back the transformed document
-			  setHitDocument(index, document);
-		  }
-	  }
+    if (text != null) {
+      // Overwrite the content with a shortend summary
+      String resSummary = RegainToolkit.createSummaryFromContent(text, 200);
+      document.removeField("summary");
+      if (resSummary != null) {
+        document.add(new Field("summary", resSummary, Field.Store.NO, Field.Index.NOT_ANALYZED));
+        document.add(new Field("summary", CompressionTools.compressString(resSummary)));
+        // write back the transformed document
+        setHitDocument(index, document);
+      }
+    }
   }
 
   /**
@@ -511,10 +595,13 @@ public class SearchResultsImpl implements SearchResults {
   @Override
   public void highlightHitDocument(int index) throws RegainException {
 
+    IndexSearcher searcher = null;
+    IndexSearcherManager manager = null;
     try {
-      IndexSearcherManager manager = IndexSearcherManager.getInstance(mIndexConfig.getDirectory());
+      manager = IndexSearcherManager.getInstance(mIndexConfig.getDirectory());
+      searcher = manager.getIndexSearcher();
       // The highlighter needs a rewritten query to work with wildcard and fuzzy queries
-      Query rewrittenQuery = manager.rewrite(mQuery);
+      Query rewrittenQuery = searcher.rewrite(mQuery);
       QueryScorer queryScorer = new QueryScorer(rewrittenQuery);
       // End added by Anders
 
@@ -590,7 +677,10 @@ public class SearchResultsImpl implements SearchResults {
     } catch (IOException exIO) {
       throw new RegainException("Error while searching pattern: " + mQueryText, exIO);
 
-    } 
+    } finally {
+      if (manager != null)
+        manager.releaseIndexSearcher(searcher);
+    }
 
   }
 

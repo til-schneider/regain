@@ -32,12 +32,11 @@ import java.util.ArrayList;
 import net.sf.regain.RegainException;
 import net.sf.regain.crawler.document.AbstractPreparator;
 import net.sf.regain.crawler.document.RawDocument;
+import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 
 /**
- * Prepares  Java source code for indexing
- * <p>
- * The following information will be extracted:
- * class name, member names, return types , code blocks
+ * Prepares Java source code for indexing <p> The following information will be
+ * extracted: class name, member names, return types , code blocks
  *
  * @author Thomas Tesche, cluster:Consult, http://www.thtesche.com/
  */
@@ -69,11 +68,9 @@ public class JavaPreparator extends AbstractPreparator {
       // Creates the parser
       JavaParser parser = new JavaParser();
       parser.setSource(rawDocument.getContentAsString());
-      JClass cls = parser.getDeclaredClass();
+      JClassEnum cls = parser.getDeclaredClass();
 
-      String class_interface = cls.isInterface() ? "Interface: " : "Class: ";
-
-      titleParts.add(class_interface + cls.getClassName());
+      titleParts.add(cls.getType().toString() + " : " + cls.getClassName());
       // extract the class info (including inner classes)
       contentParts.add(extractClassInfo(cls, false).toString());
 
@@ -87,26 +84,27 @@ public class JavaPreparator extends AbstractPreparator {
   }
 
   /**
-   * Extract different information from a class. 
-   * <p>
-   * 
+   * Extract different information from a class. <p>
+   *
    * @param cls - the class from which the infos will be extracted
    * @param innerClass - is the class an inner class
    *
-   * @return the extracted infos as a StringBuffer 
+   * @return the extracted infos as a StringBuffer
    */
-  private StringBuffer extractClassInfo(JClass cls, boolean innerClass) {
+  private StringBuffer extractClassInfo(JClassEnum cls, boolean innerClass) {
 
     StringBuffer strBuffer = new StringBuffer();
 
     //For each class add Class Name field
     String class_interface = "";
-    if (cls.isInterface()) {
+    if (cls.getType() == Type.INTERFACE) {
       class_interface = " Interface: ";
     } else if (innerClass) {
       class_interface = ", InnerClass: ";
-    } else {
+    } else if (cls.getType() == Type.CLASS) {
       class_interface = " Class: ";
+    } else if (cls.getType() == Type.ENUM) {
+      class_interface = " Enum: ";
     }
 
     strBuffer.append(class_interface).append(cls.getClassName());
@@ -122,13 +120,35 @@ public class JavaPreparator extends AbstractPreparator {
       strBuffer.append(", implements: ").append((String) interfaces.get(i));
     }
 
-    // Add details  on methods declared
+    // Add details on methods declared
     strBuffer.append(extractMethodInfo(cls));
+
+    if (cls.getType() == Type.ENUM) {
+      strBuffer.append(extractEnumInfo(cls));
+    }
 
     // Examine inner classes and extract the same details as for the class
     ArrayList innerCls = cls.getInnerClasses();
     for (int i = 0; i < innerCls.size(); i++) {
-      strBuffer.append(extractClassInfo((JClass) innerCls.get(i), true));
+      strBuffer.append(extractClassInfo((JClassEnum) innerCls.get(i), true));
+    }
+
+    return strBuffer;
+  }
+
+  /**
+   * Extract constants info from Enums.
+   *
+   * @param the enum to examine
+   * @return the result as a StringBuffer
+   */
+  private StringBuffer extractEnumInfo(JClassEnum cls) {
+    StringBuffer strBuffer = new StringBuffer();
+
+    // get all constants
+    ArrayList<EnumConstantDeclaration> constants = cls.getConstants();
+    for (int i = 0; i < constants.size(); i++) {
+      strBuffer.append(" ").append(constants.get(i).getName().getIdentifier());
     }
 
     return strBuffer;
@@ -136,12 +156,12 @@ public class JavaPreparator extends AbstractPreparator {
 
   /**
    * Extract method details for the class.
-   * 
-   * @param the class to exermine
-   * 
+   *
+   * @param the class to examine
+   *
    * @return the result as a StringBuffer
    */
-  private StringBuffer extractMethodInfo(JClass cls) {
+  private StringBuffer extractMethodInfo(JClassEnum cls) {
 
     StringBuffer strBuffer = new StringBuffer();
 

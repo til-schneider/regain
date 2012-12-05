@@ -21,9 +21,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2012-06-20 14:33:07 +0200 (Mi, 20 Jun 2012) $
+ *     $Date: 2012-08-10 14:07:33 +0200 (Fr, 10 Aug 2012) $
  *   $Author: benjaminpick $
- * $Revision: 607 $
+ * $Revision: 615 $
  */
 package net.sf.regain.crawler.document;
 
@@ -33,8 +33,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Properties;
 import java.util.Map.Entry;
 
@@ -51,7 +51,6 @@ import net.sf.regain.crawler.plugin.CrawlerPluginManager;
 import org.apache.log4j.Logger;
 import java.io.FileInputStream;
 import java.io.StringReader;
-import java.util.ArrayList;
 import net.sf.regain.util.io.PathFilenamePair;
 import org.apache.lucene.analysis.WhitespaceTokenizer;
 import org.apache.lucene.document.CompressionTools;
@@ -74,6 +73,7 @@ import org.ontoware.rdf2go.model.node.impl.URIImpl;
  */
 public class DocumentFactory {
 
+  private static final String MIME_TYPE_UNKNOWN = "application/x-unknown-mime-type";
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(DocumentFactory.class);
   /** The crawler config. */
@@ -209,13 +209,14 @@ public class DocumentFactory {
       mimeType = mimeTypeIdentifier.identify(bytes, file.getPath(),
               new URIImpl(rawDocument.getUrl(), false));
       if (mimeType == null || mimeType.length() == 0) {
-        mimeType = "application/x-unknown-mime-type";
+        mimeType = MIME_TYPE_UNKNOWN;
       }
 
       mLog.debug("Detected mimetype cycle 1: " + mimeType + ". " + rawDocument.getUrl());
       if (mimeType.equalsIgnoreCase("application/zip")) {
         // some new files like MS Office documents are zip files
         // so rewrite the URL for the correct mimetype detection
+        // TODO: Maybe merge MimeTypeDetecter from javaThumbnailer? Seems more reliable
         mimeType = mimeTypeIdentifier.identify(bytes, null,
                 new URIImpl("zip:mime:file:" + rawDocument.getUrl()));
         mLog.debug("Detected mimetype cycle 2: " + mimeType + ". " + "zip:mime:file:" + rawDocument.getUrl());
@@ -223,7 +224,7 @@ public class DocumentFactory {
     } catch (Exception exc) {
       errorLogger.logError("Determine mime-type of " + rawDocument.getUrl()
               + " failed", exc, false);
-      mimeType = "application/x-unknown-mime-type";
+      mimeType = MIME_TYPE_UNKNOWN;
     } finally {
       if (fis != null) {
         try { fis.close(); } catch(IOException e) {}
@@ -233,14 +234,12 @@ public class DocumentFactory {
     rawDocument.setMimeType(mimeType);
 
     // Find the preparator that will prepare this URL
-    Document doc = null;
-    boolean preparatorFound = false;
-    ArrayList<Integer> matchingPreparators = new ArrayList<Integer>();
+    PriorityQueue<PreparatorProfilerPair> matchingPreparators = new PriorityQueue<PreparatorProfilerPair>(mPreparatorArr.length);
     for (int i = 0; i < mPreparatorArr.length; i++) {
       if (mPreparatorArr[i].accepts(rawDocument)) {
         // This preparator can prepare this URL
-        preparatorFound = true;
-        matchingPreparators.add(i);
+        
+        matchingPreparators.add(new PreparatorProfilerPair(mPreparatorArr[i], mPreparatorProfilerArr[i]));
         if (mLog.isDebugEnabled()) {
           mLog.debug("Found: " + mPreparatorArr[i].getClass().getSimpleName()
                   + ", Prio: " + mPreparatorArr[i].getPriority());
@@ -248,33 +247,32 @@ public class DocumentFactory {
       }
     }
 
-    // TODO: Try several preperators in order of priority?
-    if (preparatorFound) {
-      // Find the preparator with the highest priority
-      Iterator<Integer> prepIdxIter = matchingPreparators.iterator();
-      int highestPriorityIdx = (prepIdxIter.next()).intValue();
-      // In case of more than one matching preperator find the one with the highest prio
-      while (prepIdxIter.hasNext()) {
-        int currI = (prepIdxIter.next()).intValue();
-        if (mPreparatorArr[currI].getPriority() > mPreparatorArr[highestPriorityIdx].getPriority()) {
-          highestPriorityIdx = currI;
+    Document doc = null;
+    boolean preparatorFound = false;
+      PreparatorProfilerPair preparatorProfiler;
+      while (doc == null && (preparatorProfiler = matchingPreparators.poll()) != null)
+      {
+        preparatorFound = true;
+        try {
+          doc = createDocument(preparatorProfiler.getPreparator(), preparatorProfiler.getProfiler(), rawDocument);
+          mLog.info("Preparation with " + preparatorProfiler.getPreparator().getClass().getSimpleName()
+                  + " done: " + rawDocument.getUrl());
+        } catch (RegainException exc) {
+          errorLogger.logError("Preparing " + rawDocument.getUrl()
+                  + " with preparator " + preparatorProfiler.getPreparator().getClass().getName()
+                  + " failed", exc, false);
         }
+        
+        /* For backwards compability reasons we could introduce this parameter with default true:
+        if (mConfig.getUseOnlyOnePreparator())
+          break;
+        */  
       }
 
-      try {
-        doc = createDocument(mPreparatorArr[highestPriorityIdx], mPreparatorProfilerArr[highestPriorityIdx], rawDocument);
-        mLog.info("Preparation with " + mPreparatorArr[highestPriorityIdx].getClass().getSimpleName()
-                + " done: " + rawDocument.getUrl());
-      } catch (RegainException exc) {
-        errorLogger.logError("Preparing " + rawDocument.getUrl()
-                + " with preparator " + mPreparatorArr[highestPriorityIdx].getClass().getName()
-                + " failed", exc, false);
-      }
-    } else {
+    if (!preparatorFound) {
       mLog.info("No preparator feels responsible for " + rawDocument.getUrl());
-    }
-
-    if (preparatorFound && (doc == null)) {
+      
+    } else if (doc == null) {
       // There were preparators that felt responsible for the document, but they
       // weren't able to process it
       // -> Create a substitute document to avoid that the same document is
@@ -466,6 +464,8 @@ public class DocumentFactory {
     }
 
     // Add the URL of the document
+    if (url == null)
+      url = "";
     doc.add(new Field("url", url, Field.Store.YES, Field.Index.NOT_ANALYZED));
 
     // Add the file name (without protocol, drive-letter and path)
@@ -484,6 +484,8 @@ public class DocumentFactory {
 
     // Add the mime-type
     String mimeType = rawDocument.getMimeType();
+    if (mimeType == null)
+      mimeType = MIME_TYPE_UNKNOWN;
     doc.add(new Field("mimetype", mimeType, Field.Store.YES, Field.Index.NOT_ANALYZED));
 
     // Add last modified

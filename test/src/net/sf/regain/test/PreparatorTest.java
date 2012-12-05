@@ -21,15 +21,17 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2009-11-15 23:12:24 +0100 (So, 15 Nov 2009) $
- *   $Author: thtesche $
- * $Revision: 424 $
+ *     $Date: 2012-08-20 10:58:50 +0200 (Mo, 20 Aug 2012) $
+ *   $Author: benjaminpick $
+ * $Revision: 619 $
  */
 package net.sf.regain.test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
@@ -42,30 +44,41 @@ import net.sf.regain.crawler.preparator.IfilterPreparator;
 import net.sf.regain.crawler.preparator.JacobMsExcelPreparator;
 import net.sf.regain.crawler.preparator.JacobMsPowerPointPreparator;
 import net.sf.regain.crawler.preparator.JacobMsWordPreparator;
+import net.sf.regain.crawler.preparator.JavaPreparator;
+import net.sf.regain.crawler.preparator.OpenOfficePreparator;
 import net.sf.regain.crawler.preparator.PdfBoxPreparator;
 import net.sf.regain.crawler.preparator.PlainTextPreparator;
 import net.sf.regain.crawler.preparator.PoiMsOfficePreparator;
 import net.sf.regain.crawler.preparator.SimpleRtfPreparator;
 import net.sf.regain.crawler.preparator.SwingRtfPreparator;
 import net.sf.regain.crawler.preparator.XmlPreparator;
+import net.sf.regain.crawler.preparator.ZipPreparator;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
  * Tests all the preparators
- * 
+ *
  * @author Til Schneider, www.murfman.de
  */
 public class PreparatorTest {
 
-  /** The logger for this class */
+  /**
+   * The logger for this class
+   */
   private static Logger mLog = Logger.getLogger(PreparatorTest.class);
-  /** The profilers that measured the work of the preparators. */
-  private static ArrayList mProfilerList;
-  /** The class prefix of the the regain preparators. */
+  /**
+   * The profilers that measured the work of the preparators.
+   */
+  private static ArrayList<Profiler> mProfilerList;
+  /**
+   * The class prefix of the the regain preparators.
+   */
   private static final String REGAIN_PREP_PREFIX = "net.sf.regain.crawler.preparator.";
-  /** Der Dateiname der Log4J-Properties-Datei. */
+  /**
+   * Der Dateiname der Log4J-Properties-Datei.
+   */
   private static final String LOG4J_PROP_FILE_NAME = "log4j.properties";
 
   /**
@@ -99,8 +112,19 @@ public class PreparatorTest {
       System.exit(1);
       return;
     }
+    if (!docDir.canRead())
+    {
+      System.err.println("The input document directory cannot be read: " + docDir.getAbsolutePath());
+      System.exit(1);
+    }
+    if (!outputDir.canWrite())
+    {
+      System.err.println("The output document directory cannot be written: " + outputDir.getAbsolutePath());
+      System.exit(1);
+    }
+    
 
-    mProfilerList = new ArrayList();
+    mProfilerList = new ArrayList<Profiler>();
 
     try {
       IfilterPreparator ifilterPreparator = new IfilterPreparator();
@@ -128,6 +152,9 @@ public class PreparatorTest {
       testPreparator(docDir, outputDir, "xls", new PoiMsOfficePreparator());
       testPreparator(docDir, outputDir, "xml", new XmlPreparator());
       testPreparator(docDir, outputDir, "vsd", new PoiMsOfficePreparator());
+      testPreparator(docDir, outputDir, "java", new JavaPreparator());
+      testPreparator(docDir, outputDir, "ooo", new OpenOfficePreparator());
+      testPreparator(docDir, outputDir, "zip", new ZipPreparator());
     } catch (RegainException exc) {
       mLog.error("Creating preparator failed", exc);
     }
@@ -195,6 +222,17 @@ public class PreparatorTest {
             content = prep.getCleanedContent();
             prep.cleanUp();
             profiler.stopMeasuring(docFileArr[i].length());
+            
+            HashMap<String, String> links = doc.getLinks();
+            if (links != null && links.size() > 0)
+            {
+              content += "\n\nLinks in document:\n\n";
+              for (Entry<String, String> link : links.entrySet())
+              {
+                content += link.getValue() + ": " + link.getKey() + "\n";
+              }
+            }
+
           } catch (Throwable thr) {
             profiler.abortMeasuring();
             throw thr;

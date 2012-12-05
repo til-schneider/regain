@@ -1,3 +1,16 @@
+Version 2.0.0 on 2012/December/08 STABLE
+----------------
+NEW
+ * Try all other preparators in case the designated preperator doesn't work
+ * Allow more than one wildcard mime declarations (positiv, negativ). Example: mimetype:"text/*" -mimetype:"text/plain"
+ * HtmlPreparator: Follows links in framesets
+
+BUGFIX
+ * JavaPreperator: Enums will be parsed as well (Enum name and constants will be extracted)
+ * MP3Peparator works GenericAudioPreparator could handle read only files
+ * IndexWriterManager: Close all files to prevent for "Too many open files..." and "this IndexReader is closed" error
+
+
 Version 1.8.0 on 2012/June/20 PREVIEW
 -------------------------------------
 

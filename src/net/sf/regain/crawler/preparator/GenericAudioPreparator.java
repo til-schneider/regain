@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import net.sf.regain.RegainException;
+import net.sf.regain.RegainToolkit;
 import net.sf.regain.crawler.document.AbstractPreparator;
 import net.sf.regain.crawler.document.RawDocument;
 
@@ -75,6 +76,33 @@ public class GenericAudioPreparator extends AbstractPreparator {
   public void prepare(RawDocument rawDocument) throws RegainException {
 
     File rawFile = rawDocument.getContentAsFile(false);
+
+    try {
+      prepareFile(rawFile, rawDocument.getUrl());
+    } catch (ReadOnlyFileException ex) {
+      
+      try {
+        File tempFile = File.createTempFile(rawFile.getName(), ".mp3");
+        RegainToolkit.copyFile(rawFile, tempFile);
+        
+        prepareFile(tempFile, rawDocument.getUrl());
+      
+      if (!tempFile.delete())
+         tempFile.deleteOnExit();
+      
+      } catch (ReadOnlyFileException e) {
+        throw new RegainException("Error handling audio file: " + rawDocument.getUrl(), e);
+
+      } catch (IOException e) {
+        throw new RegainException("Error handling audio file: " + rawDocument.getUrl(), e);
+
+      }
+    }
+
+  }
+
+  protected void prepareFile(File rawFile, String origUrl) throws RegainException, ReadOnlyFileException
+  {
     try {
       AudioFile audioFile = AudioFileIO.read(rawFile);
       ArrayList<String> info = new ArrayList<String>();
@@ -114,19 +142,16 @@ public class GenericAudioPreparator extends AbstractPreparator {
       setTitle(concatenateStringParts(info, 2));
 
     } catch (CannotReadException ex) {
-      throw new RegainException("Error handling audio file: " + rawDocument.getUrl(), ex);
+      throw new RegainException("Error handling audio file: " + origUrl, ex);
 
     } catch (TagException ex) {
-      throw new RegainException("Error handling audio file: " + rawDocument.getUrl(), ex);
-
-    } catch (ReadOnlyFileException ex) {
-      throw new RegainException("Error handling audio file: " + rawDocument.getUrl(), ex);
+      throw new RegainException("Error handling audio file: " + origUrl, ex);
 
     } catch (InvalidAudioFrameException ex) {
-      throw new RegainException("Error handling audio file: " + rawDocument.getUrl(), ex);
+      throw new RegainException("Error handling audio file: " + origUrl, ex);
 
     } catch (IOException ex) {
-      throw new RegainException("Error handling audio file: " + rawDocument.getUrl(), ex);
+      throw new RegainException("Error handling audio file: " + origUrl, ex);
     }
   }
 }

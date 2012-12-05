@@ -51,9 +51,11 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopScoreDocCollector;
 
 /**
  * A toolkit for the search JSPs containing helper methods.
@@ -398,10 +400,13 @@ public class SearchToolkit {
     IndexConfig[] configArr = getIndexConfigArr(request);
     Query query = null;
 
+    IndexSearcherManager manager = null;
+    IndexSearcher searcher = null;
+    int nbHits = 0;
     // Check whether one of the indexes contains the file
     for (int i = 0; i < configArr.length; i++) {
       String dir = configArr[i].getDirectory();
-      IndexSearcherManager manager = IndexSearcherManager.getInstance(dir);
+      manager = IndexSearcherManager.getInstance(dir);
 
       String transformedFileUrl = fileUrl;
       // back transform the file url according to given rewrite rules
@@ -435,10 +440,20 @@ public class SearchToolkit {
         query = addAccessControlToQuery(query, allGroups);
       }
       
-      ScoreDoc[] hits = manager.search(query);
+      try {
+        searcher = manager.getIndexSearcher();
+        
+        TopScoreDocCollector collector = TopScoreDocCollector.create(1, false);
+        searcher.search(query, collector);
+        nbHits = collector.getTotalHits();
+      } catch (IOException exc) {
+        throw new RegainException("Searching query failed", exc);
+      } finally {
+        manager.releaseIndexSearcher(searcher);
+      }
       
       // Allow the access if we found the file in the index
-      if (hits.length > 0) {
+      if (nbHits > 0) {
         return true;
       }
     }

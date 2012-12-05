@@ -168,8 +168,16 @@ Thomas Tesche (thtesche), cluster:Systems CSG GmbH
 Benjamin Pick
   * commons-beanutils 1.8.3
 
-TODO & Test:
-  * Lucene 3.2 --> 3.6
+20.06.2012
+==========
+Benjamin Pick
+  Lucene 3.2 --> 3.6
+  * core, memory, analyzer, highlighter
+
+
+TODO:
+ * PDFBOX 1.6 --> 1.7.1
+ * Commons IO 2.1 --> 2.4
   // * aperture-core 1.5 --> 1.6 (Word Files Detection!) (Tika is too slow)
 
 Websites:

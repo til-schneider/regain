@@ -32,6 +32,7 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import net.sf.regain.RegainException;
+import net.sf.regain.RegainToolkit;
 import net.sf.regain.crawler.document.AbstractPreparator;
 import net.sf.regain.crawler.document.RawDocument;
 
@@ -75,12 +76,40 @@ public class MP3Preparator extends AbstractPreparator {
 
     File rawFile = rawDocument.getContentAsFile(false);
     try {
+    
+      prepareFile(rawFile, rawDocument.getUrl());
+
+    } catch (ReadOnlyFileException ex) {
+      
+      try {
+        File tempFile = File.createTempFile(rawFile.getName(), ".mp3");
+        RegainToolkit.copyFile(rawFile, tempFile);
+        
+        prepareFile(tempFile, rawDocument.getUrl());
+      
+      if (!tempFile.delete())
+         tempFile.deleteOnExit();
+      
+      } catch (ReadOnlyFileException e) {
+        throw new RegainException("Error handling audio file: " + rawDocument.getUrl(), e);
+
+      } catch (IOException e) {
+        throw new RegainException("Error handling audio file: " + rawDocument.getUrl(), e);
+
+      }
+    }
+  }
+
+  protected void prepareFile(File rawFile, String origUrl) throws ReadOnlyFileException, RegainException
+  {
+    try 
+    {
       MP3File mp3file = new MP3File(rawFile);
       ArrayList<String> info = new ArrayList<String>();
-
+  
       if (mp3file.hasID3v2Tag()) {
         ID3v24Tag id3v24tag = mp3file.getID3v2TagAsv24();
-
+  
         info.add(id3v24tag.getFirst(ID3v24Frames.FRAME_ID_ARTIST).trim());
         info.add(id3v24tag.getFirst(ID3v24Frames.FRAME_ID_ALBUM).trim());
         info.add(id3v24tag.getFirst(ID3v24Frames.FRAME_ID_TITLE).trim());
@@ -93,13 +122,13 @@ public class MP3Preparator extends AbstractPreparator {
         }
         info.add(mp3file.getMP3AudioHeader().getTrackLengthAsString().trim());
         info.add(mp3file.getMP3AudioHeader().getBitRate().trim() + "kbps");
-
+  
         setCleanedContent(concatenateStringParts(info, Integer.MAX_VALUE));
         setTitle(concatenateStringParts(info, 2));
-
+  
       } else if (mp3file.hasID3v1Tag()) {
         ID3v1Tag tag = mp3file.getID3v1Tag();
-
+  
         info.add(tag.getFirst(FieldKey.ARTIST).trim());
         info.add(tag.getFirst(FieldKey.ALBUM).trim());
         info.add(tag.getFirst(FieldKey.TITLE).trim());
@@ -112,25 +141,22 @@ public class MP3Preparator extends AbstractPreparator {
         }
         info.add(mp3file.getMP3AudioHeader().getTrackLengthAsString().trim());
         info.add(mp3file.getMP3AudioHeader().getBitRate().trim() + "kbps");
-
+  
         setCleanedContent(concatenateStringParts(info, Integer.MAX_VALUE));
         setTitle(concatenateStringParts(info, 2));
-
+  
       } else {
         setCleanedContent("");
       }
-
     } catch (TagException ex) {
-      throw new RegainException("Error handling audio file: " + rawDocument.getUrl(), ex);
-
-    } catch (ReadOnlyFileException ex) {
-      throw new RegainException("Error handling audio file: " + rawDocument.getUrl(), ex);
+      throw new RegainException("Error handling audio file: " + origUrl, ex);
 
     } catch (InvalidAudioFrameException ex) {
-      throw new RegainException("Error handling audio file: " + rawDocument.getUrl(), ex);
+      throw new RegainException("Error handling audio file: " + origUrl, ex);
 
     } catch (IOException ex) {
-      throw new RegainException("Error handling audio file: " + rawDocument.getUrl(), ex);
+      throw new RegainException("Error handling audio file: " + origUrl, ex);
     }
+
   }
 }

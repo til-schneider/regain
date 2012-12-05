@@ -21,14 +21,15 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2010-11-07 16:02:14 +0100 (So, 07 Nov 2010) $
- *   $Author: thtesche $
- * $Revision: 465 $
+ *     $Date: 2012-08-20 10:58:50 +0200 (Mo, 20 Aug 2012) $
+ *   $Author: benjaminpick $
+ * $Revision: 619 $
  */
 package net.sf.regain.crawler.preparator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import net.sf.regain.RegainException;
@@ -50,6 +51,7 @@ import org.htmlparser.beans.StringBean;
 import org.htmlparser.lexer.Lexer;
 import org.htmlparser.lexer.Page;
 import org.htmlparser.tags.LinkTag;
+import org.htmlparser.tags.FrameTag;
 import org.htmlparser.util.ParserException;
 
 /**
@@ -67,12 +69,12 @@ public class HtmlPreparator extends AbstractPreparator {
    * Die HtmlContentExtractor, die den jeweiligen zu indizierenden Inhalt aus
    * den HTML-Dokumenten schneiden.
    */
-  private HtmlContentExtractor[] mContentExtractorArr;
+  private List<HtmlContentExtractor> mContentExtractorList;
   /**
    * Die HtmlPathExtractor, die den jeweiligen Pfad aus den HTML-Dokumenten
    * extrahieren.
    */
-  private HtmlPathExtractor[] mPathExtractorArr;
+  private List<HtmlPathExtractor> mPathExtractorList;
 
   /**
    * Creates a new instance of HtmlPreparator.
@@ -108,33 +110,33 @@ public class HtmlPreparator extends AbstractPreparator {
   @Override
   public void init(PreparatorConfig config) throws RegainException {
     // Read the content extractors
-    Map[] sectionArr = config.getSectionsWithName("contentExtractor");
-    mContentExtractorArr = new HtmlContentExtractor[sectionArr.length];
-    for (int i = 0; i < mContentExtractorArr.length; i++) {
-      String prefix = (String) sectionArr[i].get("prefix");
-      String contentStartRegex = (String) sectionArr[i].get("startRegex");
-      String contentEndRegex = (String) sectionArr[i].get("endRegex");
-      String headlineRegex = (String) sectionArr[i].get("headlineRegex");
-      int headlineRegexGroup = getIntParam(sectionArr[i], "headlineRegex.group");
+    List<Map<String, String>> sectionList = config.getSectionsWithNameList("contentExtractor");
+    mContentExtractorList = new ArrayList<HtmlContentExtractor>(sectionList.size());
+    for (Map<String, String> section : sectionList) {
+      String prefix = section.get("prefix");
+      String contentStartRegex = section.get("startRegex");
+      String contentEndRegex = section.get("endRegex");
+      String headlineRegex = section.get("headlineRegex");
+      int headlineRegexGroup = getIntParam(section, "headlineRegex.group");
 
-      mContentExtractorArr[i] = new HtmlContentExtractor(prefix,
-        contentStartRegex, contentEndRegex, headlineRegex, headlineRegexGroup);
+      mContentExtractorList.add(new HtmlContentExtractor(prefix,
+        contentStartRegex, contentEndRegex, headlineRegex, headlineRegexGroup));
     }
 
     // Read the path extractors
-    sectionArr = config.getSectionsWithName("pathExtractor");
-    mPathExtractorArr = new HtmlPathExtractor[sectionArr.length];
-    for (int i = 0; i < mPathExtractorArr.length; i++) {
-      String prefix = (String) sectionArr[i].get("prefix");
-      String pathStartRegex = (String) sectionArr[i].get("startRegex");
-      String pathEndRegex = (String) sectionArr[i].get("endRegex");
-      String pathNodeRegex = (String) sectionArr[i].get("pathNodeRegex");
-      int pathNodeUrlGroup = getIntParam(sectionArr[i], "pathNodeRegex.urlGroup");
-      int pathNodeTitleGroup = getIntParam(sectionArr[i], "pathNodeRegex.titleGroup");
+    sectionList = config.getSectionsWithNameList("pathExtractor");
+    mPathExtractorList = new ArrayList<HtmlPathExtractor>(sectionList.size());
+    for (Map<String, String> section : sectionList) {
+      String prefix = section.get("prefix");
+      String pathStartRegex = section.get("startRegex");
+      String pathEndRegex = section.get("endRegex");
+      String pathNodeRegex = section.get("pathNodeRegex");
+      int pathNodeUrlGroup = getIntParam(section, "pathNodeRegex.urlGroup");
+      int pathNodeTitleGroup = getIntParam(section, "pathNodeRegex.titleGroup");
 
-      mPathExtractorArr[i] = new HtmlPathExtractor(prefix, pathStartRegex,
+      mPathExtractorList.add(new HtmlPathExtractor(prefix, pathStartRegex,
         pathEndRegex, pathNodeRegex, pathNodeUrlGroup,
-        pathNodeTitleGroup);
+        pathNodeTitleGroup));
     }
   }
 
@@ -146,7 +148,7 @@ public class HtmlPreparator extends AbstractPreparator {
    * @return The value of the parameter.
    * @throws RegainException If the parameter is not set or is not a number.
    */
-  private int getIntParam(Map configSection, String paramName)
+  private int getIntParam(Map<String, String> configSection, String paramName)
     throws RegainException {
     String asString = (String) configSection.get(paramName);
     if (asString == null) {
@@ -175,10 +177,10 @@ public class HtmlPreparator extends AbstractPreparator {
 
     // Find the content extractor that is responsible for this document
     HtmlContentExtractor contentExtractor = null;
-    if (mContentExtractorArr != null) {
-      for (int i = 0; i < mContentExtractorArr.length; i++) {
-        if (mContentExtractorArr[i].accepts(rawDocument)) {
-          contentExtractor = mContentExtractorArr[i];
+    if (mContentExtractorList != null) {
+      for (HtmlContentExtractor iContextExtractor : mContentExtractorList) {
+        if (iContextExtractor.accepts(rawDocument)) {
+          contentExtractor = iContextExtractor;
         }
       }
     }
@@ -242,10 +244,11 @@ public class HtmlPreparator extends AbstractPreparator {
       // Parse the content
       parser.visitAllNodesWith(linkVisitor);
       ArrayList<Tag> links = linkVisitor.getLinks();
+      ArrayList<Tag> frames = linkVisitor.getFrames();
       htmlPage.setBaseUrl(rawDocument.getUrl());
 
       // Iterate over all links found
-      Iterator linksIter = links.iterator();
+      Iterator<Tag> linksIter = links.iterator();
       while (linksIter.hasNext()) {
         LinkTag currTag = ((LinkTag) linksIter.next());
         String link = CrawlerToolkit.removeAnchor(currTag.extractLink());
@@ -262,6 +265,18 @@ public class HtmlPreparator extends AbstractPreparator {
         }
       }
 
+      // Iterate over all frames found
+      Iterator<Tag> framesIter = frames.iterator();
+      while (framesIter.hasNext()) {
+        FrameTag currTag = ((FrameTag) framesIter.next());
+        String link = CrawlerToolkit.removeAnchor(currTag.getFrameLocation());
+
+        // find urls which do not end with an '/' but are a directory
+        link = CrawlerToolkit.completeDirectory(link);
+
+        rawDocument.addLink(link, "frame");
+      }
+
     } catch (ParserException ex) {
       throw new RegainException("Error while extracting links: ", ex);
     }
@@ -276,10 +291,10 @@ public class HtmlPreparator extends AbstractPreparator {
 
     // Find the path extractor that is responsible for this document
     HtmlPathExtractor pathExtractor = null;
-    if (mPathExtractorArr != null) {
-      for (int i = 0; i < mPathExtractorArr.length; i++) {
-        if (mPathExtractorArr[i].accepts(rawDocument)) {
-          pathExtractor = mPathExtractorArr[i];
+    if (mPathExtractorList != null) {
+      for (HtmlPathExtractor iPathExtractor : mPathExtractorList) {
+        if (iPathExtractor.accepts(rawDocument)) {
+          pathExtractor = iPathExtractor;
         }
       }
     }

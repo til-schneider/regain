@@ -22,9 +22,9 @@
  | CVS information:
  |  $RCSfile$
  |   $Source$
- |     $Date: 2012-06-20 17:45:58 +0200 (Mi, 20 Jun 2012) $
- |   $Author: benjaminpick $
- | $Revision: 609 $
+ |     $Date: 2012-12-06 22:28:56 +0100 (Do, 06 Dez 2012) $
+ |   $Author: thtesche $
+ | $Revision: 629 $
  |
  | Author: Til Schneider, www.murfman.de
  | How to use this file: http://regain.murfman.de/wiki/doku.php?id=project_info:howto_regain_in_an_ide#ant
@@ -993,11 +993,13 @@
   <target name="test-preparators" depends="make-test, runtime-server-fast">
     <delete dir="build/test/docs"/>
     <mkdir dir="build/test/docs"/>
+    <echo message="Testing Docs from ${test-preparator-docs}..." />
+    
     <java classname="net.sf.regain.test.PreparatorTest"
           dir="build/runtime/crawler"
           failonerror="true"
           fork="true">
-      <arg value="../../../test/docs"/>
+      <arg value="${test-preparator-docs}"/>
       <arg value="../../test/docs"/>
       <classpath>
         <fileset dir="build/preparator">
@@ -1022,7 +1024,7 @@
    | (ANT_HOME/lib is on my machine "/usr/share/ant/lib")
    +-->
   <target name="test" depends="make-test">
-    <junit haltonfailure="true" fork="true"> <!-- showoutput="true" -->
+    <junit haltonfailure="true" fork="true" showoutput="true" >
       <classpath>
         <path refid="classpath"/>
         <!-- <path refid="testlibs-classpath"/> -->
@@ -1157,7 +1159,7 @@
    | This target depends on clean-runtime to be sure that the runtime
    | directory contains no stuff we don't want to be destributed.
    +-->
-  <target name="public-no-installer"> <!-- depends="clean-all, runtime, test-integration, doc"-->
+  <target name="public-no-installer" depends="clean-all, runtime, test-integration, doc">
     <mkdir dir="build/public"/>
     <zip destfile="build/public/${programname.file}_v${version}_server.zip">
       <zipfileset prefix="${programname.file}/runtime/crawler"

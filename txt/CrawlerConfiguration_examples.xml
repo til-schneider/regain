@@ -326,7 +326,7 @@
       -->
 
       <!--
-       | The ectractor that extracts the navigation path in HTML pages.
+       | The extractor that extracts the navigation path in HTML pages.
        |
        | "prefix":        The prefix the path extractor is responsible for.
        | "startRegex":    The regular expression that finds the start of the area

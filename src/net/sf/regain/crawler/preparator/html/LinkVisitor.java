@@ -32,9 +32,14 @@ import org.htmlparser.visitors.NodeVisitor;
 public class LinkVisitor extends NodeVisitor {
 
   ArrayList<Tag> mExtLinks = new ArrayList<Tag>();
+  ArrayList<Tag> mExtFrames = new ArrayList<Tag>();
 
   public ArrayList<Tag> getLinks() {
     return mExtLinks;
+  }
+
+  public ArrayList<Tag> getFrames() {
+    return mExtFrames;
   }
 
   @Override
@@ -45,6 +50,15 @@ public class LinkVisitor extends NodeVisitor {
       String hrefValue = tag.getAttribute("href");
       if (hrefValue != null) {
         mExtLinks.add(tag);
+      } else {
+        //System.err.println("Corrupt html found!");
+      }
+    }
+
+    if ("frame".equalsIgnoreCase(name)) {
+      String srcValue = tag.getAttribute("src");
+      if (srcValue != null) {
+        mExtFrames.add(tag);
       } else {
         //System.err.println("Corrupt html found!");
       }

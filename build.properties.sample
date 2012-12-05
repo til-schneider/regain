@@ -24,3 +24,7 @@ installer.executable=C:\\.....fill_in_the_correct_path.....\\regain\\installer\\
 
 # Skip Integration Tests
 skip_integration_tests=true
+
+# Files for preparator test, relative to build/runtime/crawler
+#test-preparator-docs=../../../test/docs
+test-preparator-docs=../../../test/testfiles

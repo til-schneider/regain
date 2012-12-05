@@ -150,6 +150,9 @@ public interface CrawlerPlugin extends Pluggable {
 		/**
 		 * Called after a document is being prepared to be added to the index.
 		 * Here you can override the results of the preperator, if necessary.
+		 * (Note that not all documents that are prepared will be added to the index.
+		 * They may be parsed only in order to extract URLs or because the file was changed
+		 * on the same day.)
 		 * 
 		 * @param document		Regain document that was analysed
 		 * @param preparator	Preparator that has analysed this document

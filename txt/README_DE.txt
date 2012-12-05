@@ -1,3 +1,15 @@
+Version X.X.X am
+----------------
+NEU
+ * Wenn ein Preparator nicht erfolgreich ist, werden erst die anderen Preparatoren versucht, bevor ein leeres Ersatzdokument erstellt wird.
+ * Erlaube mehrere, negierte und Wildcard-Mime-Angaben (z.B. mimetype:"text/*" -mimetype:"text/plain")
+ * HtmlPreparator: Folge auch Links in framesets 
+
+BUGFIX
+ * JavaPreperator: Enums werden geparsed (Enum-Name und Konstanten-Bezeichner werden extrahiert)
+ * MP3Peparator und GenericAudioPreparator funktionieren jetzt auch, wenn die Dateien nur lesbar sind.
+ * IndexWriterManager: Schließe alle Dateien (um den Fehlern "Too many open files..." und "this IndexReader is closed" vorzubeugen).
+
 Version 1.8.0 am 20.06.2012 PREVIEW (r609)
 -----------------------------------
 

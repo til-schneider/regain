@@ -2,9 +2,9 @@
  * CVS information:
  *  $RCSfile$
  *   $Source$
- *     $Date: 2012-05-17 10:28:42 +0200 (Do, 17 Mai 2012) $
+ *     $Date: 2012-09-11 18:08:35 +0200 (Di, 11 Sep 2012) $
  *   $Author: benjaminpick $
- * $Revision: 595 $
+ * $Revision: 622 $
  */
 package net.sf.regain.ui.server;
 
@@ -20,6 +20,7 @@ import javax.servlet.jsp.PageContext;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
+import net.sf.regain.search.IndexSearcherManager;
 import net.sf.regain.search.SearchToolkit;
 import net.sf.regain.util.sharedtag.PageRequest;
 import net.sf.regain.util.sharedtag.PageResponse;
@@ -110,5 +111,18 @@ public class FileServlet extends HttpServlet {
       factory.releasePageContext(pageContext);
     }
   }
+
+
+  public void destroy()
+  {
+    try
+    {
+      IndexSearcherManager.closeAll();
+    }
+    catch (IOException e) { }
+    super.destroy();
+  }
+  
+  
 
 }
