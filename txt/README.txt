@@ -1,5 +1,10 @@
+Version 2.0.1 on 2012/February/16 STABLE
+----------------------------------------
+BUGFIX
+ * Add missing bouncycastle lib
+
 Version 2.0.0 on 2012/December/08 STABLE
-----------------
+----------------------------------------
 NEW
  * Try all other preparators in case the designated preperator doesn't work
  * Allow more than one wildcard mime declarations (positiv, negativ). Example: mimetype:"text/*" -mimetype:"text/plain"

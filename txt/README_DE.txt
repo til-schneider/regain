@@ -1,3 +1,8 @@
+Version 2.0.1 am 16.02.2013 STABLE
+----------------
+BUGFIX
+ * Fehlende bouncycastle Bibliothek zum PDFExtractor hinzugefügt.
+
 Version 2.0.0 am 08.12.2012 STABLE
 ----------------
 NEU
