@@ -36,6 +36,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    * @return boolean true if content preview is enabled and the whole content should be
    * stored in the index
    */
+  @Override
   public boolean getStoreContentForPreview(){
     return true;
   }
@@ -46,6 +47,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    *
    * @return Der Host-Namen des Proxy-Servers.
    */
+  @Override
   public String getProxyHost() {
     return "idatmpsrv";
   }
@@ -55,6 +57,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    *
    * @return MaxCycleCount
    */
+  @Override
   public int getMaxCycleCount() {
     return -1;
   }
@@ -66,6 +69,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    *
    * @return Der Port des Proxy-Servers.
    */
+  @Override
   public String getProxyPort() {
     return "3128";
   }
@@ -78,6 +82,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    *
    * @return Der Benutzernamen f�r die Anmeldung beim Proxy-Server.
    */
+  @Override
   public String getProxyUser() {
     return null;
   }
@@ -90,12 +95,14 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    *
    * @return Das Passwort f�r die Anmeldung beim Proxy-Server.
    */
+  @Override
   public String getProxyPassword() {
     return null;
   }
 
 
   // overridden
+  @Override
   public String getUserAgent() {
     return null;
   }
@@ -107,6 +114,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    *
    * @return Den Timeout f�r HTTP-Downloads
    */
+  @Override
   public int getHttpTimeoutSecs() {
     return 180;
   }
@@ -119,6 +127,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    * @return Ob URLs geladen werden sollen, die weder durchsucht noch indiziert
    *         werden.
    */
+  @Override
   public boolean getLoadUnparsedUrls() {
     return false;
   }
@@ -130,6 +139,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    *
    * @return Ob ein Suchindex erstellt werden soll.
    */
+  @Override
   public boolean getBuildIndex() {
     return true;
   }
@@ -140,6 +150,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    *
    * @return Das Verzeichnis, in dem der Suchindex stehen soll.
    */
+  @Override
   public String getIndexDir() {
     return "c:\\Temp\\searchIndex";
   }
@@ -150,6 +161,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    *
    * @return en zu verwendenden Analyzer-Typ
    */
+  @Override
   public String getAnalyzerType() {
     return "german";
   }
@@ -414,9 +426,9 @@ public class DummyCrawlerConfig implements CrawlerConfig {
   /**
    * Returns the names of the fields that shouldn't be tokenized.
    *
-   * @param config The crawler configuration.
    * @return The names of the fields that shouldn't be tokenized.
    */
+  @Override
   public String[] getUntokenizedFieldNames(){
 	  return null;
   }
@@ -426,6 +438,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    *
    * @return MaxSummaryLength
    */
+  @Override
   public int getMaxSummaryLength(){
     return 250000;
   }
@@ -434,6 +447,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    * {@inheritDoc }
    *
    */
+  @Override
   public String[] getURLCleaners() {
     return new String[]{"PHPSESSID=[0-9a-z]{5,}"};
   }

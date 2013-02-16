@@ -1,10 +1,13 @@
 Version 2.0.1 am 16.02.2013 STABLE
-----------------
+----------------------------------
 BUGFIX
  * Fehlende bouncycastle Bibliothek zum PDFExtractor hinzugefügt.
 
+UPDATE
+ * PDFBox (PDFExtractor) von Version 1.6.0 auf 1.7.1
+
 Version 2.0.0 am 08.12.2012 STABLE
-----------------
+----------------------------------
 NEU
  * Wenn ein Preparator nicht erfolgreich ist, werden erst die anderen Preparatoren versucht, bevor ein leeres Ersatzdokument erstellt wird.
  * Erlaube mehrere, negierte und Wildcard-Mime-Angaben (z.B. mimetype:"text/*" -mimetype:"text/plain")

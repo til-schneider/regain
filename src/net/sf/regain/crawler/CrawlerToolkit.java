@@ -741,7 +741,7 @@ public class CrawlerToolkit {
    *
    * @param url
    * @param urlCleaners
-   * @return
+   * @return cleaned URL
    */
   public static String cleanURL(String url, String[] urlCleaners) {
 

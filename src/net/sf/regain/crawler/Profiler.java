@@ -23,9 +23,8 @@ package net.sf.regain.crawler;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
-
+import java.util.List;
 import net.sf.regain.RegainToolkit;
-
 import org.apache.log4j.Logger;
 
 /**
@@ -39,7 +38,7 @@ public class Profiler {
   private static Logger mLog = Logger.getLogger(Profiler.class);
 
   /** Eine Liste mit allen erzeugten Profilern. */
-  private static ArrayList mProfilerList;
+  private static List<Profiler> mProfilerList;
 
   /** Der Name. */
   private String mName;
@@ -130,7 +129,7 @@ public class Profiler {
    */
   private static synchronized void registerProfiler(Profiler profiler) {
     if (mProfilerList == null) {
-      mProfilerList = new ArrayList();
+      mProfilerList = new ArrayList<Profiler>();
     }
 
     mProfilerList.add(profiler);
@@ -314,22 +313,20 @@ public class Profiler {
     return (mMeasureCount > 0) || (mAbortedMeasureCount > 0);
   }
 
-
-
   /**
-   * Gibt die Resultate s�mtlicher genutzter Profiler zurück.
+   * Gibt die Resultate saemtlicher genutzter Profiler zurück.
    *
-   * @return Die Resultate s�mtlicher genutzter Profiler.
+   * @return Die Resultate saemtlicher genutzter Profiler.
    */
   public static String getProfilerResults() {
     if (mProfilerList == null) {
       return "";
     }
 
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
 
-    for (Iterator iter = mProfilerList.iterator(); iter.hasNext();) {
-      Profiler profiler = (Profiler) iter.next();
+    for (Iterator<Profiler> iter = mProfilerList.iterator(); iter.hasNext();) {
+      Profiler profiler = iter.next();
 
       if (profiler.wasUsed()) {
         buffer.append(profiler);
@@ -339,5 +336,4 @@ public class Profiler {
 
     return buffer.toString();
   }
-
 }

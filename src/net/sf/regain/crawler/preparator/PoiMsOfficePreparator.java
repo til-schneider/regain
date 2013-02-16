@@ -137,7 +137,7 @@ public class PoiMsOfficePreparator extends AbstractPreparator {
     }
   }
 
-  private Map createMetaDataMap(String rawLine) {
+  private Map<String, String> createMetaDataMap(String rawLine) {
     Map<String, String> metaDataMap = new HashMap<String, String>();
 
     if (rawLine != null && !rawLine.isEmpty()) {

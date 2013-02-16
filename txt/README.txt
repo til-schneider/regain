@@ -3,6 +3,9 @@ Version 2.0.1 on 2012/February/16 STABLE
 BUGFIX
  * Add missing bouncycastle lib
 
+UPDATE
+ * PDFBox (PDFExtractor) from version 1.6.0 to 1.7.1
+
 Version 2.0.0 on 2012/December/08 STABLE
 ----------------------------------------
 NEW

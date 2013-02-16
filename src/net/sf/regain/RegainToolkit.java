@@ -1556,7 +1556,7 @@ public class RegainToolkit {
    * <p>
    * The method returns <code>null</code> if no field identifier could created
    *
-   * @param field The content for which the summary is referring to
+   * @param fieldName The content for which the summary is referring to
    * @return the new field identifier
    */
   public static String createHighlightedFieldIdent(String fieldName) {

@@ -82,21 +82,17 @@ public class JavaParser {
     return importDecl;
   }
 
-  public ArrayList getComments() {
+  public List getComments() {
     List comments = _unit.getCommentList();
     if (comments.isEmpty()) {
       return null;
     }
-    ArrayList javaDocComments = new ArrayList();
-    ListIterator iterator = comments.listIterator();
+    List<String> javaDocComments = new ArrayList<String>();
+    ListIterator<Object> iterator = comments.listIterator();
     while (iterator.hasNext()) {
       Object object = iterator.next();
       if (object instanceof Javadoc) {
         String comment = ((Javadoc) object).getComment();
-        // ((Javadoc)object).isDocComment();
-        // if (object instanceof Comment){
-        // comment = ((Comment)object).toString();
-        // }
         javaDocComments.add(comment);
       }
     }

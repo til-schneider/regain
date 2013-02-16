@@ -303,8 +303,8 @@
            debug="${debug}"
            deprecation="true"
            executable="${java.dir}/bin/javac"
-           source="1.5"
-           target="1.5"
+           source="1.6"
+           target="1.6"
            fork="true"
            includeantruntime="false">
       <compilerarg value="-Xlint"/>
@@ -337,7 +337,7 @@
     <javac destdir="build/classes"
            debug="${debug}"
            deprecation="true"
-           target="1.5"
+           target="1.6"
            includeantruntime="false">
       <src path="test/src"/>
       <exclude name="net/sf/regain/test/integration/**"/>
@@ -364,7 +364,7 @@
     <javac destdir="build/classes"
            debug="${debug}"
            deprecation="true"
-           target="1.5"
+           target="1.6"
            includeantruntime="false">
       <src>
         <pathelement location="test/src/net/sf/regain/test/integration"/>
@@ -1321,7 +1321,7 @@
     <mkdir dir="${jacobgen-classes.dir}"/>
     <javac srcdir="${jacobgen-src.dir}"
            destdir="${jacobgen-classes.dir}"
-           target="1.2"
+           target="1.6"
            debug="${debug}"
            deprecation="true">
       <classpath>

@@ -72,7 +72,7 @@ public interface WriteablePreparator extends Preparator {
 	 * Setzt von Formatierungsinformation befreiten Inhalt des Dokuments, das
 	 * gerade Präpariert wird.
 	 *
-	 * @param The cleanedContent
+	 * @param cleanedContent
 	 */
 	public void setCleanedContent(String cleanedContent);
 

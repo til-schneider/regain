@@ -42,7 +42,7 @@ public class UrlMatcherResult implements UrlMatcher {
    * Creates a new instance of UrlMatcher.
    *
    * @param shouldBeParsed, whether from a match for matches(url) possibly inclosed links should be extracted.
-   * @param shouldBeIndexed, whether from a match for matches(url) the content from the URL should be indexed.
+   * @param shouldBeIndexed whether from a match for matches(url) the content from the URL should be indexed.
    */
   public UrlMatcherResult(boolean shouldBeParsed, boolean shouldBeIndexed) {
     mShouldBeParsed = shouldBeParsed;

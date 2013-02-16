@@ -27,10 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URLEncoder;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -68,7 +65,7 @@ import org.apache.regexp.RESyntaxException;
  * werden je nach Einstellung nur geladen, in den Suchindex aufgenommen oder
  * wiederum nach URLs durchsucht.
  * <p>
- * für jede URL wird Anhand der Schwarzen und der Weißen Liste entschieden, ob sie
+ * fÃ¼r jede URL wird Anhand der Schwarzen und der WeiÃŸen Liste entschieden, ob sie
  * ignoriert oder bearbeitet wird. Wenn <CODE>loadUnparsedUrls</CODE> auf
  * <CODE>false</CODE> gesetzt wurde, dann werden auch URLs ignoriert, die weder
  * durchsucht noch indiziert werden.
@@ -286,16 +283,16 @@ public class Crawler implements ErrorLogger {
   /**
    * Analysiert die URL und entscheidet, ob sie bearbeitet werden soll oder nicht.
    * <p>
-   * Wenn ja, dann wird ein neuer Job erzeugt und der Job-Liste hinzugefügt.
+   * Wenn ja, dann wird ein neuer Job erzeugt und der Job-Liste hinzugefÃ¼gt.
    *
-   * @param url Die URL des zu prüfenden Jobs.
-   * @param sourceUrl Die URL des Dokuments in der die URL des zu prüfenden Jobs
+   * @param url Die URL des zu prÃ¼fenden Jobs.
+   * @param sourceUrl Die URL des Dokuments in der die URL des zu prÃ¼fenden Jobs
    *        gefunden wurde.
    * @param shouldBeParsed Gibt an, ob die URL geparst werden soll.
    * @param shouldBeIndexed Gibt an, ob die URL indiziert werden soll.
    * @param sourceLinkText Der Text des Links in dem die URL gefunden wurde. Ist
    *        <code>null</code>, falls die URL nicht in einem Link (also einem
-   *        a-Tag) gefunden wurde oder wenn aus sonstigen Gründen kein Link-Text
+   *        a-Tag) gefunden wurde oder wenn aus sonstigen GrÃ¼nden kein Link-Text
    *        vorhanden ist.
    */
   private void addJob(String url, String sourceUrl, boolean shouldBeParsed,
@@ -782,13 +779,7 @@ public class Crawler implements ErrorLogger {
     try {
       mLog.info("Read authentication entries from authentication properties.");
 
-      // Java 6
-      Set<String> keys = new HashSet<String>();
-      //keys = authProps.stringPropertyNames();
-      // Java 5
-      for (Enumeration e = authProps.propertyNames(); e.hasMoreElements();) {
-        keys.add((String) e.nextElement());
-      }
+      Set<String> keys = authProps.stringPropertyNames();
 
       Iterator<String> iter = keys.iterator();
       // Iterate over all keys
@@ -945,9 +936,9 @@ public class Crawler implements ErrorLogger {
         System.out.println(msg);
         printer.println(msg);
 
-        Iterator iter = mDeadlinkList.iterator();
+        Iterator<Object[]> iter = mDeadlinkList.iterator();
         for (int i = 0; iter.hasNext(); i++) {
-          Object[] tupel = (Object[]) iter.next();
+          Object[] tupel = iter.next();
           String url = (String) tupel[0];
           String sourceUrl = (String) tupel[1];
 
@@ -981,10 +972,10 @@ public class Crawler implements ErrorLogger {
 
 
   /**
-   * Prüft, ob die Exception von einem Dead-Link herr�hrt.
+   * PrÃ¼ft, ob die Exception von einem Dead-Link herrï¿½hrt.
    *
-   * @param thr Die zu prüfende Exception
-   * @return Ob die Exception von einem Dead-Link herr�hrt.
+   * @param thr Die zu prÃ¼fende Exception
+   * @return Ob die Exception von einem Dead-Link herrï¿½hrt.
    */
   private boolean isExceptionFromDeadLink(Throwable thr) {
     if (thr instanceof HttpStreamException) {
@@ -1080,7 +1071,7 @@ public class Crawler implements ErrorLogger {
    * Searches a imap directory for folder an counts the containing messages
    * The method creates a new job for every not empty folder
    *
-   * @param folder the folder to parse
+   * @param folderUrl  the folder to parse
    * @throws RegainException If encoding of the found URLs failed.
    */
   private void parseIMAPFolder(String folderUrl) throws RegainException {
@@ -1098,8 +1089,6 @@ public class Crawler implements ErrorLogger {
     }
     URLName urlName = new URLName(originURLName.getProtocol(), originURLName.getHost(),
       originURLName.getPort(), folder, originURLName.getUsername(), originURLName.getPassword());
-
-    Map<String, Integer> folderList = new Hashtable<String, Integer>();
 
     try {
       IMAPSSLStore imapStore = new IMAPSSLStore(session, urlName);
@@ -1131,7 +1120,7 @@ public class Crawler implements ErrorLogger {
         }
       }
       // Find all subfolder
-      folderList = ImapToolkit.getAllFolders(startFolder, false);
+      Map<String, Integer> folderList = ImapToolkit.getAllFolders(startFolder, false);
 
       // Iterate over all subfolders
       for (Map.Entry<String, Integer> entry : folderList.entrySet()) {
@@ -1152,27 +1141,28 @@ public class Crawler implements ErrorLogger {
   }
 
   /**
-   * Creates crawler jobs from inclosed links. Every link is checked against the white-/black list.
+   * Creates crawler jobs from inclosed links. Every link is checked against the
+   * white-/black list.
    *
    * @param rawDocument A document with or without links
-   * @throws net.sf.regain.RegainException if an exception occurrs during job creation
+   * @throws net.sf.regain.RegainException if an exception occurrs during job
+   * creation
    */
   private void createCrawlerJobs(RawDocument rawDocument) throws RegainException {
-    if( rawDocument.hasLinks() ){
+    if (rawDocument.hasLinks()) {
       // Iterate over all found links in the document
-      for (Iterator iter = rawDocument.getLinks().entrySet().iterator(); iter.hasNext();){
-        Map.Entry entry = (Map.Entry)iter.next();
+      for (Map.Entry<String, String> entry : rawDocument.getLinks().entrySet()) {
         // The intention of this call is only to determine the link-extraction and indexing property
-        UrlMatcher urlMatch = mUrlChecker.isUrlAccepted((String)entry.getKey());
+        UrlMatcher urlMatch = mUrlChecker.isUrlAccepted(entry.getKey());
         // Add the job
-        addJob((String)entry.getKey(), rawDocument.getUrl(),
-          urlMatch.getShouldBeParsed(), urlMatch.getShouldBeIndexed(), (String)entry.getValue());
+        addJob(entry.getKey(), rawDocument.getUrl(),
+                urlMatch.getShouldBeParsed(), urlMatch.getShouldBeIndexed(), entry.getValue());
       }
     }
   }
 
  /**
-   * Gibt die Anzahl der Fehler zurück (das beinhaltet fatale und nicht fatale
+   * Gibt die Anzahl der Fehler zurÃ¼ck (das beinhaltet fatale und nicht fatale
    * Fehler).
    *
    * @return Die Anzahl der Fehler.
@@ -1184,7 +1174,7 @@ public class Crawler implements ErrorLogger {
 
 
   /**
-   * Gibt Die Anzahl der fatalen Fehler zurück.
+   * Gibt Die Anzahl der fatalen Fehler zurÃ¼ck.
    * <p>
    * Fatale Fehler sind Fehler, durch die eine Erstellung oder Aktualisierung
    * des Index verhindert wurde.

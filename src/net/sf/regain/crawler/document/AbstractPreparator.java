@@ -99,7 +99,7 @@ public abstract class AbstractPreparator implements Preparator, WriteablePrepara
    * If <code>extention</code> is null or empty, the preparator won't accept any
    * documents.
    *
-   * @param extention The file extension a URL must have to be accepted by
+   * @param mimeType  The file extension a URL must have to be accepted by
    *        this preparator.
    * @throws RegainException If creating the preparator failed.
    *
@@ -117,7 +117,7 @@ public abstract class AbstractPreparator implements Preparator, WriteablePrepara
    * If <code>extentionArr</code> is null or empty, the preparator won't accept
    * any documents.
    *
-   * @param extentionArr The file extensions a URL must have one to be accepted
+   * @param mimeTypeArr  The file extensions a URL must have one to be accepted
    *        by this preparator.
    * @throws RegainException If creating the preparator failed.
    *
@@ -275,7 +275,7 @@ public abstract class AbstractPreparator implements Preparator, WriteablePrepara
    * Setzt von Formatierungsinformation befreiten Inhalt des Dokuments, das
    * gerade Präpariert wird.
    *
-   * @param The cleanedContent
+   * @param cleanedContent
    */
   public void setCleanedContent(String cleanedContent) {
     mCleanedContent = cleanedContent;
