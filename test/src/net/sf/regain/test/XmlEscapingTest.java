@@ -2,19 +2,16 @@ package net.sf.regain.test;
 
 import java.io.File;
 import java.io.OutputStream;
-
+import junit.framework.TestCase;
 import net.sf.regain.RegainException;
 import net.sf.regain.util.sharedtag.PageResponse;
-
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-
-import junit.framework.TestCase;
 
 public class XmlEscapingTest extends TestCase
 {
   protected static Logger mLog = Logger.getLogger(CrawlerPluginTest.class);
-  private static final String LOG4J_CONFIG_FILE = "test/log4j.properties";
+  private static final String LOG4J_CONFIG_FILE = "projekte/regain/test/log4j.properties";
 
   static {
     System.setProperty("log4j.configuration", LOG4J_CONFIG_FILE);

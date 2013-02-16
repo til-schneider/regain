@@ -37,10 +37,11 @@ import java.io.PrintWriter;
  */
 public class RegainException extends Exception {
 
-  /** The nested exception. May be null. */
+  static final long serialVersionUID = -3387516965436542298L;
+  /**
+   * The nested exception. May be null.
+   */
   private Throwable mCause;
-
-
 
   /**
    * Creates a new instance of SearchException.

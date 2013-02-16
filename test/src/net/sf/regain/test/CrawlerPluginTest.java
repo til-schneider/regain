@@ -10,7 +10,7 @@ import org.apache.log4j.PropertyConfigurator;
 public class CrawlerPluginTest extends TestCase {
 
   protected static Logger mLog = Logger.getLogger(CrawlerPluginTest.class);
-  private static final String LOG4J_CONFIG_FILE = "test/log4j.properties";
+  private static final String LOG4J_CONFIG_FILE = "projekte/regain/test/log4j.properties";
 
   static {
     System.setProperty("log4j.configuration", LOG4J_CONFIG_FILE);

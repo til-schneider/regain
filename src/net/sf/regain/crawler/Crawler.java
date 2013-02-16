@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -109,7 +110,7 @@ public class Crawler implements ErrorLogger {
    * found (a String), the second the URL of the document where the dead link
    * was found (a String).
    */
-  private LinkedList mDeadlinkList;
+  private List<Object[]> mDeadlinkList;
 
   /** The UrlPattern the HTML-Parser should use to identify URLs. */
   private UrlPattern[] mHtmlParserUrlPatternArr;
@@ -154,7 +155,7 @@ public class Crawler implements ErrorLogger {
     mConfiguration = config;
 
     mJobList = new LinkedList<CrawlerJob>();
-    mDeadlinkList = new LinkedList();
+    mDeadlinkList = new LinkedList<Object[]>();
 
     mFatalErrorCount = 0;
 

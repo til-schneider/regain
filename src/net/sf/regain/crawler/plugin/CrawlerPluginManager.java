@@ -17,23 +17,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Contact: Til Schneider, info@murfman.de
+ *
  */
 
 package net.sf.regain.crawler.plugin;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-
+import net.sf.regain.crawler.Crawler;
+import net.sf.regain.crawler.CrawlerJob;
+import net.sf.regain.crawler.document.RawDocument;
+import net.sf.regain.crawler.document.WriteablePreparator;
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
-
-import net.sf.regain.crawler.Crawler;
-import net.sf.regain.crawler.CrawlerJob;
-import net.sf.regain.crawler.document.RawDocument;
-import net.sf.regain.crawler.document.WriteablePreparator;
 
 /**
  * Guarantees:
@@ -121,8 +120,9 @@ public class CrawlerPluginManager {
 	{
 		plugins.put(MAX_PLUGINS * order + insertIndex, plugin);
 
-		if (order + 1 > nextOrder)
-			nextOrder = order + 1;
+		if (order + 1 > nextOrder) {
+      nextOrder = order + 1;
+    }
 		insertIndex ++;
 	}
 
@@ -199,8 +199,9 @@ public class CrawlerPluginManager {
 	private void checkArgsNotNull(Object[] args) {
 		for (int i = 0; i < args.length; i++)
 		{
-			if (args[i] == null)
-				throw new IllegalArgumentException("Plugin manager was called with null parameter (param nb " + (i + 1) + ")");
+			if (args[i] == null) {
+        throw new IllegalArgumentException("Plugin manager was called with null parameter (param nb " + (i + 1) + ")");
+      }
 		}
 	}
 
@@ -231,8 +232,9 @@ public class CrawlerPluginManager {
 		for (int i = 0; i < argTypes.length; i++)
 		{
 			ret.append(argTypes[i].getCanonicalName());
-			if (i < argTypes.length - 1)
-				ret.append(", ");
+			if (i < argTypes.length - 1) {
+        ret.append(", ");
+      }
 		}
 		return ret.toString();
 	}
@@ -372,8 +374,9 @@ public class CrawlerPluginManager {
     int i = 0;
     for (Object ret : returns)
     {
-      if (! (ret instanceof Boolean))
+      if (! (ret instanceof Boolean)) {
         continue;
+      }
 
       boolean blacklist = ((Boolean) ret).booleanValue();
 
@@ -386,8 +389,9 @@ public class CrawlerPluginManager {
           for (Map.Entry<Integer, CrawlerPlugin> entry : plugins.entrySet())
           {
             cp = entry.getValue();
-            if (i == 0)
+            if (i == 0) {
               break;
+            }
             i--;
           }
           mLog.debug("URL dynamically blacklisted by CrawlerPlugin " + cp.getClass().getName());
@@ -404,6 +408,7 @@ public class CrawlerPluginManager {
 	 * Lists contained plugins for debugging purposes
 	 * @return Debugging output: contained plugins.
 	 */
+  @Override
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 		str.append("Contains ").append(plugins.size()).append(" Plugins: \n");
