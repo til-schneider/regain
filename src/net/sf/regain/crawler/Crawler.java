@@ -33,7 +33,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
-
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -57,7 +56,6 @@ import net.sf.regain.crawler.config.WhiteListEntry;
 import net.sf.regain.crawler.document.RawDocument;
 import net.sf.regain.crawler.plugin.CrawlerPluginFactory;
 import net.sf.regain.crawler.plugin.CrawlerPluginManager;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.apache.regexp.RE;
@@ -1172,96 +1170,7 @@ public class Crawler implements ErrorLogger {
     }
   }
 
-//  /**
-//   * Durchsucht den Inhalt eines HTML-Dokuments nach URLs und erzeugt für jeden
-//   * Treffer einen neuen Job.
-//   *
-//   * @param rawDocument Das zu durchsuchende Dokument.
-//   * @throws RegainException Wenn das Dokument nicht gelesen werden konnte.
-//   */
-//  private void parseHtmlDocument(RawDocument rawDocument) throws RegainException {
-//    for (int i = 0; i < mHtmlParserPatternReArr.length; i++) {
-//      RE re = mHtmlParserPatternReArr[i];
-//      int urlGroup = mHtmlParserUrlPatternArr[i].getRegexUrlGroup();
-//      boolean shouldBeParsed = mHtmlParserUrlPatternArr[i].getShouldBeParsed();
-//      boolean shouldBeIndexed = mHtmlParserUrlPatternArr[i].getShouldBeIndexed();
-//
-//      int offset = 0;
-//      String contentAsString = rawDocument.getContentAsString();
-//      try {
-//        while (re.match(contentAsString, offset)) {
-//          offset = re.getParenEnd(0);
-//
-//          String parentUrl = rawDocument.getUrl();
-//          String url = re.getParen(urlGroup);
-//
-//          if (url != null) {
-//            // Convert the URL to an absolute URL
-//            url = CrawlerToolkit.toAbsoluteUrl(url, parentUrl);
-//
-//            // Try to get a link text
-//            String linkText = getLinkText(contentAsString, offset);
-//
-//            // Add the job
-//            addJob(url, parentUrl, shouldBeParsed, shouldBeIndexed, linkText);
-//          }
-//        }
-//      } catch( Throwable ex ) {
-//        throw new RegainException("Too many links in document.", ex);
-//
-//      }
-//    }
-//  }
-
-  /**
-   * Tries to extract a link text from a position where a URL was found.
-   *
-   * @param content The content to extract the link text from
-   * @param offset The offset where o start looking
-   * @return A link text or <code>null</code> if there was no link text found.
-   */
-  private String getLinkText(String content, int offset) {
-    // NOTE: if there is a link text the following code must be something
-    //       like: ' someParam="someValue">The link text</a>'
-    //       Assumed that the tag started with '<a href="aDocument.doc"'
-
-    // Find the end of the current tag
-    int tagEnd = content.indexOf('>', offset);
-    if (tagEnd == -1) {
-      // No tag end found
-      return null;
-    }
-
-    // If there is a link text the next part must be: 'The link text</a>'
-    // -> Find the start of the next tag
-    int tagStart = content.indexOf('<', tagEnd);
-    if (tagStart == -1) {
-      // No starting tag found
-      return null;
-    }
-
-    // Check whether the starting tag is a '</a>' tag.
-    if ((content.length() > tagStart + 3)
-      && (content.charAt(tagStart + 1) == '/')
-      && (content.charAt(tagStart + 2) == 'a')
-      && (content.charAt(tagStart + 3) == '>'))
-    {
-      // We have a link text
-      String linkText = content.substring(tagEnd + 1, tagStart);
-      linkText = linkText.trim();
-      if (linkText.length() == 0) {
-        linkText = null;
-      }
-
-      return linkText;
-    } else {
-      // The tag was no </a> tag, so the text was no link text
-      return null;
-    }
-  }
-
-
-  /**
+ /**
    * Gibt die Anzahl der Fehler zurück (das beinhaltet fatale und nicht fatale
    * Fehler).
    *
