@@ -1,4 +1,4 @@
-Version X.X.X am
+Version 2.0.0 am 08.12.2012 STABLE
 ----------------
 NEU
  * Wenn ein Preparator nicht erfolgreich ist, werden erst die anderen Preparatoren versucht, bevor ein leeres Ersatzdokument erstellt wird.

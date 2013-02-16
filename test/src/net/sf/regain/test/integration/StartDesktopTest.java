@@ -97,7 +97,7 @@ public class StartDesktopTest extends IntegrationTestCase
     assertContains("FilterSizePlugin didn't seem to work", "<count_hits>0</count_hits>", response);
 
     // When adding a file to the index
-    FileUtils.copyFile(new File(root, "test/testfiles/test.txt"), new File(root, "test/testfiles/test2.txt"));
+    FileUtils.copyFile(new File(root, "test/testfiles/txt/test.txt"), new File(root, "test/testfiles/txt/test2.txt"));
 
     try {
       FileOutputStream out = new FileOutputStream(new File(environment, "searchindex/needsupdate"));

@@ -1,6 +1,6 @@
 /*
  * regain/2 - A file search engine providing plenty of formats
- * Copyright (C) 2004, 2088  Til Schneider, Thomas Tesche
+ * Copyright (C) 2004, 2013  Til Schneider, Thomas Tesche
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,12 +27,13 @@ import org.htmlparser.visitors.NodeVisitor;
 
 /**
  *
- * @author thtesche
+ * @author Thomas Tesche (thtesche), cluster:Systems CSG GmbH
  */
 public class LinkVisitor extends NodeVisitor {
 
   ArrayList<Tag> mExtLinks = new ArrayList<Tag>();
   ArrayList<Tag> mExtFrames = new ArrayList<Tag>();
+  private Tag baseTag = null;
 
   public ArrayList<Tag> getLinks() {
     return mExtLinks;
@@ -40,6 +41,20 @@ public class LinkVisitor extends NodeVisitor {
 
   public ArrayList<Tag> getFrames() {
     return mExtFrames;
+  }
+
+  /**
+   * @return the baseTag
+   */
+  public Tag getBaseTag() {
+    return baseTag;
+  }
+
+  /**
+   * @param baseTag the baseTag to set
+   */
+  public void setBaseTag(Tag baseTag) {
+    this.baseTag = baseTag;
   }
 
   @Override
@@ -63,5 +78,15 @@ public class LinkVisitor extends NodeVisitor {
         //System.err.println("Corrupt html found!");
       }
     }
+
+    if ("base".equalsIgnoreCase(name)) {
+      String srcValue = tag.getAttribute("href");
+      if (srcValue != null) {
+        baseTag = tag;
+      } else {
+        //System.err.println("Corrupt html found!");
+      }
+    }
   }
 }
+

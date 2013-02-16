@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import net.sf.regain.RegainException;
 import net.sf.regain.crawler.CrawlerToolkit;
 import net.sf.regain.crawler.config.PreparatorConfig;
@@ -33,7 +32,6 @@ import net.sf.regain.crawler.document.PathElement;
 import net.sf.regain.crawler.document.RawDocument;
 import net.sf.regain.crawler.preparator.html.HtmlContentExtractor;
 import net.sf.regain.crawler.preparator.html.HtmlPathExtractor;
-
 import net.sf.regain.crawler.preparator.html.LinkVisitor;
 import org.apache.log4j.Logger;
 import org.apache.regexp.RE;
@@ -43,29 +41,28 @@ import org.htmlparser.Tag;
 import org.htmlparser.beans.StringBean;
 import org.htmlparser.lexer.Lexer;
 import org.htmlparser.lexer.Page;
-import org.htmlparser.tags.LinkTag;
+import org.htmlparser.tags.BaseHrefTag;
 import org.htmlparser.tags.FrameTag;
+import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.ParserException;
 
 /**
- * Prepares a HTML-document for indexing.
- * <p>
- * The document will be parsed and a title will be extracted.
+ * Prepares a HTML-document for indexing. <p> The document will be parsed and a title will be extracted.
  *
  * @author Til Schneider, www.murfman.de
  */
 public class HtmlPreparator extends AbstractPreparator {
 
-  /** The logger for this class */
+  /**
+   * The logger for this class
+   */
   private static Logger mLog = Logger.getLogger(HtmlPreparator.class);
   /**
-   * Die HtmlContentExtractor, die den jeweiligen zu indizierenden Inhalt aus
-   * den HTML-Dokumenten schneiden.
+   * Die HtmlContentExtractor, die den jeweiligen zu indizierenden Inhalt aus den HTML-Dokumenten schneiden.
    */
   private List<HtmlContentExtractor> mContentExtractorList;
   /**
-   * Die HtmlPathExtractor, die den jeweiligen Pfad aus den HTML-Dokumenten
-   * extrahieren.
+   * Die HtmlPathExtractor, die den jeweiligen Pfad aus den HTML-Dokumenten extrahieren.
    */
   private List<HtmlPathExtractor> mPathExtractorList;
 
@@ -76,7 +73,7 @@ public class HtmlPreparator extends AbstractPreparator {
    */
   public HtmlPreparator() throws RegainException {
     super(new String[]{"text/html", "application/xhtml+xml"});
-  //super(createAcceptRegex());
+    //super(createAcceptRegex());
   }
 
   /**
@@ -85,15 +82,14 @@ public class HtmlPreparator extends AbstractPreparator {
    * @return The regex.
    * @throws RegainException If the regex couldn't be created.
    */
-  private static RE createAcceptRegex() throws RegainException {
-    String regex = "(^http://[^/]*/?$)|(^http://.*/[^\\.]*$)|(^http://.*/$)|(\\.(html|htm|jsp|php\\d?|asp)$)";
-    try {
-      return new RE(regex, RE.MATCH_CASEINDEPENDENT);
-    } catch (RESyntaxException exc) {
-      throw new RegainException("Creating accept regex for preparator failed: " + regex, exc);
-    }
-  }
-
+//  private static RE createAcceptRegex() throws RegainException {
+//    String regex = "(^http://[^/]*/?$)|(^http://.*/[^\\.]*$)|(^http://.*/$)|(\\.(html|htm|jsp|php\\d?|asp)$)";
+//    try {
+//      return new RE(regex, RE.MATCH_CASEINDEPENDENT);
+//    } catch (RESyntaxException exc) {
+//      throw new RegainException("Creating accept regex for preparator failed: " + regex, exc);
+//    }
+//  }
   /**
    * Initializes the preparator.
    *
@@ -113,7 +109,7 @@ public class HtmlPreparator extends AbstractPreparator {
       int headlineRegexGroup = getIntParam(section, "headlineRegex.group");
 
       mContentExtractorList.add(new HtmlContentExtractor(prefix,
-        contentStartRegex, contentEndRegex, headlineRegex, headlineRegexGroup));
+              contentStartRegex, contentEndRegex, headlineRegex, headlineRegexGroup));
     }
 
     // Read the path extractors
@@ -128,8 +124,8 @@ public class HtmlPreparator extends AbstractPreparator {
       int pathNodeTitleGroup = getIntParam(section, "pathNodeRegex.titleGroup");
 
       mPathExtractorList.add(new HtmlPathExtractor(prefix, pathStartRegex,
-        pathEndRegex, pathNodeRegex, pathNodeUrlGroup,
-        pathNodeTitleGroup));
+              pathEndRegex, pathNodeRegex, pathNodeUrlGroup,
+              pathNodeTitleGroup));
     }
   }
 
@@ -142,7 +138,7 @@ public class HtmlPreparator extends AbstractPreparator {
    * @throws RegainException If the parameter is not set or is not a number.
    */
   private int getIntParam(Map<String, String> configSection, String paramName)
-    throws RegainException {
+          throws RegainException {
     String asString = (String) configSection.get(paramName);
     if (asString == null) {
       throw new RegainException("Error in configuration for " + getClass().getName() + ": Preparator param '" + paramName + "' is not set");
@@ -163,6 +159,7 @@ public class HtmlPreparator extends AbstractPreparator {
    *
    * @throws RegainException if something goes wrong while preparation
    */
+  @Override
   public void prepare(RawDocument rawDocument) throws RegainException {
     // Get the title
     String title = extractHtmlTitle(rawDocument.getContentAsString());
@@ -238,7 +235,12 @@ public class HtmlPreparator extends AbstractPreparator {
       parser.visitAllNodesWith(linkVisitor);
       ArrayList<Tag> links = linkVisitor.getLinks();
       ArrayList<Tag> frames = linkVisitor.getFrames();
-      htmlPage.setBaseUrl(rawDocument.getUrl());
+      if (linkVisitor.getBaseTag() != null) {
+        htmlPage.setBaseUrl(((BaseHrefTag) linkVisitor.getBaseTag()).getBaseUrl());
+      } else {
+        htmlPage.setBaseUrl(rawDocument.getUrl());
+      }
+      mLog.debug("Set base URL to: " + htmlPage.getBaseUrl());
 
       // Iterate over all links found
       Iterator<Tag> linksIter = links.iterator();
@@ -302,8 +304,7 @@ public class HtmlPreparator extends AbstractPreparator {
   /**
    * Extrahiert den Titel aus einem HTML-Dokument.
    *
-   * @param content Der Inhalt (die HTML-Rohdaten) des Dokuments, dessen Titel
-   *        ermittelt werden soll.
+   * @param content Der Inhalt (die HTML-Rohdaten) des Dokuments, dessen Titel ermittelt werden soll.
    *
    * @return Den Titel des HTML-Dokuments.
    */

@@ -287,7 +287,7 @@ public class Crawler implements ErrorLogger {
   /**
    * Analysiert die URL und entscheidet, ob sie bearbeitet werden soll oder nicht.
    * <p>
-   * Wenn ja, dann wird ein neuer Job erzeugt und der Job-Liste hinzugef�gt.
+   * Wenn ja, dann wird ein neuer Job erzeugt und der Job-Liste hinzugefügt.
    *
    * @param url Die URL des zu prüfenden Jobs.
    * @param sourceUrl Die URL des Dokuments in der die URL des zu prüfenden Jobs
@@ -296,7 +296,7 @@ public class Crawler implements ErrorLogger {
    * @param shouldBeIndexed Gibt an, ob die URL indiziert werden soll.
    * @param sourceLinkText Der Text des Links in dem die URL gefunden wurde. Ist
    *        <code>null</code>, falls die URL nicht in einem Link (also einem
-   *        a-Tag) gefunden wurde oder wenn aus sonstigen Gr�nden kein Link-Text
+   *        a-Tag) gefunden wurde oder wenn aus sonstigen Gründen kein Link-Text
    *        vorhanden ist.
    */
   private void addJob(String url, String sourceUrl, boolean shouldBeParsed,
@@ -327,15 +327,15 @@ public class Crawler implements ErrorLogger {
       // and shouldBeIndexed.
       UrlMatcher urlMatch = mUrlChecker.isUrlAccepted(url);
       boolean accepted;
-      if( urlMatch.getShouldBeParsed() || urlMatch.getShouldBeIndexed() )
-      {
-        if (pluginManager.eventAskDynamicBlacklist(url, sourceUrl, sourceLinkText))
+      if (urlMatch.getShouldBeParsed() || urlMatch.getShouldBeIndexed()) {
+        if (pluginManager.eventAskDynamicBlacklist(url, sourceUrl, sourceLinkText)) {
           accepted = false;
-        else
+        } else {
           accepted = true;
-      }
-      else
+        }
+      } else {
         accepted = false;
+      }
 
       int mMaxCycleCount = mConfiguration.getMaxCycleCount();
 
@@ -1172,46 +1172,46 @@ public class Crawler implements ErrorLogger {
     }
   }
 
-  /**
-   * Durchsucht den Inhalt eines HTML-Dokuments nach URLs und erzeugt für jeden
-   * Treffer einen neuen Job.
-   *
-   * @param rawDocument Das zu durchsuchende Dokument.
-   * @throws RegainException Wenn das Dokument nicht gelesen werden konnte.
-   */
-  private void parseHtmlDocument(RawDocument rawDocument) throws RegainException {
-    for (int i = 0; i < mHtmlParserPatternReArr.length; i++) {
-      RE re = mHtmlParserPatternReArr[i];
-      int urlGroup = mHtmlParserUrlPatternArr[i].getRegexUrlGroup();
-      boolean shouldBeParsed = mHtmlParserUrlPatternArr[i].getShouldBeParsed();
-      boolean shouldBeIndexed = mHtmlParserUrlPatternArr[i].getShouldBeIndexed();
-
-      int offset = 0;
-      String contentAsString = rawDocument.getContentAsString();
-      try {
-        while (re.match(contentAsString, offset)) {
-          offset = re.getParenEnd(0);
-
-          String parentUrl = rawDocument.getUrl();
-          String url = re.getParen(urlGroup);
-
-          if (url != null) {
-            // Convert the URL to an absolute URL
-            url = CrawlerToolkit.toAbsoluteUrl(url, parentUrl);
-
-            // Try to get a link text
-            String linkText = getLinkText(contentAsString, offset);
-
-            // Add the job
-            addJob(url, parentUrl, shouldBeParsed, shouldBeIndexed, linkText);
-          }
-        }
-      } catch( Throwable ex ) {
-        throw new RegainException("Too many links in document.", ex);
-
-      }
-    }
-  }
+//  /**
+//   * Durchsucht den Inhalt eines HTML-Dokuments nach URLs und erzeugt für jeden
+//   * Treffer einen neuen Job.
+//   *
+//   * @param rawDocument Das zu durchsuchende Dokument.
+//   * @throws RegainException Wenn das Dokument nicht gelesen werden konnte.
+//   */
+//  private void parseHtmlDocument(RawDocument rawDocument) throws RegainException {
+//    for (int i = 0; i < mHtmlParserPatternReArr.length; i++) {
+//      RE re = mHtmlParserPatternReArr[i];
+//      int urlGroup = mHtmlParserUrlPatternArr[i].getRegexUrlGroup();
+//      boolean shouldBeParsed = mHtmlParserUrlPatternArr[i].getShouldBeParsed();
+//      boolean shouldBeIndexed = mHtmlParserUrlPatternArr[i].getShouldBeIndexed();
+//
+//      int offset = 0;
+//      String contentAsString = rawDocument.getContentAsString();
+//      try {
+//        while (re.match(contentAsString, offset)) {
+//          offset = re.getParenEnd(0);
+//
+//          String parentUrl = rawDocument.getUrl();
+//          String url = re.getParen(urlGroup);
+//
+//          if (url != null) {
+//            // Convert the URL to an absolute URL
+//            url = CrawlerToolkit.toAbsoluteUrl(url, parentUrl);
+//
+//            // Try to get a link text
+//            String linkText = getLinkText(contentAsString, offset);
+//
+//            // Add the job
+//            addJob(url, parentUrl, shouldBeParsed, shouldBeIndexed, linkText);
+//          }
+//        }
+//      } catch( Throwable ex ) {
+//        throw new RegainException("Too many links in document.", ex);
+//
+//      }
+//    }
+//  }
 
   /**
    * Tries to extract a link text from a position where a URL was found.

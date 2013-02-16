@@ -1,13 +1,11 @@
 package net.sf.regain.test;
 
 import java.io.File;
-
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-
+import junit.framework.TestCase;
 import net.sf.regain.crawler.plugin.AbstractCrawlerPlugin;
 import net.sf.regain.crawler.plugin.CrawlerPluginManager;
-import junit.framework.TestCase;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 public class CrawlerPluginTest extends TestCase {
 

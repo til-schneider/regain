@@ -22,7 +22,6 @@ package net.sf.regain.crawler.preparator.html;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.crawler.document.RawDocument;
-
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
 
@@ -30,7 +29,7 @@ import org.apache.regexp.RESyntaxException;
 /**
  * Extrahiert aus einem HTML-Dokument den eigentlichen Inhalt.
  * <p>
- * Dazu werden zwei regul�re Ausdr�cke verwendet, die jeweils den Anfang und das
+ * Dazu werden zwei regulaere Ausdruecke verwendet, die jeweils den Anfang und das
  * Ende des Inhalts erkennen. Alles was dazwischen liegt wird ausgeschnitten.
  *
  * @author Til Schneider, www.murfman.de

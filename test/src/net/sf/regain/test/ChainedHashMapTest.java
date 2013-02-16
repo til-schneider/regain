@@ -1,15 +1,14 @@
 package net.sf.regain.test;
 import java.util.Collection;
 import java.util.Map;
-
-import net.sf.regain.util.ChainedHashMap;
-
 import junit.framework.TestCase;
+import net.sf.regain.util.ChainedHashMap;
 
 public class ChainedHashMapTest extends TestCase {
 
   private ChainedHashMap<Integer, String> data;
 
+  @Override
   public void setUp()
   {
     data = new ChainedHashMap<Integer, String>();

@@ -92,7 +92,7 @@ public class RawDocument {
   /**
    * Der Text des Links in dem die URL gefunden wurde. Ist <code>null</code>,
    * falls die URL nicht in einem Link (also einem a-Tag) gefunden wurde oder
-   * wenn aus sonstigen Gr�nden kein Link-Text vorhanden ist.
+   * wenn aus sonstigen Gruenden kein Link-Text vorhanden ist.
    */
   private String mSourceLinkText;
 
