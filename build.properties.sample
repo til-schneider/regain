@@ -1,10 +1,10 @@
 # To use this file, rename it to "build.properties"
 
 # The current Version
-version.prefix=1.8.1
+version.prefix=2.1.0
 
 # Is the version a preview version (an inofficial realease)
-is-preview=true
+is-preview=false
 
 # Should be compiled with the debug flag?
 debug=true
