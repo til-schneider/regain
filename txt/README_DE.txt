@@ -1,4 +1,10 @@
+Version 2.0.3 am 02.03.2013 STABLE
+----------------------------------
+BUGFIX
+ * Mimetypes für Office 2007 Dokumente wurden dem Suche Request Handler hinzugefügt.
 
+Version 2.0.2 am 02.03.2013 STABLE
+----------------------------------
 BUGFIX
  * Regression: Suche über multiple Indexe funktioniert nicht ("this IndexReader is already closed"-Exception)
 

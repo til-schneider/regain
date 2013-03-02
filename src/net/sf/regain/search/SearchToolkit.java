@@ -53,7 +53,6 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
 
@@ -64,22 +63,34 @@ import org.apache.lucene.search.TopScoreDocCollector;
  */
 public class SearchToolkit {
 
-  /** The name of the page context attribute that holds the search query. */
+  /**
+   * The name of the page context attribute that holds the search query.
+   */
   private static final String SEARCH_QUERY_CONTEXT_ATTR_NAME = "SearchQuery";
-  /** The name of the page context attribute that holds the SearchResults. */
+  /**
+   * The name of the page context attribute that holds the SearchResults.
+   */
   private static final String SEARCH_RESULTS_ATTR_NAME = "SearchResults";
-  /** The name of the page context attribute that holds the IndexConfig array. */
+  /**
+   * The name of the page context attribute that holds the IndexConfig array.
+   */
   private static final String INDEX_CONFIG_CONTEXT_ARRAY_ATTR_NAME = "IndexConfigArr";
-  /** The prefix for request parameters that contain additional field values. */
+  /**
+   * The prefix for request parameters that contain additional field values.
+   */
   private static final String FIELD_PREFIX = "field.";
   /**
-   * The prefix for request parameters that contain additional field values
-   * that is not a string.
+   * The prefix for request parameters that contain additional field values that
+   * is not a string.
    */
   private static final String FIELD_PREFIX_NOSTRING = "fieldNoString.";
-  /** The configuration of the search mask. */
+  /**
+   * The configuration of the search mask.
+   */
   private static SearchConfig mConfig;
-  /** Holds for an extension the mime type. */
+  /**
+   * Holds for an extension the mime type.
+   */
   private static HashMap<String, String> mMimeTypeHash;
 
   /**
@@ -89,8 +100,7 @@ public class SearchToolkit {
    * If there is no IndexConfig array in the PageContext it is put in the
    * PageContext, so the next call will find it.
    *
-   * @param request The page request where the IndexConfig array will be taken
-   *        from or put to.
+   * @param request The page request where the IndexConfig array will be taken from or put to.
    * @return The IndexConfig array for the page the context is for.
    * @throws RegainException If there is no IndexConfig for the specified index.
    */
@@ -136,12 +146,9 @@ public class SearchToolkit {
    * If there is no IndexConfig array in the PageContext it is put in the
    * PageContext, so the next call will find it.
    *
-   * @param request
-   *            The page request where the IndexConfig array will be taken
-   *            from or put to.
+   * @param request The page request where the IndexConfig array will be taken  from or put to.
    * @return The IndexConfig array for the page the context is for.
-   * @throws RegainException
-   *             If there is no IndexConfig for the specified index.
+   * @throws RegainException If there is no IndexConfig for the specified index.
    */
   public static IndexConfig[] getIndexConfigArrWithParent(PageRequest request) throws RegainException {
     IndexConfig[] configArr = (IndexConfig[]) request.getContextAttribute(INDEX_CONFIG_CONTEXT_ARRAY_ATTR_NAME);
@@ -199,8 +206,7 @@ public class SearchToolkit {
    * <p>
    *
    * @return The IndexConfig array for all indizes.
-   * @throws RegainException
-   *             If there is no IndexConfig for the specified index.
+   * @throws RegainException If there is no IndexConfig for the specified index.
    */
   public static IndexConfig[] getAllIndexConfigArr(PageRequest request) throws RegainException {
     loadConfiguration(request);
@@ -292,11 +298,10 @@ public class SearchToolkit {
   /**
    * Gets the SearchResults from the PageContext.
    * <p>
-   * If there is no SearchResults in the PageContext it is created and put in the
-   * PageContext, so the next call will find it.
+   * If there is no SearchResults in the PageContext it is created and put in
+   * the PageContext, so the next call will find it.
    *
-   * @param request The page request where the SearchResults will be taken
-   *        from or put to.
+   * @param request The page request where the SearchResults will be taken from or put to.
    * @return The SearchResults for the page the context is for.
    * @throws RegainException If the SearchResults could not be created.
    * @see SearchResults
@@ -350,38 +355,36 @@ public class SearchToolkit {
   }
 
   /**
-   * Create a URL that targets the file-to-http-bridge
-   * Counterpart to extractFileUrl
+   * Create a URL that targets the file-to-http-bridge Counterpart to extractFileUrl
    *
-   * @param url			URL of the file that should be encoded
-   * @param encoding 	Character encoding to use
+   * @param url	URL of the file that should be encoded
+   * @param encoding Character encoding to use
    * @return Encoded File URL
    * @throws RegainException If encoding the file URL failed.
    */
-  public static String encodeFileUrl(String url, String encoding) throws RegainException
-  {
-      // Get the file name
-      String fileName = RegainToolkit.urlToFileName(url);
+  public static String encodeFileUrl(String url, String encoding) throws RegainException {
+    // Get the file name
+    String fileName = RegainToolkit.urlToFileName(url);
 
-      // Workaround: Double slashes have to be prevented, because tomcat
-      // merges two slashes to one (even if one of them is URL-encoded and even
-      // if one of them is a backslash or an encoded backslash)
-      // -> We escape the second slashe with "$/$" and normal "$" with "$$"
-      //    (This should work in all cases: "a//b" -> "a/$/$b",
-      //    "a///b" -> "a/$/$/b", "a$b" -> "a$$b", "a$/$b" -> "a$$/$$b")
-      String decodedHref = RegainToolkit.replace("file/" + fileName,
-          new String[] {"//",   "$"},
-          new String[] {"/$/$", "$$"});
+    // Workaround: Double slashes have to be prevented, because tomcat
+    // merges two slashes to one (even if one of them is URL-encoded and even
+    // if one of them is a backslash or an encoded backslash)
+    // -> We escape the second slashe with "$/$" and normal "$" with "$$"
+    //    (This should work in all cases: "a//b" -> "a/$/$b",
+    //    "a///b" -> "a/$/$/b", "a$b" -> "a$$b", "a$/$b" -> "a$$/$$b")
+    String decodedHref = RegainToolkit.replace("file/" + fileName,
+            new String[]{"//", "$"},
+            new String[]{"/$/$", "$$"});
 
-      // Create a URL (encoded with the page encoding)
-      String href = RegainToolkit.urlEncode(decodedHref, encoding);
+    // Create a URL (encoded with the page encoding)
+    String href = RegainToolkit.urlEncode(decodedHref, encoding);
 
-      // Now decode the forward slashes
-      // NOTE: This step is only for beautifing the URL, the above workaround is
-      //       also necessary without this step
-      href = RegainToolkit.replace(href, "%2F", "/");
+    // Now decode the forward slashes
+    // NOTE: This step is only for beautifing the URL, the above workaround is
+    //       also necessary without this step
+    href = RegainToolkit.replace(href, "%2F", "/");
 
-      return href;
+    return href;
   }
 
   /**
@@ -463,26 +466,23 @@ public class SearchToolkit {
   }
 
   /**
-   * Restrict query: only allow documents that have one group of allGroups
-   * (To be used together with SearchAccessController)
+   * Restrict query: only allow documents that have one group of allGroups (To be used together with SearchAccessController)
    *
-   * @param query     Query to be modified
+   * @param query Query to be modified
    * @param allGroups Groups of the user
    * @return Modified Query
    */
-  public static BooleanQuery addAccessControlToQuery(Query query, String[] allGroups)
-  {
+  public static BooleanQuery addAccessControlToQuery(Query query, String[] allGroups) {
     // Create a query that matches any group
     BooleanQuery groupQuery = new BooleanQuery();
 
     // Not very logical behaviour, in my opinion: If no groups are returned by the SearchAccessController, all files are shown.
-    // However, if one of the Controllers returns a group, then suddenly this super-admin-capability vanished. Maybe allow "null" as Super-Admin, "empty array" as No-Permissions-At-All?
-    if ((allGroups == null || allGroups.length == 0))
-    {
-      if (query instanceof BooleanQuery)
+    // However, if one of the Controllers returns a group, then suddenly this super-admin-capability vanished.
+    // Maybe allow "null" as Super-Admin, "empty array" as No-Permissions-At-All?
+    if ((allGroups == null || allGroups.length == 0)) {
+      if (query instanceof BooleanQuery) {
         return (BooleanQuery) query;
-      else
-      {
+      } else {
         groupQuery.add(query, Occur.MUST);
         return groupQuery;
       }
@@ -491,7 +491,7 @@ public class SearchToolkit {
     for (String group : allGroups) {
       // Add as OR
       groupQuery.add(new TermQuery(new Term(RegainToolkit.FIELD_ACCESS_CONTROL_GROUPS, group)),
-                                            Occur.SHOULD);
+              Occur.SHOULD);
     }
 
     // Create a main query that contains the group query and the search query
@@ -574,6 +574,32 @@ public class SearchToolkit {
         mimeTypeHash.put("odb", "application/vnd.oasis.opendocument.database");
         mimeTypeHash.put("odi", "application/vnd.oasis.opendocument.image");
 
+        // Source: http://blogs.technet.com/b/office_resource_kit/archive/2009/06/30/register-office-2007-file-format-mime-types-on-servers.aspx
+        mimeTypeHash.put("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        mimeTypeHash.put("docm", "application/vnd.ms-word.document.macroEnabled.12");
+        mimeTypeHash.put("dotx", "application/vnd.openxmlformats-officedocument.wordprocessingml.template");
+        mimeTypeHash.put("dotm", "application/vnd.ms-word.template.macroEnabled.12");
+        mimeTypeHash.put("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        mimeTypeHash.put("xlsm", "application/vnd.ms-excel.sheet.macroEnabled.12");
+        mimeTypeHash.put("xltx", "application/vnd.openxmlformats-officedocument.spreadsheetml.template");
+        mimeTypeHash.put("xltm", "application/vnd.ms-excel.template.macroEnabled.12");
+        mimeTypeHash.put("xlsb", "application/vnd.ms-excel.sheet.binary.macroEnabled.12");
+        mimeTypeHash.put("xlam", "application/vnd.ms-excel.addin.macroEnabled.12");
+        mimeTypeHash.put("pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
+        mimeTypeHash.put("pptm", "application/vnd.ms-powerpoint.presentation.macroEnabled.12");
+        mimeTypeHash.put("ppsx", "application/vnd.openxmlformats-officedocument.presentationml.slideshow");
+        mimeTypeHash.put("ppsm", "application/vnd.ms-powerpoint.slideshow.macroEnabled.12");
+        mimeTypeHash.put("potx", "application/vnd.openxmlformats-officedocument.presentationml.template");
+        mimeTypeHash.put("potm", "application/vnd.ms-powerpoint.template.macroEnabled.12");
+        mimeTypeHash.put("ppam", "application/vnd.ms-powerpoint.addin.macroEnabled.12");
+        mimeTypeHash.put("sldx", "application/vnd.openxmlformats-officedocument.presentationml.slide");
+        mimeTypeHash.put("sldm", "application/vnd.ms-powerpoint.slide.macroEnabled.12");
+        mimeTypeHash.put("one", "application/onenote");
+        mimeTypeHash.put("onetoc2", "application/onenote");
+        mimeTypeHash.put("onetmp", "application/onenote");
+        mimeTypeHash.put("onepkg", "application/onenote");
+        mimeTypeHash.put("thmx", "application/vnd.ms-officetheme");
+
         mMimeTypeHash = mimeTypeHash;
       }
 
@@ -617,22 +643,22 @@ public class SearchToolkit {
   /**
    * Get the content of a compressed lucene field.
    *
-   * @param doc		    Lucene Index entry
+   * @param doc	Lucene Index entry
    * @param fieldname	Index entry name
    * @return String that was in this field
    * @throws RegainException	If decompression failed.
    */
   public static String getCompressedFieldValue(Document doc, String fieldname) throws RegainException {
-	  byte[] compressedFieldValue = doc.getBinaryValue(fieldname);
-	  String value = "";
-	  if (compressedFieldValue != null) {
-		  try {
-			  value = CompressionTools.decompressString(compressedFieldValue);
-		  } catch (DataFormatException dataFormatException) {
-			  throw new RegainException("Couldn't uncompress field value.", dataFormatException);
-		  }
-	  }
-	  return value;
+    byte[] compressedFieldValue = doc.getBinaryValue(fieldname);
+    String value = "";
+    if (compressedFieldValue != null) {
+      try {
+        value = CompressionTools.decompressString(compressedFieldValue);
+      } catch (DataFormatException dataFormatException) {
+        throw new RegainException("Couldn't uncompress field value.", dataFormatException);
+      }
+    }
+    return value;
   }
 
   /**
@@ -641,7 +667,7 @@ public class SearchToolkit {
    * If the configuration is already loaded, nothing is done.
    *
    * @param request The page request. Used to get the "configFile" init
-   *        parameter, which holds the name of the configuration file.
+   * parameter, which holds the name of the configuration file.
    * @throws RegainException If loading failed.
    */
   private static void loadConfiguration(PageRequest request)
