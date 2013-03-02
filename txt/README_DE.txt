@@ -1,3 +1,7 @@
+
+BUGFIX
+ * Regression: Suche über multiple Indexe funktioniert nicht ("this IndexReader is already closed"-Exception)
+
 Version 2.0.1 am 16.02.2013 STABLE
 ----------------------------------
 BUGFIX

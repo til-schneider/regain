@@ -1,3 +1,8 @@
+Version 2.0.2 on 2012/March/02 STABLE
+-------------------------------------
+BUGFIX
+ * Regression: Search multiple indexes (didn't work in Version 2.0.0: "this IndexReader is already closed"-Exception)
+
 Version 2.0.1 on 2012/February/16 STABLE
 ----------------------------------------
 BUGFIX
