@@ -1,14 +1,19 @@
-Version 2.0.3 on 2012/March/02 STABLE
+Version 2.0.5 on 2013/XX/XX STABLE
+-------------------------------------
+UPDATE
+ * Disable the external access to a desktop search instance per default.
+
+Version 2.0.4 on 2013/March/21 STABLE
 -------------------------------------
 BUGFIX
  * Add Office new xml/zip mime-types to search result request handler
 
-Version 2.0.2 on 2012/March/02 STABLE
+Version 2.0.2 on 2013/March/02 STABLE
 -------------------------------------
 BUGFIX
  * Regression: Search multiple indexes (didn't work in Version 2.0.0: "this IndexReader is already closed"-Exception)
 
-Version 2.0.1 on 2012/February/16 STABLE
+Version 2.0.1 on 2013/February/16 STABLE
 ----------------------------------------
 BUGFIX
  * Add missing bouncycastle lib

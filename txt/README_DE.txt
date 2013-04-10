@@ -1,4 +1,9 @@
-Version 2.0.3 am 02.03.2013 STABLE
+Version 2.0.5 am XX.XX.2013 STABLE
+----------------------------------
+UPDATE
+ * Default Einstellung für den externen Access auf die Desktopsuche von 'erlaubt' auf 'verboten' gesetzt.
+
+Version 2.0.4 am 02.03.2013 STABLE
 ----------------------------------
 BUGFIX
  * Mimetypes für Office 2007 Dokumente wurden dem Suche Request Handler hinzugefügt.
