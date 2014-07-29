@@ -17,13 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Contact: Thomas Tesche, info@clustersystems.de
- *
- * CVS information:
- *  $RCSfile$
- *   $Source$
- *     $Date: 2008-03-16 20:50:37 +0100 (So, 16 Mär 2008) $
- *   $Author: thtesche $
- * $Revision: 281 $
  */
 package net.sf.regain.crawler.preparator;
 

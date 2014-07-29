@@ -1,11 +1,3 @@
-/*
- * CVS information:
- *  $RCSfile$
- *   $Source$
- *     $Date: 2012-05-21 18:09:21 +0200 (Mo, 21 Mai 2012) $
- *   $Author: benjaminpick $
- * $Revision: 599 $
- */
 package net.sf.regain.search.config;
 
 import java.util.Properties;

@@ -1,11 +1,3 @@
-/*
- * CVS information:
- *  $RCSfile$
- *   $Source$
- *     $Date: 2011-08-02 21:44:37 +0200 (Di, 02 Aug 2011) $
- *   $Author: benjaminpick $
- * $Revision: 507 $
- */
 package net.sf.regain.search.sharedlib.input;
 
 import java.util.Arrays;

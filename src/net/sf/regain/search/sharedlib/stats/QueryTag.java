@@ -1,11 +1,3 @@
-/*
- * CVS information:
- *  $RCSfile$
- *   $Source$
- *     $Date: 2012-05-29 09:59:28 +0200 (Di, 29 Mai 2012) $
- *   $Author: benjaminpick $
- * $Revision: 602 $
- */
 package net.sf.regain.search.sharedlib.stats;
 
 import net.sf.regain.RegainException;

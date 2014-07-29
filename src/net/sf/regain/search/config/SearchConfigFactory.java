@@ -1,11 +1,3 @@
-/*
- * CVS information:
- *  $RCSfile$
- *   $Source$
- *     $Date: 2005-04-11 10:16:26 +0200 (Mo, 11 Apr 2005) $
- *   $Author: til132 $
- * $Revision: 125 $
- */
 package net.sf.regain.search.config;
 
 import net.sf.regain.RegainException;

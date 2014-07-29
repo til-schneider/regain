@@ -1,11 +1,3 @@
-/*
- * CVS information:
- *  $RCSfile$
- *   $Source$
- *     $Date: 2008-09-17 22:15:48 +0200 (Mi, 17 Sep 2008) $
- *   $Author: thtesche $
- * $Revision: 337 $
- */
 package net.sf.regain.search.config;
 
 /**

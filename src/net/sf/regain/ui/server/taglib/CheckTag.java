@@ -1,11 +1,3 @@
-/*
- * CVS information:
- *  $RCSfile$
- *   $Source$
- *     $Date: 2005-03-02 15:36:05 +0100 (Mi, 02 Mrz 2005) $
- *   $Author: til132 $
- * $Revision: 51 $
- */
 package net.sf.regain.ui.server.taglib;
 
 import net.sf.regain.util.sharedtag.taglib.SharedTagWrapperTag;

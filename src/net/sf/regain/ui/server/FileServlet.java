@@ -1,11 +1,3 @@
-/*
- * CVS information:
- *  $RCSfile$
- *   $Source$
- *     $Date: 2012-09-11 18:08:35 +0200 (Di, 11 Sep 2012) $
- *   $Author: benjaminpick $
- * $Revision: 622 $
- */
 package net.sf.regain.ui.server;
 
 import java.io.IOException;

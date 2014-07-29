@@ -17,13 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Contact: Til Schneider, info@murfman.de
- *
- * CVS information:
- *  $RCSfile$
- *   $Source$
- *     $Date: 2009-11-28 15:29:30 +0100 (Sa, 28 Nov 2009) $
- *   $Author: thtesche $
- * $Revision: 441 $
  */
 package net.sf.regain.util.io;
 

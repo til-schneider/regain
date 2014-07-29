@@ -52,13 +52,6 @@ package net.sf.regain.util.io;
  * individuals on behalf of the Apache Software Foundation.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
- * 
- * CVS information:
- *  $RCSfile$
- *   $Source$
- *     $Date: 2012-04-04 14:03:52 +0200 (Mi, 04 Apr 2012) $
- *   $Author: benjaminpick $
- * $Revision: 578 $
  */
 
 import java.util.Hashtable;

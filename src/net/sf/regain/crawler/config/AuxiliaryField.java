@@ -1,11 +1,3 @@
-/*
- * CVS information:
- *  $RCSfile$
- *   $Source$
- *     $Date: 2006-01-17 11:50:42 +0100 (Di, 17 Jan 2006) $
- *   $Author: til132 $
- * $Revision: 189 $
- */
 package net.sf.regain.crawler.config;
 
 import net.sf.regain.RegainException;

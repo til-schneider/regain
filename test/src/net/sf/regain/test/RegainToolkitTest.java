@@ -17,13 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Contact: Til Schneider, info@murfman.de, Thomas Tesche, regain@thtesche.com
- *
- * CVS information:
- *  $RCSfile$
- *   $Source$
- *     $Date: 2009-05-21 16:29:23 +0200 (Do, 21 Mai 2009) $
- *   $Author: thtesche $
- * $Revision: 392 $
  */
 package net.sf.regain.test;
 

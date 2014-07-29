@@ -17,13 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Contact: Til Schneider, info@murfman.de
- *
- * CVS information:
- *  $RCSfile: TrayIconManager.java,v $
- *   $Source: /cvsroot/regain/regain/src/net/sf/regain/ui/desktop/TrayIconManager.java,v $
- *     $Date: 2005/03/16 08:55:48 $
- *   $Author: til132 $
- * $Revision: 1.7 $
  */
 package net.sf.regain.ui.desktop;
 

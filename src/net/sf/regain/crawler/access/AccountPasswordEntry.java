@@ -17,13 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Contact: Thomas Tesche, regain@thtesche.com
- *
- * CVS information:
- *  $RCSfile$
- *   $Source$
- *     $Date: 2008-11-15 23:03:53 +0100 (Sat, 15 Nov 2008) $
- *   $Author: thtesche $
- * $Revision: 357 $
  */
 package net.sf.regain.crawler.access;
 
