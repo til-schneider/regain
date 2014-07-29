@@ -91,14 +91,14 @@ public class XmlToolkit {
    * @throws RegainException If saving the XML file failed.
    */
   public static void saveXmlDocument(File xmlFile, Document doc)
-    throws RegainException 
+    throws RegainException
   {
     FileOutputStream stream = null;
     try {
       stream = new FileOutputStream(xmlFile);
       String encoding = "UTF-8";
       PrintStream out = new PrintStream(stream, true, encoding);
-      
+
       out.println("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>");
       out.println();
       out.println("<!DOCTYPE entities [");
@@ -107,9 +107,9 @@ public class XmlToolkit {
       out.println("  <!ENTITY gt \"&#62;\">");
       out.println("]>");
       out.println();
-      
+
       Element root = doc.getDocumentElement();
-      
+
       printNode(out, "", root);
 
       out.close();
@@ -125,10 +125,10 @@ public class XmlToolkit {
     }
   }
 
-  
+
   /**
    * Prints a XML node.
-   * 
+   *
    * @param out The PrintStream where to print the node.
    * @param prefix The prefix to put before every line.
    * @param node The node to print.
@@ -138,9 +138,9 @@ public class XmlToolkit {
     throws IOException
   {
     prefix = "";
-    
+
     String name = node.getNodeName();
-    
+
     boolean isText = name.equals("#text");
     boolean isComment = name.equals("#comment");
     boolean isCDATA = name.equals("#cdata-section");
@@ -168,7 +168,7 @@ public class XmlToolkit {
           out.print(" " + attrib.getNodeName() + "=\"" + attrib.getNodeValue() + "\"");
         }
       }
-  
+
       if (! node.hasChildNodes()) {
         out.print("/>");
       } else {
@@ -182,7 +182,7 @@ public class XmlToolkit {
       }
     }
   }
-  
+
 
   /**
    * Extrahiert den Text eines Knotens, wandelt ihn in einen boolean und gibt das
@@ -417,7 +417,7 @@ public class XmlToolkit {
   {
     return getText(node, mandatory, false);
   }
-  
+
 
   /**
    * Gibt den Text eines Knotens zurück.
@@ -440,11 +440,11 @@ public class XmlToolkit {
     throws RegainException
   {
     String text = getText(node);
-    
+
     if (trimmed && (text != null)) {
       text = text.trim();
     }
-    
+
     if (mandatory && ((text == null) || (text.length() == 0))) {
       throw new RegainException("Node '" + node.getNodeName() + "' has no text");
     } else {
@@ -475,8 +475,8 @@ public class XmlToolkit {
     // No such child found
     return null;
   }
-  
-  
+
+
   /**
    * Gibt den Kindknoten mit einem bestimmten Namen zurück.
    * <p>
@@ -540,18 +540,18 @@ public class XmlToolkit {
     return nodeArr;
   }
 
-  
+
   /**
    * Gets a child node from a parent node. If the parent node has no such child
    * the child of the <code>defaultNode</code> is used.
-   * 
+   *
    * @param node The node to get the child from.
    * @param defaultNode The node to get the child from if <code>node</code> has
    *        no such child.
    * @param childNodeName The name of the child.
    * @return The child with the given name or <code>null</code> if both the
    *         <code>node</code> and the <code>defaultNode</code> have no child
-   *         with the given name. 
+   *         with the given name.
    */
   public static Node getCascadedChild(Node node, Node defaultNode,
     String childNodeName)
@@ -561,15 +561,15 @@ public class XmlToolkit {
       // Try to get the cascaded child
       child = XmlToolkit.getChild(defaultNode, childNodeName);
     }
-    
+
     return child;
   }
-  
-  
+
+
   /**
    * Gets a child node from a parent node. If the parent node has no such child
    * the child of the <code>defaultNode</code> is used.
-   * 
+   *
    * @param node The node to get the child from.
    * @param defaultNode The node to get the child from if <code>node</code> has
    *        no such child.
@@ -579,7 +579,7 @@ public class XmlToolkit {
    * @return The child with the given name.
    * @throws RegainException If both the <code>node</code> and the
    *         <code>defaultNode</code> have no child with the given name and
-   *         <code>mandatory</code> is <code>true</code>. 
+   *         <code>mandatory</code> is <code>true</code>.
    */
   public static Node getCascadedChild(Node node, Node defaultNode,
     String childNodeName, boolean mandatory)
@@ -591,14 +591,14 @@ public class XmlToolkit {
           + "' or node '" + defaultNode.getNodeName()
           + "' must have a child named '" + childNodeName + "'!");
     }
-    
+
     return child;
   }
 
 
   /**
    * Gets the text of a child node.
-   * 
+   *
    * @param node The (parent) node that has the child to get the text from.
    * @param childNodeName The name of the child node.
    * @param mandatory Specifies whether an exception should be thrown if the
@@ -626,7 +626,7 @@ public class XmlToolkit {
 
   /**
    * Gets an attribute value from a node and converts it to a boolean.
-   * 
+   *
    * @param node The node to get the attribute value from.
    * @param attributeName The name of the attribute to get.
    * @return The value of the attribute or <code>defaultValue</code> if there is
@@ -649,11 +649,11 @@ public class XmlToolkit {
         + asString + "'");
     }
   }
-  
-  
+
+
   /**
    * Gets an attribute value from a node and converts it to a boolean.
-   * 
+   *
    * @param node The node to get the attribute value from.
    * @param attributeName The name of the attribute to get.
    * @param defaultValue The default value to return if there is no such
@@ -684,7 +684,7 @@ public class XmlToolkit {
 
   /**
    * Gets an attribute value from a node and converts it to an int.
-   * 
+   *
    * @param node The node to get the attribute value from.
    * @param attributeName The name of the attribute to get.
    * @return The value of the attribute or <code>defaultValue</code> if there is
@@ -709,7 +709,7 @@ public class XmlToolkit {
 
   /**
    * Gets an attribute value from a node and converts it to an int.
-   * 
+   *
    * @param node The node to get the attribute value from.
    * @param attributeName The name of the attribute to get.
    * @param defaultValue The default value to return if there is no such
@@ -788,14 +788,14 @@ public class XmlToolkit {
 
   /**
    * Sets the text of a node.
-   * 
+   *
    * @param doc The document the node comes from.
    * @param node The node whichs text should be changed.
    * @param text The text to set.
    */
   public static void setText(Document doc, Node node, String text) {
     Node textNode = getChild(node, "#text");
-    
+
     if (textNode == null) {
       textNode = doc.createTextNode(text);
       node.appendChild(textNode);
@@ -824,8 +824,8 @@ public class XmlToolkit {
   }
 
   /**
-   * Removes all child nodes from a node. 
-   * 
+   * Removes all child nodes from a node.
+   *
    * @param node The node to remove the children from.
    */
   public static void removeAllChildren(Node node) {
@@ -837,8 +837,8 @@ public class XmlToolkit {
 
 
   /**
-   * Removes all child nodes with a certain name. 
-   * 
+   * Removes all child nodes with a certain name.
+   *
    * @param node The node to remove the children from.
    * @param childNodeName The name of the children to remove.
    */
@@ -852,7 +852,7 @@ public class XmlToolkit {
 
   /**
    * Adds a child node to a node.
-   * 
+   *
    * @param doc The document the node comes from.
    * @param node The node were to add the child.
    * @param childNodeName The name of the child node to add.
@@ -866,8 +866,8 @@ public class XmlToolkit {
 
 
   /**
-   * Gets a child node or creates it if no such node exists. 
-   * 
+   * Gets a child node or creates it if no such node exists.
+   *
    * @param doc The document the node comes from.
    * @param node The node were to get the child from or where to add the child.
    * @param childNodeName The name of the child node to get or add.
@@ -884,7 +884,7 @@ public class XmlToolkit {
 
   /**
    * Adds a child node to a node and gives it a text.
-   * 
+   *
    * @param doc The document the node comes from.
    * @param node The node where to add the child.
    * @param childNodeName The name of the child node to add.
@@ -898,7 +898,7 @@ public class XmlToolkit {
     setText(doc, childNode, text);
     return childNode;
   }
-  
+
 /**
    * Adds a child node to a node and gives it a CDATA section.
    *
@@ -915,10 +915,10 @@ public class XmlToolkit {
     setCData(doc, childNode, text);
     return childNode;
   }
-  
+
   /**
    * Sets an attribute of a node.
-   * 
+   *
    * @param doc The document the node comes from.
    * @param node The node where to set the attribute.
    * @param attribName The name of the attribute to set.
@@ -931,11 +931,11 @@ public class XmlToolkit {
     attr.setNodeValue(attribValue);
     node.getAttributes().setNamedItem(attr);
   }
-  
-  
+
+
   /**
    * Pretty prints a node.
-   * 
+   *
    * @param doc The document the node comes from.
    * @param node The node that should be pretty printed.
    */
@@ -965,22 +965,22 @@ public class XmlToolkit {
         break;
       }
     }
-    
+
     // Now pretty print the node
     prettyPrint(doc, node, indenting);
-  }  
+  }
 
 
   /**
    * Pretty prints a node.
-   * 
+   *
    * @param doc The document the node comes from.
    * @param node The node that should be pretty printed.
    * @param prefix The prefix the node should get.
    */
   private static void prettyPrint(Document doc, Node node, String prefix) {
     String childPrefix = prefix + "  ";
-    
+
     // Add the indenting to the children
     NodeList childList = node.getChildNodes();
     boolean hasChildren = false;
@@ -991,19 +991,19 @@ public class XmlToolkit {
         // Add the indenting to this node
         Node textNode = doc.createTextNode(childPrefix);
         node.insertBefore(textNode, child);
-        
+
         // pretty print the child's children
         prettyPrint(doc, child, childPrefix);
-        
+
         hasChildren = true;
       }
     }
-    
+
     // Add the indenting to the end tag
     if (hasChildren) {
       Node textNode = doc.createTextNode(prefix);
       node.appendChild(textNode);
     }
   }
-    
+
 }

@@ -12,7 +12,7 @@ debug=true
 # The location of the Java API
 java-api-location=http://java.sun.com/javase/6/docs/api/
 
-# The location of the Java Standard Edition 6 
+# The location of the Java Standard Edition 6
 #java.dir=/usr/local/lib/jdk1.6
 java.dir=C:/Programme/Java/jdk1.6.0_12
 

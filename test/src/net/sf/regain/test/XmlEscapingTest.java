@@ -35,11 +35,11 @@ public class XmlEscapingTest extends TestCase
   {
     resp = new PseudoPageResponse();
   }
-  
+
   public void testXmlEscaping() throws Exception
   {
     resp.setEscapeType("xml");
-  
+
     resp.print("&");
     assertEquals("&amp;", resp.write);
     resp.print("<");
@@ -51,16 +51,16 @@ public class XmlEscapingTest extends TestCase
 
     resp.print("\u0008");
     assertEquals("", resp.write);
-    
+
     // Do not escape HTML entities!
     resp.print("ß");
     assertEquals("ß", resp.write);
   }
-  
+
   public void testHtmlEscaping() throws Exception
   {
     resp.setEscapeType("html");
-    
+
     resp.print(">");
     assertEquals("&gt;", resp.write);
     resp.print("ß");
@@ -69,18 +69,18 @@ public class XmlEscapingTest extends TestCase
     resp.print("\u0008");
     assertEquals("", resp.write);
 }
-  
+
   public class PseudoPageResponse extends PageResponse
   {
     public String write = null;
-    
+
     public void rawPrint(String text) throws RegainException
     {
         write = text;
     }
 
     /* Stub methods */
-    
+
     public String getEncoding() throws RegainException
     {
       return null;

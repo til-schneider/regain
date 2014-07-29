@@ -27,14 +27,14 @@ import net.sf.regain.util.sharedtag.SharedTag;
 
 /**
  * Generates a meta tag the updates the page.
- * 
+ *
  * @author Til Schneider, www.murfman.de
  */
 public class MetaTag extends SharedTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.
@@ -47,5 +47,5 @@ public class MetaTag extends SharedTag {
       response.print("<meta http-equiv=\"refresh\" content=\"" + autoupdate + "\"/>");
     }
   }
-  
+
 }

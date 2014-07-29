@@ -1,7 +1,7 @@
 <%@page contentType="text/xml; charset=UTF-8" errorPage="errorpage.jsp" pageEncoding="UTF-8" %><?xml version="1.0" encoding="UTF-8" ?>
 <%@taglib uri="regain-search.tld" prefix="search" %>
 <search:contenttype contentType="text/xml; charset=UTF-8"/>
-<search:check noIndexUrl="noindex.jsp" noQueryUrl="searchinput.jsp"/>  
+<search:check noIndexUrl="noindex.jsp" noQueryUrl="searchinput.jsp"/>
 <response>
 	<query>
    		<lucene_query><search:stats_query escape="xml"/></lucene_query>
@@ -12,7 +12,7 @@
 		<from><search:stats_from escape="xml"/></from>
 		<to><search:stats_to escape="xml"/></to>
 		<queryTime><search:stats_searchtime escape="xml"/></queryTime>
-		   
+
 <search:list msgNoResults="">
 		<result>
 			<link_url><search:hit_link onlyUrl="true" escape="xml"/></link_url>

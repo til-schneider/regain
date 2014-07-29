@@ -20,21 +20,21 @@ public class CheckTag extends SharedTagWrapperTag {
 
   /**
    * Sets the URL to redirect to if there is no index.
-   * 
+   *
    * @param noIndexUrl The URL to redirect to if there is no index.
    */
   public void setNoIndexUrl(String noIndexUrl) {
     getNestedTag().setParameter("noIndexUrl", noIndexUrl);
   }
 
-  
+
   /**
    * Sets the URL to redirect to if there is no query.
-   * 
+   *
    * @param noQueryUrl The URL to redirect to if there is no query.
    */
   public void setNoQueryUrl(String noQueryUrl) {
     getNestedTag().setParameter("noQueryUrl", noQueryUrl);
   }
-  
+
 }

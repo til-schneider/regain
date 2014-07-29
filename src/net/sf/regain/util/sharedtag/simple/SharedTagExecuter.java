@@ -31,14 +31,14 @@ import net.sf.regain.util.sharedtag.SharedTag;
  * @author Til Schneider, www.murfman.de
  */
 public class SharedTagExecuter extends Executer {
-  
+
   /** The shared tag that is executed by this executer. */
   private SharedTag mTag;
-  
+
 
   /**
    * Creates a new instance of SharedTagExecuter.
-   * 
+   *
    * @param tag The shared tag that is executed by this executer.
    */
   public SharedTagExecuter(SharedTag tag) {
@@ -48,7 +48,7 @@ public class SharedTagExecuter extends Executer {
 
   /**
    * Executes this node.
-   * 
+   *
    * @param request The request.
    * @param response The response.
    * @throws RegainException If executing failed.
@@ -58,30 +58,30 @@ public class SharedTagExecuter extends Executer {
   {
     // Set the context
     mTag.setContext(request);
-    
+
     // Set Escaping
     response.setEscapeType(mTag.getParameter("escape"));
-    
+
     // Print the start tag
     int result = mTag.printStartTag(request, response);
-    
+
     // Print the body
     while (result == SharedTag.EVAL_TAG_BODY) {
       executeChildren(request, response);
       result = mTag.printAfterBody(request, response);
     }
-    
+
     // Print the end tag
     mTag.printEndTag(request, response);
-    
+
     // Unset the context
     mTag.unsetContext();
   }
-  
+
 
   /**
    * Prints this tag to System.out.
-   * 
+   *
    * @param prefix The prefix to put in front of every line.
    */
   public void printTag(String prefix) {
@@ -93,5 +93,5 @@ public class SharedTagExecuter extends Executer {
       System.out.println(prefix + "</" + mTag.getTagName() + ">");
     }
   }
-  
+
 }

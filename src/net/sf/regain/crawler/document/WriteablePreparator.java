@@ -57,7 +57,7 @@ public interface WriteablePreparator extends Preparator {
 	 * Adds an additional field to the current document.
 	 * <p>
 	 * This field will be indexed and stored.
-	 * 
+	 *
 	 * @param fieldName The name of the field.
 	 * @param fieldValue The value of the field.
 	 */

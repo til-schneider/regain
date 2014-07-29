@@ -8,7 +8,7 @@ package net.sf.regain.crawler.preparator.java;
  *
  * @author Thomas Tesche <thomas.tesche@clustersystems.de>
  */
-public enum Type{ 
+public enum Type{
 
   CLASS("Class"), INTERFACE("Interface"), ENUM("Enum");
   private String _type;

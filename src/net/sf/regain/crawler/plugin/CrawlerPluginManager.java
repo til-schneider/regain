@@ -39,16 +39,16 @@ import net.sf.regain.crawler.document.WriteablePreparator;
  * Guarantees:
  * - If one plugin throws an exception, the other plugins will be executed none-the-less
  * - Every argument of a plugin call is non-null
- * 	
+ *
  * Singleton pattern: get the only instance by calling getInstance().
- * 
+ *
  * @author Benjamin
  */
 public class CrawlerPluginManager {
 	/**
 	 * Guessed maximum number of plugins.
 	 * Note that this is not a hard limit: there can be more plugins,
-	 * however, inserting plugins with the same "order" may not be inserted at the end. 
+	 * however, inserting plugins with the same "order" may not be inserted at the end.
 	 */
 	private static final int MAX_PLUGINS = 100;
 
@@ -57,12 +57,12 @@ public class CrawlerPluginManager {
 	 * (Dev note: Priority Queue didn't work out: iterator is not ordered, only poll is)
 	 */
 	private SortedMap<Integer,CrawlerPlugin> plugins = null;
-	
+
 	/**
 	 * The single Manager Instance.
 	 */
 	private static CrawlerPluginManager instance = null;
-	
+
 	/**
 	 * Logger instance
 	 */
@@ -77,12 +77,12 @@ public class CrawlerPluginManager {
 	 * Count up for every inserted Plugin.
 	 */
 	private int insertIndex = 0;
-	
+
 	/**
 	 * Instead of Constructor: get a singleton instance of the Manager,
 	 * so that only one manager exists at a time.
-	 * 
-	 * @return	The Plugin Manager 
+	 *
+	 * @return	The Plugin Manager
 	 */
 	public static CrawlerPluginManager getInstance()
 	{
@@ -92,7 +92,7 @@ public class CrawlerPluginManager {
 		}
 		return instance;
 	}
-	
+
 	protected CrawlerPluginManager()
 	{
 		plugins = new TreeMap<Integer,CrawlerPlugin>();
@@ -100,38 +100,38 @@ public class CrawlerPluginManager {
 
 	/**
 	 * Register a Plugin at the end of the current queue.
-	 * 
+	 *
 	 * @param plugin	Plugin to register
 	 */
 	public void registerPlugin(CrawlerPlugin plugin)
 	{
 		registerPlugin(plugin, nextOrder);
-	}	
-	
+	}
+
 	/**
 	 * Register a Plugin at a certain position
-	 * 
+	 *
 	 * @param plugin	Plugin to register
 	 * @param order		Place where to insert the plugin
 	 * 					(The lower the order, the earlier the plugin is called
-	 * 					relatively to other plugins)		
+	 * 					relatively to other plugins)
 	 * @throws NullPointerException	if plugin is null
 	 */
 	public void registerPlugin(CrawlerPlugin plugin, int order)
 	{
 		plugins.put(MAX_PLUGINS * order + insertIndex, plugin);
-		
+
 		if (order + 1 > nextOrder)
 			nextOrder = order + 1;
 		insertIndex ++;
 	}
-	
+
 	/**
 	 * Unregister an already registered plugin.
-	 * 
+	 *
 	 * Note: you need to keep the reference of the plugin instance you registered, if you plan to unregister it later on.
 	 * Alternatively, configure your plugin's equal()-Function so that it returns true if only the Classname is the same.
-	 * 
+	 *
 	 * @param plugin
 	 */
 	public void unregisterPlugin(CrawlerPlugin plugin)
@@ -148,14 +148,14 @@ public class CrawlerPluginManager {
 		insertIndex = 0;
 	}
 
-	
+
 	/**
 	 * Trigger an event: call the corresponding plugins.
 	 * Collect return values.
 	 * TODO : Profiling?
-	 * 
+	 *
 	 * (This is done via Reflection API to avoid code duplication)
-	 * 
+	 *
 	 * @param methodName	Name of Event (as in the interface: onEvent)
 	 * @param args		Args of Event (as in the interface)
 	 * @return Return Values of the called methods. Null if the called method threw an exception.
@@ -163,22 +163,22 @@ public class CrawlerPluginManager {
 	protected List<Object> triggerEvent(String methodName, Class<?>[] argTypes, Object... args)
 	{
 		List<Object> returns = new ArrayList<Object>();
-	  
+
 	  checkIfEventExists(methodName, argTypes);
-		
+
 		for (Map.Entry<Integer, CrawlerPlugin> entry : plugins.entrySet())
 		{
 		  Object ret = null;
-		  
+
 			CrawlerPlugin plugin = entry.getValue();
 			String pluginName = plugin.getClass().getName();
-			
+
 			mLog.debug("Send " + methodName + "-Event to " + pluginName);
-			
+
 			try {
 				ret = MethodUtils.invokeMethod(plugin, methodName, args, argTypes);
 			} catch (IllegalAccessException e) 	{ mLog.error("Reflection Error:", e);
-			} catch (SecurityException e) 		{ mLog.error("Reflection Error:", e); 
+			} catch (SecurityException e) 		{ mLog.error("Reflection Error:", e);
 			} catch (NoSuchMethodException e)	{ mLog.error("Reflection Error:", e);
 			} catch (InvocationTargetException e) {
 				mLog.error(pluginName + " has thrown an exception:", e.getCause());
@@ -187,7 +187,7 @@ public class CrawlerPluginManager {
 			}
 			returns.add(ret);
 		}
-		
+
 		return returns;
 	}
 
@@ -206,7 +206,7 @@ public class CrawlerPluginManager {
 
 	/**
 	 * Check if a certain eventName exists in the CrawlerPlugin Interface
-	 * 
+	 *
 	 * @param methodName	"on" + eventName
 	 * @param argTypes		Types of the arguments
 	 */
@@ -214,7 +214,7 @@ public class CrawlerPluginManager {
 		try {
 			CrawlerPlugin.class.getMethod(methodName, argTypes);
 		} catch (SecurityException e) {
-			mLog.error("Reflection Error:", e);			
+			mLog.error("Reflection Error:", e);
 		} catch (NoSuchMethodException e1) {
 			String methodSignature = methodName + "(" + argTypesToString(argTypes) + ")";
 			throw new RuntimeException("There is no event with this name (or different arguments): " + methodSignature + " declared in the CrawlerPlugin-Interface");
@@ -240,23 +240,23 @@ public class CrawlerPluginManager {
 	/**
 	 * Get Parameter types for Reflection API
 	 * (Little helper function, currently not used)
-	 * 
+	 *
 	 * @param params	Parameters to give
 	 * @return Their respective classes
-	 * 
+	 *
 	 * currently not used
 	private Class<?>[] getTypes(Object[] params) {
 		Class<?> types[] = new Class<?>[params.length];
-		
+
 		for (int i = 0; i < params.length; i++)
 			types[i] = params[i].getClass();
 
 		return types;
 	}
 */
-	
+
 	// --------------------- Event Triggers -------------------------
-	
+
 	/**
 	 * Trigger Event: onStartCrawling
 	 * @see CrawlerPlugin#onStartCrawling(Crawler)
@@ -289,7 +289,7 @@ public class CrawlerPluginManager {
 	public void eventBeforePrepare(RawDocument document, WriteablePreparator preparator) {
 		triggerEvent("onBeforePrepare",
 				new Class[]{RawDocument.class, WriteablePreparator.class},
-				document, preparator);		
+				document, preparator);
 	}
 
 	/**
@@ -301,7 +301,7 @@ public class CrawlerPluginManager {
 	public void eventAfterPrepare(RawDocument document, WriteablePreparator preparator) {
 		triggerEvent("onAfterPrepare",
 				new Class[]{RawDocument.class, WriteablePreparator.class},
-				document, preparator);				
+				document, preparator);
 	}
 
 	/**
@@ -313,7 +313,7 @@ public class CrawlerPluginManager {
 	public void eventCreateIndexEntry(Document doc, IndexWriter index) {
 		triggerEvent("onCreateIndexEntry",
 				new Class[]{Document.class, IndexWriter.class},
-				doc, index);		
+				doc, index);
 	}
 
 	/**
@@ -325,7 +325,7 @@ public class CrawlerPluginManager {
 	public void eventDeleteIndexEntry(Document doc, IndexReader index) {
 		triggerEvent("onDeleteIndexEntry",
 				new Class[]{Document.class, IndexReader.class},
-				doc, index);		
+				doc, index);
 	}
 
 	/**
@@ -348,13 +348,13 @@ public class CrawlerPluginManager {
 	public void eventDeclineURL(String url) {
 		triggerEvent("onDeclineURL",
 				new Class[]{String.class},
-				url);		
+				url);
 	}
 
 	/**
 	 * Trigger Event: checkDynamicBlacklist
 	 * (This is not lazy: all plugins are called even if the first returns true.)
-	 * 
+	 *
 	 * @param url
 	 * @param sourceUrl
 	 * @param sourceLinkText
@@ -364,19 +364,19 @@ public class CrawlerPluginManager {
   public boolean eventAskDynamicBlacklist(String url, String sourceUrl, String sourceLinkText)
   {
     List<Object> returns;
-    
-    returns = triggerEvent("checkDynamicBlacklist", 
-        new Class[]{String.class, String.class, String.class}, 
+
+    returns = triggerEvent("checkDynamicBlacklist",
+        new Class[]{String.class, String.class, String.class},
         url, sourceUrl, sourceLinkText);
-    
+
     int i = 0;
     for (Object ret : returns)
     {
       if (! (ret instanceof Boolean))
         continue;
-      
+
       boolean blacklist = ((Boolean) ret).booleanValue();
-      
+
       if (blacklist)
       {
         if (mLog.isDebugEnabled())
@@ -396,10 +396,10 @@ public class CrawlerPluginManager {
       }
       i++;
     }
-    
+
     return false;
   }
-	
+
 	/**
 	 * Lists contained plugins for debugging purposes
 	 * @return Debugging output: contained plugins.
@@ -407,13 +407,13 @@ public class CrawlerPluginManager {
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 		str.append("Contains ").append(plugins.size()).append(" Plugins: \n");
-		
+
 		for (Map.Entry<Integer, CrawlerPlugin> entry : plugins.entrySet())
 		{
 			str.append("Plugin ").append(entry.getValue().getClass().getName());
 			str.append(" with order ").append(entry.getKey()).append("\n");
 		}
-		
+
 		return str.toString();
 	}
 

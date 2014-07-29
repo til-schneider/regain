@@ -86,7 +86,7 @@ public class SearchResultsImpl implements SearchResults {
   private ScoreDoc[] hitScoreDocs;
   /** The DocCollector. */
   private TopDocsCollector<FieldValueHitQueue.Entry> topDocsCollector;
-  
+
   private static Pattern mimetypeFieldPattern = Pattern.compile("(mimetype:\"([^:]*)\")");
   private static Pattern negativeMimetypeFieldPattern = Pattern.compile("((-|!|NOT )mimetype:\"([^:]*)\")");
   /**
@@ -100,10 +100,10 @@ public class SearchResultsImpl implements SearchResults {
   private Analyzer mAnalyzer;
   /** The current config. */
   private IndexConfig mIndexConfig;
-  
+
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(SearchResultsImpl.class);
-  
+
   /** held the transformed hits. */
   private List lazyHitList = ListUtils.lazyList(new ArrayList(), new Factory() {
     /** Factory for create a new LazyList-entry. */
@@ -138,7 +138,7 @@ public class SearchResultsImpl implements SearchResults {
 
     BooleanQuery mimeQuery = new BooleanQuery();
     queryText = removeMimetypeQuery(mQueryText, mimeQuery);
-    
+
     try {
     // If there is at least on index
     if (indexConfigs.length >= 1) {
@@ -228,15 +228,15 @@ public class SearchResultsImpl implements SearchResults {
 
       // Add the mimetype field search
       if (mimeQuery.getClauses().length > 0) {
-        
+
         if (mQuery != null) {
           mimeQuery.add(mQuery, Occur.MUST);
         }
-          
+
         // Set the main query as query to use
         mQuery = mimeQuery;
       }
-      
+
 
       if (mQuery != null) {
         mLog.debug("Lucene Query: " + mQuery.toString());
@@ -293,30 +293,30 @@ public class SearchResultsImpl implements SearchResults {
   {
     if (queryText == null)
       return null;
-    
+
     // Remove the mimetype field if the query contains it
     String mimeTypeFieldText = null;
     Matcher matcher = null;
     boolean found;
-    
+
     // First, negative mime Types
     do
     {
       matcher = negativeMimetypeFieldPattern.matcher(queryText);
       found = matcher.find();
-      
+
       if (found && matcher.groupCount() > 0) {
         // the first group is the mimetype field identifier
         mimeTypeFieldText = matcher.group(3);
         queryText = queryText.replace(matcher.group(1), "");
         //System.out.println("Query after mimetype removing: " + queryText);
-        
+
         mainQuery.add(getAtomicMimeTypeQuery(mimeTypeFieldText), Occur.MUST_NOT);
       }
     } while (found);
 
     // Now positive mimes
-    
+
     BooleanQuery positiveMimes = new BooleanQuery();
     do
     {
@@ -334,18 +334,18 @@ public class SearchResultsImpl implements SearchResults {
     } while (found);
     if (positiveMimes.getClauses().length > 0)
       mainQuery.add(positiveMimes, Occur.MUST);
-    
+
     // Remove empty clauses that remained
     Pattern emptyMatcherPattern = Pattern.compile("(\\(\\s*\\))");
     do
     {
       matcher = emptyMatcherPattern.matcher(queryText);
       found = matcher.find();
-      
+
       if (found && matcher.groupCount() > 0)
         queryText = queryText.replace(matcher.group(1), "");
     } while (found);
-    
+
     return queryText;
   }
 
@@ -358,13 +358,13 @@ public class SearchResultsImpl implements SearchResults {
   {
     BooleanQuery mimetypeFieldQuery = new BooleanQuery();
     Term term = new Term("mimetype", mimeTypeFieldText);
-    
+
     Query query;
     if (mimeTypeFieldText.contains("*"))
       query = new WildcardQuery(term);
     else
       query = new TermQuery(term);
-    
+
     mimetypeFieldQuery.add(query, Occur.SHOULD);
     return mimetypeFieldQuery;
   }
@@ -432,7 +432,7 @@ public class SearchResultsImpl implements SearchResults {
 
   /**
    * Writes a changed document back to the list.
-   * 
+   *
    * @param index
    * @param document
    * @throws RegainException
@@ -554,7 +554,7 @@ public class SearchResultsImpl implements SearchResults {
 
   /**
    * Shortens the summary.
-   * 
+   *
    * @param index The index of the hit.
    * @throws RegainException if shorten fails.
    */

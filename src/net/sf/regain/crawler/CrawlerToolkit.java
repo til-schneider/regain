@@ -51,7 +51,7 @@ public class CrawlerToolkit {
   private static Pattern urlPatternLeft = Pattern.compile("([\\w]*://[\\w\\.:\\d-]*[^/]).*");
 
   public static String createURLFromProps(String[] parts) {
-    
+
     StringBuilder result = new StringBuilder(32);
     if( parts.length >= 4 ) {
       // We need at least protocol, sld, tld, account/password
@@ -62,7 +62,7 @@ public class CrawlerToolkit {
         if (i< parts.length-3)
           result.append(".");
       }
-      
+
       // Analyze length-2 part for portnumber
       if( Pattern.matches("^\\d*$", parts[parts.length-2]) ) {
         result.append(":");
@@ -74,10 +74,10 @@ public class CrawlerToolkit {
     } else {
       mLog.error("This is not a valid authentication entry: " + Arrays.toString(parts) );
     }
-    
+
     return result.toString();
   }
-  
+
   /**
    * Returns a human readable command string for a command.
    *
@@ -93,14 +93,14 @@ public class CrawlerToolkit {
       }
       buffer.append(commandArr[i]);
     }
-    
+
     return buffer.toString();
   }
 
 
   /**
    * Executes a native command and returns its output.
-   * 
+   *
    * @param commandArr An array containing ehe command to execute and its parameters.
    * @return The output of the command as arrays of lines.
    * @throws RegainException If executing failed.
@@ -341,7 +341,7 @@ public class CrawlerToolkit {
    * @throws RegainException in case of problems while loading
    */
   public static byte[] loadFileFromStream(InputStream inputStream, int length) throws RegainException {
-    
+
     ByteArrayOutputStream out = null;
     try {
       out = new ByteArrayOutputStream(length);
@@ -421,8 +421,8 @@ public class CrawlerToolkit {
       int slashAfterIdx = updirIdx + 3;
       if ((slashAfterIdx >= url.length()) || (url.charAt(slashAfterIdx) == '/')) {
         // We found a "/../" or an "/.." at the end
-        // -> Cut the directory before and the .. out 
-      
+        // -> Cut the directory before and the .. out
+
         // Find previous /
         int slashBeforeIdx = url.lastIndexOf('/', updirIdx - 1);
 
@@ -445,7 +445,7 @@ public class CrawlerToolkit {
 
   /**
    * Completes an url which denotes a directory but doesnt end with a slash.
-   * 
+   *
    * @param url the URL to check and fix
    * @return  fixed URL
    */
@@ -466,7 +466,7 @@ public class CrawlerToolkit {
             url = url.substring(0, url.length() - 1);
           }
 
-          //@ToDo: Reminder for an unclear feature. 
+          //@ToDo: Reminder for an unclear feature.
           //return url + "/";
         }
       }
@@ -480,7 +480,7 @@ public class CrawlerToolkit {
 
   /**
    * Removes anchors from URLs like http://mydomain.com/index.html#anchor
-   * 
+   *
    * @param url an URL with or without an anchor
    * @return the URL without an anchor
    */
@@ -493,7 +493,7 @@ public class CrawlerToolkit {
       return url;
     }
   }
-  
+
   /**
    * Prints the active threads to System.out. Usefull for debugging.
    */
@@ -666,11 +666,11 @@ public class CrawlerToolkit {
 
     return clean.toString();
   }
-  
+
   /**
-   * Sets the account and password for a URL if there is a account/password entry matching to 
+   * Sets the account and password for a URL if there is a account/password entry matching to
    * the URL in the store.
-   * 
+   *
    * @param url the url for enrichment
    * @param authMap accountPasswordStore
    * @return modified url
@@ -693,7 +693,7 @@ public class CrawlerToolkit {
 
   /**
    * Sets account and password for an URL
-   * 
+   *
    * @param url the URL for enrichment
    * @param entry the account password entry
    * @return URL with replacement
@@ -715,9 +715,9 @@ public class CrawlerToolkit {
 
   /**
    * Extract left part of URL (protocol, host, port).
-   * 
+   *
    * @param completeUrl
-   * @return the resulting URL (e.g. http://bl.dfs.dk:8080/mypath/fil.jsp?query will be 
+   * @return the resulting URL (e.g. http://bl.dfs.dk:8080/mypath/fil.jsp?query will be
    *         http://bl.dfs.dk:8080/)
    */
   public static String createURLWithoutPath(String completeUrl) throws RegainException {
@@ -790,5 +790,5 @@ public class CrawlerToolkit {
 
     return result;
   }
-  
+
 }

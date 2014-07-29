@@ -22,39 +22,39 @@ package net.sf.regain.crawler.config;
 
 /**
  * A matcher that checks URLs whether they match to a certain pattern.
- * 
+ *
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
 public interface UrlMatcher {
 
   /**
    * Checks whether a URL matches to the rules of this matcher.
-   * 
+   *
    * @param url The URL to check.
    * @return Whether the given URL matches to the rules of this matcher.
    */
   public boolean matches(String url);
 
-  /** 
+  /**
    * Gets a flag whether links should be extracted from the content
-   * 
+   *
    * @return Whether from a match for matches(url) possibly inclosed links should be extracted.
    */
   public boolean getShouldBeParsed();
 
-  /** 
+  /**
    * Gets a flag whether the content should be indexed.
-   * 
+   *
    * @return Whether from a match for matches(url) the content from the URL should be indexed.
    */
   public boolean getShouldBeIndexed();
 
-  /** 
+  /**
    * Sets a flag whether links should be extracted from the content
    */
   public void setShouldBeParsed(boolean shouldBeParsed);
 
-  /** 
+  /**
    * Sets a flag whether the content should be indexed.
    */
   public void setShouldBeIndexed(boolean shouldBeIndexed);

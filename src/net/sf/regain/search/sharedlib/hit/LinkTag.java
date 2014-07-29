@@ -74,14 +74,14 @@ public class LinkTag extends AbstractHitTag {
       // NOTE: This is needed to ensure that only documents can be loaded that
       //       are in the indexes
       String indexName = results.getHitIndexName(hitIndex);
-      // @todo: refactor this 
+      // @todo: refactor this
       //String encodedIndexName = RegainToolkit.urlEncode(indexName, encoding);
       //href += "?index=" + encodedIndexName;
     } else {
       href = RegainToolkit.urlDecode(url, RegainToolkit.INDEX_ENCODING);
 
       // For IE we have to encode "%" to "%25" again.
-      // Otherwise it will search files having a real "%20" in their name as " ". 
+      // Otherwise it will search files having a real "%20" in their name as " ".
       href = RegainToolkit.replace(href, "%", "%25");
     }
 
@@ -100,7 +100,7 @@ public class LinkTag extends AbstractHitTag {
       response.print(" class=\"" + styleSheetClass + "\"");
     }
     response.print(">");
-    
+
     String title = linkTitle(hit, shouldHighlight, url);
     if(shouldHighlight)
       response.print(title);

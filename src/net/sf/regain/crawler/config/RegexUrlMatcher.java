@@ -28,23 +28,23 @@ import org.apache.log4j.Logger;
 
 /**
  * An UrlMatcher that matches URLs that match to a regular expression.
- *  
+ *
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
 public class RegexUrlMatcher extends UrlMatcherResult {
-  
+
   /** The logger for this class. */
   private static Logger mLog = Logger.getLogger(RegexUrlMatcher.class);
   /** The regex as String. */
   private String mUrlRegexAsString;
-  
+
   /** The regex a URL must match to in order to be matched by this matcher. */
   private Pattern mUrlRegex;
 
 
   /**
    * Creates a new instance of RegexUrlMatcher.
-   * 
+   *
    * @param regex The regular expression a URL must match to in order to be
    *        matched by this matcher.
    * @throws RegainException
@@ -65,7 +65,7 @@ public class RegexUrlMatcher extends UrlMatcherResult {
 
   /**
    * Checks whether a URL matches to the rules of this matcher.
-   * 
+   *
    * @param url The URL to check.
    * @return Whether the given URL matches to the rules of this matcher.
    */
@@ -74,7 +74,7 @@ public class RegexUrlMatcher extends UrlMatcherResult {
     Matcher matcher = mUrlRegex.matcher(url);
     boolean result = matcher.matches();
     mLog.debug("Exact match with pattern: " + mUrlRegexAsString + ", " + mUrlRegex.pattern() + ": " + (result ? "yes" : "no"));
-    
+
     return result;
   }
 

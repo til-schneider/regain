@@ -36,11 +36,11 @@ import org.apache.log4j.Logger;
 
 /**
  * Handles automatic updating of index.
- * 
+ *
  * @author Til Schneider, www.murfman.de
  */
 public class IndexUpdateManager implements DesktopConstants {
-  
+
   private static final long MAX_CRAWLER_WAIT_MILLIS = 1500;
 
   /** The logger for this class */
@@ -48,19 +48,19 @@ public class IndexUpdateManager implements DesktopConstants {
 
   /** The singleton. */
   private static volatile IndexUpdateManager mSingleton;
-  
+
   /** The check thread. */
   private Thread mCheckThread;
-  
+
   /** The crawler. Is <code>null</code> if there is currently no index update running. */
   private volatile Crawler mCrawler;
 
   private volatile boolean welcomePageShown = false;
-  
-  
+
+
   /**
    * Gets the Singleton.
-   * 
+   *
    * @return The Singleton.
    */
   public static IndexUpdateManager getInstance() {
@@ -69,8 +69,8 @@ public class IndexUpdateManager implements DesktopConstants {
     }
     return mSingleton;
   }
-  
-  
+
+
   /**
    * Initializes the IndexUpdateManager.
    */
@@ -88,7 +88,7 @@ public class IndexUpdateManager implements DesktopConstants {
 
   /**
    * Gets the crawler that processes the current index update.
-   * 
+   *
    * @return The crawler that processes the current index update or
    *         <code>null</code> if there is currently no index update running.
    */
@@ -99,7 +99,7 @@ public class IndexUpdateManager implements DesktopConstants {
 
   /**
    * Starts an index update.
-   * 
+   *
    * @throws RegainException If starting the index update failed.
    */
   public void startIndexUpdate() throws RegainException {
@@ -107,7 +107,7 @@ public class IndexUpdateManager implements DesktopConstants {
       // The crawler is already running
       return;
     }
-    
+
     // Create an needsupdate file
     try {
       FileOutputStream out = new FileOutputStream(NEEDSUPDATE_FILE);
@@ -116,25 +116,25 @@ public class IndexUpdateManager implements DesktopConstants {
     catch (IOException exc) {
       throw new RegainException("Creating needsupdate file failed", exc);
     }
-    
+
     // Force a new check
     mCheckThread.interrupt();
-    
+
     // Wait until the crawler runs
     long now = System.currentTimeMillis();
     while (mCrawler == null && System.currentTimeMillis() - now < MAX_CRAWLER_WAIT_MILLIS) {
       try {
         Thread.sleep(100);
-        
+
       }
       catch (InterruptedException exc) {}
     }
   }
-  
-  
+
+
   /**
    * Sets whether the crawler should pause.
-   *  
+   *
    * @param shouldPause Whether the crawler should pause.
    */
   public void setShouldPause(boolean shouldPause) {
@@ -160,7 +160,7 @@ public class IndexUpdateManager implements DesktopConstants {
       catch (Throwable thr) {
         mLog.error("Updating index failed", thr);
       }
-      
+
       try {
         Thread.sleep(10000);
       }
@@ -171,14 +171,14 @@ public class IndexUpdateManager implements DesktopConstants {
 
   /**
    * Executes an index update if nessesary.
-   * 
+   *
    * @throws RegainException If updating the index failed.
    */
   private synchronized void checkUpdate() throws RegainException {
     if (indexNeedsUpdate()) {
       // The index must be updated
       CrawlerConfig config = new XmlCrawlerConfig(CRAWLER_CONFIG_FILE);
-    
+
       Properties authProps = new Properties();
       FileInputStream fis = null;
       try {
@@ -187,11 +187,11 @@ public class IndexUpdateManager implements DesktopConstants {
       } catch( Exception ex ) {
         mLog.error("Couldn't load authentication.properties", ex);
       } finally {
-        if (fis != null) { 
+        if (fis != null) {
           try { fis.close(); } catch (IOException e) { }
         }
       }
-      
+
       // Check whether to show the welcome page
       if (config.getStartUrls().length == 0) {
         if (!welcomePageShown)
@@ -199,7 +199,7 @@ public class IndexUpdateManager implements DesktopConstants {
           // There are no start URLs defined -> Show the welcome page
           mLog.info("There is nothing configured. Showing the welcome page.");
           DesktopToolkit.openPageInBrowser("welcome.jsp");
-          
+
           // Show the welcome page only once per start
           welcomePageShown  = true;
         }
@@ -218,29 +218,29 @@ public class IndexUpdateManager implements DesktopConstants {
         }
         finally {
           mCrawler = null;
-  
+
           // Save the time when the index was last updated
           saveIndexLastUpdate();
-          
+
           // Remove the needsupdate file
           NEEDSUPDATE_FILE.delete();
-          
+
           // Run the garbage collector
           System.gc();
-  
+
           TrayIconHandler.getInstance().setIndexUpdateRunning(false);
-          
+
           // Allow showing of welcome page again
           welcomePageShown = false;
         }
       }
     }
   }
-  
-  
+
+
   /**
    * Gets the timestamp of the last index update.
-   * 
+   *
    * @return The timestamp of the last index update.
    * @throws RegainException If getting the timestamp failed.
    */
@@ -252,7 +252,7 @@ public class IndexUpdateManager implements DesktopConstants {
       long lastUpdate = RegainToolkit.stringToLastModified(lastUpdateAsString).getTime();
       long interval = DesktopToolkit.getDesktopConfig().getInterval();
       long nextUpdateTime = lastUpdate + interval * 1000 * 60;
-      
+
       return System.currentTimeMillis() >= nextUpdateTime;
     } else {
       // The lastupdate file does not exist -> There was never an index created

@@ -21,17 +21,17 @@
       //-->
     </script>
   </head>
-  
+
   <body>
     <search:check noIndexUrl="noindex.jsp" noQueryUrl="searchinput.jsp"/>
-    
+
     <table class="top"><tr>
         <td><img src="img/logo_regain.gif" width="201" height="66" alt="regain logo"></td>
         <td class="searchTop">
           <%@include file="search_form.jsp" %>
         </td>
     </tr></table>
-    
+
     <table class="content">
       <tr class="headline">
         <td>
@@ -45,9 +45,9 @@
           &nbsp;
         </td>
       </tr>
-      
+
       <tr><td colspan="2"> <br/> </td></tr>
-      
+
       <search:list msgNoResults="<tr><td colspan='2'>{msg:noResultsFound}<br/><br/></td></tr>">
         <tr><td colspan="2">
             <search:hit_typeicon imgpath="img/ext"/> <search:hit_link/>
@@ -62,7 +62,7 @@
         </td></tr>
       </search:list>
     </table>
-    
+
     <p class="navigation">
       <search:msg key="resultPage"/>:
       <search:navigation
@@ -70,14 +70,14 @@
         msgBack="<img src='img/back.gif' title='{msg:back}' border='0'/>"
         msgForward="<img src='img/forward.gif' title='{msg:forward}' border='0'/>"/>
     </p>
-    
+
     <br/>
-    
+
     <table class="searchBottom"><tr><td>
           <%@include file="search_form.jsp" %>
     </td></tr></table>
-    
+
     <%@include file="footer.jsp" %>
-    
+
   </body>
 </html>

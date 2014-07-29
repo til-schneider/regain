@@ -41,36 +41,36 @@ import simple.http.serve.Context;
  * @author Til Schneider, www.murfman.de
  */
 public class SharedTagService extends BasicService {
-  
+
   /** The base directory where the provided files are located. */
   private static File mBaseDir;
-  
+
   /** The parser to use for parsing JSP pages */
   private ExecuterParser mParser;
-  
+
   /** The service to pass file requests to. */
   private FileService mFileService;
-  
-  
+
+
   /**
    * Creates a new instance of SharedTagService.
-   * 
+   *
    * @param context The context of this service.
    * @throws RegainException if initialization failed.
    */
   public SharedTagService(Context context) throws RegainException {
     super(context);
-    
+
     mParser = new ExecuterParser();
-    
-    // TODO: Find out, how simpleweb calls another service 
+
+    // TODO: Find out, how simpleweb calls another service
     mFileService = new FileService(context);
   }
 
 
   /**
    * Processes a request.
-   * 
+   *
    * @param req The request.
    * @param resp The response.
    * @throws Exception If executing the JSP page failed.
@@ -82,20 +82,20 @@ public class SharedTagService extends BasicService {
       // This request does not come from localhost -> Send 403 Forbidden
       handle(req, resp, 403);
     }
-    
+
     String fileName = context.getRequestPath(req.getURI());
-    
+
     if (fileName.startsWith("/file/")) {
       // TODO: Just a hack. Normally should there be a way simpleweb calls this
       //       service.
       mFileService.process(req, resp);
       return;
     }
-    
+
     if (mBaseDir == null) {
       mBaseDir = new File(context.getBasePath());
     }
-    
+
     File file = new File(mBaseDir, fileName);
     if (fileName.equals("/")) {
       String indexFileName = "/index.jsp";
@@ -105,7 +105,7 @@ public class SharedTagService extends BasicService {
         file = indexFile;
       }
     }
-    
+
     if (file.exists()) {
       if (file.isDirectory()) {
         processDirectory(req, resp, file);
@@ -126,7 +126,7 @@ public class SharedTagService extends BasicService {
 
   /**
    * Processes a directory listing request.
-   * 
+   *
    * @param req The request.
    * @param resp The response.
    * @param dir The directory to list.
@@ -136,7 +136,7 @@ public class SharedTagService extends BasicService {
     throws Exception
   {
     resp.set("Content-Type", "text/html");
-    
+
     PrintStream out = resp.getPrintStream();
     out.print("<html><head><title>" + dir.getName() + "</title></head><body>");
     String[] childArr = dir.list();
@@ -147,10 +147,10 @@ public class SharedTagService extends BasicService {
     out.close();
   }
 
-  
+
   /**
    * Processes a file request.
-   * 
+   *
    * @param req The request.
    * @param resp The response.
    * @param file The to send.
@@ -161,7 +161,7 @@ public class SharedTagService extends BasicService {
   {
     PageRequest request = new SimplePageRequest(req);
     PageResponse response = new SimplePageResponse(this, req, resp, null, null);
-    
+
     SearchToolkit.sendFile(request, response, file);
   }
 

@@ -350,7 +350,7 @@ Prio C:
 -------
 
   Allow regular expressions in rewrite rules (with group-based replacing)
-  Check StackOverflowError in Linkextraction 
+  Check StackOverflowError in Linkextraction
       Caused by: java.lang.StackOverflowError
         at org.apache.regexp.StringCharacterIterator.charAt(Unknown Source)
         at org.apache.regexp.RE.matchNodes(Unknown Source)
@@ -363,7 +363,7 @@ Prio C:
   Crawler: Mailboxen durchsuchen
   Metadaten aller Dokumente indexieren, ausgeben
   Neuer MS Word-Praeparator: OpenOffice
-  Neuer PDF-Praeparator: PJX (http://www.etymon.com/epub.html) 
+  Neuer PDF-Praeparator: PJX (http://www.etymon.com/epub.html)
   Desktopsuche: Nach Speichern der Konfiguration nur dann neu indexieren, wenn
     sich etwas geaendert hat, das den Index veraendert.
   Desktopsuche: JSP-Executer cachen.

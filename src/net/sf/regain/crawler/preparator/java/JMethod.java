@@ -38,7 +38,7 @@ public class JMethod {
 
   /**
    *  Returns the name of the method.
-   * 
+   *
    * @return the method name
    */
   public String getMethodName() {
@@ -47,7 +47,7 @@ public class JMethod {
 
   /**
    * Sets the name of a method.
-   * 
+   *
    * @param methodName
    */
   public void setMethodName(String methodName) {
@@ -56,7 +56,7 @@ public class JMethod {
 
   /**
    * Returns the parameters of a method.
-   * 
+   *
    * @return all parameters
    */
   public ArrayList getParameters() {
@@ -65,7 +65,7 @@ public class JMethod {
 
   /**
    * Sets the parameters of a method.
-   * 
+   *
    * @param parameters
    */
   public void setParameters(ArrayList parameters) {
@@ -74,7 +74,7 @@ public class JMethod {
 
   /**
    * Returns the code block of a method
-   * 
+   *
    * @return the code block
    */
   public String getCodeBlock() {
@@ -83,7 +83,7 @@ public class JMethod {
 
   /**
    * Sets the code block for the method.
-   * 
+   *
    * @param codeBlock
    */
   public void setCodeBlock(String codeBlock) {
@@ -92,16 +92,16 @@ public class JMethod {
 
   /**
    * Returns the return type of a method.
-   * 
+   *
    * @return the return type
    */
   public String getReturnType() {
     return returnType;
   }
 
-  /** 
+  /**
    * Sets the return type of method.
-   * 
+   *
    * @param returnType
    */
   public void setReturnType(String returnType) {

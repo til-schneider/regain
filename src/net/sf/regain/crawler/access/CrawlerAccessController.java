@@ -34,7 +34,7 @@ import net.sf.regain.crawler.document.RawDocument;
  * This interface is a part of the access control system that ensures that only
  * those documents are shown in the search results that the user is allowed to
  * read.
- * 
+ *
  * @see net.sf.regain.search.access.SearchAccessController
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
@@ -45,9 +45,9 @@ public interface CrawlerAccessController {
    * <p>
    * This method is called once right after the CrawlerAccessController instance
    * was created.
-   *  
+   *
    * @param config The configuration.
-   * 
+   *
    * @throws RegainException If loading the config failed.
    */
   public void init(Properties config) throws RegainException;
@@ -57,10 +57,10 @@ public interface CrawlerAccessController {
    * <p>
    * Note: The group array must not be <code>null</code> and the group names
    * must not contain whitespace.
-   * 
+   *
    * @param document The document to get the groups for.
    * @return The groups that are allowed to read the given document.
-   * 
+   *
    * @throws RegainException If getting the groups failed.
    */
   public String[] getDocumentGroups(RawDocument document)

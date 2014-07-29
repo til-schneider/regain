@@ -60,20 +60,20 @@ public class FormTag extends SharedTag implements DesktopConstants {
   private static final String IMAP_PROTOCOL = "imap";
   /** The MultiLocalizer for this class. */
   private static MultiLocalizer mMultiLocalizer = new MultiLocalizer(FormTag.class);
-  
-  /** Create and check nonces */ 
+
+  /** Create and check nonces */
   private static final String FORM_ACTION_NONCE = "config";
 
   public FormTag()
   {
     super();
   }
-  
+
   /**
    * Called when the parser reaches the start tag.
    * <p>
    * Initializes the list generation.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @return {@link #EVAL_TAG_BODY} if you want the tag body to be evaluated or
@@ -112,7 +112,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
         response.sendError(403);
         return SKIP_TAG_BODY;
       }
-      
+
       // There were new settings sent -> Check the input
       ArrayList<String> errorList = new ArrayList<String>();
 
@@ -163,13 +163,13 @@ public class FormTag extends SharedTag implements DesktopConstants {
             + "method=\"post\" onsubmit=\"prepareEditListsForSubmit()\">");
 
     response.print(nonces.generateHTML(request, FORM_ACTION_NONCE));
-    
+
     return EVAL_TAG_BODY;
   }
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.
@@ -182,7 +182,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
 
   /**
    * Checks a list of diretory names.
-   * 
+   *
    * @param errorList The list where to store the error messages.
    * @param dirlist The list to check.
    */
@@ -197,13 +197,13 @@ public class FormTag extends SharedTag implements DesktopConstants {
         tmpString.append(localizer.msg("checkDir1", "The directory '"));
         tmpString.append(dirlist[i].toString());
         tmpString.append(localizer.msg("checkDir2", "' doesn't exist"));
-        
+
         errorList.add(tmpString.toString());
       } else if (!dir.isDirectory()) {
         tmpString.append(localizer.msg("checkDir3", "'"));
         tmpString.append(dirlist[i].toString());
         tmpString.append(localizer.msg("checkDir4", "' is not a directory"));
-        
+
         errorList.add(tmpString.toString());
       }
 
@@ -214,7 +214,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
 
   /**
    * Checks a list of website names.
-   * 
+   *
    * @param errorList The list where to store the error messages.
    * @param sitelist The list to check.
    */
@@ -230,7 +230,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
 
   /**
    * Check if at least one of the whitelists contains some entry
-   * 
+   *
    * @param errorList The list where to store the error messages.
    * @param dirlist
    * @param sitelist
@@ -248,7 +248,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
 
   /**
    * Build Url to test if it is valid.
-   * 
+   *
    * @param errorList  The list where to store the error messages.
    * @param origUrl    The URL as it was added
    * @param urlAsString The URL to build
@@ -271,7 +271,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
 
   /**
    * Checks a list of Imap urls.
-   * 
+   *
    * @param errorList The list where to store the error messages.
    * @param imaplist The list to check.
    */
@@ -283,7 +283,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
 
   /**
    * Gets the startlist from the crawler configuration.
-   * 
+   *
    * @param crawlerDoc The document that holds the crawler configuration.
    * @param prefix The prefix of the wanted entries. Entries having another
    *        prefix will be ignored.
@@ -297,7 +297,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
 
   /**
    * Gets the startlist with complete urls from the crawler configuration for the given prefix.
-   * 
+   *
    * @param crawlerDoc The document that holds the crawler configuration.
    * @param prefix The prefix of the wanted entries. Entries having another
    *        prefix will be ignored.
@@ -316,7 +316,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
 
   /**
    * Gets the blacklist from the crawler configuration.
-   * 
+   *
    * @param crawlerDoc The document that holds the crawler configuration.
    * @param prefix The prefix of the wanted entries. Entries having another
    *        prefix will be ignored.
@@ -330,7 +330,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
 
   /**
    * Gets a list from the crawler configuration.
-   * 
+   *
    * @param crawlerDoc The document that holds the crawler configuration.
    * @param prefix The prefix of the wanted entries. Entries having another
    *        prefix will be ignored.
@@ -365,7 +365,7 @@ public class FormTag extends SharedTag implements DesktopConstants {
 
   /**
    * Saves the settings.
-   * 
+   *
    * @param interval The index update interval.
    * @param dirlist The list of directories that should be indexed.
    * @param dirblacklist The list of directories that should be excluded.

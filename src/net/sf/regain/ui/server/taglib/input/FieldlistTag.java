@@ -21,7 +21,7 @@ public class FieldlistTag extends SharedTagWrapperTag {
 
   /**
    * Sets the name of the field to created the list for.
-   * 
+   *
    * @param field The name of the field to created the list for.
    */
   public void setField(String field) {
@@ -31,7 +31,7 @@ public class FieldlistTag extends SharedTagWrapperTag {
 
   /**
    * Sets the name of the field to created the list for.
-   * 
+   *
    * @param allMsg The message to show for the item that ignores this field.
    */
   public void setAllMsg(String allMsg) {

@@ -65,31 +65,31 @@ import java.util.Hashtable;
  * wird dann vom Browser in z.B. '&' oder '�' übersetzt.
  */
 public class HtmlEntities {
-  
+
   /**
    * enthält für eine Entit�t (key als String) seine Entsprechung (value als
    * Character).
-   */  
+   */
   static final Hashtable<String, String> decoder = new Hashtable<String, String>(300);
   /**
    * enthält für eine Entit�t (key als String) seine Entsprechung (value als
    * Character).
-   */  
+   */
   static final Hashtable<String, String> decoderXML = new Hashtable<String, String>(300);
-  
+
   /**
    * enthält für einen char-Wert (index) eine Entit�t (als String) oder
    * <CODE>null</CODE>.
    */
   static final String[]  encoder = new String[0x100];
-  
+
   /**
    * enthält für einen char-Wert (index) eine Entit�t (als String) oder
    * <CODE>null</CODE>.
    */
   static final String[]  encoderXML = new String[0x100];
-  
-  
+
+
   /**
    * Dekodiert eine Entit�t in seine Klartext-Entsprechung.
    * <p>
@@ -100,15 +100,15 @@ public class HtmlEntities {
    * @param entity Die zu übersetzende Entit�t.
    *
    * @return Die Klartext-Entsprechung.
-   */  
+   */
   public static final String decode(String entity) {
     return _decode(decoder, entity);
   }
-  
+
   public static final String decodeXML(String entity) {
-    return _decode(decoderXML, entity); 
+    return _decode(decoderXML, entity);
   }
-  
+
   private static final String _decode(Hashtable<String, String> decoder, String entity)
   {
     if (entity.charAt(entity.length()-1) == ';')  // remove trailing semicolon
@@ -144,10 +144,10 @@ public class HtmlEntities {
   public static final String encode(String s) {
     return _encode(encoder, s, true);
   }
-  
+
   public static final String encodeXML(String s) {
     return _encode(encoderXML, s, false);
-  } 
+  }
   private static final String _encode(String[] encoder, String s, boolean encodeUnknownEntities) {
     int length = s.length();
     StringBuffer buffer = new StringBuffer(length * 2);
@@ -169,28 +169,28 @@ public class HtmlEntities {
     }
     return buffer.toString();
   }
-  
-  
-  
+
+
+
   /**
    * F�gt eine Entit�t der internen Datenstruktur hinzu.
    *
    * @param entity Die Entit�t.
    * @param value Der Unicode-Wert ihrer Klartext-Entsprechung.
-   */  
+   */
   static final void add(String entity, int value) {
     decoder.put(entity, (Character.valueOf((char)value)).toString());
     if (value < 0x100)
       encoder[value] = entity;
   }
-  
+
   static final void addXML(String entity, int value) {
     decoderXML.put(entity, (Character.valueOf((char)value)).toString());
     if (value < 0x100)
       encoderXML[value] = entity;
   }
-  
-  
+
+
   static {
     add("&nbsp",   160);
     add("&iexcl",  161);
@@ -444,7 +444,7 @@ public class HtmlEntities {
     add("&lsaquo", 8249);
     add("&rsaquo", 8250);
     add("&euro",   8364);
-    
+
     addXML("&quot",   34);
     addXML("&amp",    38);
     addXML("&lt",     60);

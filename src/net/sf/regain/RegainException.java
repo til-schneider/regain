@@ -109,18 +109,18 @@ public class RegainException extends Exception {
     }
   }
 
-  
+
   /**
    * Gets whether the superclass is able to print the cause of the exception.
    * This is true for Java 1.4 and above.
-   * 
+   *
    * @return Whether the superclass is able to print the cause of the exception.
    */
   private boolean superClassPrintsCause() {
     // Check whether there is a getCause method in the super class
     try {
       getClass().getSuperclass().getMethod("getCause");
-      
+
       // The superclass has a getCause method -> It must be Java 1.4 or more
       return true;
     }

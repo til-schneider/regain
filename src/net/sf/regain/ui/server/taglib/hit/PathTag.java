@@ -42,7 +42,7 @@ public class PathTag extends SharedTagWrapperTag {
   /**
    * Sets the HTML code that should be inserted before the path if the document
    * has one.
-   * 
+   *
    * @param htmlBefore The HTML code that should be inserted before the path.
    */
   public void setBefore(String htmlBefore) {
@@ -53,7 +53,7 @@ public class PathTag extends SharedTagWrapperTag {
   /**
    * Sets the HTML code that should be inserted after the path if the document
    * has one.
-   * 
+   *
    * @param htmlAfter The HTML code that should be inserted after the path.
    */
   public void setAfter(String htmlAfter) {
@@ -63,7 +63,7 @@ public class PathTag extends SharedTagWrapperTag {
 
   /**
    * Sets the style sheet class to use for the link tags.
-   * 
+   *
    * @param styleSheetClass The style sheet class to use for the link tags.
    */
   public void setClass(String styleSheetClass) {
@@ -73,11 +73,11 @@ public class PathTag extends SharedTagWrapperTag {
 
   /**
    * Sets whether links (a tags) should be created.
-   * 
+   *
    * @param createLinks Whether links (a tags) should be created.
    */
   public void setCreateLinks(String createLinks) {
     getNestedTag().setParameter("createLinks", createLinks);
   }
-    
+
 }

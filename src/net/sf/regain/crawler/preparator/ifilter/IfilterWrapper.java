@@ -23,8 +23,8 @@ package net.sf.regain.crawler.preparator.ifilter;
 import org.apache.log4j.Logger;
 
 /**
- * A Java wrapper around one Ifilter. 
- * 
+ * A Java wrapper around one Ifilter.
+ *
  * @see net.sf.regain.crawler.preparator.IfilterPreparator
  * @author Til Schneider, www.murfman.de
  */
@@ -40,10 +40,10 @@ public class IfilterWrapper {
   /** Used by native code. Holds the pointer to the PersistentHandler COM object */
   public long mPersistentHandler;
 
-  
+
   /**
    * Creates a new instance of IfilterWrapper.
-   * 
+   *
    * @param clsid The class ID of the Ifilter, e.g.
    *        "clsid:f07f3920-7b8c-11cf-9be8-00aa004b9986"
    */
@@ -76,7 +76,7 @@ public class IfilterWrapper {
 
   /**
    * Calls the COM function CoInitializeEx.
-   * 
+   *
    * @param threadModel The thread model to use.
    */
   private static native void doCoInitialize(int threadModel);
@@ -90,7 +90,7 @@ public class IfilterWrapper {
 
   /**
    * Initializes the Ifilter
-   * 
+   *
    * @param clsid The class ID of the Ifilter, e.g.
    *        "clsid:f07f3920-7b8c-11cf-9be8-00aa004b9986"
    */
@@ -99,7 +99,7 @@ public class IfilterWrapper {
 
   /**
    * Gets the plain text of a file.
-   * 
+   *
    * @param fileName The name of the file too get the text for.
    * @param buffer The StringBuffer where to store the text.
    */
@@ -110,7 +110,7 @@ public class IfilterWrapper {
 
   /**
    * Gets the plain text of a file.
-   * 
+   *
    * @param fileName The name of the file too get the text for.
    * @param buffer The StringBuffer where to store the text.
    * @param showTextEndings specifies whether to include tags that show where a

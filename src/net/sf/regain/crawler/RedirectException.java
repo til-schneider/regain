@@ -17,7 +17,7 @@ public class RedirectException extends RegainException {
   /**
    * Creates a new instance of RedirectException.
    *
-   * @param message The error message. 
+   * @param message The error message.
    * @param url The URL the redirect points to.
    */
   public RedirectException(String message, String url) {

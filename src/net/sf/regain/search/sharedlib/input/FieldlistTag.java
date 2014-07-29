@@ -22,14 +22,14 @@ import net.sf.regain.util.sharedtag.SharedTag;
  * <li><code>allMsg</code>: The message to show for the item that ignores this
  *     field.</li>
  * </ul>
- * 
+ *
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
 public class FieldlistTag extends SharedTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.
@@ -67,7 +67,7 @@ public class FieldlistTag extends SharedTag {
       // Sort the array
       Arrays.sort(fieldValues);
     }
-    
+
     // Generate a combo box containing the field values
     response.print("<select name=\"field." + fieldName + "\" size=\"1\">");
     response.print("<option value=\"\">" + allMsg + "</option>");

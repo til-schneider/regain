@@ -31,7 +31,7 @@ import net.sf.regain.util.sharedtag.PageRequest;
  * This interface is a part of the access control system that ensures that only
  * those documents are shown in the search results that the user is allowed to
  * read.
- * 
+ *
  * @see net.sf.regain.crawler.access.CrawlerAccessController
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
@@ -42,9 +42,9 @@ public interface SearchAccessController {
    * <p>
    * This method is called once right after the SearchAccessController instance
    * was created.
-   *  
+   *
    * @param config The configuration.
-   * 
+   *
    * @throws RegainException If loading the config failed.
    */
   public void init(Properties config) throws RegainException;
@@ -57,10 +57,10 @@ public interface SearchAccessController {
    * <p>
    * Note: For backwards compability, when this method returns null, ALL groups
    * are allowed. Return a non-existing group to restrict access to nothing.
-   * 
+   *
    * @param request The page request to use for identifying the user.
    * @return The groups of the current user.
-   * 
+   *
    * @throws RegainException If getting the groups failed.
    */
   public String[] getUserGroups(PageRequest request)

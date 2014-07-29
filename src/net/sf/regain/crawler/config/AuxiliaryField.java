@@ -18,11 +18,11 @@ import org.apache.regexp.RE;
  * <p>
  * Having done this you may search for "Offer project:otto23" and you will get
  * only hits from this project directory.
- * 
+ *
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
 public class AuxiliaryField {
-  
+
   /** The name of the auxiliary field. */
   private String mFieldName;
 
@@ -34,10 +34,10 @@ public class AuxiliaryField {
 
   /** Specifies whether the (extracted) value should be converted to lower case. */
   private boolean mToLowerCase;
-  
+
   /** The regex that extracts the value of the field. */
   private RE mUrlRegex;
-  
+
   /** The group of the regex that contains the value. */
   private int mUrlRegexGroup;
 
@@ -53,7 +53,7 @@ public class AuxiliaryField {
 
   /**
    * Creates a new instance of AuxiliaryField.
-   * 
+   *
    * @param fieldName The name of the auxiliary field.
    * @param value The value of the auxiliary field. If null, the value will be
    *        extracted from the regex using the urlRegexGroup.
@@ -65,7 +65,7 @@ public class AuxiliaryField {
    *        index.
    * @param index Specifies whether the field value should be indexed.
    * @param tokenize Specifies whether the field value should be tokenized.
-   * 
+   *
    * @throws RegainException If the regex has a syntax error.
    */
   public AuxiliaryField(String fieldName, String value, boolean toLowerCase,
@@ -81,11 +81,11 @@ public class AuxiliaryField {
     mIndex = index;
     mTokenize = tokenize;
   }
-  
-  
+
+
   /**
    * Gets the name of the auxiliary field.
-   * 
+   *
    * @return The name of the auxiliary field.
    */
   public String getFieldName() {
@@ -108,7 +108,7 @@ public class AuxiliaryField {
   /**
    * Returns whether the (extracted) value should be converted to lower case.
    *
-   * @return Whether the (extracted) value should be converted to lower case. 
+   * @return Whether the (extracted) value should be converted to lower case.
    */
   public boolean getToLowerCase() {
     return mToLowerCase;
@@ -117,24 +117,24 @@ public class AuxiliaryField {
 
   /**
    * Gets the regex that extracts the value of the field.
-   * 
+   *
    * @return The regex that extracts the value of the field.
    */
   public RE getUrlRegex() {
     return mUrlRegex;
   }
-  
-  
+
+
   /**
    * Gets the group of the regex that contains the value.
-   * 
+   *
    * @return The group of the regex that contains the value.
    */
   public int getUrlRegexGroup() {
     return mUrlRegexGroup;
   }
 
-  
+
   /**
    * Returns whether the field value should be stored in the index.
    *
@@ -144,7 +144,7 @@ public class AuxiliaryField {
     return mStore;
   }
 
-  
+
   /**
    * Returns whether the field value should be indexed.
    *
@@ -154,7 +154,7 @@ public class AuxiliaryField {
     return mIndex;
   }
 
-  
+
   /**
    * Returns whether the field value should be tokenized.
    *
@@ -163,5 +163,5 @@ public class AuxiliaryField {
   public boolean isTokenized() {
     return mTokenize;
   }
-  
+
 }

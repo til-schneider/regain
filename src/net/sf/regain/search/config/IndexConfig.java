@@ -9,7 +9,7 @@ import net.sf.regain.search.results.SortingOption;
 
 /**
  * The configuration for one index.
- * 
+ *
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
 public class IndexConfig {
@@ -67,7 +67,7 @@ public class IndexConfig {
 
   /**
    * Creates a new instance of IndexConfig.
-   * 
+   *
    * @param name The name of the index.
    * @param directory The directory where the index is located.
    * @param openInNewWindowRegex The regular expression that identifies URLs
@@ -83,7 +83,7 @@ public class IndexConfig {
    *        {@link SearchAccessController} from.
    * @param searchAccessControllerConfig The configuration for the
    *        {@link SearchAccessController}.
-   * @param shouldHighlight The flag for highlighting of the search terms in the results 
+   * @param shouldHighlight The flag for highlighting of the search terms in the results
    * @throws RegainException If loading the SearchAccessController failed.
    */
   public IndexConfig(String name, String directory, String openInNewWindowRegex,
@@ -118,7 +118,7 @@ public class IndexConfig {
 
   /**
    * Gets the name of the index.
-   * 
+   *
    * @return The name of the index.
    */
   public String getName() {
@@ -127,7 +127,7 @@ public class IndexConfig {
 
   /**
    * Gets the directory where the index is located.
-   * 
+   *
    * @return The directory where the index is located.
    */
   public String getDirectory() {
@@ -137,7 +137,7 @@ public class IndexConfig {
   /**
    * Gets the regular expression that identifies URLs that should be opened in
    * a new window.
-   * 
+   *
    * @return The regular expression that identifies URLs that should be opened
    *         in a new window.
    */
@@ -152,7 +152,7 @@ public class IndexConfig {
    * from pages loaded via http. To be able to load files from the search
    * results, regain offers the file-to-http-bridge that provides all files that
    * are listed in the index via http.
-   * 
+   *
    * @return Whether the file-to-http-bridge should be used.
    */
   public boolean getUseFileToHttpBridge() {
@@ -166,7 +166,7 @@ public class IndexConfig {
    * Read the
    * <a href="https://lucene.apache.org/core/3_6_0/queryparsersyntax.html">lucene query syntax</a>
    * for details.
-   * 
+   *
    * @return The index fields to search by default.
    */
   public String[] getSearchFieldList() {
@@ -202,8 +202,8 @@ public class IndexConfig {
   /**
    * Gets the SearchAccessController to use. Returns <code>null</code> if no
    * SearchAccessController should be used.
-   * 
-   * @return The SearchAccessController. 
+   *
+   * @return The SearchAccessController.
    */
   public SearchAccessController getSearchAccessController() {
     return mSearchAccessController;
@@ -211,7 +211,7 @@ public class IndexConfig {
 
   /**
    * Gets the flag for highlighting of the search terms
-   * 
+   *
    * @return the flag for highlighting
    */
   public boolean getShouldHighlight() {
@@ -220,7 +220,7 @@ public class IndexConfig {
 
   /**
    * Is index has a parent index?
-   *  
+   *
    * @return true if index has a parent
    * 		   false if index has no parent
    */
@@ -230,7 +230,7 @@ public class IndexConfig {
 
   /**
    * Is index a child of a parent index?
-   *   
+   *
    * @return true if index is a parent index
    * 		   false if index is not a parent index
    */
@@ -239,9 +239,9 @@ public class IndexConfig {
   }
 
   /**
-   * Set index as parent if parent is "true" otherwise 
+   * Set index as parent if parent is "true" otherwise
    * set false
-   * 
+   *
    * @param parent is index a parent index?
    */
   public void setParent(String parent) {
@@ -254,7 +254,7 @@ public class IndexConfig {
 
   /**
    * Gets the name of the parent index.
-   * 
+   *
    * @return The name of the parent index.
    */
   public String getParentName() {
@@ -263,7 +263,7 @@ public class IndexConfig {
 
   /**
    * Set the name of the parent index
-   * 
+   *
    * @param parentName Name of the parent index
    */
   public void setParentName(String parentName) {

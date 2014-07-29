@@ -63,7 +63,7 @@ public class JacobMsPowerPointPreparator extends AbstractJacobMsOfficePreparator
 
   /**
    * Initializes the preparator.
-   * 
+   *
    * @param config The configuration
    * @throws RegainException If the configuration has an error.
    */
@@ -144,14 +144,14 @@ public class JacobMsPowerPointPreparator extends AbstractJacobMsOfficePreparator
             // Check if shape is a Group (type == msoGroup)
             if (shape.getType() == MSOGROUP) {
               didUnGroup = true;
-              shape.ungroup();     
+              shape.ungroup();
             }
           }
         } while (didUnGroup);
 
         shapes = slide.getShapes();
         shapeCount = shapes.getCount();
-        //System.out.println(slideIdx+"/"+shapeCount); 
+        //System.out.println(slideIdx+"/"+shapeCount);
 
         for (int shapeIdx = 1; shapeIdx <= shapeCount; shapeIdx++) {
           Shape shape = shapes.item(new Variant(shapeIdx));
@@ -162,7 +162,7 @@ public class JacobMsPowerPointPreparator extends AbstractJacobMsOfficePreparator
 
       // Read the document properties
       readProperties(pres);
-      
+
       // Set the content
       setCleanedContent(contentBuf.toString());
 
@@ -191,7 +191,7 @@ public class JacobMsPowerPointPreparator extends AbstractJacobMsOfficePreparator
       if (text != null) {
         text = text.trim();
         if (text.length() != 0) {
-          text = removeHyphenation(text);    
+          text = removeHyphenation(text);
           contentBuf.append(text);
           contentBuf.append('\n');
         }
@@ -228,7 +228,7 @@ public class JacobMsPowerPointPreparator extends AbstractJacobMsOfficePreparator
    * <p>
    * Is called at the end of the crawler process after all documents were
    * processed.
-   * 
+   *
    * @throws RegainException If freeing the resources failed.
    */
   public void close() throws RegainException {

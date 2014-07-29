@@ -28,7 +28,7 @@ import org.apache.lucene.analysis.Token;
 /**
  * A token stream reading tokens from an iterator.
  * (Currently not used.)
- * 
+ *
  * @author Til Schneider, www.murfman.de
  */
 public class IteratorTokenStream /*extends TokenStream*/ {

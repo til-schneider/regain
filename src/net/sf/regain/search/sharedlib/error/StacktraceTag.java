@@ -37,7 +37,7 @@ public class StacktraceTag extends AbstractErrorTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @param error The error of the request.
@@ -54,12 +54,12 @@ public class StacktraceTag extends AbstractErrorTag {
         error.printStackTrace(writer);
         writer.close();
         strWriter.close();
-        
+
         response.printNoHtml(strWriter.toString());
       }
       catch (IOException exc) {
         throw new RegainException("Printing stacktrace failed", exc);
-      } 
+      }
     }
   }
 

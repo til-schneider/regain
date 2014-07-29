@@ -58,12 +58,12 @@ public class ListTag extends SharedTag implements SearchConstants {
   /** The index of the last generated index on this page. */
   private int mToResult;
 
-  
+
   /**
    * Called when the parser reaches the start tag.
    * <p>
    * Initializes the list generation.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @return {@link #EVAL_TAG_BODY} if you want the tag body to be evaluated or
@@ -84,7 +84,7 @@ public class ListTag extends SharedTag implements SearchConstants {
       if (msgNoResults != null) {
         response.print(msgNoResults);
       }
-            
+
       return SKIP_TAG_BODY;
     } else {
       mCurrentResult = fromResult;
@@ -114,7 +114,7 @@ public class ListTag extends SharedTag implements SearchConstants {
     throws RegainException
   {
     boolean shouldHighlight = results.getShouldHighlight(hitIndex);
-    
+
     try {
       Document hit = results.getHitDocument(hitIndex);
       if (shouldHighlight) {
@@ -155,7 +155,7 @@ public class ListTag extends SharedTag implements SearchConstants {
    * <p>
    * Decides whether there are more hits to generate HTML for. If yes the next
    * hit is put to the page attributes.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @return {@link #EVAL_TAG_BODY} if you want the tag body to be evaluated

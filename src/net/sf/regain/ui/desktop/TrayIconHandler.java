@@ -51,7 +51,7 @@ public class TrayIconHandler {
 
   /**
    * Gets or create the singleton instances of TrayIconHandler.
-   * 
+   *
    * @return The singleton.
    */
   public static TrayIconHandler getInstance() {
@@ -63,7 +63,7 @@ public class TrayIconHandler {
 
   /**
    * Initializes the tray icon.
-   * 
+   *
    * @param useTrayIcon should the tray icon be displayed
    */
   public void init(boolean useTrayIcon) {
@@ -141,7 +141,7 @@ public class TrayIconHandler {
 
   /**
    * Sets whether there is currently an index update running.
-   * 
+   *
    * @param updateRunning Whether there is currently an index update running.
    */
   public void setIndexUpdateRunning(boolean updateRunning) {

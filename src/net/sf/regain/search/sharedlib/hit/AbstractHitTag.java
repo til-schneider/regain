@@ -42,7 +42,7 @@ public abstract class AbstractHitTag extends SharedTag
    * Called when the parser reaches the end tag.
    * <p>
    * Gets the current hit and calls the template method.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.
@@ -67,7 +67,7 @@ public abstract class AbstractHitTag extends SharedTag
    * The template method.
    * <p>
    * Must be implemented by subclasses to genereate the actual tag content.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @param hit The current search hit.

@@ -32,27 +32,27 @@ public class RedirectException extends RegainException {
 
   /** The URL to redirect the request to. */
   private String mUrl;
-  
-  
+
+
   /**
    * Creates a new instance of ForwardException.
-   * 
+   *
    * @param url The URL to redirect the request to.
    */
   public RedirectException(String url) {
     super(null);
-    
+
     mUrl = url;
   }
-  
-  
+
+
   /**
    * Gets the URL to redirect the request to.
-   * 
+   *
    * @return The URL to redirect the request to.
    */
   public String getUrl() {
     return mUrl;
   }
-  
+
 }

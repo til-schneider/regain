@@ -40,7 +40,7 @@ public class MsgTag extends SharedTagWrapperTag {
 
   /**
    * Sets the key of the message to generate.
-   * 
+   *
    * @param key The key of the message to generate.
    */
   public void setKey(String key) {

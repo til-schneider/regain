@@ -35,7 +35,7 @@ public class FilenameTag extends AbstractHitTag
     } else {
       title = RegainToolkit.urlDecode(url.substring(lastSlash + 1), RegainToolkit.INDEX_ENCODING);
     }
-    
+
     response.printNoHtml(title);
   }
 

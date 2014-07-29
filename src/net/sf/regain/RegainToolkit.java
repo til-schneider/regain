@@ -103,7 +103,7 @@ public class RegainToolkit {
   private static final Version LUCENE_VERSION = Version.LUCENE_36;
 
 
-  
+
   public static Version getLuceneVersion() {
     return LUCENE_VERSION;
   }
@@ -217,7 +217,7 @@ public class RegainToolkit {
 
   /**
    * Copies a directory.
-   * 
+   *
    * @param fromDir The source directory.
    * @param toDir The target directory.
    * @param copySubDirs Specifies whether to copy sub directories.
@@ -248,7 +248,7 @@ public class RegainToolkit {
 
   /**
    * Copies a directory.
-   * 
+   *
    * @param fromDir The source directory.
    * @param toDir The target directory.
    * @param copySubDirs Specifies whether to copy sub directories.
@@ -262,7 +262,7 @@ public class RegainToolkit {
 
   /**
    * Reads a String from a stream.
-   * 
+   *
    * @param stream The stream to read the String from
    * @param charsetName The name of the charset to use.
    * @return The stream content as String.
@@ -299,7 +299,7 @@ public class RegainToolkit {
 
   /**
    * Reads a String from a stream.
-   * 
+   *
    * @param stream The stream to read the String from
    * @return The stream content as String.
    * @throws RegainException If reading the String failed.
@@ -471,7 +471,7 @@ public class RegainToolkit {
 
   /**
    * Gets the size of a directory with all files.
-   * 
+   *
    * @param dir The directory to get the size for.
    * @return The size of the directory.
    */
@@ -1128,7 +1128,7 @@ public class RegainToolkit {
 
   /**
    * Checks whether the given String contains whitespace.
-   * 
+   *
    * @param str The String to check.
    * @return Whether the given String contains whitespace.
    */
@@ -1144,7 +1144,7 @@ public class RegainToolkit {
 
   /**
    * Checks an array of group names.
-   * 
+   *
    * @param accessController The (search or crawler) access controller
    *                         that returned the array of group names.
    * @param groupArr The array of group names to check.
@@ -1171,14 +1171,14 @@ public class RegainToolkit {
 
   /**
    * Loads a class and creates an instance.
-   * 
+   *
    * @param className The name of the class to load and create an instance of.
    * @param superClass The super class the class must extend.
    * @param classLoader The class loader to use for loading the class. May be
    *        <code>null</code>
    * @return An object of the class.
    * @throws RegainException If loading the class or creating the instance
-   *         failed or if the class is no instance of the given super class. 
+   *         failed or if the class is no instance of the given super class.
    */
   public static Object createClassInstance(String className,
           Class<?> superClass, ClassLoader classLoader)
@@ -1215,7 +1215,7 @@ public class RegainToolkit {
   }
 
   private static List<File> jarFolders = new ArrayList<File>();
-  
+
   /**
    * Add a new library path where Jars can be loaded from.
    * @param file  Filename of a directory - non-existing directory are silently discarded.
@@ -1225,7 +1225,7 @@ public class RegainToolkit {
     if (file != null && file.exists() && !jarFolders.contains(file))
       jarFolders.add(file);
   }
-  
+
   private static File searchJarFile(String jarFileName)
   {
     for(File folder : jarFolders)
@@ -1236,17 +1236,17 @@ public class RegainToolkit {
     }
     return null;
   }
-  
+
   /**
    * Loads a class and creates an instance.
-   * 
+   *
    * @param className The name of the class to load and create an instance of.
    * @param superClass The super class the class must extend.
    * @param jarFileName The name of the jar file to load the class from.
    *        May be <code>null</code> or relative to a library path.
    * @return An object of the class.
    * @throws RegainException If loading the class or creating the instance
-   *         failed or if the class is no instance of the given super class. 
+   *         failed or if the class is no instance of the given super class.
    */
   public static Object createClassInstance(String className, Class<?> superClass,
           String jarFileName)
@@ -1344,7 +1344,7 @@ public class RegainToolkit {
   public static PathFilenamePair fragmentUrl(String url) throws RegainException {
 
     PathFilenamePair pfPair = new PathFilenamePair();
-    
+
     int lastSlash = 0;
     if (url != null)
        lastSlash = url.lastIndexOf("/");
@@ -1438,7 +1438,7 @@ public class RegainToolkit {
    *
    * @param fileName The file name to get the URL for
    * @return The URL of the file.
-   * @throws RegainException If URL-encoding failed. 
+   * @throws RegainException If URL-encoding failed.
    */
   public static String fileNameToUrl(String fileName)
           throws RegainException {
@@ -1459,7 +1459,7 @@ public class RegainToolkit {
    *
    * @param file The file to get the URL for
    * @return The URL of the file.
-   * @throws RegainException If URL-encoding failed. 
+   * @throws RegainException If URL-encoding failed.
    */
   public static String fileToUrl(File file)
           throws RegainException {
@@ -1472,7 +1472,7 @@ public class RegainToolkit {
    *
    * @param file The file to get the canonical URL for
    * @return The URL of the file.
-   * @throws RegainException If URL-encoding failed. 
+   * @throws RegainException If URL-encoding failed.
    */
   public static String fileToCanonicalUrl(File file)
           throws RegainException {
@@ -1493,10 +1493,10 @@ public class RegainToolkit {
   }
 
   /**
-   * URL-encodes a String. 
-   * 
+   * URL-encodes a String.
+   *
    * @param text The String to URL-encode.
-   * @param encoding The encoding to use. 
+   * @param encoding The encoding to use.
    * @return The URL-encoded String.
    * @throws RegainException If URL-encoding failed.
    */
@@ -1509,10 +1509,10 @@ public class RegainToolkit {
   }
 
   /**
-   * URL-decodes a String. 
-   * 
+   * URL-decodes a String.
+   *
    * @param text The String to URL-decode.
-   * @param encoding The encoding to use. 
+   * @param encoding The encoding to use.
    * @return The URL-decoded String.
    * @throws RegainException If URL-decoding failed.
    */
@@ -1586,7 +1586,7 @@ public class RegainToolkit {
 
     /**
      * Creates a new instance of WrapperAnalyzer.
-     * 
+     *
      * @param nestedAnalyzer The nested analyzer.
      * @param untokenizedFieldNames The names of the fields that should not be
      *        tokenized.

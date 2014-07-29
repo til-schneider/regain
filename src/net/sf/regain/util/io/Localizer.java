@@ -38,16 +38,16 @@ import org.apache.log4j.Logger;
  * @author Til Schneider, www.murfman.de
  */
 public class Localizer {
-  
-  /** The logger for this class. */  
+
+  /** The logger for this class. */
   private static Logger mLog = Logger.getLogger(Localizer.class.getName());
-  
+
   /** The ResourceBundle to get the messages from. */
   private ResourceBundle mBundle;
-  
+
   /** The prefix to put before every key. */
   private String mKeyPrefix;
-  
+
   /**
    * Holds for a directory (File) an URLClassLoader that loads ressources from
    * that directory (URLClassLoader).
@@ -71,24 +71,24 @@ public class Localizer {
     catch (Throwable thr) {
       mLog.error("ResourceBundle not found: '" + basename + "'", thr);
     }
-    
+
     mKeyPrefix = "";
   }
 
-  
+
   /**
    * Creates a new instance of Localizer.
-   * 
+   *
    * @param clazz The class to create the Localizer for.
    */
   public Localizer(Class clazz) {
     this(clazz, Locale.getDefault());
   }
-  
+
 
   /**
    * Creates a new instance of Localizer.
-   * 
+   *
    * @param clazz The class to create the Localizer for.
    * @param locale the locale to create the localizer for.
    */
@@ -113,7 +113,7 @@ public class Localizer {
       }
       catch (MissingResourceException exc) {
       }
-      
+
       // Check whether we have to check the next package
       if (mBundle == null) {
         if (packageName.length() == 0) {
@@ -121,7 +121,7 @@ public class Localizer {
           mLog.error("ResourceBundle not found for class '" + clazz + "'");
           return;
         }
-        
+
         lastDot = packageName.lastIndexOf('.');
         if (lastDot == -1) {
           packageName = "";
@@ -136,7 +136,7 @@ public class Localizer {
 
   /**
    * Gets a class loader that loads ressources from a directory.
-   * 
+   *
    * @param baseurl The URL to load the ressources from.
    * @return The class loader
    * @throws MalformedURLException If the file could not be converted to an URL.
@@ -147,18 +147,18 @@ public class Localizer {
     if (mFileClassLoaderHash == null) {
       mFileClassLoaderHash = new HashMap();
     }
-    
+
     String baseurlAsString = baseurl.toExternalForm();
     URLClassLoader loader = (URLClassLoader) mFileClassLoaderHash.get(baseurlAsString);
     if (loader == null) {
       loader = new URLClassLoader(new URL[] { baseurl });
       mFileClassLoaderHash.put(baseurlAsString, loader);
     }
-    
+
     return loader;
   }
-  
-  
+
+
   /**
    * Gets a localized message.
    *
@@ -166,13 +166,13 @@ public class Localizer {
    * @param defaultMsg The default message. (english)
    * @param arg1 The argument that should replace <CODE>{0}</CODE>.
    * @return a localized message.
-   */  
+   */
   public String msg(String key, String defaultMsg, Object arg1) {
     return msg(key, defaultMsg, new Object[] { arg1 } );
   }
 
-  
-  
+
+
   /**
    * Gets a localized message.
    *
@@ -181,13 +181,13 @@ public class Localizer {
    * @param arg1 The argument that should replace <CODE>{0}</CODE>.
    * @param arg2 The argument that should replace <CODE>{1}</CODE>.
    * @return a localized message.
-   */  
+   */
   public String msg(String key, String defaultMsg, Object arg1, Object arg2) {
     return msg(key, defaultMsg, new Object[] { arg1, arg2 } );
   }
 
-  
-  
+
+
   /**
    * Gets a localized message.
    *
@@ -197,15 +197,15 @@ public class Localizer {
    * @param arg2 The argument that should replace <CODE>{1}</CODE>.
    * @param arg3 The argument that should replace <CODE>{2}</CODE>.
    * @return a localized message.
-   */  
+   */
   public String msg(String key, String defaultMsg, Object arg1, Object arg2,
     Object arg3)
   {
     return msg(key, defaultMsg, new Object[] { arg1, arg2, arg3 } );
   }
-  
-  
-  
+
+
+
   /**
    * Gets a localized message.
    *
@@ -214,18 +214,18 @@ public class Localizer {
    * @param args The arguments that should replace the appropriate place holder.
    *        See {@link java.text.MessageFormat} for details.
    * @return a localized message.
-   */  
+   */
   public String msg(String key, String defaultMsg, Object[] args) {
     String msg = msg(key, defaultMsg);
-    
+
     // Workaround: The MessageFormat uses the ' char for quoting strings.
     //             so the "{0}" in "AB '{0}' CD" will not be replaced.
     //             In order to avoid this we quote every ' with '', so
     //             everthing will be replaced as expected.
     msg = RegainToolkit.replace(msg, "'", "''");
-    
+
     MessageFormat format = new MessageFormat(msg, mBundle.getLocale());
-    return format.format(args);    
+    return format.format(args);
   }
 
 
@@ -235,10 +235,10 @@ public class Localizer {
    * @param key The key of the message.
    * @param defaultMsg The default message. (english)
    * @return a localized message.
-   */  
+   */
   public String msg(String key, String defaultMsg) {
     key = mKeyPrefix + key;
-    
+
     String msg = null;
     if (mBundle != null) {
       try {
@@ -246,12 +246,12 @@ public class Localizer {
       }
       catch (MissingResourceException exc) {}
     }
-    
+
     if (msg == null) {
       return "[" + key + "#" + defaultMsg + "]";
     } else {
       return msg;
     }
   }
-  
+
 }

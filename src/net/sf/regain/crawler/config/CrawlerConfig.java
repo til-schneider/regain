@@ -79,7 +79,7 @@ public interface CrawlerConfig {
   /**
    * Returns the user agent the crawler should in order to identify at the HTTP
    * server(s). If null, the default (Java) user agent should be used.
-   * 
+   *
    * @return the user agent to use.
    */
   public String getUserAgent();
@@ -225,7 +225,7 @@ public interface CrawlerConfig {
    * <p>
    * The black list is an array of UrlMatchers, a URLs <i>must not</i> match to,
    * in order to be processed.
-   * 
+   *
    * @return The black list.
    */
   public UrlMatcher[] getBlackList();
@@ -266,37 +266,37 @@ public interface CrawlerConfig {
    * @return The list with the preparator settings.
    */
   public PreparatorSettings[] getPreparatorSettingsList();
-  
+
   /**
    * Gets the list with the crawler plugin settings.
    *
    * @return The list with the crawler plugin settings.
    */
   public PreparatorSettings[] getCrawlerPluginSettingsList();
-  
+
   /**
    * Gets the list of the auxiliary fields.
-   * 
+   *
    * @return The list of the auxiliary fields. May be null.
    */
   public AuxiliaryField[] getAuxiliaryFieldList();
-  
+
   /**
    * Gets the class name of the
    * {@link net.sf.regain.crawler.access.CrawlerAccessController} to use.
    * Returns <code>null</code> if no CrawlerAccessController should be used.
-   * 
-   * @return The class name of the CrawlerAccessController. 
+   *
+   * @return The class name of the CrawlerAccessController.
    */
   public String getCrawlerAccessControllerClass();
-  
+
   /**
    * Gets the name of jar file to load the
    * {@link net.sf.regain.crawler.access.CrawlerAccessController} from.
    * Returns <code>null</code> if the CrawlerAccessController already is in the
    * classpath.
-   * 
-   * @return The name of jar file to load the CrawlerAccessController from. 
+   *
+   * @return The name of jar file to load the CrawlerAccessController from.
    */
   public String getCrawlerAccessControllerJar();
 
@@ -304,11 +304,11 @@ public interface CrawlerConfig {
    * Gets the configuration of the
    * {@link net.sf.regain.crawler.access.CrawlerAccessController}. May be
    * <code>null</code>.
-   * 
-   * @return The the configuration of the CrawlerAccessController. 
+   *
+   * @return The the configuration of the CrawlerAccessController.
    */
   public Properties getCrawlerAccessControllerConfig();
-  
+
   /**
    * Returns maximum amount of characters which will be copied from content to summary
    *
@@ -318,17 +318,17 @@ public interface CrawlerConfig {
 
    /**
    * Returns the names of the fields that shouldn't be tokenized.
-   * 
+   *
    * @param config The crawler configuration.
    * @return The names of the fields that shouldn't be tokenized.
    */
   public String[] getUntokenizedFieldNames();
-  
+
   /**
    * Returns the URLCleaners. URLCleaners are regex which replace
    * parts of the URL with an empty string (in fact the remove the match
    * from the URL.
-   * 
+   *
    * @return the paramters
    */
   public String[] getURLCleaners();

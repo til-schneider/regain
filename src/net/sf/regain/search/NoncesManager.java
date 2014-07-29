@@ -41,27 +41,27 @@ public class NoncesManager
    * @var Current system time
    */
   private long now;
-  
+
   /**
    * @var System-specific salt.
    * We can't put in a static string here, as this wouldn't be secret anymore.
    */
   private String salt;
-  
+
   /**
    * @var Request for nonceStore
    */
   private PageRequest mRequest;
-  
+
   public NoncesManager()
   {
     now = System.currentTimeMillis();
     salt = NonceHelper.getSystemSpecificHashValue();
   }
-  
+
   /**
    * Create a nonce for usage in a form
-   * 
+   *
    * @param action      action-specific constant
    * @param timestamp   timestamp to use
    * @return  Hash-Value
@@ -69,17 +69,17 @@ public class NoncesManager
   public String generateNonce(String action, String timestamp)
   {
     StringBuilder information = new StringBuilder(100);
-    
+
     information.append(action);
     information.append(timestamp);
     information.append(salt);
-    
+
     return NonceHelper.hash(information.toString(), null);
   }
-  
+
   /**
    * Check if the nonce is correct.
-   * 
+   *
    * @param nonce      Nonce from request
    * @param action     Action specific to this request
    * @param timestamp  Timestamp that was used to create this nonce
@@ -93,32 +93,32 @@ public class NoncesManager
     } catch (NumberFormatException e) {
       return false;
     }
-    
+
     if (nonceTime > now) // Future? That cannot be!
       return false;
     if (nonceTime + NONCE_TIMEOUT_SEC * 1000 < now) // timed out
       return false;
-    
+
     if (nonce == null)
       return false;
-    
+
     if (isNonceUsed(nonce))
       return false;
     markNonceUsed(nonce);
 
     String myNonce = generateNonce(action, timestamp);
-    
+
     if (!myNonce.equals(nonce))
       return false;
-    
+
     return true;
   }
-  
+
   private void markNonceUsed(String nonce)
   {
     mRequest.setSessionAttribute(NONCE_STORE_CONTEXTATTRIBUTE_NAME + nonce, now);
   }
-  
+
   private boolean isNonceUsed(String nonce)
   {
     Object result = mRequest.getSessionAttribute(NONCE_STORE_CONTEXTATTRIBUTE_NAME + nonce);
@@ -127,7 +127,7 @@ public class NoncesManager
 
   /**
    * Check if the nonce of this request is correct.
-   * 
+   *
    * @param request   Request - in order to get the nonce and the nonceStore
    * @param action    action-specific constant
    * @return FALSE if not valid.
@@ -135,9 +135,9 @@ public class NoncesManager
   public boolean checkNonce(PageRequest request, String action)
   {
     // TODO: Check if request was POST
-    
+
     loadNonceStore(request);
-    
+
     String nonce = null;
     String nonce_ts = null;
     try
@@ -164,7 +164,7 @@ public class NoncesManager
   /**
    * Create a hidden input for usage in a form,
    * that contains a newly generated nonce.
-   * 
+   *
    * @param request
    * @param action
    * @return
@@ -176,11 +176,11 @@ public class NoncesManager
     String html = "\n<input type=\"hidden\" name=\"nonce\" value=\"" + nonce + "\" />";
     html += "\n<input type=\"hidden\" name=\"nonce_ts\" value=\"" + now + "\" />\n";
     return html;
-  }  
- 
+  }
+
   private static class NonceHelper
   {
-    
+
 /* Currently not used
 
     private static Random rand = new Random();
@@ -188,7 +188,7 @@ public class NoncesManager
 
     /**
      * Create a random ASCII-String consisting of a certain number of chars.
-     * 
+     *
      * @param numChars  How many chars should the string have
      * @return  Random String
      *
@@ -200,7 +200,7 @@ public class NoncesManager
       }
       return sb.toString();
     }
-*/    
+*/
     public static String hash(String input, String algorithmName)
     {
       try
@@ -218,9 +218,9 @@ public class NoncesManager
           return input;
         }
       }
-    
+
     }
-    
+
     /**
      * Create an MD5 Hash of an input String.
      * Uses the MD5 Algorithm of MessageDigest.
@@ -247,39 +247,39 @@ public class NoncesManager
             }
           return res.toString();
       }
-    
+
     private static String HASH_ALGORITHM = "SHA-256";
-    
+
     /**
      * This function generates a hash that should be
      * a) different for each machine/environment it runs int
      * b) same for each time the function is called, and if possible also between program invocations
-     * 
+     *
      * @return Hash-Value
      */
     public static String getSystemSpecificHashValue()
     {
       StringBuilder information = new StringBuilder(400);
-      
+
       // System properties shouldn't change during runtime, right?
       // But not very random
       for(Object value : System.getProperties().values())
       {
         information.append(value);
       }
-      
+
       // All environment variables are too many?
       // Well, can't take specific ones as I don't know the platform (Win/Linux)
       for(String value : System.getenv().values())
       {
         information.append(value);
       }
-      
+
       return hash(information.toString(), HASH_ALGORITHM);
-      
+
       // return "4"; // chosen by a fair dice roll. :-)
     }
   } // End inner class
-  
+
 }
 

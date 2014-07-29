@@ -73,16 +73,16 @@ public class GenericAudioPreparator extends AbstractPreparator {
     try {
       prepareFile(rawFile, rawDocument.getUrl());
     } catch (ReadOnlyFileException ex) {
-      
+
       try {
         File tempFile = File.createTempFile(rawFile.getName(), ".mp3");
         RegainToolkit.copyFile(rawFile, tempFile);
-        
+
         prepareFile(tempFile, rawDocument.getUrl());
-      
+
       if (!tempFile.delete())
          tempFile.deleteOnExit();
-      
+
       } catch (ReadOnlyFileException e) {
         throw new RegainException("Error handling audio file: " + rawDocument.getUrl(), e);
 

@@ -15,18 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * Author: Thomas Tesche, cluster:Consult, Gletscherstr.13, 16341 Panketal
  *         +49 30 946 300 34, thomas.tesche@thtesche.com
- * 
- * 
+ *
+ *
  */
 package net.sf.regain.crawler.config;
 
 /**
  * An UrlMatcherResult that implements the UrlMatcher interface.
  * This URLMatcher holds only the result of another URLMatcher.
- *  
+ *
  * @author Thomas Tesche, cluster:Consult, http://www.thtesche.com/
  */
 public class UrlMatcherResult implements UrlMatcher {
@@ -40,7 +40,7 @@ public class UrlMatcherResult implements UrlMatcher {
 
   /**
    * Creates a new instance of UrlMatcher.
-   * 
+   *
    * @param shouldBeParsed, whether from a match for matches(url) possibly inclosed links should be extracted.
    * @param shouldBeIndexed, whether from a match for matches(url) the content from the URL should be indexed.
    */
@@ -52,7 +52,7 @@ public class UrlMatcherResult implements UrlMatcher {
 
   /**
    * Checks whether a URL matches to the rules of this matcher.
-   * 
+   *
    * @param url The URL to check.
    * @return Whether the given URL matches to the rules of this matcher.
    */
@@ -61,9 +61,9 @@ public class UrlMatcherResult implements UrlMatcher {
     return mMatches;
   }
 
-  /** 
+  /**
    * Gets a flag whether links should be extracted from the content
-   * 
+   *
    * @return Whether from a match for matches(url) possibly inclosed links should be extracted.
    */
   //@Override
@@ -71,9 +71,9 @@ public class UrlMatcherResult implements UrlMatcher {
     return mShouldBeParsed;
   }
 
-  /** 
+  /**
    * Gets a flag whether the content should be indexed.
-   * 
+   *
    * @return Whether from a match for matches(url) the content from the URL should be indexed.
    */
   //@Override
@@ -81,7 +81,7 @@ public class UrlMatcherResult implements UrlMatcher {
     return mShouldBeIndexed;
   }
 
-  /** 
+  /**
    * Sets a flag whether links should be extracted from the content
    */
   //@Override
@@ -89,7 +89,7 @@ public class UrlMatcherResult implements UrlMatcher {
     this.mShouldBeParsed = shouldBeParsed;
   }
 
-  /** 
+  /**
    * Sets a flag whether the content should be indexed.
    */
   //@Override

@@ -3,7 +3,7 @@ Version X.X.X am
 NEU
  * Wenn ein Preparator nicht erfolgreich ist, werden erst die anderen Preparatoren versucht, bevor ein leeres Ersatzdokument erstellt wird.
  * Erlaube mehrere, negierte und Wildcard-Mime-Angaben (z.B. mimetype:"text/*" -mimetype:"text/plain")
- * HtmlPreparator: Folge auch Links in framesets 
+ * HtmlPreparator: Folge auch Links in framesets
 
 BUGFIX
  * JavaPreperator: Enums werden geparsed (Enum-Name und Konstanten-Bezeichner werden extrahiert)
@@ -29,14 +29,14 @@ BUGFIX
 
 Upgrade Notes:
 - Dadurch, dass Lucene aktualisiert wurde, werden die Index-Dateien automatisch mit aktulisiert. Wird anschließend eine frühere von Regain Version installiert, muss der Ordner des Indexes (idR. /searchindex/) gelöscht werden, damit der Index neu erstellt wird.
-- Server Version: Beim aktualisieren darauf Acht geben, dass die alten Lucene-Bibliotheken (lucene-*-3.1.0.jar) aus WEB-INF/lib gelöscht werden! 
+- Server Version: Beim aktualisieren darauf Acht geben, dass die alten Lucene-Bibliotheken (lucene-*-3.1.0.jar) aus WEB-INF/lib gelöscht werden!
 
 Version 1.7.12 am 12.04.2012 PREVIEW (r580)
 ------------------------------------
 
 NEU
  * File2Http-Bridge: /file/$/$...file.txt?askPermission=1 gibt "true"/"false" zurück, um zu überprüfen, ob ein Download möglich wäre
-   (Datei muss im Index existieren, und ggf. von SearchAccessController erlaubt werden)   
+   (Datei muss im Index existieren, und ggf. von SearchAccessController erlaubt werden)
  * CrawlerAccessController: Wenn es das Interface "Closeable" implementiert, wird nach Ende des Crawling-Prozesses close() aufgerufen.
 
 UPDATE
@@ -79,7 +79,7 @@ BUGFIX
  * build.xml: Kompilieren mit JAVA_HOME möglich (falls java.dir unbekannt)
  * build.xml: Fehlermeldung falls kein build.properties gefunden wurde
  * File2Http-Bridge funktionierte nicht in 1.7.9
- 
+
 
 Version 1.7.9 am 16.08.2011 PREVIEW (r529)
 -----------------------------------
@@ -95,7 +95,7 @@ BUGFIX
 
 Version 1.7.8 am 30.07.2011 PREVIEW (r499)
 -----------------------------------
-NEU 
+NEU
  * Crawler-Plugin-Infrastruktur
  * commons-beanutils 1.8.3: Für die Reflection-API von CrawlerPluginManager
 
@@ -143,7 +143,7 @@ Version 1.7.2 am 14.11.2010 PREVIEW
 UPDATE
   * TrayIcon für Linux: Regain mit "java -Djava.library.path=/usr/lib/jni -jar regain.jar" aufrufen.
       Dann wird das TrayIcon korrekt angezeigt, wenn man libjdic-bin für sein System installiert hat.
-      Unter Ubuntu/Debian z.B.: sudo apt-get install libjdic-bin 
+      Unter Ubuntu/Debian z.B.: sudo apt-get install libjdic-bin
   * Aperture 1.5.0: Benutzt für Mimetype-Detection
   * jcifs 1.3.14: Samba Bibliothek
 
@@ -259,8 +259,8 @@ Version 1.5.5 am 30.11.08 PREVIEW
 * BUGFIX: Whitelist-Eintrag für Verzeichnisse/Datein von Festplatte nicht mehr nur file:/// sondern
   der ganze Pfad
 * ACHTUNG: Keine Installerversion für Windows. Hier funktioniert das Parsen von MimeMessages nicht,
-  Grund derzeit noch unbekannt. 
-* ACHTUNG: Für das Parsen von Mailfächern (imap(s)) muss unbedingt Nutzername und Passwort unter 
+  Grund derzeit noch unbekannt.
+* ACHTUNG: Für das Parsen von Mailfächern (imap(s)) muss unbedingt Nutzername und Passwort unter
   ...mein_Installationspfad/conf/authentication.properties nach Anleitung eingetragen werden. Sonst gibt
   es eine AuthenticationException.
 
@@ -282,10 +282,10 @@ Version 1.5.3 am 05.10.08 PREVIEW
 Version 1.5.2 am 15.08.08 PREVIEW
 ---------------------------------
 * Per Default wird der gesamte Content im Index gespeichert. Mittels <search:hit_content/> aus der
-  Taglib kann man eine ausklappbare Contentansicht in die Ergebnisliste einbauen. 
+  Taglib kann man eine ausklappbare Contentansicht in die Ergebnisliste einbauen.
   ACHTUNG: Experimentelles Feature. Die Indexe können sehr groß werden.
 
-Version 1.5.1 am 07.08.08 
+Version 1.5.1 am 07.08.08
 -------------------------
 * Dateiname wird korrekt indiziert
 * Datumsformat 'last-modified' auf "YYYYMMDD" geändert. Damit kann man die RangeSearch auf
@@ -309,7 +309,7 @@ Version 1.4.2 am 04.06.08 Preview
 
 Version 1.4.1 am 27.04.08 Preview
 ---------------------------------
-* JavaPreparator fuer *.java-Dateien. Der JavaPreparator ist aufgrund seiner 
+* JavaPreparator fuer *.java-Dateien. Der JavaPreparator ist aufgrund seiner
   Groesse und dem begrenzten Nutzerkreis nicht Teil der Standardistribution.
 
 
@@ -317,7 +317,7 @@ Version 1.4.0 am 05.04.08 Preview
 ---------------------------------
 * Bugfix: StackOverflowError in Linkextraction abgefangen
 * mp3-Preparator extrahiert von ID3v2 oder ID3v1 Tags
-* Generischer Audio Preparator, welcher von mp4 (iTunes), ogg-Vorbis oder 
+* Generischer Audio Preparator, welcher von mp4 (iTunes), ogg-Vorbis oder
   flac die Metadaten extrahiert
 
 
@@ -332,7 +332,7 @@ Version 1.3.0/1 am 16.03.08
   und priority=-1 ein CatchAll-Preparator konfigurieren
 * Highlighting für Content und Titel
 * Preparatorselektion anhand des Mimetypes (früher Dateiendung)
-* Mimetype-detection (Dateiendung und MagicMime) 
+* Mimetype-detection (Dateiendung und MagicMime)
 * Umstellung Erweiterte Suche auf Auswahl Mimetype anstelle Dateiendung
 
 
@@ -361,7 +361,7 @@ Version 1.2 am 20.10.07
 -----------------------
 
 * In den Suchergebnissen werden nun Icons gezeigt, die den Typ einer Datei
-  kennzeichnen. 
+  kennzeichnen.
 * Die Index-Felder "size" und "last-modified" sind nun suchbar.
 * Neuer Präparator: EmptyPreparator (Beigesteuert von Gerhard Olsson). Dieser
   Präparator extrahiert keinen Inhalt aus den ihm zugeordneten Dateien. Dadurch
@@ -495,7 +495,7 @@ Version 1.1 Beta 2 am 12.03.05
 * Desktopsuche: Die Statusseite zeigt nun auch die Zeitmessungsergebnisse.
 
 
-Version 1.1 Beta 1 am 10.03.05 
+Version 1.1 Beta 1 am 10.03.05
 ------------------------------
 
 * Desktopsuche: regain bietet nun neben der Server-Suche auch eine Desktop-Suche.

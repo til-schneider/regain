@@ -1,7 +1,7 @@
 function showListSelection(listName) {
   var field = document.getElementById(listName + "-entry");
   var list = document.getElementById(listName + "-list");
-  
+
   for (var i = 0; i < list.length; i++) {
     if (list.options[i].selected) {
       field.value = list.options[i].value;
@@ -13,7 +13,7 @@ function showListSelection(listName) {
 function addToList(listName) {
   var field = document.getElementById(listName + "-entry");
   var list = document.getElementById(listName + "-list");
-  
+
   var text = field.value;
   var value = text;
   if (value.length > 0) {
@@ -26,7 +26,7 @@ function addToList(listName) {
 function removeFromList(listName) {
   var field = document.getElementById(listName + "-entry");
   var list = document.getElementById(listName + "-list");
-  
+
   // Remove marked entries
   var text = field.value;
   for (var i = 0; i < list.length; i++) {

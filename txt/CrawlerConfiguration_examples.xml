@@ -274,7 +274,7 @@
    | purpose of a content preview
    +-->
   <storeContentForPreview>true</storeContentForPreview>
-  
+
 </searchIndex>
 
 
@@ -375,7 +375,7 @@
       </section>
     </config>
   </preparator>
-  
+
   <preparator enabled="false">
     <class>.JacobMsWordPreparator</class>
     <config>
@@ -399,7 +399,7 @@
       </section>
     </config>
   </preparator>
-  
+
   <preparator enabled="false">
     <class>.JacobMsPowerPointPreparator</class>
     <config>
@@ -418,9 +418,9 @@
       <section name="main">
         <param name="properties">author</param>
       </section>
-    </config>    
+    </config>
   </preparator>
-  
+
   <preparator enabled="false">
       <class>.IfilterPreparator</class>
   </preparator>
@@ -434,7 +434,7 @@
     <urlPattern>\.(mp3|wav)$</urlPattern>
     <class>.EmptyPreparator</class>
   </preparator>
- 
+
   <!-- CatchAll-preparator -->
   <preparator priority="-10">
     <class>.EmptyPreparator</class>
@@ -491,7 +491,7 @@
  |   ... to configure plugins
  +-->
   <crawlerPluginList>
-    <!-- 
+    <!--
      | Create Thumbnails of the indexed documents during the thumbnailing process.
      | These Thumbnails can be used in the search results.
      +-->
@@ -502,21 +502,21 @@
   	  	  <!-- Folder where the created thumbnails should be stored.
   	  	       If you change this folder and there already are thumbnails indexed, only new thumbnails will go there. -->
    	      <param name="thumbnailFolder">thumbs/</param>
-  	    
+
   	      <!-- Desired Image dimensions of the thumbnail. -->
   	      <param name="imageWidth">160</param>
   	      <param name="imageHeight">120</param>
   	    </section>
   	    <section name="externalHelpers">
-	  	  <!-- Where is OpenOffice installed? If not available, try to auto-detect folders --> 
+	  	  <!-- Where is OpenOffice installed? If not available, try to auto-detect folders -->
   	  	  <!-- <param name="openOfficeHome">file://c:/Programme/OpenOffice.org 3</param> -->
-  	  	  
+
   	  	  <!-- Where is the profile to use? If not available, a temporary profile is created (at each crawling process start) -->
   	  	  <!-- <param name="openOfficeProfile">plugins/ressources/ooo-template-dir</param> -->
   	    </section>
   	  </config>
   	</crawlerPlugin>
-  	
+
   </crawlerPluginList>
 
 <!--
@@ -587,7 +587,7 @@
 
 <!--
  | The CrawlerAccessController to use.
- | 
+ |
  | This is a part of the access control system that ensures that only those
  | documents are shown in the search results that the user is allowed to
  | read.
@@ -616,8 +616,8 @@
 
 <!--
  | Number for cycle detection in URIs. Values greater than 1 defines that an URI will be rejected
- | if less or more parts in the path of an URI are equal. Example file:///usr/sbin/X11/X11/X11/xconfig 
- | will be rejected with MaxCycleCount = 2 
+ | if less or more parts in the path of an URI are equal. Example file:///usr/sbin/X11/X11/X11/xconfig
+ | will be rejected with MaxCycleCount = 2
 -->
 <MaxCycleCount>1</MaxCycleCount>
 
@@ -625,7 +625,7 @@
 <!--
  | Maximum length of summary in an prepared and indexed document (default 250000).
  | The highlighting of search terms will be created from this summary. The longer
- | the summary, the better the highlighting but also the size of the index. After 
+ | the summary, the better the highlighting but also the size of the index. After
  | highlighting the summary will be cut to 200 characters for downward compatibility
  | of the hit documents.
 -->

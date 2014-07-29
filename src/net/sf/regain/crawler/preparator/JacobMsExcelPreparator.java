@@ -51,7 +51,7 @@ public class JacobMsExcelPreparator extends AbstractJacobMsOfficePreparator {
    * bearbeitet wurde.
    */
   private Application mExcelApplication;
-  
+
 
   /**
    * Creates a new instance of JacobMsExcelPreparator.
@@ -62,10 +62,10 @@ public class JacobMsExcelPreparator extends AbstractJacobMsOfficePreparator {
     super(new String[] { "xls", "xlt" });
   }
 
-  
+
   /**
    * Initializes the preparator.
-   * 
+   *
    * @param config The configuration
    * @throws RegainException If the configuration has an error.
    */
@@ -79,13 +79,13 @@ public class JacobMsExcelPreparator extends AbstractJacobMsOfficePreparator {
 
   /**
    * Wrapper for calling the ActiveX-Method with input-parameter(s).
-   * 
+   *
    * @param row an input-parameter of type int
    * @param col an input-parameter of type int
    * @return the result is of type Range
    */
   public Range getCells(Worksheet sheet, int row, int col) {
-    return new Range(Dispatch.call(sheet, "Cells", new Variant(row), 
+    return new Range(Dispatch.call(sheet, "Cells", new Variant(row),
         new Variant(col)).toDispatch());
   }
 
@@ -116,7 +116,7 @@ public class JacobMsExcelPreparator extends AbstractJacobMsOfficePreparator {
       Variant searchOrderByCols = new Variant(XlSearchOrder.xlByColumns);
       int searchDirectionUp = XlSearchDirection.xlNext;
       int searchDirectionDown = XlSearchDirection.xlPrevious;
-      Variant xlFalse = new Variant(false);    
+      Variant xlFalse = new Variant(false);
 
       // Get all workbooks
       Workbooks wbs = mExcelApplication.getWorkbooks();
@@ -132,7 +132,7 @@ public class JacobMsExcelPreparator extends AbstractJacobMsOfficePreparator {
       Sheets sheets = wb.getWorksheets();
       int sheetCount = sheets.getCount();
 
-      //System.out.println("Sheetcount = "+sheetCount); 
+      //System.out.println("Sheetcount = "+sheetCount);
       StringBuffer contentBuf = new StringBuffer(DEFAULT_BUFFER_SIZE);
       for (int sheetIdx = 1; sheetIdx <= sheetCount; sheetIdx++) {
         Variant sheetVariant = (Variant) sheets.getItem(new Variant(sheetIdx));
@@ -143,22 +143,22 @@ public class JacobMsExcelPreparator extends AbstractJacobMsOfficePreparator {
         try {
           // The following calls may fail because the find operation returns
           // a null pointer. This exception is caught by reverting to the
-          // UsedRange call which also returns the used area in a spreadsheet, 
+          // UsedRange call which also returns the used area in a spreadsheet,
           // even though it is often bigger than necessary.
-          int firstRow = sheet.getCells().find(what, after, lookIn, lookAt, searchOrderByRows, 
+          int firstRow = sheet.getCells().find(what, after, lookIn, lookAt, searchOrderByRows,
                   searchDirectionUp, xlFalse, xlFalse).getRow();
-          int firstCol = sheet.getCells().find(what, after, lookIn, lookAt, searchOrderByCols, 
+          int firstCol = sheet.getCells().find(what, after, lookIn, lookAt, searchOrderByCols,
               searchDirectionUp, xlFalse, xlFalse).getColumn();
-          int lastRow = sheet.getCells().find(what, after, lookIn, lookAt, searchOrderByRows, 
+          int lastRow = sheet.getCells().find(what, after, lookIn, lookAt, searchOrderByRows,
                   searchDirectionDown, xlFalse, xlFalse).getRow();
-          int lastCol = sheet.getCells().find(what, after, lookIn, lookAt, searchOrderByCols, 
+          int lastCol = sheet.getCells().find(what, after, lookIn, lookAt, searchOrderByCols,
                   searchDirectionDown, xlFalse, xlFalse).getColumn();
-          extractRange = sheet.getRange(new Variant(getCells(sheet, firstRow, firstCol)), 
+          extractRange = sheet.getRange(new Variant(getCells(sheet, firstRow, firstCol)),
                                         new Variant(getCells(sheet, lastRow, lastCol)));
-          //System.out.println("Sheet "+sheetIdx+"   ProperUsedRange="+extractRange.getAddress());        
+          //System.out.println("Sheet "+sheetIdx+"   ProperUsedRange="+extractRange.getAddress());
         } catch(NullPointerException e) {
           extractRange = sheet.getUsedRange();
-          //System.out.println("Sheet "+sheetIdx+"   UsedRange="+extractRange.getAddress());        
+          //System.out.println("Sheet "+sheetIdx+"   UsedRange="+extractRange.getAddress());
         }
         //RB 20051106: If the sheet is empty, getUsedRange returns $A$1 and
         // toSafeArray fails. Therefore we have to check that there is some text
@@ -170,7 +170,7 @@ public class JacobMsExcelPreparator extends AbstractJacobMsOfficePreparator {
           int startCol = cellArray.getLBound(2);
           int endRow   = cellArray.getUBound(1);
           int endCol   = cellArray.getUBound(2);
-  
+
           for (int row = startRow; row <= endRow; row++) {
             for (int col = startCol; col <= endCol; col++) {
               String cellValue = cellArray.getString(row, col);
@@ -183,10 +183,10 @@ public class JacobMsExcelPreparator extends AbstractJacobMsOfficePreparator {
           }
         }
       }
-      
+
       // Read the document properties
       readProperties(wb);
-      
+
       // Set the content
       setCleanedContent(contentBuf.toString());
 
@@ -204,7 +204,7 @@ public class JacobMsExcelPreparator extends AbstractJacobMsOfficePreparator {
    * <p>
    * Is called at the end of the crawler process after all documents were
    * processed.
-   * 
+   *
    * @throws RegainException If freeing the resources failed.
    */
   public void close() throws RegainException {

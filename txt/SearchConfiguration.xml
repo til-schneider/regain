@@ -39,7 +39,7 @@
        |   * 'title_sort'
        |   * 'path_sort'
        | The attribute showsortfieldcontent switches the display of the current text content
-       | from the choosen sort option on or off. The text will be displayed right to 
+       | from the choosen sort option on or off. The text will be displayed right to
        | the relevance.
        +-->
       <!--
@@ -84,7 +84,7 @@
        | a new window.
        +-->
       <openInNewWindowRegex>.(pdf|rtf|doc|xls|ppt|docx|xlsx|pptx)$</openInNewWindowRegex>
-      
+
       <!--
        | Specifies whether the file-to-http-bridge should be used for file-URLs.
        |
@@ -94,7 +94,7 @@
        | are listed in the index via http.
        +-->
       <useFileToHttpBridge>true</useFileToHttpBridge>
-      
+
       <!--
        | The index fields to search by default.
        |
@@ -106,7 +106,7 @@
 
       <!--
        | The SearchAccessController to use.
-       | 
+       |
        | This is a part of the access control system that ensures that only those
        | documents are shown in the search results that the user is allowed to
        | read.
@@ -127,28 +127,28 @@
        | search results (summary, title)
        +-->
       <Highlighting>true</Highlighting>
-      
+
     </defaultSettings>
-    
+
     <!-- The search index 'main' -->
     <index name="main" default="true" isparent="true">
       <!-- The directory where the index is located -->
       <dir>searchindex</dir>
     </index>
-    <!-- 
-     | A child index of 'main' 
+    <!--
+     | A child index of 'main'
      +-->
-    <!-- 
+    <!--
     <index name="main1" default="true" isparent="false" parent="main">
       <dir>searchindex_1</dir>
     </index>
     -->
-    
+
     <!-- The search index 'example' -->
     <index name="example">
       <!-- The directory where the index is located -->
       <dir>c:\Temp\searchindex_example</dir>
-      
+
       <rewriteRules>
         <rule prefix="file://c:/example/www-data" replacement="http://www.mydomain.de"/>
       </rewriteRules>

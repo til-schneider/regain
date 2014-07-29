@@ -47,12 +47,12 @@ public class FilesizeFilterPlugin extends AbstractCrawlerPlugin
    */
   private static Logger mLog = Logger.getLogger(FilesizeFilterPlugin.class);
 
-  
+
   private long paramFilesizeMinimum = NO_MINIMUM_FILESIZE;
   private long paramFilesizeMaximum = NO_MAXIMUM_FILESIZE;
-  
+
   private boolean pluginEnabled = false;
-  
+
   /**
    * Get&parse parameters of plugin.
    */
@@ -72,30 +72,30 @@ public class FilesizeFilterPlugin extends AbstractCrawlerPlugin
       } catch (NumberFormatException e) {
         mLog.warn("Could not parse minimum filesize, using default (" + NO_MAXIMUM_FILESIZE + ", no maximum size)");
       }
-      
+
     }
-    
+
     if (paramFilesizeMinimum > NO_MINIMUM_FILESIZE || paramFilesizeMaximum > NO_MAXIMUM_FILESIZE)
       pluginEnabled = true;
   }
-  
-  
+
+
   /**
    * Allows to blacklist specific URLs.
    * This function is called when the URL would normally be accepted,
    * i.e. included in whitelist, not included in blacklist.
-   * 
+   *
    * @param url       URL of the crawling job that should normally be added.
    * @param sourceUrl The URL where the url above has been found (a-Tag, PDF or similar)
    * @param sourceLinkText  The label of the URL in the document where the url above has been found.
    * @return  True: blacklist this URL. False: Allow this URL.
    */
   @Override
-  public boolean checkDynamicBlacklist(String url, String sourceUrl, String sourceLinkText) 
-  { 
+  public boolean checkDynamicBlacklist(String url, String sourceUrl, String sourceLinkText)
+  {
     if (!pluginEnabled)
       return false;
-    
+
     File file = null;
     try
     {
@@ -108,12 +108,12 @@ public class FilesizeFilterPlugin extends AbstractCrawlerPlugin
     }
     if (!file.isFile())
       return false;
-    
+
     long filesize = file.length();
-    
+
     if (paramFilesizeMinimum > NO_MINIMUM_FILESIZE && filesize < paramFilesizeMinimum)
       return true; // Too small
-    
+
     if (paramFilesizeMaximum > NO_MAXIMUM_FILESIZE && filesize > paramFilesizeMaximum)
       return true; // Too big
 

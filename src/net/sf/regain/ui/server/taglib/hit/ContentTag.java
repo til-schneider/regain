@@ -37,5 +37,5 @@ public class ContentTag extends SharedTagWrapperTag {
   public ContentTag() {
     super(new net.sf.regain.search.sharedlib.hit.ContentTag());
   }
-  
+
 }

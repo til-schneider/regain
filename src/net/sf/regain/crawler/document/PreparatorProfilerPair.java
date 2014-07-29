@@ -30,7 +30,7 @@ public class PreparatorProfilerPair implements Comparable<PreparatorProfilerPair
 {
   private Preparator preparator;
   private Profiler profiler;
-  
+
   public Preparator getPreparator()
   {
     return preparator;
@@ -46,7 +46,7 @@ public class PreparatorProfilerPair implements Comparable<PreparatorProfilerPair
     this.preparator = preparator;
     this.profiler = profiler;
   }
-  
+
   @Override
   public int compareTo(PreparatorProfilerPair other)
   {

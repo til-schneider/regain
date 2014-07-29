@@ -19,13 +19,13 @@ Das Thema 'Desktop-Suchmaschine' ist in letzter Zeit immer mehr in den Blickpunk
 
 Mit regain existiert nun eine Desktop-Suchmaschine als Open-Source-Projekt. Der Vorteil gegenüber kommerziellen Produkten liegt darin, dass die Suchmaschine von jedem kostenfrei eingesetzt und darüber hinaus an dessen Bed�rfnisse angepasst werden kann.
 
-Darüber hinaus kann regain durch ein Plugin-System sehr einfach um weitere Dateiformate erweitert werden, da die Extraktion der Meta- und Textinformation aus den einzelnen Dateiformaten von sog. Präparatoren gekapselt wird. 
+Darüber hinaus kann regain durch ein Plugin-System sehr einfach um weitere Dateiformate erweitert werden, da die Extraktion der Meta- und Textinformation aus den einzelnen Dateiformaten von sog. Präparatoren gekapselt wird.
 
 
 Was ist nach Ihrer Meinung die besondere Neuerung Ihrer Idee/Ihres Verfahrens/Ihres Produkts?
 ---------------------------------------------------------------------------------------------
 
-Das Besondere bei regain ist die Tatsache, dass es sich sowohl als Desktop-Suchmaschine als auch im Server-Einsatz nutzen l�sst. Bei der Entwicklung der Architektur wurde sehr stark darauf geachtet, dass m�glichst weite Teile des Systems für beide Varianten genutzt werden können. Eine Firma, die plant regain serverseitig einzusetzen, kann daher regain beispielsweise zun�chst in der Desktop-Variante ohne gro�en Aufwand evaluieren, um dann regain mit derselben Konfiguration in der Server-Variante einzusetzen. 
+Das Besondere bei regain ist die Tatsache, dass es sich sowohl als Desktop-Suchmaschine als auch im Server-Einsatz nutzen l�sst. Bei der Entwicklung der Architektur wurde sehr stark darauf geachtet, dass m�glichst weite Teile des Systems für beide Varianten genutzt werden können. Eine Firma, die plant regain serverseitig einzusetzen, kann daher regain beispielsweise zun�chst in der Desktop-Variante ohne gro�en Aufwand evaluieren, um dann regain mit derselben Konfiguration in der Server-Variante einzusetzen.
 
 
 Existiert aus Ihrer Sicht aufgrund der Entwicklung Ihrer Idee/Ihres Verfahrens/Ihres Produkts bei Ihnen ein Vorsprung vor dem aktuellen Stand der Technik?

@@ -48,7 +48,7 @@ public class IndexupdatecontrolTag extends SharedTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.
@@ -68,7 +68,7 @@ public class IndexupdatecontrolTag extends SharedTag {
         response.sendError(403);
         return;
       }
-      
+
       if ("start".equals(indexaction)) {
         IndexUpdateManager.getInstance().startIndexUpdate();
         crawler = IndexUpdateManager.getInstance().getCurrentCrawler();
@@ -80,7 +80,7 @@ public class IndexupdatecontrolTag extends SharedTag {
         IndexUpdateManager.getInstance().setShouldPause(true);
       }
     }
-    
+
     // Generate the form
     String url = getParameter("url", true);
     String msgBefore = getParameter("msgBefore", "");

@@ -42,25 +42,25 @@ public class SimplePageRequest extends PageRequest {
 
   /** The init parameters. May be null. */
   private static HashMap<String, String> mInitParameterHash;
-  
+
   /** The base URL where the JSP files and resources are located. */
   private static URL mResourceBaseUrl;
-  
+
   /** The working directory of the web server.*/
   private static File mWorkingDir;
-  
+
   /** The simpleweb Request to adapt. */
   private Request mRequest;
-  
+
   /** The page context. May be null. */
   private HashMap<String, Object> mPageContext;
-  
+
   /** The session. */
   private Session mSession;
 
   /**
    * Creates a new instance of SimplePageRequest.
-   * 
+   *
    * @param request The simpleweb Request to adapt.
    */
   public SimplePageRequest(Request request) {
@@ -71,7 +71,7 @@ public class SimplePageRequest extends PageRequest {
 
   /**
    * Gets a request parameter that was given to page via GET or POST.
-   * 
+   *
    * @param name The name of the parameter.
    * @return The given parameter or <code>null</code> if no such parameter was
    *         given.
@@ -86,11 +86,11 @@ public class SimplePageRequest extends PageRequest {
     }
   }
 
-  
+
   /**
    * Gets all request parameters with the given name that were given to the page
    * via GET or POST.
-   * 
+   *
    * @param name The name of the parameter.
    * @return The parameters or <code>null</code> if no such parameter was
    *         given.
@@ -104,11 +104,11 @@ public class SimplePageRequest extends PageRequest {
       throw new RegainException("Getting parameter " + name + " failed", exc);
     }
   }
-  
+
 
   /**
    * Gets the names of the given parameters.
-   * 
+   *
    * @return The names of the given parameters.
    * @throws RegainException If getting the parameter names failed.
    */
@@ -122,10 +122,10 @@ public class SimplePageRequest extends PageRequest {
     }
   }
 
-  
+
   /**
    * Gets the header with the given name.
-   * 
+   *
    * @param name The name of the header.
    * @return The header or <code>null</code> if no such header exists.
    * @throws RegainException If getting the header failed.
@@ -137,7 +137,7 @@ public class SimplePageRequest extends PageRequest {
 
   /**
    * Gets the header with the given name as date.
-   * 
+   *
    * @param name The name of the header.
    * @return The date header or <code>-1</code> if no such header exists.
    * @throws RegainException If getting the header failed.
@@ -146,21 +146,21 @@ public class SimplePageRequest extends PageRequest {
     return mRequest.getDate(name);
   }
 
-  
+
   /**
    * Gets the locale of the client.
-   * 
+   *
    * @return The locale.
    * @throws RegainException If getting the locale failed.
    */
   public Locale getLocale() throws RegainException {
     return mRequest.getLanguage();
   }
-  
+
 
   /**
    * Sets an attribute at the page context.
-   * 
+   *
    * @param name The name of the attribute to set.
    * @param value The value of the attribute to set.
    */
@@ -174,7 +174,7 @@ public class SimplePageRequest extends PageRequest {
 
   /**
    * Gets an attribute from the page context.
-   * 
+   *
    * @param name The name of the attribute to get.
    * @return The attribute's value or <code>null</code> if there is no such
    *         attribute.
@@ -183,14 +183,14 @@ public class SimplePageRequest extends PageRequest {
     if (mPageContext == null) {
       return null;
     }
-    
+
     return mPageContext.get(name);
   }
 
 
   /**
    * Sets an attribute at the session.
-   * 
+   *
    * @param name The name of the attribute to set.
    * @param value The value of the attribute to set.
    */
@@ -199,14 +199,14 @@ public class SimplePageRequest extends PageRequest {
     //throw new IllegalStateException("Not yet implemented");
     if (mSession == null)
       mSession = mRequest.getSession();
-    
+
     mSession.put(name, value);
   }
 
 
   /**
    * Gets an attribute from the session.
-   * 
+   *
    * @param name The name of the attribute to get.
    * @return The attribute's value or <code>null</code> if there is no such
    *         attribute.
@@ -216,14 +216,14 @@ public class SimplePageRequest extends PageRequest {
     //throw new IllegalStateException("Not yet implemented");
     if (mSession == null)
       mSession = mRequest.getSession();
-    
+
     return mSession.get(name);
   }
 
 
   /**
    * Gets an init parameter.
-   * 
+   *
    * @param name The name of the init parameter.
    * @return The value of the init parameter.
    */
@@ -231,14 +231,14 @@ public class SimplePageRequest extends PageRequest {
     if (mInitParameterHash == null) {
       return null;
     }
-    
+
     return mInitParameterHash.get(name);
   }
 
-  
+
   /**
    * Sets an init parameter.
-   * 
+   *
    * @param name The name of the init parameter.
    * @param value The value of the init parameter.
    */
@@ -252,7 +252,7 @@ public class SimplePageRequest extends PageRequest {
 
   /**
    * Gets the base URL where the JSP files and resources are located.
-   * 
+   *
    * @return The base URL where the JSP files and resources are located.
    */
   public URL getResourceBaseUrl() {
@@ -262,7 +262,7 @@ public class SimplePageRequest extends PageRequest {
 
   /**
    * Sets the base URL where the JSP files and resources are located.
-   * 
+   *
    * @param baseurl The base URL where the JSP files and resources are located.
    */
   public static void setResourceBaseUrl(URL baseurl) {
@@ -272,7 +272,7 @@ public class SimplePageRequest extends PageRequest {
 
   /**
    * Gets the working directory of the web server.
-   * 
+   *
    * @return The working directory of the web server.
    */
   public File getWorkingDir() {
@@ -282,7 +282,7 @@ public class SimplePageRequest extends PageRequest {
 
   /**
    * Sets the working directory of the web server.
-   * 
+   *
    * @param workingDir The working directory of the web server.
    */
   public static void setWorkingDir(File workingDir) {

@@ -39,25 +39,25 @@ import org.w3c.dom.Node;
  * @author Til Schneider, www.murfman.de
  */
 public class XmlDesktopConfig implements DesktopConfig, DesktopConstants {
-  
+
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(XmlDesktopConfig.class);
-  
+
   /** The XML file to read the configuration from. */
   private File mXmlFile;
-  
+
   /** The timestamp when the config file was last modified. */
   private long mConfigFileLastModified;
-  
+
   /** The index update interval. */
   private int mInterval;
-  
+
   /** The port of the webserver. */
   private int mPort;
-  
+
   /** Flag whether external access is allowed. */
   private boolean mExternalAccessAllowed;
-  
+
   /**
    * The executable of the browser. Is <code>null</code> if the browser should
    * be auto-detected.
@@ -68,11 +68,11 @@ public class XmlDesktopConfig implements DesktopConfig, DesktopConstants {
    * Namespaces that should be registered for the simple server.
    */
   private Map<String, String> mNamespaces;
-  
-  
+
+
   /**
    * Creates a new instance of XmlDesktopConfig.
-   * 
+   *
    * @param xmlFile The XML file to read the configuration from.
    */
   public XmlDesktopConfig(File xmlFile) {
@@ -83,7 +83,7 @@ public class XmlDesktopConfig implements DesktopConfig, DesktopConstants {
 
   /**
    * Gets the index update interval from the desktop configuration.
-   * 
+   *
    * @return The index update interval.
    * @throws RegainException If loading the config failed.
    */
@@ -95,7 +95,7 @@ public class XmlDesktopConfig implements DesktopConfig, DesktopConstants {
 
   /**
    * Gets the port of the webserver.
-   * 
+   *
    * @return The port of the webserver.
    * @throws RegainException If loading the config failed.
    */
@@ -103,12 +103,12 @@ public class XmlDesktopConfig implements DesktopConfig, DesktopConstants {
     loadConfig();
     return mPort;
   }
-  
-  
+
+
   /**
    * Gets the executable of the browser that should be used for showing web
-   * pages. Returns <code>null</code> if the browser should be auto-detected. 
-   * 
+   * pages. Returns <code>null</code> if the browser should be auto-detected.
+   *
    * @return The executable of the browser.
    * @throws RegainException If loading the config failed.
    */
@@ -116,11 +116,11 @@ public class XmlDesktopConfig implements DesktopConfig, DesktopConstants {
     loadConfig();
     return mBrowser;
   }
-  
+
   /**
    * Gets the setting wheter external access to the instance is allowed or not.
    * pages. Returns FALSE if no config entry exists
-   * 
+   *
    * @return the boolean whether external access is allowed or not
    * @throws RegainException If loading the config failed.
    */
@@ -128,21 +128,21 @@ public class XmlDesktopConfig implements DesktopConfig, DesktopConstants {
     loadConfig();
     return mExternalAccessAllowed;
   }
-  
+
   /**
    * Loads the config if the config was not yet loaded or if the file has changed.
-   * 
+   *
    * @throws RegainException If loading the config failed.
    */
   private void loadConfig() throws RegainException {
     long lastModified = mXmlFile.lastModified();
     if (lastModified != mConfigFileLastModified) {
       mLog.info("New desktop configuration found on " + new java.util.Date());
-      
+
       // The config has changed -> Load it
       Document doc = XmlToolkit.loadXmlDocument(mXmlFile);
       Element config = doc.getDocumentElement();
-      
+
       Node node = XmlToolkit.getChild(config, "interval", true);
       mInterval = (node == null ) ? DEFAULT_INTERVAL : XmlToolkit.getTextAsInt(node);
 
@@ -154,7 +154,7 @@ public class XmlDesktopConfig implements DesktopConfig, DesktopConstants {
 
       node = XmlToolkit.getChild(config, "allow_external_access");
       mExternalAccessAllowed = ( node == null ) ? false : XmlToolkit.getTextAsBoolean(node);
-      
+
       mNamespaces = new Hashtable<String, String>();
       node = XmlToolkit.getChild(config, "simple_register_namespace");
       if (node != null)
@@ -168,7 +168,7 @@ public class XmlDesktopConfig implements DesktopConfig, DesktopConstants {
           mNamespaces.put(name, XmlToolkit.getText(n, true));
         }
       }
-      
+
       mConfigFileLastModified = lastModified;
     }
   }
@@ -176,7 +176,7 @@ public class XmlDesktopConfig implements DesktopConfig, DesktopConstants {
 
   /**
    * Gets Tag namespaces that should be registered so they can be used in the JSP-File.
-   * 
+   *
    * @return  A map of Alias - Package Name
    * @throws RegainException  If loading the config failed.
    */
@@ -185,5 +185,5 @@ public class XmlDesktopConfig implements DesktopConfig, DesktopConstants {
     loadConfig();
     return mNamespaces;
   }
-  
+
 }

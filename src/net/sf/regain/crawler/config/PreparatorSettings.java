@@ -28,28 +28,28 @@ package net.sf.regain.crawler.config;
  * @author Til Schneider, www.murfman.de
  */
 public class PreparatorSettings {
-  
+
   /** The default preparator package. */
   public static final String DEFAULT_PREPARATOR_PACKAGE = "net.sf.regain.crawler.preparator";
 
   /** Specifies whether the preparator is enabled. */
   private boolean mIsEnabled;
-  
+
   /** Specifies the priority of the preparator */
   private int mPriority;
-  
+
   /**
    * The class name of the preparator. The class must implement
    * {@link net.sf.regain.crawler.document.Preparator Preparator}.
    */
   private String mPreparatorClassName;
-  
+
   /**
    * The regular expression a URL must match to, to be prepared by this
    * preparator.
    */
   private String mUrlRegex;
-  
+
   /**
    * The configuration of the preparator.
    */
@@ -58,7 +58,7 @@ public class PreparatorSettings {
 
   /**
    * Creates a new instance of PreparatorSettings.
-   * 
+   *
    * @param isEnabled Specifies whether the preparator is enabled.
    * @param preparatorClassName The class name of the preparator. The class must
    *        implement {@link net.sf.regain.crawler.document.Preparator Preparator}.
@@ -74,7 +74,7 @@ public class PreparatorSettings {
     mPriority = priority;
     mUrlRegex = urlRegex;
     mPreparatorConfig = preparatorConfig;
-    
+
     if (preparatorClassName.startsWith(".")) {
       mPreparatorClassName = DEFAULT_PREPARATOR_PACKAGE + preparatorClassName;
     } else {
@@ -85,7 +85,7 @@ public class PreparatorSettings {
 
   /**
    * Gets whether the preparator is enabled.
-   * 
+   *
    * @return Whether the preparator is enabled.
    */
   public boolean isEnabled() {
@@ -106,7 +106,7 @@ public class PreparatorSettings {
   /**
    * Gets the regular expression a URL must match to, to be prepared this
    * preparator.
-   * 
+   *
    * @return The regular expression a URL must match to, to be prepared
    *         by this preparator. If <code>null</code> the default regex of the
    *         preparator should be used.
@@ -118,7 +118,7 @@ public class PreparatorSettings {
 
   /**
    * Gets the configuration of the preparator.
-   * 
+   *
    * @return The configuration of the preparator.
    */
   public PreparatorConfig getPreparatorConfig() {

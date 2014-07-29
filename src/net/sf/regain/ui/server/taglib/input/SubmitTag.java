@@ -41,7 +41,7 @@ public class SubmitTag extends SharedTagWrapperTag {
 
   /**
    * Sets the button text.
-   * 
+   *
    * @param text The button text.
    */
   public void setText(String text) {

@@ -47,7 +47,7 @@ public class Main implements DesktopConstants {
 
 	/**
 	 * The main entry point.
-	 * 
+	 *
 	 * @param args The command line arguments.
 	 */
 	public static void main(String[] args) {
@@ -94,9 +94,9 @@ public class Main implements DesktopConstants {
 			System.exit(1); // Abort
 			return;
 		}
-		
+
 		DesktopConfig mConfig = DesktopToolkit.getDesktopConfig();
-		
+
 		SimplePageRequest.setResourceBaseUrl(baseurl);
 		SimplePageRequest.setWorkingDir(new File("."));
 		SimplePageRequest.setInitParameter("searchConfigFile", "conf/SearchConfiguration.xml");
@@ -136,7 +136,7 @@ public class Main implements DesktopConstants {
 
 		if (!LOG_DIR.mkdir() && !LOG_DIR.exists())
 		  throw new RuntimeException("Could not create log directory.");
-		
+
 		PropertyConfigurator.configure(logConfigFile.getAbsolutePath());
 		mLog.info("Logging initialized");
 	}

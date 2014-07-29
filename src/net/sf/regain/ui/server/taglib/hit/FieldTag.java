@@ -41,13 +41,13 @@ public class FieldTag extends SharedTagWrapperTag {
 
   /**
    * Sets the name of the index field to generate.
-   * 
+   *
    * @param field The name of the index field to generate.
    */
   public void setField(String field) {
     getNestedTag().setParameter("field", field);
   }
-  
+
   /**
    * Override highlight settings of index
    * @param bool

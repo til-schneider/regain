@@ -22,7 +22,7 @@ package net.sf.regain.crawler.access;
 
 /**
  * This class represents a account-password entitiy for authentication purposes.
- * 
+ *
  * @author Thomas Tesche (thtesche), http://www.thtesche.com/
  */
 public class AccountPasswordEntry {
@@ -45,6 +45,6 @@ public class AccountPasswordEntry {
   public void setPassword(String password) {
     this.password = password;
   }
-  
-  
+
+
 }

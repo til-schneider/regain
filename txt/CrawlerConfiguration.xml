@@ -49,7 +49,7 @@
   -->
   <!-- IMAP post box parsing -->
   <!--
-	<start parse="true" index="true">imaps://imap.googlemail.com:993/</start>  
+	<start parse="true" index="true">imaps://imap.googlemail.com:993/</start>
   -->
   </startlist>
 
@@ -244,13 +244,13 @@
    | indexes.
    +-->
     <valuePrefetchFields>mimetype</valuePrefetchFields>
-  
+
   <!--
    | Specifies wether the whole content should be stored in the index for the
    | purpose of a content preview
    +-->
     <storeContentForPreview>true</storeContentForPreview>
-    
+
   </searchIndex>
 
 
@@ -283,7 +283,7 @@
     <preparator enabled="false">
       <class>.JacobMsExcelPreparator</class>
     </preparator>
-  
+
   <!--
    | Enable this preparator if you want to use MS Word for indexing your Word
    | documents.
@@ -291,7 +291,7 @@
     <preparator enabled="false">
       <class>.JacobMsWordPreparator</class>
     </preparator>
-  
+
   <!--
    | Enable this preparator if you want to use MS Powerpoint for indexing your
    | Powerpoint documents.
@@ -343,7 +343,7 @@
  |   ... to configure preparators
  +-->
   <crawlerPluginList>
-    <!-- 
+    <!--
      | Example ... Create Thumbnails during Crawling.
      +
   	<crawlerPlugin enabled="true">
@@ -369,7 +369,7 @@
   	    </section>
   	  </config>
   	</crawlerPlugin>
-  	
+
   </crawlerPluginList>
 
 <!--

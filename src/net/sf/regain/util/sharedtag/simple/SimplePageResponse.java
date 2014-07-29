@@ -37,26 +37,26 @@ import net.sf.regain.util.sharedtag.PageResponse;
  * @author Til Schneider, www.murfman.de
  */
 public class SimplePageResponse extends PageResponse {
-  
+
   /** The resource that uses this response. */
   private Resource mResource;
-  
+
   /** The request to adapt. */
   private Request mRequest;
-  
+
   /** The response to adapt. */
   private Response mResponse;
-  
+
   /** The PrintStream to write the results to. */
   private PrintStream mPrintStream;
-  
+
   /** The character encoding of the response. */
   private String mEncoding;
 
-  
+
   /**
    * Creates a new instance of SimplePageWriter.
-   * 
+   *
    * @param resource The resource that uses this response.
    * @param request The request to adapt.
    * @param response The response to adapt.
@@ -76,7 +76,7 @@ public class SimplePageResponse extends PageResponse {
 
   /**
    * Gets the character encoding of the response.
-   * 
+   *
    * @return The character encoding of the response.
    * @throws RegainException If getting th encoding failed.
    */
@@ -87,7 +87,7 @@ public class SimplePageResponse extends PageResponse {
 
   /**
    * Sets the header with the given name.
-   * 
+   *
    * @param name The name of the header.
    * @param value The header value to set.
    * @throws RegainException If getting the header failed.
@@ -99,7 +99,7 @@ public class SimplePageResponse extends PageResponse {
 
   /**
    * Sets the header with the given name as date.
-   * 
+   *
    * @param name The name of the header.
    * @param value The header value to set.
    * @throws RegainException If getting the header failed.
@@ -111,7 +111,7 @@ public class SimplePageResponse extends PageResponse {
 
   /**
    * Gets the OutputStream to use for sending binary data.
-   * 
+   *
    * @return The OutputStream to use for sending binary data.
    * @throws RegainException If getting the OutputStream failed.
    */
@@ -127,7 +127,7 @@ public class SimplePageResponse extends PageResponse {
 
   /**
    * Prints text to a page.
-   * 
+   *
    * @param text The text to print.
    * @throws RegainException If printing failed.
    */
@@ -140,14 +140,14 @@ public class SimplePageResponse extends PageResponse {
         throw new RegainException("Getting response PrintStream failed", exc);
       }
     }
-    
+
     mPrintStream.print(text);
   }
 
 
   /**
    * Redirects the request to another URL.
-   * 
+   *
    * @param url The URL to redirect to.
    * @throws RegainException If redirecting failed.
    */
@@ -158,7 +158,7 @@ public class SimplePageResponse extends PageResponse {
 
   /**
    * Sends a HTTP error.
-   * 
+   *
    * @param errorCode The error code to send.
    * @throws RegainException If sending the error failed.
    */

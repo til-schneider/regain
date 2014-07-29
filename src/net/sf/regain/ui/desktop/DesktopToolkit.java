@@ -48,20 +48,20 @@ public class DesktopToolkit implements DesktopConstants {
 
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(DesktopToolkit.class);
-  
+
   /** The desktop configuration. */
   private static DesktopConfig mConfig;
-  
+
   /** The simpleweb connection */
   private static Connection mSimplewebConnection;
-  
+
   /** The current webserver socket. */
   private static ServerSocket mCurrentSocket;
 
 
   /**
    * Gets the desktop configuration.
-   * 
+   *
    * @return The desktop configuration.
    */
   public static DesktopConfig getDesktopConfig() {
@@ -75,7 +75,7 @@ public class DesktopToolkit implements DesktopConstants {
 
   /**
    * Opens a page in the browser.
-   * 
+   *
    * @param page The page to open.
    */
   public static void openPageInBrowser(String page) {
@@ -85,22 +85,22 @@ public class DesktopToolkit implements DesktopConstants {
       if (browser != null) {
         BrowserLauncher.setBrowser(browser);
       }
-      
+
       BrowserLauncher.openURL(url);
     }
     catch (Exception exc) {
       mLog.error("Opening browser failed", exc);
-      
+
       // Show the browser selector
       BrowserSelectorFrame frame = new BrowserSelectorFrame(page);
       frame.show();
     }
   }
-  
-  
+
+
   /**
    * Checks whether the webserver is running on the right port.
-   * 
+   *
    * @throws RegainException If creating or remapping the webserver failed.
    */
   public static void checkWebserver() throws RegainException {
@@ -115,18 +115,18 @@ public class DesktopToolkit implements DesktopConstants {
           throw new RegainException("Closing the old socket failed", exc);
         }
       }
-      
+
       // Create the simpleweb connection if nessesary
       if (mSimplewebConnection == null) {
         try {
           FileContext context = new FileContext(new File("web"));
           MapperEngine engine = new MapperEngine(context);
-          
+
           engine.load("SharedTagService", SharedTagService.class.getName());
           engine.link("*", "SharedTagService");
-          
+
           ProtocolHandler handler = HandlerFactory.getInstance(engine);
-          
+
           mSimplewebConnection = ConnectionFactory.getConnection(handler);
         }
         catch (Exception exc) {
@@ -144,5 +144,5 @@ public class DesktopToolkit implements DesktopConstants {
       mSimplewebConnection.connect(mCurrentSocket);
     }
   }
-  
+
 }

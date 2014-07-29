@@ -54,7 +54,7 @@ public class FieldTag extends AbstractHitTag {
           Document hit, int hitIndex)
           throws RegainException {
     boolean shouldHighlight;
-    
+
     String highlight = getParameter("highlight");
     if (highlight != null)
     {

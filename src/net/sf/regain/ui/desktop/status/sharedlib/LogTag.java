@@ -42,7 +42,7 @@ public class LogTag extends SharedTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.

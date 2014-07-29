@@ -18,7 +18,7 @@
     </td></tr>
     <tr><td>
       <h4><search:msg key="noIndex"/></h4>
-      
+
       <p><search:msg key="noIndex.help.config"/></p>
       <p><search:msg key="noIndex.help.status"/></p>
       <br>

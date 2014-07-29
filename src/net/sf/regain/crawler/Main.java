@@ -110,11 +110,11 @@ public class Main {
       }
       mLog.debug(authPropsFile.getAbsolutePath());
       authProps.load(new FileInputStream(authPropsFile));
-    
+
     } catch( Exception ex ) {
       mLog.error("Couldn't load authentication.properties", ex);
       return; // Abort
-      
+
     }
 
     // Create crawler

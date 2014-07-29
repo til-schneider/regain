@@ -98,7 +98,7 @@ public abstract class AbstractPreparator implements Preparator, WriteablePrepara
    * <p>
    * If <code>extention</code> is null or empty, the preparator won't accept any
    * documents.
-   * 
+   *
    * @param extention The file extension a URL must have to be accepted by
    *        this preparator.
    * @throws RegainException If creating the preparator failed.
@@ -371,7 +371,7 @@ public abstract class AbstractPreparator implements Preparator, WriteablePrepara
    * Gets additional fields that should be indexed.
    * <p>
    * These fields will be indexed and stored.
-   * 
+   *
    * @return The additional fields or <code>null</code>.
    */
   @Override
@@ -383,7 +383,7 @@ public abstract class AbstractPreparator implements Preparator, WriteablePrepara
    * Adds an additional field to the current document.
    * <p>
    * This field will be indexed and stored.
-   * 
+   *
    * @param fieldName The name of the field.
    * @param fieldValue The value of the field.
    */
@@ -394,7 +394,7 @@ public abstract class AbstractPreparator implements Preparator, WriteablePrepara
     mAdditionalFieldMap.put(fieldName, fieldValue);
   }
 
-  /** 
+  /**
    * Gets the priority of the preparator
    * @return int the priority
    */
@@ -428,7 +428,7 @@ public abstract class AbstractPreparator implements Preparator, WriteablePrepara
   /**
    * Concatenate all parts together, use ', ' as delimiter. If a parts is empty or consists
    * only of whitespaces the part will be neglected.
-   * 
+   *
    * @param parts for concatenation
    * @param maxPartsUsed number of partsused for concatenation
    * @return the resulting string whith all single parts concatenated
@@ -460,7 +460,7 @@ public abstract class AbstractPreparator implements Preparator, WriteablePrepara
    * <p>
    * Is called at the end of the crawler process after all documents were
    * processed.
-   * 
+   *
    * @throws RegainException If freeing the resources failed.
    */
   @Override

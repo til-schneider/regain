@@ -73,7 +73,7 @@ public class RawDocument {
   /** Der Profiler der das Laden vom Dateisystem misst. */
   private static final Profiler FILE_LOADING_PROFILER
     = new Profiler("Documents loaded from the file system", "docs");
-  
+
   /** The pattern which matches for imap-urls (folder, message and attachment) */
   //Pattern imapPattern = Pattern.compile(".*(message_([0-9]+))(_attachment_([0-9]+))$");
 
@@ -132,13 +132,13 @@ public class RawDocument {
 
   /** HashMap links containing the URL as key and the linktext as value. */
   private HashMap <String,String> mLinks;
-  
+
   /** account-password entry for the url in processing. */
   AccountPasswordEntry mAccountPasswordEntry;
-  
+
   /** Last modified date. Will be changed by protocolls which can determine this date correctly. */
   Date mLastModifiedDate = new Date();
-  
+
   /**
    * Erzeugt eine neue RawDocument-Instanz.
    *
@@ -151,7 +151,7 @@ public class RawDocument {
    *        vorhanden ist.
    * @throws RegainException Wenn das Dokument nicht geladen werden konnte.
    */
-  public RawDocument(String url, String sourceUrl, String sourceLinkText, 
+  public RawDocument(String url, String sourceUrl, String sourceLinkText,
     AccountPasswordEntry accountPasswordEntry )
     throws RegainException
   {
@@ -190,14 +190,14 @@ public class RawDocument {
 
   /**
    * Loads a mime message from an IMAP server.
-   * 
+   *
    * @param url the URL of the mime message
    * @return content of the message
    * @throws RegainException if loading fails
    */
-  
+
   private byte[] loadIMAPMessage(String url) throws RegainException {
-    
+
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     byte[] bytearrayMessage = new byte[0];
 
@@ -209,7 +209,7 @@ public class RawDocument {
         int messageUID = Integer.parseInt(matcher.group(3));
         mLog.debug("Read mime message uid: " + messageUID + " for IMAP url: " + url);
         Session session = Session.getInstance(new Properties());
-    
+
         URLName originURLName = new URLName(ImapToolkit.cutMessageIdentifier(
           CrawlerToolkit.replaceAuthenticationValuesInURL(url, mAccountPasswordEntry)));
         // Replace all %20 with whitespace in folder pathes
@@ -217,9 +217,9 @@ public class RawDocument {
         if(originURLName.getFile()!=null){
           folder = originURLName.getFile().replaceAll("%20", " ");
         }
-        URLName urlName = new URLName(originURLName.getProtocol(), originURLName.getHost(), 
+        URLName urlName = new URLName(originURLName.getProtocol(), originURLName.getHost(),
           originURLName.getPort(), folder, originURLName.getUsername(), originURLName.getPassword());
-    
+
         IMAPSSLStore imapStore = new IMAPSSLStore(session, urlName);
         imapStore.connect();
         IMAPFolder currentFolder;
@@ -233,7 +233,7 @@ public class RawDocument {
 
         currentFolder.open(Folder.READ_WRITE);
         MimeMessage cplMessage = (MimeMessage) currentFolder.getMessageByUID(messageUID);
-    
+
         if (cplMessage != null) {
           cplMessage.setFlag(Flags.Flag.SEEN, true);
           cplMessage.writeTo(baos);
@@ -245,54 +245,54 @@ public class RawDocument {
         }
 
         currentFolder.close(false);
-        imapStore.close();       
-        
+        imapStore.close();
+
       }
 
     } catch (Throwable thr) {
       throw new RegainException( thr.getMessage(), thr );
-    }  
+    }
     CRC32 crc = new CRC32();
     crc.update(bytearrayMessage);
-    
+
     mLog.debug("loadIMAPMessage crc: " + crc.getValue() + " for IMAP url: " + url);
     return bytearrayMessage;
   }
-  
+
   /**
    * Loads the content from a smb file
-   * 
+   *
    * @param url The URL
-   * @return content of the document 
+   * @return content of the document
    * @throws net.sf.regain.RegainException if loading fails
    */
   private byte[] loadSmbFile(String url) throws RegainException {
-        
+
     InputStream in = null;
     try {
       SmbFile smbFile = RegainToolkit.urlToSmbFile(
         CrawlerToolkit.replaceAuthenticationValuesInURL(url, mAccountPasswordEntry));
-    
+
       if( smbFile.canRead() && !smbFile.isDirectory() ) {
         in = smbFile.getInputStream();
         mLastModifiedDate = new Date(smbFile.lastModified());
-        
+
         return CrawlerToolkit.loadFileFromStream(in,smbFile.getContentLength());
-        
+
       } else {
         throw new RegainException("Can't load content from: "
         + smbFile.getCanonicalPath());
       }
-      
+
     } catch (Throwable thr) {
       throw new RegainException( thr.getMessage(), thr );
-      
+
     } finally {
        if (in != null) {
         try { in.close(); } catch (IOException exc) {}
       }
     }
-    
+
   }
 
   /**
@@ -351,15 +351,15 @@ public class RawDocument {
    */
   public int getLength() /*throws RegainException*/ {
     int length = 0;
-    
+
     if (mContent != null) {
       length = mContent.length;
-    
+
     } else {
-      // document still not loaded because it's a file 
+      // document still not loaded because it's a file
       if( mContentAsFile != null ) {
         length = (int) mContentAsFile.length();
-      
+
       } else if( mUrl.startsWith("smb://")) {
         // @todo : define a suitable way to hold different kinds of files (local fs, windows share, other share types)
         try{
@@ -440,10 +440,10 @@ public class RawDocument {
         if( mUrl.startsWith("file://")) {
           content = CrawlerToolkit.loadFile(mContentAsFile);
         } else if( mUrl.startsWith("smb://")) {
-          content =  loadSmbFile(mUrl); 
+          content =  loadSmbFile(mUrl);
           mContent = content;
         } else if( mUrl.startsWith("imap://") || mUrl.startsWith("imaps://")) {
-          content =  loadIMAPMessage(mUrl); 
+          content =  loadIMAPMessage(mUrl);
           mContent = content;
         }
         FILE_LOADING_PROFILER.stopMeasuring(content.length);
@@ -481,7 +481,7 @@ public class RawDocument {
   /**
    * Gets the content of the document as stream. The stream must be closed by
    * the caller.
-   * 
+   *
    * @return The content of the document as stream.
    * @throws RegainException If creating the stream failed.
    */
@@ -495,7 +495,7 @@ public class RawDocument {
       if(mUrl.startsWith("file://")){
         try {
           return new FileInputStream(mContentAsFile);
-        
+
         } catch (Throwable thr) {
           throw new RegainException("Creating stream for file failed: " +
               mContentAsFile, thr);
@@ -505,14 +505,14 @@ public class RawDocument {
            SmbFile smbFile = RegainToolkit.urlToSmbFile(
              CrawlerToolkit.replaceAuthenticationValuesInURL(mUrl, mAccountPasswordEntry));
            return smbFile.getInputStream();
-           
+
         } catch (Throwable thr) {
           throw new RegainException("Creating stream for file failed: " +
               mContentAsFile, thr);
         }
       } else {
         throw new RegainException("Creating stream for unknown file protocoll failed.");
-        
+
       }
     }
   }
@@ -581,7 +581,7 @@ public class RawDocument {
           url = new URL(mUrl);
           path = url.getPath();
           // Handles urls like http://www.thtesche.com/ an http://www.thtesche.com/blog/
-          if( (path.length()==0 
+          if( (path.length()==0
                   && (url.getProtocol().equalsIgnoreCase("http") || url.getProtocol().equalsIgnoreCase("https") ))
                   || path.endsWith("/")) {
             path = "index.html";
@@ -600,9 +600,9 @@ public class RawDocument {
       } else if( mUrl.toLowerCase().startsWith("imap") /* || mUrl.toLowerCase().startsWith("imaps") */ ) {
         // @todo: consider extensions for attachments too
         extension = ".mht";
-        
+
       }
-      
+
       // Get an unused file
       File tmpFile;
       try {
@@ -636,7 +636,7 @@ public class RawDocument {
       }
       if (! mContentAsFile.delete()) {
         mContentAsFile.deleteOnExit();
-        mLog.debug("Deleting temporary file failed: " + mContentAsFile.getAbsolutePath() + 
+        mLog.debug("Deleting temporary file failed: " + mContentAsFile.getAbsolutePath() +
                 "File will be deleted on program exit.");
       }
     }
@@ -679,8 +679,8 @@ public class RawDocument {
     else
       return true;
   }
-  
-  /** 
+
+  /**
    * Adds a single link to the Hashmap of links
    */
   public void addLink( String url, String linkText ) {

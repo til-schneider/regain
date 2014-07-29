@@ -22,7 +22,7 @@ import net.sf.regain.util.sharedtag.taglib.JspPageResponse;
 /**
  * A servlet providing files. For security reasons this service only provides
  * files that are in the index.
- * 
+ *
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
 public class FileServlet extends HttpServlet {
@@ -43,7 +43,7 @@ public class FileServlet extends HttpServlet {
 
   /**
    * Handles a HTTP request.
-   * 
+   *
    * @param req The request.
    * @param resp The response.
    * @throws ServletException If handling the request failed.
@@ -63,7 +63,7 @@ public class FileServlet extends HttpServlet {
       req.setCharacterEncoding("UTF-8");
       pageContext = factory.getPageContext(this, req, resp,
         errorPageURL, needsSession, bufferSize, autoFlush);
-    
+
       // Create a shared wrapper
       PageRequest request = new JspPageRequest(pageContext);
       PageResponse response = new JspPageResponse(pageContext);
@@ -75,14 +75,14 @@ public class FileServlet extends HttpServlet {
       // Check the file URL
       try {
         boolean allow = SearchToolkit.allowFileAccess(request, fileUrl);
-        
+
         if ("1".equals(request.getParameter("askPermission")) || "1".equals(request.getParameter("askpermission")))
         {
           response.setHeader("Content-Type", "text/plain");
           response.printNoHtml(Boolean.toString(allow));
           return;
         }
-      
+
         // Check the file
         if (allow) {
           // Access allowed -> Send the file
@@ -114,7 +114,7 @@ public class FileServlet extends HttpServlet {
     catch (IOException e) { }
     super.destroy();
   }
-  
-  
+
+
 
 }

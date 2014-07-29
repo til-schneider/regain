@@ -30,7 +30,7 @@ import net.sf.regain.crawler.document.PluggableFactory;
 
 /**
  * Loads and initializes the crawler plugins.
- *  
+ *
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  * @author adapted by Benjamin
  */
@@ -41,26 +41,26 @@ public class CrawlerPluginFactory extends PluggableFactory {
 	private static CrawlerPluginFactory mSingleton = null;
 
 	private CrawlerPluginManager pluginManager = null;
-	
+
 	protected CrawlerPluginFactory()
 	{
 	  super();
 		pluginManager = CrawlerPluginManager.getInstance();
 	}
-	
+
 	/**
 	 * Gets the PluggableFactory instance.
-	 * 
+	 *
 	 * @return The PluggableFactory instance.
 	 */
 	public static CrawlerPluginFactory getInstance() {
 		if (mSingleton == null) {
 			mSingleton = new CrawlerPluginFactory();
-			
+
 		}
 		return mSingleton;
 	}
-	
+
 	@Override
 	protected File getPluggableDir() throws RegainException {
 		File preparatorDir = new File("plugins");
@@ -94,7 +94,7 @@ public class CrawlerPluginFactory extends PluggableFactory {
   {
     return DEFAULT_CRAWLERPLUGIN_PACKAGE;
   }
-  
-  
+
+
 
 }

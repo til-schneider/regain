@@ -66,14 +66,14 @@ public class PathTag extends AbstractHitTag {
       if (htmlBefore != null) {
         response.print(htmlBefore);
       }
-      
+
       boolean createLinks = getParameterAsBoolean("createLinks", true);
       String styleSheetClass = getParameter("class");
 
       // NOTE: The path is formatted as follows:
       //       For each path element there is a line ending with \n
       //       A line constists of the URL, a blank and the title
-      
+
       StringTokenizer tokenizer = new StringTokenizer(path, "\n");
       boolean firstPathElement = true;
       while (tokenizer.hasMoreTokens()) {

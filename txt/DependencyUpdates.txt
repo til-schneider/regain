@@ -95,7 +95,7 @@ Ca. 28.07.04:
 27.04.08
 ========
     thtesche, cluster:Consult
-    JavaPreparator: Eclipse 3.3.1 
+    JavaPreparator: Eclipse 3.3.1
 
 17.07.08
 ========
@@ -130,17 +130,17 @@ Ca. 28.07.04:
 12.11.09
 ========
     Thomas Tesche (thtesche), cluster:Consult
-    lucene 2.3.1 --> 2.9.1 
+    lucene 2.3.1 --> 2.9.1
 
 14.11.09
 ========
     Thomas Tesche (thtesche), cluster:Consult
     commons-codec-1.4
-    
+
 08.12.09
 ========
     Thomas Tesche (thtesche), cluster:Consult
-    commons-collections-3.2.1   
+    commons-collections-3.2.1
 
 13.11.10
 ========
@@ -185,14 +185,14 @@ Websites:
   jakarta regexp: http://jakarta.apache.org/site/downloads/downloads_regexp.cgi
   jakarta log4j: http://logging.apache.org/
   jakarta lucene: http://lucene.apache.org/java/docs/index.html
-  xerces-j: 
+  xerces-j:
   pdfBox: http://incubator.apache.org/pdfbox/index.html
   Jakarta POI: http://poi.apache.org/
   jacob: http://sourceforge.net/projects/jacob-project/
   jdic: https://jdic.dev.java.net/
   aperture: http://aperture.sourceforge.net/
   jcifs: http://jcifs.samba.org/
-  jaudiotagger: https://jaudiotagger.dev.java.net/, http://www.jthink.net/jaudiotagger/ 
+  jaudiotagger: https://jaudiotagger.dev.java.net/, http://www.jthink.net/jaudiotagger/
   Eclipse: http://www.eclipse.org/
   BouncyCastle: http://www.bouncycastle.org/
   Apache Commons Beanutils: http://commons.apache.org/beanutils/

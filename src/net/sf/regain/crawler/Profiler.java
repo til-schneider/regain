@@ -76,21 +76,21 @@ public class Profiler {
 
     registerProfiler(this);
   }
-  
-  
+
+
   /**
    * Gets the number of measures.
-   * 
+   *
    * @return The number of measures.
    */
   public int getMeasureCount() {
     return mMeasureCount;
   }
-  
-  
+
+
   /**
    * Gets the number of aborted measures.
-   * 
+   *
    * @return The number of aborted measures.
    */
   public int getAbortedMeasureCount() {
@@ -100,7 +100,7 @@ public class Profiler {
 
   /**
    * Gets the current time of the measuring running now.
-   * 
+   *
    * @return The current measuring time in milli seconds.
    */
   public long getCurrentMeasuringTime() {
@@ -198,7 +198,7 @@ public class Profiler {
     long totalBytes = mTotalBytes;
     int measureCount = mMeasureCount;
     int abortedMeasureCount = mAbortedMeasureCount;
-    
+
     // Calculate the results
     long averageTime = 0;
     long averageBytes = 0;
@@ -212,7 +212,7 @@ public class Profiler {
     if (secs > 0) {
       dataRatePerSec = (long) (totalBytes / secs);
     }
-    
+
     double countsPerMinute = 0;
     if (totalTime > 0) {
       countsPerMinute = measureCount * (60d * 1000d) / totalTime;
@@ -325,7 +325,7 @@ public class Profiler {
     if (mProfilerList == null) {
       return "";
     }
-    
+
     StringBuffer buffer = new StringBuffer();
 
     for (Iterator iter = mProfilerList.iterator(); iter.hasNext();) {

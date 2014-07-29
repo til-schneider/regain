@@ -30,14 +30,14 @@ import net.sf.regain.util.sharedtag.PageResponse;
  * @author Til Schneider, www.murfman.de
  */
 public class TextExecuter extends Executer {
-  
+
   /** The text to print. */
   private String mText;
-  
-  
+
+
   /**
    * Creates a new instance of TextExecuter.
-   * 
+   *
    * @param text The text to print.
    */
   public TextExecuter(String text) {
@@ -47,7 +47,7 @@ public class TextExecuter extends Executer {
 
   /**
    * Executes this node.
-   * 
+   *
    * @param request The request.
    * @param response The response.
    * @throws RegainException If executing failed.
@@ -58,16 +58,16 @@ public class TextExecuter extends Executer {
     executeChildren(request, response);
     response.rawPrint(mText);
   }
-  
+
 
   /**
    * Prints this tag to System.out.
-   * 
+   *
    * @param prefix The prefix to put in front of every line.
    */
   public void printTag(String prefix) {
     printChildren(prefix);
     System.out.println(prefix + "Text");
   }
-  
+
 }

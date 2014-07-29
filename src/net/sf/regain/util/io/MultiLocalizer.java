@@ -30,25 +30,25 @@ import java.util.Locale;
  * @author Til Schneider, www.murfman.de
  */
 public class MultiLocalizer {
-  
+
   /** The factory to use for creating a localizer for a specific locale. */
   private LocalizerFactory mFactory;
-  
+
   /** Holds for a locale (Locale) a localizer (Localizer) */
   private HashMap<Locale, Localizer> mLocalizerHash;
-  
+
 
   /**
    * Creates a new instance of MultiLocalizer.
-   * 
+   *
    * @param clazz The class to create the MultiLocalizer for.
    */
   public MultiLocalizer(Class<?> clazz) {
     mFactory = new ClassLocalizerFactory(clazz);
     mLocalizerHash = new HashMap<Locale, Localizer>();
   }
-  
-  
+
+
   /**
    * Creates a new instance of MultiLocalizer.
    *
@@ -59,11 +59,11 @@ public class MultiLocalizer {
     mFactory = new BaseLocalizerFactory(baseurl, basename);
     mLocalizerHash = new HashMap<Locale, Localizer>();
   }
-  
-  
+
+
   /**
    * Gets the localizer for a specific locale.
-   * 
+   *
    * @param locale The locale to get the localizer for.
    * @return The localizer.
    */
@@ -75,15 +75,15 @@ public class MultiLocalizer {
     }
     return localizer;
   }
-  
-  
+
+
   /**
    * A factory to use for creating a localizer for a specific locale.
    */
   private interface LocalizerFactory {
     /**
      * Creates a localizer for a specific locale.
-     * 
+     *
      * @param locale The locale to create the localizer for.
      * @return The created localizer.
      */
@@ -98,19 +98,19 @@ public class MultiLocalizer {
 
     /** The class to create localizers for. */
     private Class<?> mClazz;
-    
+
     /**
      * Creates a new instance of ClassLocalizerFactory.
-     * 
+     *
      * @param clazz The class to create localizers for.
      */
     public ClassLocalizerFactory(Class<?> clazz) {
       mClazz = clazz;
     }
-    
+
     /**
      * Creates a localizer for a specific locale.
-     * 
+     *
      * @param locale The locale to create the localizer for.
      * @return The created localizer.
      */
@@ -119,21 +119,21 @@ public class MultiLocalizer {
     }
 
   } // inner class ClassLocalizerFactory
-  
-  
+
+
   /**
    * A factory that creates localizers for a specific base.
    */
   private static class BaseLocalizerFactory implements LocalizerFactory {
-    
+
     /** The base URL where the properties files are located. */
     private URL mBaseUrl;
     /** The base name of the properties files. */
     private String mBaseName;
-    
+
     /**
      * Creates a new instance of BaseLocalizerFactory.
-     * 
+     *
      * @param baseurl The base URL where the properties files are located.
      * @param basename The base name of the properties files.
      */
@@ -144,7 +144,7 @@ public class MultiLocalizer {
 
     /**
      * Creates a localizer for a specific locale.
-     * 
+     *
      * @param locale The locale to create the localizer for.
      * @return The created localizer.
      */

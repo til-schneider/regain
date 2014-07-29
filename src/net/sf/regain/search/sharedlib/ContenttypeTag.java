@@ -7,7 +7,7 @@ import net.sf.regain.util.sharedtag.SharedTag;
 
 /**
  * Override the Content Type for this request.
- * 
+ *
  * contentType: The MIME Content-Type ("text/html" if not given)
  * @author b
  */
@@ -17,7 +17,7 @@ public class ContenttypeTag extends SharedTag
   throws RegainException
 {
     String mime = getParameter("contentType", true);
-    
+
     if (!mime.isEmpty())
       response.setHeader("Content-Type", mime);
 }

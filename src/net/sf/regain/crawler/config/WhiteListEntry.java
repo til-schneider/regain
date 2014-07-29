@@ -45,7 +45,7 @@ public class WhiteListEntry {
 
   /**
    * Creates a new instance of WhiteListEntry.
-   * 
+   *
    * @param urlMatcher The UrlMatcher a URL must match to in order to be
    *        processed.
    * @param name The name of the white list entry. May be <code>null</code>.

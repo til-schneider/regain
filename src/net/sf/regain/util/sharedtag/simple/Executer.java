@@ -32,14 +32,14 @@ import net.sf.regain.util.sharedtag.PageResponse;
  * @author Til Schneider, www.murfman.de
  */
 public abstract class Executer {
-  
+
   /** The children of this node. */
   private ArrayList mChildExecuterList;
-  
-  
+
+
   /**
    * Adds a child to this node.
-   * 
+   *
    * @param child The child to add.
    */
   public void addChildExecuter(Executer child) {
@@ -48,11 +48,11 @@ public abstract class Executer {
     }
     mChildExecuterList.add(child);
   }
-  
-  
+
+
   /**
    * Gets the number of children of this node.
-   * 
+   *
    * @return The number of children of this node.
    */
   protected int childCount() {
@@ -62,11 +62,11 @@ public abstract class Executer {
       return mChildExecuterList.size();
     }
   }
-  
-  
+
+
   /**
    * Gets a child node.
-   * 
+   *
    * @param index The index of the node to get.
    * @return The wanted child node.
    */
@@ -77,18 +77,18 @@ public abstract class Executer {
 
   /**
    * Executes this node.
-   * 
+   *
    * @param request The request.
    * @param response The response.
    * @throws RegainException If executing failed.
    */
   public abstract void execute(PageRequest request, PageResponse response)
     throws RegainException;
-  
-  
+
+
   /**
    * Executes all child nodes
-   * 
+   *
    * @param request The request.
    * @param response The response.
    * @throws RegainException If executing failed.
@@ -104,7 +104,7 @@ public abstract class Executer {
 
   /**
    * Prints the children to System.out.
-   * 
+   *
    * @param prefix The prefix to put in front of every line.
    */
   protected void printChildren(String prefix) {
@@ -121,13 +121,13 @@ public abstract class Executer {
   public void printTag() {
     printTag("");
   }
-  
-  
+
+
   /**
    * Prints this tag to System.out.
-   * 
+   *
    * @param prefix The prefix to put in front of every line.
    */
   public abstract void printTag(String prefix);
-  
+
 }

@@ -34,7 +34,7 @@ public abstract class AbstractErrorTag extends SharedTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.
@@ -49,7 +49,7 @@ public abstract class AbstractErrorTag extends SharedTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @param error The error of the request.
@@ -58,5 +58,5 @@ public abstract class AbstractErrorTag extends SharedTag {
   protected abstract void printEndTag(PageRequest request,
     PageResponse response, Throwable error)
     throws RegainException;
-  
+
 }

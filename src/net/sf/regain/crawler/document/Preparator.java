@@ -63,11 +63,11 @@ public interface Preparator extends Pluggable {
   /** The default StringBuffer size that should be used for the content buffer. */
   public static final int DEFAULT_BUFFER_SIZE = 16384; // 16 k
   /** The default priority */
-  
+
   /**
    * Sets the regular expression a URL must match to, to be prepared by this
    * preparator.
-   * 
+   *
    * @param urlRegex The new URL regex.
    * @see #accepts(RawDocument)
    */
@@ -109,11 +109,11 @@ public interface Preparator extends Pluggable {
   public String getCleanedContent();
 
   /**
-   * 
+   *
    * @return the cleaned meta data
    */
   public String getCleanedMetaData();
-  
+
   /**
    * Gibt eine Zusammenfassung für das Dokument zurück.
    * <p>
@@ -152,7 +152,7 @@ public interface Preparator extends Pluggable {
    * Gets additional fields that should be indexed.
    * <p>
    * These fields will be indexed and stored.
-   * 
+   *
    * @return The additional fields or <code>null</code>.
    */
   public Map<String, String> getAdditionalFields();
@@ -176,7 +176,7 @@ public interface Preparator extends Pluggable {
    */
   public void close() throws RegainException;
 
-   /** 
+   /**
    * Gets the priority of the preparator
    * @return int the priority
    */

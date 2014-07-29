@@ -27,7 +27,7 @@ import net.sf.regain.crawler.document.RawDocument;
 
 /**
  * Like EmptyPreparator, but indexes the filename as content.
- * 
+ *
  * @author Benjamin
  */
 public class FilenamePreparator extends AbstractPreparator

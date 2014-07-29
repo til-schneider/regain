@@ -18,7 +18,7 @@
     </td></tr>
     <tr><td>
       <h4><search:msg key="welcomeToRegain"/></h4>
-      
+
       <p><search:msg key="welcome.help.taskbar"/></p>
       <img src="img/taskbar.gif"/>
       <p><search:msg key="welcome.help.rightClick"/></p>
@@ -26,7 +26,7 @@
       <br>
     </td></tr>
   </table>
-  
+
   <%@include file="footer.jsp" %>
 
 </body>

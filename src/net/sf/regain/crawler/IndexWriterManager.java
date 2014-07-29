@@ -211,7 +211,7 @@ public class IndexWriterManager {
    * Die URL bildet den key, der LastUpdated-String die value.
    */
   private HashMap<String, String> mUrlsToDeleteHash;
-  
+
   /** Crawler Plugin Manager instance */
   private CrawlerPluginManager pluginManager = CrawlerPluginManager.getInstance();
 
@@ -341,7 +341,7 @@ public class IndexWriterManager {
   /**
    * Gets the number of documents that were in the (old) index when the
    * IndexWriterManager was created.
-   * 
+   *
    * @return The initial number of documents in the index.
    */
   public int getInitialDocCount() {
@@ -350,7 +350,7 @@ public class IndexWriterManager {
 
   /**
    * Gets the number of documents that were added to the index.
-   * 
+   *
    * @return The number of documents added to the index.
    */
   public int getAddedDocCount() {
@@ -359,7 +359,7 @@ public class IndexWriterManager {
 
   /**
    * Gets the number of documents that will be removed from the index.
-   * 
+   *
    * @return The number of documents removed from the index.
    */
   public int getRemovedDocCount() {
@@ -371,7 +371,7 @@ public class IndexWriterManager {
 
   /**
    * Logs an error at the error log of the index.
-   * 
+   *
    * @param msg The error message.
    * @param thr The error to log. May be <code>null</code>.
    * @throws RegainException If writing to the error log failed.
@@ -497,12 +497,12 @@ public class IndexWriterManager {
   private IndexWriter createIndexWriter(boolean createNewIndex)
           throws IOException {
     IndexWriterConfig iConfig = new IndexWriterConfig(RegainToolkit.getLuceneVersion(), mAnalyzer);
-    
+
     if (createNewIndex)
       iConfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
     else
       iConfig.setOpenMode(IndexWriterConfig.OpenMode.APPEND);
-    
+
     IndexWriter indexWriter = new IndexWriter(mLuceneTempIndexDir, iConfig);
 
     int maxFieldLength = mConfig.getMaxFieldLength();
@@ -568,10 +568,10 @@ public class IndexWriterManager {
 
   /**
    * Lookup for a document matching to a given url.
-   * 
+   *
    * @param url to check for
    * @return true if there exist the document for the url in the index.
-   * 
+   *
    * @throws RegainException if checking for url failed
    */
   public boolean isAlreadyIndexed(String url) throws RegainException {
@@ -675,7 +675,7 @@ public class IndexWriterManager {
 
             } else if ((new Date().getTime()) - indexLastModified.getTime() < 86400000L) {
               // Spidering at the same day
-              // Due to the fuzziness of the docLastModified.getTime() (day accuracy) 
+              // Due to the fuzziness of the docLastModified.getTime() (day accuracy)
               // we can't be sure whether the document is up-to-date or not
               mLog.info("Index entry is from the same day. Therefore we have to recrawl but do not index the document." +
                       "Creating a new one (source=" + docLastModified + "), (index=" + indexLastModified + "): " +
@@ -735,9 +735,9 @@ public class IndexWriterManager {
   /**
    * Creates a indexable document and add this to the index
    *
-   * @param rawDocument which will be parsed 
+   * @param rawDocument which will be parsed
    * @param errorLogger The error logger to use for logging errors.
-   * 
+   *
    * @throws RegainException if indexing of the document failed
    */
   public void createNewIndexEntry(RawDocument rawDocument, ErrorLogger errorLogger)
@@ -784,9 +784,9 @@ public class IndexWriterManager {
 
   }
 
-  /** 
+  /**
    * Getter for the current and initialised DocumentFactory.
-   * 
+   *
    * @return the current and initialised DocumentFactory
    */
   public DocumentFactory getDocumentFactory() {
@@ -868,7 +868,7 @@ public class IndexWriterManager {
 
           if (shouldBeDeleted) {
         	pluginManager.eventDeleteIndexEntry(doc, mIndexReader);
-        	  
+
             try {
               mLog.info("Deleting from index: " + url + " from " + lastModified);
               mIndexReader.deleteDocument(docIdx);
@@ -965,7 +965,7 @@ public class IndexWriterManager {
 
   /**
    * Prepares a breakpoint.
-   * 
+   *
    * @throws RegainException If preparing the breakpoint failed.
    */
   private void prepareBreakpoint() throws RegainException {
@@ -993,7 +993,7 @@ public class IndexWriterManager {
 
   /**
    * Creates a breakpoint.
-   * 
+   *
    * @throws RegainException If creating the breakpoint failed.
    */
   public void createBreakpoint() throws RegainException {
@@ -1001,7 +1001,7 @@ public class IndexWriterManager {
     try {
       mBreakpointProfiler.startMeasuring();
 
-      // Remove the entries that were marked for deletion 
+      // Remove the entries that were marked for deletion
       removeObsoleteEntries();
 
       // Prepare the breakpoint
@@ -1110,7 +1110,7 @@ public class IndexWriterManager {
 
   /**
    * Delets an old index directory.
-   * 
+   *
    * @param oldIndexDir The old index directory.
    * @throws RegainException If deleting failed.
    */

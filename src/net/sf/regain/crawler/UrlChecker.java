@@ -46,14 +46,14 @@ import org.apache.log4j.Logger;
  * <p>
  * For http-URLs we have to remember all accepted or ignored URLs, because in
  * http URLs are found by page parsing which can ramdomly find any URL.
- * 
+ *
  * @author Til Schneider, www.murfman.de
  */
 public class UrlChecker {
 
   /** The logger for this class. */
   private static Logger mLog = Logger.getLogger(UrlChecker.class);
-  
+
   /** Contains all http-URLs that have been accepted. */
   private HashSet<String> mAcceptedUrlSet;
   /** Contains all http-URLs that have been ignored. */
@@ -79,7 +79,7 @@ public class UrlChecker {
 
   /**
    * Creates a new instance of UrlChecker.
-   * 
+   *
    * @param whiteList The white list. The white list is an array of
    *        WhiteListEntry, a URL <i>must</i> match to, in order to be processed.
    * @param blackList The black list. The black list is an array of UrlMatchers,
@@ -97,7 +97,7 @@ public class UrlChecker {
 
   /**
    * Normalizes the start URLs
-   * 
+   *
    * @param urlArr The start URLs to normalize.
    * @return The normalized start URLs.
    */
@@ -126,7 +126,7 @@ public class UrlChecker {
         }
       }
     }
-    
+
     if (foundPrefix) {
       // There were entries removed -> We have to build a new array
       ArrayList<StartUrl> list = new ArrayList<StartUrl>(urlArr.length);
@@ -138,17 +138,17 @@ public class UrlChecker {
       urlArr = new StartUrl[list.size()];
       list.toArray(urlArr);
     }
-    
+
     return urlArr;
   }
 
-  /** 
+  /**
     * This method tries to detect cycles in an URI. Every part of the path will
     * be compared to each other. If more then maxCycles parts are detected the URI
     * the URI will be marked as a 'cycle URI'
-    * 
+    *
     * @param maxCycles Count of maximum occurence of the same path part
-    * @param url the URI to be checked 
+    * @param url the URI to be checked
     * @return true if the URI has no cycles, false if cycles where detected.
     */
    public boolean hasNoCycles(String url, int maxCycles) {
@@ -171,7 +171,7 @@ public class UrlChecker {
 
       String[] mParts = RegainToolkit.splitString(mPath, "/");
       HashSet<String> uniqueParts = new HashSet<String>();
-      // Add every part to a hashmap. The idea behind: only the first occurence 
+      // Add every part to a hashmap. The idea behind: only the first occurence
       // will resists in the map (because of the same hash value).
       for (int i = 0; i < mParts.length; i++) {
          if (mLog.isDebugEnabled()) {
@@ -205,7 +205,7 @@ public class UrlChecker {
    * @return Ob die URL von der Schwarzen und Weißen Liste akzeptiert wird.
    */
   public UrlMatcher isUrlAccepted(String url) {
-    
+
     UrlMatcher urlMatchResult = new UrlMatcherResult(false, false);
     mLog.debug("isUrlAccepted for url: " + url);
     // check whether this URL matches to a white list prefix
@@ -213,7 +213,7 @@ public class UrlChecker {
       if (mWhiteListEntryArr[i].shouldBeUpdated()) {
         UrlMatcher matcher = mWhiteListEntryArr[i].getUrlMatcher();
         if (matcher.matches(url)) {
-          // get the values for link extraction and indexing 
+          // get the values for link extraction and indexing
           // from the current matcher hit
           urlMatchResult.setShouldBeParsed(matcher.getShouldBeParsed());
           urlMatchResult.setShouldBeIndexed(matcher.getShouldBeIndexed());
@@ -266,7 +266,7 @@ public class UrlChecker {
 
   /**
    * Decides whether the given URL was already accepted in a crawler run.
-   * 
+   *
    * @param url The URL to check.
    * @return Whether the URL was already accepted.
    */
@@ -282,7 +282,7 @@ public class UrlChecker {
 
   /**
    * Decides whether the given URL was already ignored in a crawler run.
-   * 
+   *
    * @param url The URL to check.
    * @return Whether the URL was already ignored.
    */
@@ -298,7 +298,7 @@ public class UrlChecker {
 
   /**
    * Decides whether the given URL should be kept in the search index.
-   * 
+   *
    * @param url The URL to check.
    * @return Whether the URL should be kept in the search index.
    * @throws RegainException If the url is invalid.
@@ -307,21 +307,21 @@ public class UrlChecker {
     if (url.startsWith("file://")) {
       // This is a file URL -> We have no information whether this file exists
       // since we didn't remember whether it was accepted or not.
-      
+
       // Check whether the url is accepted by the white and black list
       UrlMatcher urlMatch = isUrlAccepted(url);
       if (! urlMatch.getShouldBeIndexed() ) {
         // This file is not accepted -> Remove it from the index
         return false;
       }
-      
+
       // Check whether the file exists
       File file = RegainToolkit.urlToFile(url);
       if (! file.exists()) {
         // This file does not exist -> Remove it from the index
         return false;
       }
-      
+
       // All tests passed -> Keep the file
       return true;
     } else {
@@ -332,7 +332,7 @@ public class UrlChecker {
 
   /**
    * Used by the crawler to set the accepted state for a certain URL.
-   * 
+   *
    * @param url The URL that was accepted by the crawler.
    */
   public void setAccepted(String url) {
@@ -346,12 +346,12 @@ public class UrlChecker {
 
   /**
    * Used by the crawler to set the ignored state for a certain URL.
-   * 
+   *
    * @param url The URL that was ignored by the crawler.
    */
   public void setIgnored(String url) {
     mIgnoredCount++;
-    
+
     if (url.startsWith("file://")) {
       // This is a file URL -> We haven't to remember it (Why? See class javadoc)
     } else {
@@ -362,7 +362,7 @@ public class UrlChecker {
 
   /**
    * Gets the number of URLs that have been ignored.
-   * 
+   *
    * @return The number of URLs that have been ignored.
    */
   public int getIgnoredCount() {

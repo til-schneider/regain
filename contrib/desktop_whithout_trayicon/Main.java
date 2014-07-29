@@ -45,7 +45,7 @@ public class Main implements DesktopConstants {
 
   /**
    * The main entry point.
-   * 
+   *
    * @param args The command line arguments.
    */
   public static void main(String[] args) {

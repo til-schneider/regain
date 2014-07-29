@@ -45,7 +45,7 @@ public class CheckTag extends SharedTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.
@@ -62,11 +62,11 @@ public class CheckTag extends SharedTag {
       File indexDir = new File(config.getDirectory());
       File newFile = new File(indexDir, "new");
       File indexFile = new File(indexDir, "index");
-      
+
       if (indexDir.exists()) {
         if (indexFile.exists() || newFile.exists()) {
           indexFound = true;
-        } else {        
+        } else {
           // There is no index -> Forward to the noIndexUrl
           response.sendRedirect(noIndexUrl);
           return;
@@ -79,7 +79,7 @@ public class CheckTag extends SharedTag {
       response.sendRedirect(noIndexUrl);
       return;
     }
-    
+
     // Check whether there is a query
     String noQueryUrl = getParameter("noQueryUrl", false);
     if (noQueryUrl != null)

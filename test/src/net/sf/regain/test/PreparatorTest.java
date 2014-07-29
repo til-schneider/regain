@@ -115,7 +115,7 @@ public class PreparatorTest {
       System.err.println("The output document directory cannot be written: " + outputDir.getAbsolutePath());
       System.exit(1);
     }
-    
+
 
     mProfilerList = new ArrayList<Profiler>();
 
@@ -215,7 +215,7 @@ public class PreparatorTest {
             content = prep.getCleanedContent();
             prep.cleanUp();
             profiler.stopMeasuring(docFileArr[i].length());
-            
+
             HashMap<String, String> links = doc.getLinks();
             if (links != null && links.size() > 0)
             {

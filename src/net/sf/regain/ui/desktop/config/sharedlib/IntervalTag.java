@@ -43,7 +43,7 @@ public class IntervalTag extends SharedTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.
@@ -53,12 +53,12 @@ public class IntervalTag extends SharedTag {
   {
     Localizer localizer = mMultiLocalizer.getLocalizer(request.getLocale());
     String currValue = (String) request.getContextAttribute("settings.interval");
-    
+
     response.print("<select name=\"interval\">");
     for (int i = 0; i < CHOICES.length; i++) {
       String value = CHOICES[i];
       String name  = localizer.msg("choice." + value, value);
-      
+
       response.print("<option value=\"" + value + "\"");
       if (value.equals(currValue)) {
         response.print(" selected=\"selected\"");
@@ -67,5 +67,5 @@ public class IntervalTag extends SharedTag {
     }
     response.print("</select>");
   }
-  
+
 }

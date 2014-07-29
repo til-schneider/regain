@@ -33,11 +33,11 @@ import net.sf.regain.RegainException;
  * @author Til Schneider, www.murfman.de
  */
 public abstract class PageRequest {
-  
+
   /**
    * Gets the request parameter with the given name that was given to the page
    * via GET or POST.
-   * 
+   *
    * @param name The name of the parameter.
    * @return The given parameter or <code>null</code> if no such parameter was
    *         given.
@@ -53,7 +53,7 @@ public abstract class PageRequest {
    * If you prefer getting an empty array if no such parameter was given instead
    * of getting <code>null</code>, use {@link #getParametersNotNull(String)}
    * instead.
-   * 
+   *
    * @param name The name of the parameter.
    * @return The parameters or <code>null</code> if no such parameter was
    *         given.
@@ -61,14 +61,14 @@ public abstract class PageRequest {
    */
   public abstract String[] getParameters(String name) throws RegainException;
 
-  
+
   /**
    * Gets all request parameters with the given name that were given to the page
    * via GET or POST.
    * <p>
    * Unlike {@link #getParameters(String)} this method returns an empty array if
    * no such parameter was given (not <code>null</code>).
-   * 
+   *
    * @param name The name of the parameter.
    * @return The parameters or an empty array if no such parameter was given.
    * @throws RegainException If getting the parameter failed.
@@ -81,12 +81,12 @@ public abstract class PageRequest {
       return paramArr;
     }
   }
-  
+
 
   /**
    * Gets all request parameters with the given name that were given to the page
    * via GET or POST.
-   * 
+   *
    * @param name The name of the parameter.
    * @param mandatory Specifies whether the parameter is mandatory.
    * @return The parameters or <code>null</code> if no such parameter was
@@ -105,10 +105,10 @@ public abstract class PageRequest {
     }
   }
 
-  
+
   /**
    * Gets a request parameter that was given to page via GET or POST.
-   * 
+   *
    * @param name The name of the parameter.
    * @param mandatory Specifies whether the parameter is mandatory.
    * @return The parameter value or <code>null</code> if no such parameter was
@@ -150,40 +150,40 @@ public abstract class PageRequest {
       }
     }
   }
-  
-  
+
+
   /**
    * Gets the names of the given parameters.
-   * 
+   *
    * @return The names of the given parameters.
    * @throws RegainException If getting the parameter names failed.
    */
   public abstract Enumeration getParameterNames() throws RegainException;
 
-  
+
   /**
    * Gets the header with the given name.
-   * 
+   *
    * @param name The name of the header.
    * @return The header or <code>null</code> if no such header exists.
    * @throws RegainException If getting the header failed.
    */
   public abstract String getHeader(String name) throws RegainException;
 
-  
+
   /**
    * Gets the header with the given name as date.
-   * 
+   *
    * @param name The name of the header.
    * @return The date header or <code>-1</code> if no such header exists.
    * @throws RegainException If getting the header failed.
    */
   public abstract long getHeaderAsDate(String name) throws RegainException;
 
-  
+
   /**
    * Gets the locale of the client.
-   * 
+   *
    * @return The locale.
    * @throws RegainException If getting the locale failed.
    */
@@ -191,7 +191,7 @@ public abstract class PageRequest {
 
   /**
    * Sets an attribute at the page context.
-   * 
+   *
    * @param name The name of the attribute to set.
    * @param value The value of the attribute to set.
    */
@@ -199,7 +199,7 @@ public abstract class PageRequest {
 
   /**
    * Gets an attribute from the page context.
-   * 
+   *
    * @param name The name of the attribute to get.
    * @return The attribute's value or <code>null</code> if there is no such
    *         attribute.
@@ -208,7 +208,7 @@ public abstract class PageRequest {
 
   /**
    * Sets an attribute at the session.
-   * 
+   *
    * @param name The name of the attribute to set.
    * @param value The value of the attribute to set.
    */
@@ -216,16 +216,16 @@ public abstract class PageRequest {
 
   /**
    * Gets an attribute from the session.
-   * 
+   *
    * @param name The name of the attribute to get.
    * @return The attribute's value or <code>null</code> if there is no such
    *         attribute.
    */
   public abstract Object getSessionAttribute(String name);
-  
+
   /**
    * Gets an init parameter.
-   * 
+   *
    * @param name The name of the init parameter.
    * @return The value of the init parameter.
    */
@@ -233,7 +233,7 @@ public abstract class PageRequest {
 
   /**
    * Gets the base URL where the JSP files and resources are located.
-   * 
+   *
    * @return The base URL where the JSP files and resources are located.
    * @throws RegainException If getting the base URL failed.
    */
@@ -242,7 +242,7 @@ public abstract class PageRequest {
 
   /**
    * Gets the working directory of the web server.
-   * 
+   *
    * @return The working directory of the web server.
    * @throws RegainException If getting the working directory failed.
    */

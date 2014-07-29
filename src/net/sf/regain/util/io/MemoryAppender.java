@@ -61,7 +61,7 @@ public class MemoryAppender extends AppenderSkeleton {
     mMaxCacheSize = maxCacheSize;
   }
 
-  
+
   /**
    * Prints the cached logging events to a page printer.
    *
@@ -91,7 +91,7 @@ public class MemoryAppender extends AppenderSkeleton {
   protected void append(LoggingEvent evt) {
     synchronized (mCache) {
       mCache.add(new Object[] { evt, null });
-  
+
       if (mCache.size() > mMaxCacheSize) {
         mCache.removeFirst();
       }

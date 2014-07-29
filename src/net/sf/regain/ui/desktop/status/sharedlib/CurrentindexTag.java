@@ -48,7 +48,7 @@ public class CurrentindexTag extends SharedTag implements DesktopConstants {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.
@@ -58,32 +58,32 @@ public class CurrentindexTag extends SharedTag implements DesktopConstants {
     throws RegainException
   {
     Localizer localizer = mMultiLocalizer.getLocalizer(request.getLocale());
-    
+
     // Get the IndexConfig
     IndexConfig[] configArr = SearchToolkit.getIndexConfigArr(request);
     if (configArr.length > 1) {
       throw new RegainException("The currentindex tag can only be used for one index!");
     }
     IndexConfig config = configArr[0];
-    
+
     File currentIndexDir = new File(config.getDirectory(), "new");
     if (! currentIndexDir.exists()) {
       currentIndexDir = new File(config.getDirectory(), "index");
     }
-    
+
     if (currentIndexDir.exists()) {
       // Get the last update
       String timestamp = RegainToolkit.readStringFromFile(LASTUPDATE_FILE);
       Date lastUpdate = RegainToolkit.stringToLastModified(timestamp);
-      
+
       // Get the index size
       long size = RegainToolkit.getDirectorySize(currentIndexDir);
       String sizeAsString = RegainToolkit.bytesToString(size, request.getLocale());
-      
+
       // Get the document count
       IndexSearcherManager manager = IndexSearcherManager.getInstance(config.getDirectory());
       int docCount = manager.getDocumentCount();
-      
+
       // Print the results
       response.print(localizer.msg("indexInfo", "Last update: {0}<br/>Size: {1}<br/>Document count: {2}",
           lastUpdate, sizeAsString, docCount));

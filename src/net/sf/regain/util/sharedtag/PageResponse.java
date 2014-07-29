@@ -33,13 +33,13 @@ import net.sf.regain.util.io.Printer;
  * @author Til Schneider, www.murfman.de
  */
 public abstract class PageResponse implements Printer {
-  
+
   enum EscapeType { none, html, xml };
   protected EscapeType escapeType = EscapeType.none;
-  
+
   /**
    * Escape all output.
-   * 
+   *
    * @param type  One of: none, html, xml (Null/Default : none)
    */
   public void setEscapeType(String type)
@@ -53,29 +53,29 @@ public abstract class PageResponse implements Printer {
         escapeType = EscapeType.none;
     }
   }
-  
-  public String getEscapeType() { return escapeType.toString(); } 
-  
+
+  public String getEscapeType() { return escapeType.toString(); }
+
   /**
    * Gets the character encoding of the response.
-   * 
+   *
    * @return The character encoding of the response.
    * @throws RegainException If getting th encoding failed.
    */
   public abstract String getEncoding() throws RegainException;
-  
+
   /**
    * Sets the header with the given name.
-   * 
+   *
    * @param name The name of the header.
    * @param value The header value to set.
    * @throws RegainException If getting the header failed.
    */
   public abstract void setHeader(String name, String value) throws RegainException;
-  
+
   /**
    * Sets the header with the given name as date.
-   * 
+   *
    * @param name The name of the header.
    * @param value The header value to set.
    * @throws RegainException If getting the header failed.
@@ -84,15 +84,15 @@ public abstract class PageResponse implements Printer {
 
   /**
    * Gets the OutputStream to use for sending binary data.
-   * 
+   *
    * @return The OutputStream to use for sending binary data.
    * @throws RegainException If getting the OutputStream failed.
    */
   public abstract OutputStream getOutputStream() throws RegainException;
-  
+
   /**
    * Prints text to a page (escaping when necessary).
-   * 
+   *
    * @param text The text to print.
    * @throws RegainException If printing failed.
    */
@@ -112,7 +112,7 @@ public abstract class PageResponse implements Printer {
     }
     rawPrint(text);
   }
-  
+
   /**
    * Do the real printing
    * @param text The text to print
@@ -121,8 +121,8 @@ public abstract class PageResponse implements Printer {
   public abstract void rawPrint(String text) throws RegainException;
 
   /**
-   * Prints text to a page and escapes all HTML tags. 
-   * 
+   * Prints text to a page and escapes all HTML tags.
+   *
    * @param text The text to print.
    * @throws RegainException If printing failed.
    */
@@ -131,21 +131,21 @@ public abstract class PageResponse implements Printer {
       text = RegainToolkit.replace(text, "<", "&lt;");
       text = RegainToolkit.replace(text, ">", "&gt;");
     }
-    
+
     print(text);
   }
-  
+
   /**
    * Redirects the request to another URL.
-   * 
+   *
    * @param url The URL to redirect to.
    * @throws RegainException If redirecting failed.
    */
   public abstract void sendRedirect(String url) throws RegainException;
-  
+
   /**
    * Sends a HTTP error.
-   * 
+   *
    * @param errorCode The error code to send.
    * @throws RegainException If sending the error failed.
    */

@@ -134,10 +134,10 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   private String mCrawlerAccessControllerJar;
   /** The configuration of the CrawlerAccessController. */
   private Properties mCrawlerAccessControllerConfig;
-  
+
   /** The maximum amount of characters which will be copied from content to summary */
   private int mMaxSummaryLength;
-  
+
   /** Flag for enabling/disabling content for a preview in the result page */
   private boolean storeContentForPreview;
 
@@ -206,7 +206,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     Node node = XmlToolkit.getChild(config, "MaxCycleCount");
     mMaxCycleCount = (node == null) ? -1 : XmlToolkit.getTextAsInt(node);
   }
-  
+
   /**
    * Liest aus der Konfiguration, ob Dokumente geladen werden sollen, die weder
    * indiziert, noch auf URLs durchsucht werden.
@@ -244,7 +244,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
       mUserAgent = XmlToolkit.getText(node);
     }
   }
-  
+
 
   /**
    * Liest die Proxy-Einstellungen aus der Konfiguration.
@@ -492,9 +492,9 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     mPreparatorSettingsArr = new PreparatorSettings[nodeArr.length];
     for (int i = 0; i < nodeArr.length; i++) {
       boolean enabled = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "enabled", true);
-      
+
       int priority = XmlToolkit.getAttributeAsInt(nodeArr[i], "priority", 0);
-      
+
       node = XmlToolkit.getChild(nodeArr[i], "class", true);
       String className = XmlToolkit.getText(node, true);
 
@@ -536,9 +536,9 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     mCrawlerPluginSettingsArr = new PreparatorSettings[nodeArr.length];
     for (int i = 0; i < nodeArr.length; i++) {
       boolean enabled = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "enabled", true);
-      
+
       int priority = XmlToolkit.getAttributeAsInt(nodeArr[i], "priority", 0);
-      
+
       node = XmlToolkit.getChild(nodeArr[i], "class", true);
       String className = XmlToolkit.getText(node, true);
 
@@ -553,7 +553,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
       mCrawlerPluginSettingsArr[i] = new PreparatorSettings(enabled, priority, className, null, prepConfig);
     }
   }
-  
+
 
   /**
    * Reads the list of auxiliary fields.
@@ -594,7 +594,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   /**
    * Reads the regex child node from a node. Can also read the old style, where
    * the regex is directly in the node text.
-   * 
+   *
    * @param node The node to read the regex node from
    * @return The compiled regular expression
    * @throws RegainException If there is no regular expression or if the regex
@@ -626,11 +626,11 @@ public class XmlCrawlerConfig implements CrawlerConfig {
           }
       }
   }
-  
-  
+
+
   /**
    * Reads the configuration of a preparator from a node.
-   * 
+   *
    * @param prepConfig The node to read the preparator config from.
    * @param xmlFile The file the configuration was read from.
    * @param className The class name of the preparator.
@@ -648,7 +648,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
       Document doc = XmlToolkit.loadXmlDocument(extraFile);
       prepConfig = doc.getDocumentElement();
     }
-    
+
     // Read the sections
     PreparatorConfig config = new PreparatorConfig();
     Node[] sectionArr = XmlToolkit.getChildArr(prepConfig, "section");
@@ -670,10 +670,10 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
         paramMap.put(paramName, paramValue);
       }
-      
+
       config.addSection(sectionName, paramMap);
     }
-    
+
     return config;
   }
 
@@ -943,7 +943,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   public boolean getStoreContentForPreview(){
     return this.storeContentForPreview;
   }
-  
+
   /**
    * Gibt die StartUrls zurück, bei denen der Crawler-Prozeß beginnen soll.
    *
@@ -973,7 +973,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * <p>
    * The black list is an array of UrlMatchers, a URLs <i>must not</i> match to,
    * in order to be processed.
-   * 
+   *
    * @return The black list.
    */
   @Override
@@ -1036,10 +1036,10 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   public PreparatorSettings[] getCrawlerPluginSettingsList() {
     return mCrawlerPluginSettingsArr;
   }
-  
+
   /**
    * Gets the list of the auxiliary fields.
-   * 
+   *
    * @return The list of the auxiliary fields. May be null.
    */
   @Override
@@ -1047,13 +1047,13 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     return mAuxiliaryFieldArr;
   }
 
-  
+
   /**
    * Gets the class name of the
    * {@link net.sf.regain.crawler.access.CrawlerAccessController} to use.
    * Returns <code>null</code> if no CrawlerAccessController should be used.
-   * 
-   * @return The class name of the CrawlerAccessController. 
+   *
+   * @return The class name of the CrawlerAccessController.
    */
   @Override
   public String getCrawlerAccessControllerClass() {
@@ -1066,27 +1066,27 @@ public class XmlCrawlerConfig implements CrawlerConfig {
    * {@link net.sf.regain.crawler.access.CrawlerAccessController} from.
    * Returns <code>null</code> if the CrawlerAccessController already is in the
    * classpath.
-   * 
-   * @return The name of jar file to load the CrawlerAccessController from. 
+   *
+   * @return The name of jar file to load the CrawlerAccessController from.
    */
   @Override
   public String getCrawlerAccessControllerJar() {
     return mCrawlerAccessControllerJar;
   }
 
-  
+
   /**
    * Gets the configuration of the
    * {@link net.sf.regain.crawler.access.CrawlerAccessController}. May be
    * <code>null</code>.
-   * 
-   * @return The the configuration of the CrawlerAccessController. 
+   *
+   * @return The the configuration of the CrawlerAccessController.
    */
   @Override
   public Properties getCrawlerAccessControllerConfig() {
     return mCrawlerAccessControllerConfig;
   }
-  
+
   /**
    * Returns the maximum count of equal occurences of path-parts in an URI.
    *
@@ -1106,8 +1106,8 @@ public class XmlCrawlerConfig implements CrawlerConfig {
   public int getMaxSummaryLength() {
     return mMaxSummaryLength;
   }
-  
-  
+
+
    /**
    * Read the value for the cycle detection.
    *
@@ -1121,7 +1121,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
 
   /**
    * Returns the names of the fields that shouldn't be tokenized.
-   * 
+   *
    * @param config The crawler configuration.
    * @return The names of the fields that shouldn't be tokenized.
    */
@@ -1148,5 +1148,5 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     return mURLCleaners;
   }
 
-  
+
 }

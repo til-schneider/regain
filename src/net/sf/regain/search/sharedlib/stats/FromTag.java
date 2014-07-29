@@ -37,7 +37,7 @@ public class FromTag extends SharedTag implements SearchConstants {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.
@@ -46,10 +46,10 @@ public class FromTag extends SharedTag implements SearchConstants {
     throws RegainException
   {
     int fromResult = request.getParameterAsInt(PARAM_FROM_RESULT, 0);
-    
+
     SearchResults results = SearchToolkit.getSearchResults(request);
     int totalResults = results.getHitCount();
-    
+
     if (totalResults == 0)
       response.print(Integer.toString(0));
     else

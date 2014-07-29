@@ -41,7 +41,7 @@ public class QueryTag extends SharedTagWrapperTag {
 
   /**
    * Sets the size of the input field.
-   * 
+   *
    * @param size The size of the input field.
    */
   public void setSize(String size) {

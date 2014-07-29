@@ -34,7 +34,7 @@ import javax.mail.URLName;
  * pattern:
  * imap-URL/foldername/message_uid_(attachment_id) (attachment is optional)
  * Remark: The above URL is not a valid URL and has to be handled a specialised way
- * 
+ *
  * @author Thomas Tesche (thtesche), http://www.thtesche.com/
  */
 public class ImapToolkit {
@@ -72,7 +72,7 @@ public class ImapToolkit {
 
   /**
    * Method removes the message identifier from an IMAP-url
-   * 
+   *
    * @param url the URL with message identifier (e.g. host:port/path/message_UID
    * @return the 'real' IMAP URL (e.g. host:port/path/
    * @throws java.lang.Exception
@@ -92,9 +92,9 @@ public class ImapToolkit {
 
   /**
    * Determines all subfolder from a start folder and the count of the messages in every folder.
-   * 
+   *
    * @param entryFolder the basis folder to start from
-   * @param recursive <code>true</code> if the folders and messages count should 
+   * @param recursive <code>true</code> if the folders and messages count should
    *        be obtained recursivly
    * @return Map of folder name and message count for this folder
    * @throws java.lang.Exception

@@ -41,7 +41,7 @@ public class HiddenparamTag extends SharedTagWrapperTag {
 
   /**
    * Sets the name of the request parameter whichs value should be generated.
-   * 
+   *
    * @param name The name of the request parameter whichs value should be
    *        generated.
    */

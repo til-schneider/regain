@@ -14,7 +14,7 @@ public interface Printer {
 
   /**
    * Prints a text.
-   * 
+   *
    * @param text The text to print.
    * @throws RegainException If printing failed.
    */

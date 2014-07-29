@@ -70,14 +70,14 @@ public class JacobMsWordPreparator extends AbstractJacobMsOfficePreparator {
    * processed.
    */
   private Application mWordApplication;
-  
+
   /**
    * The word style names (style == format template) that are used by paragraphs
    * holding a headline. Is <code>null</code> if no headline styles were
-   * configured. 
+   * configured.
    */
   private HashSet mHeadlineStyleNameSet;
-  
+
 
   /**
    * Creates a new instance of JacobMsPowerPointPreparator.
@@ -91,13 +91,13 @@ public class JacobMsWordPreparator extends AbstractJacobMsOfficePreparator {
 
   /**
    * Initializes the preparator.
-   * 
+   *
    * @param config The configuration
    * @throws RegainException If the configuration has an error.
    */
   public void init(PreparatorConfig config) throws RegainException {
     super.init(config);
-    
+
     Map main = config.getSectionWithName("main");
     if (main != null) {
       String headlineStyles = (String) main.get("headlineStyles");
@@ -171,43 +171,43 @@ public class JacobMsWordPreparator extends AbstractJacobMsOfficePreparator {
         Shape shape = shapes.item(new Variant(i));
         appendShape(shape, content);
       }
-      
+
       // iterate through the paragraphs and extract the headlines
       StringBuffer headlines = null;
       if ((mHeadlineStyleNameSet != null) && (! mHeadlineStyleNameSet.isEmpty())) {
         Paragraphs paragraphs = doc.getParagraphs();
         for (int i = 1; i <= paragraphs.getCount(); i++) {
           Paragraph paragraph = paragraphs.item(i);
-          
+
           // Get the name of the style for this paragraph
           // NOTE: See the Style class for getting other values from the style
           Object styleDispatch = paragraph.getFormat().getStyle().getDispatch();
           String formatName = Dispatch.get(styleDispatch, "NameLocal").toString();
-          
+
           if (mHeadlineStyleNameSet.contains(formatName)) {
             // This paragraph is a headline -> add it to the headlines StringBuffer
-            
+
             // Extract the text
             paragraph.getRange().select();
             String text = getSelection(mWordApplication);
             text = removeBinaryStuff(text);
-            
+
             // Add it to the headlines
             if (headlines == null) {
               headlines = new StringBuffer();
             }
             headlines.append(text + "\n");
-            
+
             if (mLog.isDebugEnabled()) {
               mLog.debug("Extracted headline: '" + text + "'");
             }
           }
         }
       }
-      
+
       // Read the document properties
       readProperties(doc);
-      
+
       // Set the extracted text and the headlines
       setCleanedContent(content.toString());
       if (headlines != null) {
@@ -222,10 +222,10 @@ public class JacobMsWordPreparator extends AbstractJacobMsOfficePreparator {
     }
   }
 
-  
+
   /**
    * Gets the currently selected text from a Word application.
-   * 
+   *
    * @param wordAppl The Word application to get the selected text from.
    * @return The currently selected text.
    */
@@ -238,10 +238,10 @@ public class JacobMsWordPreparator extends AbstractJacobMsOfficePreparator {
     return sel.getText();
   }
 
-  
+
   /**
    * Appends the text content of a shape to a StringBuffer.
-   * 
+   *
    * @param shape The shape to add.
    * @param buffer The buffer where to append the text
    */
@@ -259,34 +259,34 @@ public class JacobMsWordPreparator extends AbstractJacobMsOfficePreparator {
       }
     }
   }
-  
-  
+
+
   /**
-   * Removes all characters that are less that 32 from the given String 
-   * 
+   * Removes all characters that are less that 32 from the given String
+   *
    * @param text The String where to remove the binary stuff.
    * @return The cleaned String.
    */
   private String removeBinaryStuff(String text) {
     StringBuffer newText = new StringBuffer(text.length());
-    
+
     for (int j = 0; j < text.length(); j++) {
       char c = text.charAt(j);
       if (c >= 32) {
         newText.append(c);
       }
     }
-    
+
     return newText.toString();
   }
-  
+
 
   /**
    * Frees all resources reserved by the preparator.
    * <p>
    * Is called at the end of the crawler process after all documents were
    * processed.
-   * 
+   *
    * @throws RegainException If freeing the resources failed.
    */
   public void close() throws RegainException {

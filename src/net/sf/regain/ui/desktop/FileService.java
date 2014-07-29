@@ -22,7 +22,7 @@ public class FileService extends BasicService {
 
   /**
    * Creates a new instance of FileService.
-   * 
+   *
    * @param context The context of this service.
    */
   public FileService(Context context) {
@@ -32,7 +32,7 @@ public class FileService extends BasicService {
 
   /**
    * Processes a request.
-   * 
+   *
    * @param req The request.
    * @param resp The response.
    * @throws Exception If executing the JSP page failed.
@@ -61,10 +61,10 @@ public class FileService extends BasicService {
     // Extract the file URL
     String fileUrl = SearchToolkit.extractFileUrl(requestPath,
             SharedTagResource.SIMPLE_TAG_ENCODING);
-        
+
     // Check the file URL
     boolean allow = SearchToolkit.allowFileAccess(request, fileUrl);
-    
+
     if ("1".equals(request.getParameter("askPermission")) || "1".equals(request.getParameter("askpermission")))
     {
       response.setHeader("Content-Type", "text/plain");
@@ -72,7 +72,7 @@ public class FileService extends BasicService {
       handle(req, resp, 200);
       return;
     }
-    
+
     if (allow) {
       // This file is allowed -> Send it
       SearchToolkit.sendFile(request, response, RegainToolkit.urlToFile(fileUrl));

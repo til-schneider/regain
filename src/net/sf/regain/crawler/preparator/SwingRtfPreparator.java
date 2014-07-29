@@ -91,7 +91,7 @@ public class SwingRtfPreparator extends AbstractPreparator {
    * <p>
    * Is called at the end of the crawler process after all documents were
    * processed.
-   * 
+   *
    * @throws RegainException If freeing the resources failed.
    */
   @Override

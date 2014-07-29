@@ -41,7 +41,7 @@ public class TypeiconTag extends SharedTagWrapperTag {
 
   /**
    * Sets the path where the type icons are located.
-   * 
+   *
    * @param imgpath The path where the type icons are located.
    */
   public void setImgpath(String imgpath) {
@@ -51,7 +51,7 @@ public class TypeiconTag extends SharedTagWrapperTag {
 
   /**
    * Sets the extension used by the type icons (default is "gif").
-   * 
+   *
    * @param iconextension the extension used by the type icons.
    */
   public void setIconextension(String iconextension) {

@@ -41,8 +41,8 @@
 #define COM_FIELD_NAME "mPersistentHandler"
 
 // Defines the main entry point for the DLL
-BOOL APIENTRY DllMain( HANDLE hModule, 
-                       DWORD  ul_reason_for_call, 
+BOOL APIENTRY DllMain( HANDLE hModule,
+                       DWORD  ul_reason_for_call,
                        LPVOID lpReserved
                      )
 {
@@ -53,7 +53,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 void ThrowException(JNIEnv *env, const char* desc, jint hr)
 {
   jclass failClass = env->FindClass("net/sf/regain/RegainException");
-  jmethodID failCons = 
+  jmethodID failCons =
     env->GetMethodID(failClass, "<init>", "(Ljava/lang/String;)V");
   if (!desc) desc = "Java/COM Error";
   jstring js = env->NewStringUTF(desc);
@@ -269,4 +269,4 @@ JNIEXPORT void JNICALL Java_net_sf_regain_crawler_preparator_ifilter_IfilterWrap
 }
 
 
-#endif 
+#endif

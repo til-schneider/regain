@@ -22,7 +22,7 @@ package net.sf.regain.crawler;
 
 /**
  * Loggs errors.
- * 
+ *
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
 public interface ErrorLogger {

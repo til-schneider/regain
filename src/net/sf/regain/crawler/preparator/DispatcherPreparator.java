@@ -24,14 +24,14 @@ import org.apache.poi.util.LongField;
 
 /**
  * @author Florian Schluefter
- * 
+ *
  * This Class is a Preparaor for files with wrong content. For instance a *.doc
  * file witch contains rtf data, or a *.xls file that contains xml data.
- * 
+ *
  * This Preparator should identify the real content and pass the file to the
  * right preparator.
- * 
- * 
+ *
+ *
  */
 public class DispatcherPreparator extends AbstractPreparator {
 
@@ -49,7 +49,7 @@ public class DispatcherPreparator extends AbstractPreparator {
 
 	/**
 	 * Creates a new instance of DispatcherPreparator.
-	 * 
+	 *
 	 * @throws RegainException
 	 *             If creating the preparator failed.
 	 */
@@ -59,11 +59,11 @@ public class DispatcherPreparator extends AbstractPreparator {
 
 	/**
 	 * Liest die Konfiguration des Pr�partors aus.
-	 * 
+	 *
 	 * @param config
 	 *            Präparator-Konfiguration, d.h. der Abschnitt zum
 	 *            DispatcherPreprarator
-	 * 
+	 *
 	 * @throws RegainException
 	 *             Wenn die Pr�paration fehl schlug.
 	 */
@@ -91,10 +91,10 @@ public class DispatcherPreparator extends AbstractPreparator {
 
 	/**
 	 * Präpariert ein Dokument für die Indizierung.
-	 * 
+	 *
 	 * @param rawDocument
 	 *            Das zu pr�pariernde Dokument.
-	 * 
+	 *
 	 * @throws RegainException
 	 *             Wenn die Pr�paration fehl schlug.
 	 */
@@ -125,7 +125,7 @@ public class DispatcherPreparator extends AbstractPreparator {
 			if (Prep != null) {
 				// rtf file?
 				if (Prep.equals("SwingRtfPreparator")) {
-					SwingRtfPreparator rtfprep = new SwingRtfPreparator();	// todo: avoid new instantiation of preparators by singleton 
+					SwingRtfPreparator rtfprep = new SwingRtfPreparator();	// todo: avoid new instantiation of preparators by singleton
 
 					rtfprep.prepare(rawDocument);
 					this.setCleanedContent(rtfprep.getCleanedContent());
@@ -158,7 +158,7 @@ public class DispatcherPreparator extends AbstractPreparator {
 					this.setSummary(htmlprep.getSummary());
 					this.setPath(htmlprep.getPath());
 				}
-			} else // other kind of files, e.g. unknown signature 
+			} else // other kind of files, e.g. unknown signature
 			{
 				PlainTextPreparator plainprep = new PlainTextPreparator();	// todo: avoid new instantiation of preparators by singleton
 

@@ -33,7 +33,7 @@ public class MessageTag extends AbstractErrorTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @param error The error of the request.

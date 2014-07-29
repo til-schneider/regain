@@ -48,31 +48,31 @@ public class SharedTagResource extends BasicResource {
 
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(SharedTagResource.class);
-  
+
   /** The base directory where the provided files are located. */
   private static File mBaseDir;
-  
+
   /** The root executer holding the parsed JSP page. */
   private Executer mRootTagExecuter;
-  
-  
+
+
   /**
    * Creates a new instance of SharedTagResource.
-   * 
+   *
    * @param context The context of this resource.
    * @param root The root executer holding the parsed JSP page.
    * @throws RegainException If parsing the JSP file failed.
    */
   public SharedTagResource(Context context, Executer root) throws RegainException {
     super(context);
-    
+
     mRootTagExecuter = root;
   }
 
 
   /**
    * Processes a request.
-   * 
+   *
    * @param req The request.
    * @param resp The response.
    * @throws Exception If executing the JSP page failed.
@@ -80,11 +80,11 @@ public class SharedTagResource extends BasicResource {
   protected synchronized void process(Request req, Response resp) throws Exception {
     process(req, resp, mRootTagExecuter, null);
   }
-  
-  
+
+
   /**
    * Processes a request.
-   * 
+   *
    * @param req The request.
    * @param resp The response.
    * @param executer The executer to use.
@@ -108,7 +108,7 @@ public class SharedTagResource extends BasicResource {
     if (error != null) {
       request.setContextAttribute("page.exception", error);
     }
-    
+
     try {
       executer.execute(request, response);
     }
@@ -128,7 +128,7 @@ public class SharedTagResource extends BasicResource {
         }
         catch (RegainException loadingExc) {
           mLog.error("Processing error page failed", loadingExc);
-          
+
           // Throw the original error, so a simple error page is shown
           throw exc;
         }
@@ -141,7 +141,7 @@ public class SharedTagResource extends BasicResource {
       printStream.close();
       stream.close();
     }
-    
+
     // The page has been generated without exception -> Send it to the user
     setHeaderIfUnset(resp, "Content-Type", "text/html; charset=" + SIMPLE_TAG_ENCODING);
     PrintStream pageStream = resp.getPrintStream();
@@ -163,7 +163,7 @@ public class SharedTagResource extends BasicResource {
 
   /**
    * Loads the error page executer.
-   * 
+   *
    * @return The error page executer.
    * @throws RegainException If loading the error page executer failed.
    */
@@ -171,8 +171,8 @@ public class SharedTagResource extends BasicResource {
     if (mBaseDir == null) {
       mBaseDir = new File(context.getBasePath());
     }
-    
+
     return new ExecuterParser().parse(mBaseDir, "errorpage.jsp");
   }
-  
+
 }

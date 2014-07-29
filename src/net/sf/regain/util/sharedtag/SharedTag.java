@@ -35,19 +35,19 @@ import net.sf.regain.util.io.MultiLocalizer;
  * @author Til Schneider, www.murfman.de
  */
 public abstract class SharedTag {
-  
+
   /** Specifies that the tag body should be evaluated. */
   public static final int EVAL_TAG_BODY = 1;
 
   /** Specifies that the tag body should be skipped. */
   public static final int SKIP_TAG_BODY = 2;
-  
+
   /** The MultiLocalizer that holds the Localizers for the tags. */
   private static MultiLocalizer mMultiLocalizer;
 
   /** The parameters for this tag. May be null. */
   private Map<String, String> mParamMap;
-  
+
   /**
    * The current Localizer. Is <code>null</code> when the is currently not
    * executed.
@@ -60,23 +60,23 @@ public abstract class SharedTag {
    */
   public SharedTag() {
   }
-  
-  
+
+
   /**
    * Gets the name of this Tag.
    * <p>
    * The name of the tag is extracted from the class name. In order to work,
    * subclasses must be named using the pattern [TagName]Tag
    * (e.g. <code>NavigationTag</code> for the tag <code>navigation</code>).
-   * 
+   *
    * @return The name of this tag.
    */
   public String getTagName() {
     String className = getClass().getName();
-    
+
     // Remove the package name
     int packageEnd = className.lastIndexOf('.');
-    
+
     // Remove the Tag postfix
     int nameEnd = className.length();
     if (className.endsWith("Tag")) {
@@ -84,7 +84,7 @@ public abstract class SharedTag {
     }
     // NOTE: This even works, if packageEnd is -1
     String tagName = className.substring(packageEnd + 1, nameEnd).toLowerCase();
-    
+
     int packageStart;
     while ((packageStart = className.lastIndexOf('.', packageEnd - 1)) != -1) {
       String packageName = className.substring(packageStart + 1, packageEnd);
@@ -95,14 +95,14 @@ public abstract class SharedTag {
         packageEnd = packageStart;
       }
     }
-    
+
     return tagName;
   }
 
 
   /**
    * Sets a parameter.
-   * 
+   *
    * @param name The parameter's name.
    * @param value The parameter's value.
    */
@@ -110,14 +110,14 @@ public abstract class SharedTag {
     if (mParamMap == null) {
       mParamMap = new HashMap<String, String>();
     }
-    
+
     mParamMap.put(name, value);
   }
 
 
   /**
    * Gets a parameter.
-   * 
+   *
    * @param name The parameter's name.
    * @return The value of the parameter or <code>null</code> if the parameter
    *         was not set.
@@ -137,7 +137,7 @@ public abstract class SharedTag {
 
   /**
    * Gets a parameter.
-   * 
+   *
    * @param name The parameter's name.
    * @param defaultValue The value to return if the parameter was not set.
    * @return The value of the parameter or the default value if the parameter
@@ -151,11 +151,11 @@ public abstract class SharedTag {
       return asString;
     }
   }
-  
-  
+
+
   /**
    * Gets a parameter.
-   * 
+   *
    * @param name The parameter's name.
    * @param mandatory Specifies whether the parameter is mandatory.
    * @return The parameter value or <code>null</code> if no such parameter was
@@ -174,8 +174,8 @@ public abstract class SharedTag {
       return asString;
     }
   }
-  
-  
+
+
   /**
    * Gets a parameter and converts it to an int.
    *
@@ -200,8 +200,8 @@ public abstract class SharedTag {
       }
     }
   }
-  
-  
+
+
   /**
    * Gets a parameter and converts it to a boolean.
    *
@@ -227,13 +227,13 @@ public abstract class SharedTag {
       }
     }
   }
-  
-  
+
+
   /**
    * Sets the tag execution context.
    * <p>
    * Is called by the shared tag engine before the start tag is processed.
-   * 
+   *
    * @param request The request to get the context from
    * @throws RegainException If setting the context failed.
    */
@@ -243,26 +243,26 @@ public abstract class SharedTag {
     // Get the Localizer
     mLocalizer = (Localizer) request.getContextAttribute("Localizer");
     if (mLocalizer == null) {
-      
+
       // Get the locale
       Locale locale = request.getLocale();
       if (locale == null) {
     	// The default resource bundles are in english
         locale = Locale.ENGLISH;
       }
-      
+
       // Init the MultiLocalizer if nessesary
       if (mMultiLocalizer == null) {
         mMultiLocalizer = new MultiLocalizer(request.getResourceBaseUrl(), "msg");
       }
-      
+
       // Get the localizer
       mLocalizer = mMultiLocalizer.getLocalizer(locale);
       request.setContextAttribute("Localizer", mLocalizer);
     }
   }
-  
-  
+
+
   /**
    * Unsets the tag execution context.
    * <p>
@@ -271,8 +271,8 @@ public abstract class SharedTag {
   public final void unsetContext() {
     mLocalizer = null;
   }
-  
-  
+
+
   /**
    * Gets the localizer.
    * <p>
@@ -280,7 +280,7 @@ public abstract class SharedTag {
    * Which is in the {@link #printStartTag(PageRequest, PageResponse)}, the
    * {@link #printAfterBody(PageRequest, PageResponse)} and the
    * {@link #printEndTag(PageRequest, PageResponse)}.
-   * 
+   *
    * @return The localizer.
    */
   protected Localizer getLocalizer() {
@@ -291,7 +291,7 @@ public abstract class SharedTag {
   /**
    * Localizes a text. Replaces all "{msg:...}" fields with the matching
    * localized messages.
-   * 
+   *
    * @param text The text to localize.
    * @return The localized text.
    */
@@ -303,35 +303,35 @@ public abstract class SharedTag {
       if (buffer == null) {
         buffer = new StringBuffer(text.length());
       }
-      
+
       // Add the text before
       buffer.append(text.substring(endPos, startPos));
-      
+
       // Get the new endPos
       endPos = text.indexOf('}', startPos + 1);
       if (endPos == -1) {
         endPos = text.length();
       }
-      
+
       // Append the localized message
       String key = text.substring(startPos + 5, endPos);
       buffer.append(mLocalizer.msg(key, "?"));
     }
-    
+
     if (buffer != null) {
       // Append the last text
       buffer.append(text.substring(endPos + 1));
-      
+
       text = buffer.toString();
     }
-    
+
     return text;
   }
 
 
   /**
    * Called when the parser reaches the start tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @return {@link #EVAL_TAG_BODY} if you want the tag body to be evaluated or
@@ -343,11 +343,11 @@ public abstract class SharedTag {
   {
     return EVAL_TAG_BODY;
   }
-  
+
 
   /**
    * Called after the body content was evaluated.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @return {@link #EVAL_TAG_BODY} if you want the tag body to be evaluated
@@ -364,7 +364,7 @@ public abstract class SharedTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.
@@ -377,7 +377,7 @@ public abstract class SharedTag {
 
   /**
    * Gets the String representation of this tag.
-   * 
+   *
    * @return The String representation.
    */
   @Override

@@ -31,43 +31,43 @@ public interface DesktopConstants {
 
   /** The default port for the webserver. */
   public static final int DEFAULT_PORT = 8020;
-  
+
   /** The default interval for index updates. */
   public static final int DEFAULT_INTERVAL = 1440;
 
   /** The directory where the log files are located. */
   public static final File LOG_DIR = new File("log");
-  
+
   /** The directory where the index is located. */
   public static final File INDEX_DIR = new File("searchindex");
-  
+
   /** The file that holds the timestamp when the index was updated the last time. */
   public static final File LASTUPDATE_FILE = new File(INDEX_DIR, "lastupdate");
-  
+
   /** The file that indicates that index should be updated if the file exists. */
   public static final File NEEDSUPDATE_FILE = new File(INDEX_DIR, "needsupdate");
-  
+
   /** The directory where the configuration files are located. */
   public static final File CONFIG_DIR = new File("conf");
 
   /** The directory where the default configuration files are located. */
   public static final File DEFAULT_CONFIG_DIR = new File(CONFIG_DIR, "default");
-  
+
   /** The file that holds the desktop configuration. */
   public static final File DESKTOP_CONFIG_FILE = new File(CONFIG_DIR, "DesktopConfiguration.xml");
 
   /** The file that holds the default desktop configuration. */
   public static final File DEFAULT_DESKTOP_CONFIG_FILE = new File(DEFAULT_CONFIG_DIR, "DesktopConfiguration.xml");
-  
+
   /** The file that holds the crawler configuration. */
   public static final File CRAWLER_CONFIG_FILE = new File(CONFIG_DIR, "CrawlerConfiguration.xml");
 
   /** The file that holds the crawler configuration. */
   public static final File DEFAULT_CRAWLER_CONFIG_FILE = new File(DEFAULT_CONFIG_DIR, "CrawlerConfiguration.xml");
-  
+
   /** The authentication properties. */
   public static final File AUTH_PROPS_FILE = new File(CONFIG_DIR, "authentication.properties");
-  
+
   /** The directory where additional taglibraries may be located. */
   public static final File TAGLIB_DIR = new File("web/taglib");
 }

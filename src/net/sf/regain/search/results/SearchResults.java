@@ -71,7 +71,7 @@ public interface SearchResults {
   /**
    * Gets the url from a hit and rewrites it according to the rewrite rules
    * specified in the index config.
-   * 
+   *
    * @param index The index of the hit to get the URL for.
    * @return The url of the wanted hit.
    * @throws RegainException If getting the hit document failed.
@@ -80,7 +80,7 @@ public interface SearchResults {
 
   /**
    * Gets the name of the index a hit comes from.
-   * 
+   *
    * @param index The index of the hit to get the index name for.
    * @return The name of the index a hit comes from.
    * @throws RegainException If getting the index name failed.
@@ -104,7 +104,7 @@ public interface SearchResults {
    * results, regain offers the file-to-http-bridge that provides all files that
    * are listed in the index via http.
    *
-   * @param index The index of the hit. 
+   * @param index The index of the hit.
    * @return Whether the file-to-http-bridge should be used.
    * @throws RegainException If the hit could not be read.
    */

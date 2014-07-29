@@ -37,5 +37,5 @@ public class CachedTag extends SharedTagWrapperTag {
   public CachedTag() {
     super(new net.sf.regain.search.sharedlib.hit.CachedTag());
   }
-  
+
 }

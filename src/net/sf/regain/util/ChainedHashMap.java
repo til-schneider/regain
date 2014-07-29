@@ -35,11 +35,11 @@ import java.util.Set;
 /**
  * Hashtable that can contain several entries per key.
  * (Helper Class)
- * 
+ *
  * Contract:
  * <li>It is possible to put several identical key-value pairs (i.e. where key and value is equal)
  * <li>entrySet is not supported. Instead, it can be iterated over all entries.
- * 
+ *
  * @param <K>	Key
  * @param <V>	Value
  */
@@ -49,29 +49,29 @@ public class ChainedHashMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>
 
 	private static final int DEFAULT_LIST_SIZE = 10;
 	private int listSize;
-	
+
 	HashMap<K, List<V>> hashtable;
 	int size;
-	
+
 	public ChainedHashMap()
 	{
 		this(DEFAULT_HASHTABLE_SIZE);
 	}
-	
+
 	public ChainedHashMap(int hashtableSize) {
 		this(hashtableSize, DEFAULT_LIST_SIZE);
 	}
 	public ChainedHashMap(int hashtableSize, int chainSize) {
 		hashtable = new HashMap<K, List<V>>(hashtableSize);
 		listSize = chainSize;
-		
+
 		size = 0;
 	}
-	
+
 	public ChainedHashMap(Map<? extends K, ? extends V> map)
 	{
 		this();
-		
+
 		if (map instanceof ChainedHashMap)
 		{
 			// Copy-constructor
@@ -109,7 +109,7 @@ public class ChainedHashMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>
 			return false;
 
 		Collection<List<V>> elements = hashtable.values();
-		
+
 		for (List<V> list: elements)
 		{
 			if (list.contains(value))
@@ -129,18 +129,18 @@ public class ChainedHashMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>
 		else
 			return list.get(0);
 	}
-	
+
 	/**
 	 * Get all objects linked by this key
 	 * as an Iterable usable an foreach loop.
-	 * 
+	 *
 	 * @param key
 	 * @return	Iterable
 	 * @throws NullPointerException (if key null)
 	 */
 	public Iterable<V> getIterable(Object key) {
 		final List<V> list = hashtable.get(key);
-		
+
 		if (list == null)
 		{
 			// Empty Iterator
@@ -164,7 +164,7 @@ public class ChainedHashMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>
 			};
 		}
 	}
-	
+
 	public List<V> getList(Object key)
 	{
 	  List<V> list = hashtable.get(key);
@@ -172,7 +172,7 @@ public class ChainedHashMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>
 		  list = new ArrayList<V>();
 		return list;
 	}
-	
+
 	/**
 	 * Iterate over all elements in the table.
 	 * Note that this currently copies them into a collection,
@@ -188,7 +188,7 @@ public class ChainedHashMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>
 				public Map.Entry<K, V> next() { throw new NoSuchElementException("Empty"); }
 				public void remove() { }
 			};
-		} 
+		}
 		else
 		{
 			Collection<Map.Entry<K, V>> entries = new ArrayList<Map.Entry<K, V>>();
@@ -205,12 +205,12 @@ public class ChainedHashMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>
 	@Override
 	/**
 	 * Add this Value at the end of this key.
-	 * 
+	 *
 	 * @return As the value is never replaced, this will always return null.
 	 */
 	public V put(K key, V value) {
 		boolean success;
-		
+
 		List<V> list = hashtable.get(key);
 		if (list == null)
 		{
@@ -222,17 +222,17 @@ public class ChainedHashMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>
 		{
 			success = list.add(value);
 		}
-		
+
 		if (success)
 			size++;
-		
+
 		return null;
 	}
 
 	@Override
 	/**
 	 * Remove all objects linked to this key.
-	 * 
+	 *
 	 * @param key	Key
 	 * @return First of linked objects (or null).
 	 */
@@ -247,14 +247,14 @@ public class ChainedHashMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>
 			return element;
 		}
 	}
-	
+
 	public boolean remove(K key, V value)
 	{
 		List<V> list = hashtable.get(key);
-		
+
 		if (list == null)
 			return false;
-		
+
 		boolean removed = list.remove(value);
 		if (removed)
 		{
@@ -287,12 +287,12 @@ public class ChainedHashMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>
 	// TODO "The set is backed by the map, so changes to the map are reflected in the set, and vice-versa."
 	public Collection<V> values() {
 		List<V> newList = new ArrayList<V>();
-		
+
 		if (isEmpty())
 			return newList;
-		
+
 		Collection<List<V>> values = hashtable.values();
-		
+
 		for(List<V> list : values )
 			newList.addAll(list);
 
@@ -302,24 +302,24 @@ public class ChainedHashMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>
 	@Override
 	public Set<Map.Entry<K, V>> entrySet() {
 		throw new UnsupportedOperationException("entrySet is not implemented, as identical entries are allowed (conflict with Set contract). Instead, use .iterator() to iterate through all entries.");
-	}	
-	
+	}
+
 	public String toString()
 	{
 		StringBuffer str = new StringBuffer(200);
-		
+
 		for (K key : hashtable.keySet())
 		{
 			str.append(key).append(":\n");
-			
+
 			List<V> values = hashtable.get(key);
 			for (V value : values)
 				str.append("\t").append(value).append("\n");
 			str.append("\n");
 		}
-		
+
 		return str.toString();
 	}
 
-	
+
 }

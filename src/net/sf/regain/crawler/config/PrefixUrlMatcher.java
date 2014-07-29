@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 
 /**
  * A UrlMatcher that matches URLs that start with a certain prefix.
- * 
+ *
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
 public class PrefixUrlMatcher extends UrlMatcherResult {
@@ -33,11 +33,11 @@ public class PrefixUrlMatcher extends UrlMatcherResult {
   private static Logger mLog = Logger.getLogger(PrefixUrlMatcher.class);
   /** The prefix a URL must start with in order to be matched by this matcher. */
   private String mUrlPrefix;
- 
-  
+
+
   /**
    * Creates a new instance of PrefixUrlMatcher.
-   * 
+   *
    * @param urlPrefix The prefix a URL must start with to be matched by this
    *        matcher.
    */
@@ -49,7 +49,7 @@ public class PrefixUrlMatcher extends UrlMatcherResult {
 
   /**
    * Checks whether a URL matches to the rules of this matcher.
-   * 
+   *
    * @param url The URL to check.
    * @return Whether the given URL matches to the rules of this matcher.
    */
@@ -59,7 +59,7 @@ public class PrefixUrlMatcher extends UrlMatcherResult {
     return url.startsWith(mUrlPrefix);
   }
 
- 
+
   /**
    * Gets a String representation of this UrlMatcher.
    */

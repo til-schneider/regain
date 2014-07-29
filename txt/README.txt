@@ -19,7 +19,7 @@ NEW
 
 UPDATE
  * Lucene Core 3.1 -> 3.6 (and rewrite deprecated function calls)
- 
+
 BUGFIX
  * Improve HTML Escaping of the following tags: hit_filename, hit_sortContent, hit_typeicon, hit_url, input_query, stats_query, status:autoupdate_meta
  * Desktop Version: Use a time-sensitive token for configuration to avoid CSRF
@@ -27,17 +27,17 @@ BUGFIX
  * Desktop Version: Add error message if config is left empty (no index places found)
  * Desktop Version: Try to fix AlreadyClosedException
  * error.jsp: Show debug details when clicking on a link (instead of white text on white background)
- 
+
 Upgrade Notes:
 - The upgrade of lucene implicitely upgrades the searchindex as well. So in case you need to downgrade to an earlier regain version afterwards, delete the searchindex folder(s) and regain will start a complete re-index.
 - Server Version: Please make sure the old libraries (lucene-*-3.1.0.jar) get deleted from the WEB-INF/lib-Folder!
- 
+
 Version 1.7.12 on 2012/Apr/12 PREVIEW
 -------------------------------------
 
 NEW
  * File2Http-Bridge: /file/$/$...file.txt?askPermission=1 returns "true"/"false" to indicate whether the file could be downloaded
-   (exists in index and is permitted by SearchAccessController) 
+   (exists in index and is permitted by SearchAccessController)
  * CrawlerAccessController: Is closed after crawling, if interface "Closeable" is implemented
 
 UPDATE
@@ -92,7 +92,7 @@ BUGFIX
  * LastModifiedTag could throw an NullpointerException (if lucene field last-modified is not set)
  * Redirect to noindex.jsp instead of NullpointerException when no index given
  * Fix Links: CrawlerConfiguration.xml Help and Query Syntax Help (errorpage.jsp)
- 
+
 Version 1.7.8 on 2011/Jul/30 PREVIEW
 -------------------------------------
 NEW
@@ -136,7 +136,7 @@ Version 1.7.3 on 2010/Dec/21
 ----------------------------
 Christmas_2010 release. Covers all changes from 1.7.1 and 1.7.2.
 
-Happy searching on XMAS 
+Happy searching on XMAS
 
 Version 1.7.2 on 2010/Nov/14 PREVIEW
 -----------------------------------
@@ -201,7 +201,7 @@ Version 1.6.4 on 2009/11/29 PREVIEW
 * DEPRECATED: SingleSearchResults, MultipleSearchResults, MergedHits.
   These classes will be removed in one of the next distribution (dependíng on
   the Lucene 3.0 update)
-  
+
 Version 1.6.3 on 2009/09/28 PREVIEW
 -----------------------------------
 * New POI-lib for extraction of Office-XML documents (xlsx, docx,pptx). All POI-
@@ -236,21 +236,21 @@ Version 1.5.7 on 24.01.09 PREVIEW
 ---------------------------------
 * Highlighting for wildcard- and fuzzysearches (contribution: A.Larsson)
 * BUGFIX: local files couldn't executed after execution of rewriteRules
-* authentication.properties will be located in installation root too (usefull for server version 
+* authentication.properties will be located in installation root too (usefull for server version
   which doesn't have a conf directory)
 
 Version 1.5.6 on 22.12.08 PREVIEW
 ---------------------------------
 * EXE-Version once again part of the distribution. There exists an unreproducible bug concerning
-  the parsing of a mime message. 
-* Mime messages will be fetched only once from the imap server. In the case of wanted reindexing 
+  the parsing of a mime message.
+* Mime messages will be fetched only once from the imap server. In the case of wanted reindexing
   the documents or the complete index have to be dropped.
 * Update of windows installer and jsmooth.
 
 Version 1.5.5 on 30.11.08 PREVIEW
 ---------------------------------
-* URL-Authentication for imap(s), http, smb according to the following schema  
-  protoc://username:password@host:port/a_path/. The account/password pair are stored together 
+* URL-Authentication for imap(s), http, smb according to the following schema
+  protoc://username:password@host:port/a_path/. The account/password pair are stored together
   with the url-pattern in a properties-files. Main usage will be the crawling of imap mail stores.
 * New input field for imap(s) urls on the config page (desktop search).
 * BUGFIX: Whitelist entry for directories/files from file system not more any longer file:///
@@ -259,10 +259,10 @@ Version 1.5.5 on 30.11.08 PREVIEW
 * CONFIGURATION: There exists a new configuration .../my_installation_path/conf/authentication.properties.
   The matching entries of account name/password for a specific host has to be provided before the start
   of the crawler.
-  
+
 Version 1.5.4 on 16.11.08 PREVIEW
 ---------------------------------
-* Content storage (for the new preview function from 1.5.2) could be disabled with <storeContentForPreview/> {true,false} in the 
+* Content storage (for the new preview function from 1.5.2) could be disabled with <storeContentForPreview/> {true,false} in the
   Crawler configuration. See example config.
 
 Version 1.5.3 on 05.10.08 PREVIEW
@@ -276,15 +276,15 @@ Version 1.5.3 on 05.10.08 PREVIEW
 
 Version 1.5.2 on 15.08.08 PREVIEW
 ---------------------------------
-* The whole extracted content will be stored in the index. This feature allows the creation 
-  of a content-view in the result jsp with <search:hit_content/> from the updated Tag-lib. 
+* The whole extracted content will be stored in the index. This feature allows the creation
+  of a content-view in the result jsp with <search:hit_content/> from the updated Tag-lib.
   The output is not localised (by now it's only in German).
   ATTENTION: This is a highly experimental feature. The index could grow very fast.
 
-Version 1.5.1 on 07.08.08 
+Version 1.5.1 on 07.08.08
 -------------------------
 * Filename will be indexed correctly
-* Date format of field 'last-modified' changed to "YYYYMMDD". By now range search could 
+* Date format of field 'last-modified' changed to "YYYYMMDD". By now range search could
   be applied to the field. (code contribution by filiadat)
 * Improved locale-Handling in SharedTag (code contribution by filiadata)
 
@@ -306,7 +306,7 @@ Version 1.4.2 on 04.06.08 Preview
 Version 1.4.1 on 2008-04-27 Preview
 -----------------------------------
 * JavaPreparator for *.java-files. The JavaPreparator is not part
-  of the 'standard'-distribution because of his size and the limited 
+  of the 'standard'-distribution because of his size and the limited
   user group.
 
 
@@ -314,19 +314,19 @@ Version 1.4.0 on 05.04.08 Preview
 ---------------------------------
 * Bugfix: StackOverflowError in link extraction catched
 * mp3-preparator extracts ID3v2 or ID3v1 tags
-* Generic audio preparator, which extract metadata from mp4 (iTunes), 
+* Generic audio preparator, which extract metadata from mp4 (iTunes),
   ogg-Vorbis and flac
 
 
 Version 1.3.0/1 on 16.03.08 Preview
 -----------------------------------
 
-* smb/CIFS driver 
+* smb/CIFS driver
 * new HTML-Parser for better content extraction
 * Bugfix mime typ detection
 * Priority for preparators
 * Highlighting for content and title
-* Preparator selektion on basis of mime-types 
+* Preparator selektion on basis of mime-types
 * Mimetype-detection (based on file extension and MagicMime)
 * Replacement "Extended Search" from extension selection to mimetype selection
 

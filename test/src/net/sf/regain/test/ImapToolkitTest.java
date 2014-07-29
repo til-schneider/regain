@@ -13,10 +13,10 @@ import junit.framework.TestCase;
  * @author thtesche
  */
 public class ImapToolkitTest extends TestCase {
-    
+
     public ImapToolkitTest(String testName) {
         super(testName);
-    }            
+    }
 
     @Override
     protected void setUp() throws Exception {

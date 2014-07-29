@@ -39,23 +39,23 @@ import org.jdesktop.jdic.tray.TrayIcon;
  * @author Til Schneider, www.murfman.de
  */
 public class TrayIconManager {
-  
+
   /** The localizer for this class. */
   private static Localizer mLocalizer = new Localizer(TrayIconManager.class);
-  
+
   /** The singleton. */
   private static TrayIconManager mSingleton;
-  
+
   /** The try icon */
   private TrayIcon mTrayIcon;
 
   /** Is a tray icon used? */
   private boolean active;
-  
-  
+
+
   /**
    * Gets the singleton.
-   * 
+   *
    * @return The singleton.
    */
   public static TrayIconManager getInstance() {
@@ -64,8 +64,8 @@ public class TrayIconManager {
     }
     return mSingleton;
   }
-  
-  
+
+
   /**
    * Initializes the tray icon.
    */
@@ -97,7 +97,7 @@ public class TrayIconManager {
       }
     });
     menu.add(item);
-    
+
     item = new JMenuItem(mLocalizer.msg("config", "Preferences"));
     item.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -107,7 +107,7 @@ public class TrayIconManager {
     menu.add(item);
 
     menu.addSeparator();
-    
+
     item = new JMenuItem(mLocalizer.msg("exit", "Exit"));
     item.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -115,13 +115,13 @@ public class TrayIconManager {
       }
     });
     menu.add(item);
-    
+
     ImageIcon icon = new ImageIcon(getClass().getResource("regain_icon_16.gif"));
 
     // NOTE: The SystemTray must be created get before the TrayIcon is created.
     //       Otherwise a UnsatisfiedLinkError will raise on linux systems
     SystemTray tray = SystemTray.getDefaultSystemTray();
-    
+
     mTrayIcon = new TrayIcon(icon, "regain", menu);
     mTrayIcon.setIconAutoSize(true);
     mTrayIcon.addActionListener(new ActionListener() {
@@ -129,14 +129,14 @@ public class TrayIconManager {
         DesktopToolkit.openPageInBrowser("searchinput.jsp");
       }
     });
-    
+
     tray.addTrayIcon(mTrayIcon);
   }
 
 
   /**
    * Sets whether there is currently an index update running.
-   * 
+   *
    * @param updateRunning Whether there is currently an index update running.
    */
   public void setIndexUpdateRunning(boolean updateRunning) {

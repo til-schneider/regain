@@ -22,25 +22,25 @@
         <p>
           <search:msg key="indexingInterval"/>: <config:interval/>
         </p>
-        
+
         <p>
           <h4><search:msg key="directories"/></h4>
           <div class="hint"><search:msg key="directory.hint"/></div>
           <config:editlist name="dirlist" class="editlist"/>
         </p>
-        
+
         <p>
           <h4><search:msg key="excludedDirectories"/></h4>
           <div class="hint"><search:msg key="directory.hint"/></div>
           <config:editlist name="dirblacklist" class="editlist"/>
         </p>
-        
+
         <p>
           <h4><search:msg key="websites"/></h4>
           <div class="hint"><search:msg key="website.hint"/></div>
           <config:editlist name="sitelist" class="editlist"/>
         </p>
-        
+
         <p>
           <h4><search:msg key="excludedWebsiteSubdirs"/></h4>
           <div class="hint"><search:msg key="website.hint"/></div>
@@ -52,12 +52,12 @@
           <div class="hint"><search:msg key="imapserver.hint"/></div>
           <config:editlist name="imaplist" class="editlist"/>
         </p>
-        
+
         <p>
           <h4><search:msg key="webserver"/></h4>
           <search:msg key="portNumber"/> <config:text name="port" size="4"/>
         </p>
-    
+
         <p>
           <br>
           <search:input_submit text="{msg:savePreferences}"/>

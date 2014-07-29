@@ -39,7 +39,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
   public boolean getStoreContentForPreview(){
     return true;
   }
-  
+
   /**
    * Gibt den Host-Namen des Proxy-Servers zur�ck. Wenn kein Host konfiguriert
    * wurde, wird <CODE>null</CODE> zur�ckgegeben.
@@ -298,7 +298,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    * <p>
    * The black list is an array of UrlMatchers, a URLs <i>must not</i> match to,
    * in order to be processed.
-   * 
+   *
    * @return The black list.
    */
   public UrlMatcher[] getBlackList() {
@@ -320,7 +320,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
     };
   }
 
-  
+
   // overridden
   public String[] getValuePrefetchFields() {
     return null;
@@ -352,7 +352,7 @@ public class DummyCrawlerConfig implements CrawlerConfig {
       new PreparatorSettings(true, 0, "net.sf.regain.crawler.document.XmlPreparator", null, new PreparatorConfig())
     };
   }
-  
+
   /**
    * Gets the list with the crawler plugin settings.
    *
@@ -363,10 +363,10 @@ public class DummyCrawlerConfig implements CrawlerConfig {
 	  };
   }
 
-  
+
   /**
    * Gets the list of the auxiliary fields.
-   * 
+   *
    * @return The list of the auxiliary fields. May be null.
    */
   public AuxiliaryField[] getAuxiliaryFieldList() {
@@ -378,8 +378,8 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    * Gets the class name of the
    * {@link net.sf.regain.crawler.access.CrawlerAccessController} to use.
    * Returns <code>null</code> if no CrawlerAccessController should be used.
-   * 
-   * @return The class name of the CrawlerAccessController. 
+   *
+   * @return The class name of the CrawlerAccessController.
    */
   public String getCrawlerAccessControllerClass() {
     return null;
@@ -391,29 +391,29 @@ public class DummyCrawlerConfig implements CrawlerConfig {
    * {@link net.sf.regain.crawler.access.CrawlerAccessController} from.
    * Returns <code>null</code> if the CrawlerAccessController already is in the
    * classpath.
-   * 
-   * @return The name of jar file to load the CrawlerAccessController from. 
+   *
+   * @return The name of jar file to load the CrawlerAccessController from.
    */
   public String getCrawlerAccessControllerJar() {
     return null;
   }
 
-  
+
   /**
    * Gets the configuration of the
    * {@link net.sf.regain.crawler.access.CrawlerAccessController}. May be
    * <code>null</code>.
-   * 
-   * @return The the configuration of the CrawlerAccessController. 
+   *
+   * @return The the configuration of the CrawlerAccessController.
    */
   public Properties getCrawlerAccessControllerConfig() {
     return null;
   }
-  
-  
+
+
   /**
    * Returns the names of the fields that shouldn't be tokenized.
-   * 
+   *
    * @param config The crawler configuration.
    * @return The names of the fields that shouldn't be tokenized.
    */

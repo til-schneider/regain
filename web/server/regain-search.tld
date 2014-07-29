@@ -29,7 +29,7 @@
 
   <tag>
     <info>
-      Writes the value of a HTML request parameter. 
+      Writes the value of a HTML request parameter.
     </info>
     <name>param</name>
     <tagclass>net.sf.regain.ui.server.taglib.ParamTag</tagclass>

@@ -41,7 +41,7 @@ public class NavigationTag extends SharedTagWrapperTag {
 
   /**
    * Sets the message to use for labeling the back link.
-   * 
+   *
    * @param msgBack The message to use for labeling the back link.
    */
   public void setMsgBack(String msgBack) {
@@ -51,7 +51,7 @@ public class NavigationTag extends SharedTagWrapperTag {
 
   /**
    * Sets the message to use for labeling the forward link.
-   * 
+   *
    * @param msgForward The message to use for labeling the forward link.
    */
   public void setMsgForward(String msgForward) {
@@ -61,7 +61,7 @@ public class NavigationTag extends SharedTagWrapperTag {
 
   /**
    * Sets the URL of the page where the links should point to.
-   * 
+   *
    * @param targetPage The URL of the page where the links should point to.
    */
   public void setTargetPage(String targetPage) {
@@ -71,11 +71,11 @@ public class NavigationTag extends SharedTagWrapperTag {
 
   /**
    * Sets the style sheet class to use for the link tags.
-   * 
+   *
    * @param styleSheetClass The style sheet class to use for the link tags.
    */
   public void setClass(String styleSheetClass) {
     getNestedTag().setParameter("class", styleSheetClass);
   }
-  
+
 }

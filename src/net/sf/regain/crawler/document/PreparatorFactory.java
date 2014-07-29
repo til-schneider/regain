@@ -33,7 +33,7 @@ import net.sf.regain.crawler.config.PreparatorSettings;
 
 /**
  * Loads and initializes the preparators.
- *  
+ *
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
 public class PreparatorFactory extends PluggableFactory {
@@ -43,7 +43,7 @@ public class PreparatorFactory extends PluggableFactory {
 
 	/**
 	 * Gets the PluggableFactory instance.
-	 * 
+	 *
 	 * @return The PluggableFactory instance.
 	 */
 	public static PreparatorFactory getInstance() {
@@ -76,7 +76,7 @@ public class PreparatorFactory extends PluggableFactory {
 			prep.setUrlRegex(urlRegex);
 		}
 
-		// Set the priority 
+		// Set the priority
 		prep.setPriority(preparatorSettings.getPriority());
 
 	}
@@ -102,12 +102,12 @@ public class PreparatorFactory extends PluggableFactory {
 		String[] classNameArr = RegainToolkit.splitString(classNameCsv, ";", true);
 		return classNameArr;
 	}
-	
+
 	  /**
 	   * Creates an array of preparators from the settings.
 	   *
 	   * @param preparatorSettingsArr The list with the preparator settings.
-	   * @return The preparators. 
+	   * @return The preparators.
 	   * @throws RegainException If the creation of a preparator failed.
 	   */
 	  public Preparator[] createPreparatorArr(PreparatorSettings[] preparatorSettingsArr)

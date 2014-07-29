@@ -44,38 +44,38 @@ import net.sf.regain.util.io.Localizer;
 
 /**
  * Shows a frame that asks the user to select a browser.
- * 
+ *
  * @author Til Schneider, www.murfman.de
  */
 public class BrowserSelectorFrame implements DesktopConstants {
-  
+
   /** The logger for this class */
   private static Logger mLog = Logger.getLogger(BrowserSelectorFrame.class);
-  
+
   /** The localizer for this class. */
   private static Localizer mLocalizer = new Localizer(BrowserSelectorFrame.class);
-  
+
   /** The frame. */
   private JFrame mFrame;
-  
+
   /** Option pane that contains the message. */
   private JOptionPane mOptionPane;
-  
+
   /** The page to open when a browser was chosen. */
   private String mPageUrl;
-  
+
 
   /**
    * Creates a new instance of BrowserSelectorFrame.
-   * 
+   *
    * @param pageUrl The page to open when a browser was chosen.
    */
   public BrowserSelectorFrame(String pageUrl) {
     mPageUrl = pageUrl;
-    
+
     String msg = mLocalizer.msg("error.title", "Error");
     mFrame = new JFrame(msg);
-    
+
     JPanel main = new JPanel(new BorderLayout());
     mFrame.setContentPane(main);
 
@@ -92,7 +92,7 @@ public class BrowserSelectorFrame implements DesktopConstants {
       }
     });
     mFrame.setContentPane(mOptionPane);
-    
+
     mFrame.pack();
   }
 
@@ -102,7 +102,7 @@ public class BrowserSelectorFrame implements DesktopConstants {
    */
   void handleOptionPaneChanged() {
     int option = ((Integer) mOptionPane.getValue()).intValue();
-    
+
     if (option == 0) {
       // Yes
       try {
@@ -111,7 +111,7 @@ public class BrowserSelectorFrame implements DesktopConstants {
       catch (RegainException exc) {
         mLog.error("Choosing browser failed", exc);
       }
-      
+
       mFrame.dispose();
     }
     else if (option == 1) {
@@ -133,7 +133,7 @@ public class BrowserSelectorFrame implements DesktopConstants {
     wPos.x = Math.max(0, wPos.x); // Make x > 0
     wPos.y = Math.max(0, wPos.y); // Make y > 0
     mFrame.setLocation(wPos);
-    
+
     // Show the frame
     // mFrame.show();
     mFrame.setVisible(true);
@@ -142,12 +142,12 @@ public class BrowserSelectorFrame implements DesktopConstants {
 
   /**
    * Chooses the browser.
-   * 
+   *
    * @throws RegainException If saving the config failed.
    */
   private void chooseBrowser() throws RegainException {
     JFileChooser fileChooser = new JFileChooser();
-    
+
     String msg = mLocalizer.msg("chooseBrowser", "Choose browser");
     fileChooser.setDialogTitle(msg);
     fileChooser.showOpenDialog(mFrame);
@@ -160,10 +160,10 @@ public class BrowserSelectorFrame implements DesktopConstants {
       // Set the browser
       Node browserNode = XmlToolkit.getOrAddChild(desktopDoc, desktopConfig, "browser");
       XmlToolkit.setText(desktopDoc, browserNode, file.getAbsolutePath());
-      
+
       // Save the config
       XmlToolkit.saveXmlDocument(DESKTOP_CONFIG_FILE, desktopDoc);
-      
+
       DesktopToolkit.openPageInBrowser(mPageUrl);
     }
   }

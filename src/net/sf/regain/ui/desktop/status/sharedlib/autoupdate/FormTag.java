@@ -45,7 +45,7 @@ public class FormTag extends SharedTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.
@@ -55,10 +55,10 @@ public class FormTag extends SharedTag {
   {
     String url = getParameter("url", true);
     int time = getParameterAsInt("time", 5);
-    
+
     String msgAutoupdate = getParameter("msgAutoupdate", true);
     msgAutoupdate = RegainToolkit.replace(msgAutoupdate, "{0}", Integer.toString(time));
-    
+
     String autoupdate = request.getParameter("autoupdate");
     response.print("<form name=\"autoupdate\" action=\"" + url + "\" " +
         "style=\"display:inline;\" method=\"get\">" + msgAutoupdate + " ");
@@ -72,5 +72,5 @@ public class FormTag extends SharedTag {
     }
     response.print("</form>");
   }
-  
+
 }

@@ -35,7 +35,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Abstract Crawler Plugin.
  * Contains empty stub method for each event.
- * 
+ *
  * @see CrawlerPlugin
  * @author Benjamin
  */
@@ -49,7 +49,7 @@ public abstract class AbstractCrawlerPlugin implements CrawlerPlugin {
 
 	@Override
 	public boolean checkDynamicBlacklist(String url, String sourceUrl, String sourceLinkText) { return false; };
-	
+
 	@Override
 	public void onAcceptURL(String url, CrawlerJob job) { }
 

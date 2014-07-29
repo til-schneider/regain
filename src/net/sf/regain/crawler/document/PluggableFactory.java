@@ -42,14 +42,14 @@ import org.apache.log4j.Logger;
 
 /**
  * Loads and initializes the preparators.
- *  
+ *
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
 public abstract class PluggableFactory {
-  
+
   /** The logger for this class */
   protected static Logger mLog = Logger.getLogger(PluggableFactory.class);
-  
+
   protected PluggableFactory() { }
 
   public List<Pluggable> createPluggables(PreparatorSettings[] preparatorSettingsArr)
@@ -60,7 +60,7 @@ public abstract class PluggableFactory {
     File preparatorDir = getPluggableDir();
     if (preparatorDir == null)
     	return null;
-    
+
     File[] jarFileArr = preparatorDir.listFiles(new ExtensionFilter(".jar"));
     for (File jarFile : jarFileArr) {
     	loadPreparatorJar(jarFile, preparatorHash, preparatorSettingsArr);
@@ -73,7 +73,7 @@ public abstract class PluggableFactory {
         mLog.debug(entry);
       }
     }
-    
+
     // Create the preparator array
     List<Pluggable> preparatorArr = new ArrayList<Pluggable>(preparatorHash.size());
 
@@ -92,24 +92,24 @@ public abstract class PluggableFactory {
           // Initialize the preparator
           prep.init(preparatorSettingsArr[i].getPreparatorConfig());
           pluggableAfterInit(prep, preparatorSettingsArr[i]);
-          
+
           // Add it to the array
           preparatorArr.add(prep);
         }
       }
     }
-    
+
     // Add all the preparators that are not configured
     for(Pluggable prep : preparatorHash.values()) {
       // Initialize the preparator with an empty config
       prep.init(new PreparatorConfig());
-      
+
       pluggableAfterInit(prep, null);
-      
+
       // Add it to the array
       preparatorArr.add(prep);
     }
-    
+
     return preparatorArr;
   }
 
@@ -121,7 +121,7 @@ public abstract class PluggableFactory {
 
 /**
    * Loads a preparator jar.
-   * 
+   *
    * @param file The preparator jar to load.
    * @param preparatorHash The hash where to add all loaded preparators.
    * @param preparatorSettingsArr The preparator settings. Used to determine
@@ -145,7 +145,7 @@ public abstract class PluggableFactory {
       // Read the class names
       Attributes attributes = manifest.getMainAttributes();
       String[] classNameArr = getClassNames(file, attributes);
-      
+
       // Load the classes if they are not disabled
       URLClassLoader loader = null;
       for (int i = 0; i < classNameArr.length; i++) {
@@ -154,13 +154,13 @@ public abstract class PluggableFactory {
         if (className.startsWith(".")) {
           className = getDefaultPackage() + className;
         }
-        
+
         if (isPreparatorEnabled(className, preparatorSettingsArr)) {
           // Create the class loader if nessesary
           if (loader == null) {
             loader = new URLClassLoader(new URL[] { file.toURI().toURL() });
           }
-          
+
           // Load the preparator and add it to the preparatorHash
           Pluggable prep = (Pluggable) RegainToolkit.createClassInstance(className, Pluggable.class, loader);
           preparatorHash.put(className, prep);
@@ -187,7 +187,7 @@ public abstract class PluggableFactory {
 
   /**
    * Checks whether a preparator is enabled.
-   *  
+   *
    * @param className The class name of the preparator to check.
    * @param preparatorSettingsArr The preparator settings to use to determine
    *        whether a preparator is enabled.
@@ -202,7 +202,7 @@ public abstract class PluggableFactory {
         return preparatorSettingsArr[i].isEnabled();
       }
     }
-    
+
     // There are no settings for the preparator -> It is enabled
     return true;
   }

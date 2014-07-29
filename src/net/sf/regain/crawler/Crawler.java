@@ -83,7 +83,7 @@ public class Crawler implements ErrorLogger {
 
   /** The configuration with the preferences. */
   private CrawlerConfig mConfiguration;
-  
+
   /** The URL checker. */
   private UrlChecker mUrlChecker;
 
@@ -92,7 +92,7 @@ public class Crawler implements ErrorLogger {
 
   /** The number of occured errors. */
   private int mErrorCount;
-  
+
   /**
    * Die Anzahl der fatalen Fehler, die aufgetreten sind.
    * <p>
@@ -127,32 +127,32 @@ public class Crawler implements ErrorLogger {
   private Profiler mCrawlerJobProfiler;
   /** The profiler that measures the HTML-Parser. */
   private Profiler mHtmlParsingProfiler;
-  
+
   /** The IndexWriterManager to use for adding documents to the index. */
   private IndexWriterManager mIndexWriterManager;
-  
+
   /** Specifies whether the crawler should pause as soon as possible, */
   private boolean mShouldPause;
 
   /** Username, password Map for configured hostnames. */
   Map <String, AccountPasswordEntry> accountPasswordStore;
-  
+
   /** Plugin Manager */
   private CrawlerPluginManager pluginManager = CrawlerPluginManager.getInstance();
-  
+
   /**
    * Creates a new instance of Crawler.
-   * 
+   *
    * @param config The Configuration
    *
    * @throws RegainException If the regular expressions have errors.
    */
   public Crawler(CrawlerConfig config, Properties authProps) throws RegainException {
     Profiler.clearRegisteredProfilers();
-    
+
     mCrawlerJobProfiler = new Profiler("Whole crawler jobs", "jobs");
     mHtmlParsingProfiler = new Profiler("Parsed documents", "docs");
-    
+
     mConfiguration = config;
 
     mJobList = new LinkedList<CrawlerJob>();
@@ -179,21 +179,21 @@ public class Crawler implements ErrorLogger {
         }
       }
     }
-    
+
     accountPasswordStore = new HashMap<String, AccountPasswordEntry>();
     readAuthenticationProperties(authProps);
     mLog.debug(System.getenv().toString());
-    
+
     // Create the crawler Plugins
     PreparatorSettings[] crawlerPluginConf = config.getCrawlerPluginSettingsList();
     pluginManager.clear();
     CrawlerPluginFactory.getInstance().createPluggables(crawlerPluginConf); // Automatically registers them to CrawlerPluginManager
   }
-  
-  
+
+
   /**
    * Gets the number of processed documents.
-   * 
+   *
    * @return The number of processed documents.
    */
   public int getFinishedJobCount() {
@@ -204,7 +204,7 @@ public class Crawler implements ErrorLogger {
   /**
    * Gets the number of documents that were in the (old) index when the
    * IndexWriterManager was created.
-   * 
+   *
    * @return The initial number of documents in the index.
    */
   public int getInitialDocCount() {
@@ -215,7 +215,7 @@ public class Crawler implements ErrorLogger {
 
   /**
    * Gets the number of documents that were added to the index.
-   * 
+   *
    * @return The number of documents added to the index.
    */
   public int getAddedDocCount() {
@@ -226,7 +226,7 @@ public class Crawler implements ErrorLogger {
 
   /**
    * Gets the number of documents that will be removed from the index.
-   * 
+   *
    * @return The number of documents removed from the index.
    */
   public int getRemovedDocCount() {
@@ -238,7 +238,7 @@ public class Crawler implements ErrorLogger {
   /**
    * Gets the URL of the current job. Returns null, if the crawler has currently
    * no job.
-   * 
+   *
    * @return The URL of the current job.
    */
   public String getCurrentJobUrl() {
@@ -255,7 +255,7 @@ public class Crawler implements ErrorLogger {
 
   /**
    * Get the time the crawler is already working on the current job.
-   * 
+   *
    * @return The current working time in milli seconds. Returns -1 if the
    *         crawler has currently no job.
    */
@@ -266,7 +266,7 @@ public class Crawler implements ErrorLogger {
 
   /**
    * Sets whether the crawler should pause.
-   *  
+   *
    * @param shouldPause Whether the crawler should pause.
    */
   public void setShouldPause(boolean shouldPause) {
@@ -276,13 +276,13 @@ public class Crawler implements ErrorLogger {
 
   /**
    * Gets whether the crawler is currently pausing or is pausing soon.
-   * 
+   *
    * @return Whether the crawler is currently pausing.
    */
   public boolean getShouldPause() {
     return mShouldPause;
   }
-  
+
 
   /**
    * Analysiert die URL und entscheidet, ob sie bearbeitet werden soll oder nicht.
@@ -303,7 +303,7 @@ public class Crawler implements ErrorLogger {
     boolean shouldBeIndexed, String sourceLinkText)
   {
     mLog.debug("Try to add " + url + " referer " + sourceUrl + " as a new crawler job.");
-    
+
     if (! mConfiguration.getBuildIndex()) {
       // Indexing is disabled
       shouldBeIndexed = false;
@@ -314,7 +314,7 @@ public class Crawler implements ErrorLogger {
     // Change all &amp; to &
     url = RegainToolkit.replace(url, "&amp;", "&");
 
-    // Replace parts of the URL with an empty string. The patterns are the 
+    // Replace parts of the URL with an empty string. The patterns are the
     // URLCleaners
     url = CrawlerToolkit.cleanURL(url, mConfiguration.getURLCleaners());
 
@@ -324,7 +324,7 @@ public class Crawler implements ErrorLogger {
     if ((! alreadyAccepted) && (! alreadyIgnored)) {
       // Check whether the url matches an entry in the whitelist and not an entry in the blacklist
       // We assume that the caller of addJob() detected the correct values for shouldBeParsed
-      // and shouldBeIndexed. 
+      // and shouldBeIndexed.
       UrlMatcher urlMatch = mUrlChecker.isUrlAccepted(url);
       boolean accepted;
       if( urlMatch.getShouldBeParsed() || urlMatch.getShouldBeIndexed() )
@@ -336,7 +336,7 @@ public class Crawler implements ErrorLogger {
       }
       else
         accepted = false;
-      
+
       int mMaxCycleCount = mConfiguration.getMaxCycleCount();
 
       if (mMaxCycleCount > 0 && accepted) {
@@ -364,7 +364,7 @@ public class Crawler implements ErrorLogger {
         CrawlerJob job = new CrawlerJob(url, sourceUrl, sourceLinkText,
                                       shouldBeParsed, shouldBeIndexed);
         pluginManager.eventAcceptURL(url, job);
-        
+
         // NOTE: This is a little trick: We put documents that aren't parsed at
         //       the beginning of the job list and documents that are parsed at
         //       the end. This keeps the job list small as first all documents
@@ -408,7 +408,7 @@ public class Crawler implements ErrorLogger {
     try {
 	    // Init the HTTP client
 	    CrawlerToolkit.initHttpClient(mConfiguration);
-	
+
 	    // Initialize the IndexWriterManager if building the index is wanted
 	    mIndexWriterManager = null;
 	    if (mConfiguration.getBuildIndex()) {
@@ -422,35 +422,35 @@ public class Crawler implements ErrorLogger {
 	        return;
 	      }
 	    }
-	
+
 	    mLog.debug("Read whitelist entries from config");
 	    // Get the white list and set the "should be updated"-flags
 	    WhiteListEntry[] whiteList = mConfiguration.getWhiteList();
 	    whiteList = useOnlyWhiteListEntries(whiteList, onlyEntriesArr, updateIndex);
-	
+
 	    // Create the UrlChecker
 	    mUrlChecker = new UrlChecker(whiteList, mConfiguration.getBlackList());
-	
-	
+
+
 	    // Add the start URLs
 	    mLog.info("Read start-URLs from config");
 	    addStartUrls();
-	    
+
 	    // Remember the last time when a breakpoint was created
 	    long lastBreakpointTime = System.currentTimeMillis();
-	    
+
 	    // Work on the job list
 	    while (! mJobList.isEmpty()) {
 	      mCrawlerJobProfiler.startMeasuring();
-	
+
 	      mCurrentJob = mJobList.removeFirst();
 	      String url = mCurrentJob.getUrl();
-	
+
 	      boolean shouldBeParsed = mCurrentJob.shouldBeParsed();
 	      boolean shouldBeIndexed = mCurrentJob.shouldBeIndexed();
-	
+
 	      if (url.startsWith("file://")) {
-	        // file system: Check whether this is a directory 
+	        // file system: Check whether this is a directory
 	        try {
 	          File file = RegainToolkit.urlToFile(url);
 	          // Check whether the file is readable.
@@ -467,7 +467,7 @@ public class Crawler implements ErrorLogger {
 	            if (shouldBeParsed) {
 	              parseDirectory(file);
 	            }
-	            
+
 	            // A directory can't be indexed -> continue
 	            mCrawlerJobProfiler.stopMeasuring(0);
 	            continue;
@@ -494,24 +494,24 @@ public class Crawler implements ErrorLogger {
 	            if (shouldBeParsed) {
 	              parseSmbDirectory(smbFile);
 	            }
-	
+
 	            // A directory can't be indexed -> continue
 	            mCrawlerJobProfiler.stopMeasuring(0);
 	            continue;
 	          }
-	            
+
 	        }
 	        catch (Throwable thr) {
 	          mCrawlerJobProfiler.abortMeasuring();
 	          logError("Invalid URL: '" + url + "'", thr, false);
 	          continue;
 	        }
-	        
+
 	      } else if(url.startsWith("imap://") || url.startsWith("imaps://")) {
 	        // IMAP mail box: Check whether this is a folder or an e-mail url
 	        try {
 	          if( ImapToolkit.isMessageURL( url) == true) {
-	            // This is an URL wich describes an a-mail like 
+	            // This is an URL wich describes an a-mail like
 	            // imap://user:password@mail.mailhost.com/INBOX/message_23(_attachment_1)
 	            // Mail are only indexed one times
 	            if( mIndexWriterManager.isAlreadyIndexed(url)) {
@@ -520,17 +520,17 @@ public class Crawler implements ErrorLogger {
 	              continue;
 	            }
 	          } else {
-	            // If the URL is not an e-mail it have to be folder. Add all subfolders and 
+	            // If the URL is not an e-mail it have to be folder. Add all subfolders and
 	            // messages as jobs
 	            if (shouldBeParsed) {
 	              parseIMAPFolder(url);
 	            }
-	            
+
 	            // A folder can't be indexed -> continue
 	            mCrawlerJobProfiler.stopMeasuring(0);
 	            continue;
 	          }
-	
+
 	        }
 	        catch (Throwable thr) {
 	          mCrawlerJobProfiler.abortMeasuring();
@@ -538,19 +538,19 @@ public class Crawler implements ErrorLogger {
 	          continue;
 	        }
 	      }
-	
+
 	      // Create a raw document
 	      RawDocument rawDocument;
 	      try {
 	        rawDocument = new RawDocument(url, mCurrentJob.getSourceUrl(),
-	          mCurrentJob.getSourceLinkText(), 
+	          mCurrentJob.getSourceLinkText(),
 	          CrawlerToolkit.findAuthenticationValuesForURL(url, accountPasswordStore));
-	        
+
 	      } catch (RedirectException exc) {
 	        String redirectUrl = exc.getRedirectUrl();
 	        mLog.info("Redirect '" + url +  "' -> '" + redirectUrl + "'");
 	        mUrlChecker.setIgnored(url);
-	        // the RedirectURL inherit the properties for shouldBeParsed, shouldBeIndexed from the 
+	        // the RedirectURL inherit the properties for shouldBeParsed, shouldBeIndexed from the
 	        // sourceURL. This is possibly not right according to definitions in the whitelist
 	        addJob(redirectUrl, mCurrentJob.getSourceUrl(), shouldBeParsed,
 	               shouldBeIndexed, mCurrentJob.getSourceLinkText());
@@ -560,19 +560,19 @@ public class Crawler implements ErrorLogger {
 	      catch (RegainException exc) {
 	        // Check whether the exception was caused by a dead link
 	        handleDocumentLoadingException(exc, mCurrentJob);
-	
+
 	        // This document does not exist -> We can't parse or index anything
 	        // -> continue
 	        mCrawlerJobProfiler.abortMeasuring();
 	        continue;
 	      }
-	
+
 	      if( shouldBeIndexed || shouldBeParsed ){
 	        if (mLog.isDebugEnabled()) {
 	          mLog.debug("Parsing and indexing " + rawDocument.getUrl());
 	        }
 	        mHtmlParsingProfiler.startMeasuring();
-	
+
 	        // Parse and index content and metadata
 	        if (shouldBeIndexed) {
 	           try {
@@ -581,8 +581,8 @@ public class Crawler implements ErrorLogger {
 	          catch (RegainException exc) {
 	            logError("Indexing failed for: " + rawDocument.getUrl(), exc, false);
 	          }
-	        } 
-	
+	        }
+
 	        // Extract links form the document (parse=true). The real meaning of parse in this context
 	        // is link-extraction. The document is parsed anyway (building a html-node tree).
 	        if (shouldBeParsed) {
@@ -602,11 +602,11 @@ public class Crawler implements ErrorLogger {
 	      }
 	      // System-Ressourcen des RawDocument wieder frei geben.
 	      rawDocument.dispose();
-	
+
 	      // Zeitmessung stoppen
 	      mCrawlerJobProfiler.stopMeasuring(rawDocument.getLength());
 	      mCurrentJob = null;
-	      
+
 	      // Check whether to create a breakpoint
 	      int breakpointInterval = mConfiguration.getBreakpointInterval();
 	      boolean breakpointIntervalIsOver = (breakpointInterval > 0)
@@ -618,7 +618,7 @@ public class Crawler implements ErrorLogger {
 	        catch (RegainException exc) {
 	          logError("Creating breakpoint failed", exc, false);
 	        }
-	        
+
 	        // Pause
 	        while (mShouldPause) {
 	          try {
@@ -626,11 +626,11 @@ public class Crawler implements ErrorLogger {
 	            mLog.info("The crawler sleeps for 1 second.");
 	          } catch (InterruptedException exc) {}
 	        }
-	        
+
 	        lastBreakpointTime = System.currentTimeMillis();
 	      }
 	    } // while (! mJobList.isEmpty())
-	
+
 	    // Remove documents from the index which no longer exists
 	    if (mConfiguration.getBuildIndex()) {
 	      mLog.info("Removing index entries of documents that do not exist any more...");
@@ -641,7 +641,7 @@ public class Crawler implements ErrorLogger {
 	        logError("Removing non-existing documents from index failed", thr, true);
 	      }
 	    }
-	
+
 	    // Check wether the index is empty
 	    try {
 	      entryCount = mIndexWriterManager.getIndexEntryCount();
@@ -672,11 +672,11 @@ public class Crawler implements ErrorLogger {
 	          null, true);
 	      }
 	    }
-	
+
 	    // Fehler und Deadlink-Liste schreiben
 	    writeDeadlinkAndErrorList();
 	    writeCrawledURLsList();
-	
+
 	    // finalize index
 	    if (mIndexWriterManager != null) {
 	      boolean thereWereFatalErrors = (mFatalErrorCount > 0);
@@ -736,7 +736,7 @@ public class Crawler implements ErrorLogger {
    * Handles an exception caused by a failed document loadung. Checks whether
    * the exception was caused by a dead link and puts it to the dead link list
    * if necessary.
-   * 
+   *
    * @param exc The exception to check.
    * @param job The job of the document.
    */
@@ -759,11 +759,11 @@ public class Crawler implements ErrorLogger {
   private void addStartUrls() {
     // Get the start URLs from the config
     StartUrl[] startUrlArr = mConfiguration.getStartUrls();
-    
+
     // Normalize the start URLs
     startUrlArr = mUrlChecker.normalizeStartUrls(startUrlArr);
     mLog.info("Found " + startUrlArr.length + " startURLs.");
-    
+
     // Add the start URLs as jobs
     for (int i = 0; i < startUrlArr.length; i++) {
       String url = startUrlArr[i].getUrl();
@@ -828,7 +828,7 @@ public class Crawler implements ErrorLogger {
 
   /**
    * Sets the "should be updated"-flag for each entry in the white list.
-   * 
+   *
    * @param whiteList The white list to process.
    * @param onlyEntriesArr The names of the white list entries, that should be
    *        updated. If <code>null</code> or empty, all entries will be updated.
@@ -879,7 +879,7 @@ public class Crawler implements ErrorLogger {
                   "will be created");
       }
     }
-    
+
     return whiteList;
   }
 
@@ -1007,7 +1007,7 @@ public class Crawler implements ErrorLogger {
    * The method creates a new job for every match
    *
    * @param dir the directory to parse
-   * @throws RegainException If encoding of the found URLs failed. 
+   * @throws RegainException If encoding of the found URLs failed.
    */
   private void parseDirectory(File dir) throws RegainException {
     // Get the URL for the directory
@@ -1045,10 +1045,10 @@ public class Crawler implements ErrorLogger {
    * The method creates a new job for every match
    *
    * @param dir the directory to parse
-   * @throws RegainException If encoding of the found URLs failed. 
+   * @throws RegainException If encoding of the found URLs failed.
    */
   private void parseSmbDirectory(SmbFile dir) throws RegainException {
-  
+
     try {
       // Get the URL for the directory
       String sourceUrl = dir.getCanonicalPath();
@@ -1074,7 +1074,7 @@ public class Crawler implements ErrorLogger {
     } catch( Exception ex ) {
       throw new RegainException(ex.getMessage(), ex);
     }
-         
+
   }
 
   /**
@@ -1082,7 +1082,7 @@ public class Crawler implements ErrorLogger {
    * The method creates a new job for every not empty folder
    *
    * @param folder the folder to parse
-   * @throws RegainException If encoding of the found URLs failed. 
+   * @throws RegainException If encoding of the found URLs failed.
    */
   private void parseIMAPFolder(String folderUrl) throws RegainException {
 
@@ -1131,7 +1131,7 @@ public class Crawler implements ErrorLogger {
           mLog.debug("Could not open folder for reading but this is not an errror. Folder URL is " + folderUrl);
         }
       }
-      // Find all subfolder 
+      // Find all subfolder
       folderList = ImapToolkit.getAllFolders(startFolder, false);
 
       // Iterate over all subfolders
@@ -1154,19 +1154,19 @@ public class Crawler implements ErrorLogger {
 
   /**
    * Creates crawler jobs from inclosed links. Every link is checked against the white-/black list.
-   * 
+   *
    * @param rawDocument A document with or without links
    * @throws net.sf.regain.RegainException if an exception occurrs during job creation
    */
   private void createCrawlerJobs(RawDocument rawDocument) throws RegainException {
     if( rawDocument.hasLinks() ){
       // Iterate over all found links in the document
-      for (Iterator iter = rawDocument.getLinks().entrySet().iterator(); iter.hasNext();){ 
+      for (Iterator iter = rawDocument.getLinks().entrySet().iterator(); iter.hasNext();){
         Map.Entry entry = (Map.Entry)iter.next();
         // The intention of this call is only to determine the link-extraction and indexing property
         UrlMatcher urlMatch = mUrlChecker.isUrlAccepted((String)entry.getKey());
         // Add the job
-        addJob((String)entry.getKey(), rawDocument.getUrl(), 
+        addJob((String)entry.getKey(), rawDocument.getUrl(),
           urlMatch.getShouldBeParsed(), urlMatch.getShouldBeIndexed(), (String)entry.getValue());
       }
     }
@@ -1208,7 +1208,7 @@ public class Crawler implements ErrorLogger {
         }
       } catch( Throwable ex ) {
         throw new RegainException("Too many links in document.", ex);
-        
+
       }
     }
   }
@@ -1308,7 +1308,7 @@ public class Crawler implements ErrorLogger {
     catch (RegainException exc) {
       mLog.error("Logging error in error log of index failed", exc);
     }
-    
+
     mErrorCount ++;
     if (fatal) {
       mFatalErrorCount++;

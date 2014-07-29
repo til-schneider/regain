@@ -74,7 +74,7 @@ public class OpenOfficePreparator extends AbstractPreparator {
       "application/vnd.oasis.opendocument.formula",
       "application/vnd.oasis.opendocument.database",
       "application/vnd.oasis.opendocument.image"});
-    
+
     /*super(new String[] {
         // Writer
         "odt", "oth", "ott", "sdw", "stw", "sxw",
@@ -115,7 +115,7 @@ public class OpenOfficePreparator extends AbstractPreparator {
    */
   public void prepare(RawDocument rawDocument) throws RegainException {
     File file = rawDocument.getContentAsFile();
-    
+
     ZipFile zipFile;
     try {
       zipFile = new ZipFile(file);

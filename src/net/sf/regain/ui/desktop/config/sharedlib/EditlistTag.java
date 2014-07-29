@@ -45,7 +45,7 @@ public class EditlistTag extends SharedTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.
@@ -57,10 +57,10 @@ public class EditlistTag extends SharedTag {
 
     // Get the name of the edit list
     String name = getParameter("name", true);
-    
+
     // Get the current value
     String[] currValueArr = (String[]) request.getContextAttribute("settings." + name);
-    
+
     response.print("<select id=\"" + name + "-list\" name=\"" + name + "\" " +
         "size=\"5\" onClick=\"showListSelection('" + name + "')\" multiple");
     String styleSheetClass = getParameter("class");
@@ -72,7 +72,7 @@ public class EditlistTag extends SharedTag {
       response.print("<option>" + currValueArr[i] + "</option>");
     }
     response.print("</select><br/>");
-    
+
     response.print("<input type=\"text\" id=\"" + name + "-entry\"");
     if (styleSheetClass != null) {
       response.print(" class=\"" + styleSheetClass + "\"");

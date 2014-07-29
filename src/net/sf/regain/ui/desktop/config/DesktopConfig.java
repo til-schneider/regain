@@ -33,7 +33,7 @@ public interface DesktopConfig {
 
   /**
    * Gets the index update interval from the desktop configuration.
-   * 
+   *
    * @return The index update interval.
    * @throws RegainException If loading the config failed.
    */
@@ -41,16 +41,16 @@ public interface DesktopConfig {
 
   /**
    * Gets the port of the webserver.
-   * 
+   *
    * @return The port of the webserver.
    * @throws RegainException If loading the config failed.
    */
   public int getPort() throws RegainException;
-  
+
   /**
    * Gets the executable of the browser that should be used for showing web
-   * pages. Returns <code>null</code> if the browser should be auto-detected. 
-   * 
+   * pages. Returns <code>null</code> if the browser should be auto-detected.
+   *
    * @return The executable of the browser.
    * @throws RegainException If loading the config failed.
    */
@@ -59,15 +59,15 @@ public interface DesktopConfig {
    /**
    * Gets the setting wheter external access to the instance is allowed or not.
    * pages. Returns FALSE if no config entry exists
-   * 
+   *
    * @return the boolean whether external access is allowed or not
    * @throws RegainException If loading the config failed.
    */
-  public boolean getExternalAccessAllowed() throws RegainException; 
+  public boolean getExternalAccessAllowed() throws RegainException;
 
   /**
    * Gets Tag namespaces that should be registered so they can be used in the JSP-File.
-   * 
+   *
    * @return  A map of Alias - Package Name
    * @throws RegainException  If loading the config failed.
    */

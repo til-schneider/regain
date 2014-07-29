@@ -26,7 +26,7 @@ import net.sf.regain.util.sharedtag.PageResponse;
 import net.sf.regain.util.sharedtag.SharedTag;
 
 /**
- * Generates the value of a HTML request parameter as a hidden field. 
+ * Generates the value of a HTML request parameter as a hidden field.
  * <p>
  * Tag Parameters:
  * <ul>
@@ -40,7 +40,7 @@ public class HiddenparamTag extends SharedTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.
@@ -58,5 +58,5 @@ public class HiddenparamTag extends SharedTag {
       }
     }
   }
-  
+
 }

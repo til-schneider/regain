@@ -9,7 +9,7 @@
 
   <!-- The interval to update the search index in minutes -->
   <interval>1440</interval>
-  
+
   <!-- Allow/Disallow external access to the running desktop instance -->
   <allow_external_access>true</allow_external_access>
 

@@ -8,14 +8,14 @@ import net.sf.regain.util.sharedtag.SharedTag;
 
 /**
  * Generates the query as String.
- * 
+ *
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
 public class QueryTag extends SharedTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.

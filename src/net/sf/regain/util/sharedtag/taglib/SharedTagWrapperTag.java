@@ -42,31 +42,31 @@ import net.sf.regain.util.sharedtag.SharedTag;
 public abstract class SharedTagWrapperTag
   extends BodyTagSupport implements SearchConstants
 {
-  
+
   /** The nested shared tag. */
   private SharedTag mNestedTag;
-  
-  
+
+
   /**
    * Creates a new instance of SharedTagWrapperTag.
-   * 
+   *
    * @param nestedTag The tag that should be wrapped by this tag.
    */
   public SharedTagWrapperTag(SharedTag nestedTag) {
     mNestedTag = nestedTag;
   }
-  
-  
+
+
   /**
    * Gets the nested shared tag.
-   * 
+   *
    * @return The nested shared tag.
    */
   protected SharedTag getNestedTag() {
     return mNestedTag;
   }
-  
-  
+
+
   /**
    * Called when the JSP parser reaches the start tag.
    * <p>
@@ -82,15 +82,15 @@ public abstract class SharedTagWrapperTag
     try {
       // Set the context
       mNestedTag.setContext(request);
-      
+
       // Set Escaping
       response.setEscapeType(mNestedTag.getParameter("escape"));
 
       // Print the start tag
       int result = mNestedTag.printStartTag(request, response);
-      
+
       // response.close();
-      
+
       switch (result) {
         case SharedTag.EVAL_TAG_BODY: return EVAL_BODY_TAG;
         case SharedTag.SKIP_TAG_BODY: return SKIP_BODY;
@@ -157,21 +157,21 @@ public abstract class SharedTagWrapperTag
     // Print the end tag
     PageRequest request = getPageRequest();
     PageResponse response = new JspPageResponse(pageContext);
-    
+
     // Set Escaping
     response.setEscapeType(mNestedTag.getParameter("escape"));
 
     try {
       // Print the end tag
       mNestedTag.printEndTag(request, response);
-      
+
       // Unset the context
       mNestedTag.unsetContext();
     }
     catch (RegainException exc) {
       throw new ExtendedJspException("Writing results failed", exc);
     }
-    
+
     return EVAL_PAGE;
   }
 
@@ -180,7 +180,7 @@ public abstract class SharedTagWrapperTag
    * Gets the PageRequest adapter from the JSP page context.
    * <p>
    * If the adapter does not yet exist, it is created.
-   * 
+   *
    * @return The PageRequest adapter.
    */
   private PageRequest getPageRequest() {
@@ -188,17 +188,17 @@ public abstract class SharedTagWrapperTag
     if (request == null) {
       request = new JspPageRequest(pageContext);
       pageContext.setAttribute("SharedTagPageRequest", request);
-      
+
       // Add the error to the page attributes
       Throwable error = (Throwable) pageContext.getRequest().getAttribute("javax.servlet.jsp.jspException");
       if (error != null) {
         request.setContextAttribute("page.exception", error);
       }
     }
-    
+
     return request;
   }
-  
+
   /**
    * All Tags may have an optional escape attribute.
    * @param escapeType

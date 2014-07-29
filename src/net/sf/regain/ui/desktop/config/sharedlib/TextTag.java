@@ -40,7 +40,7 @@ public class TextTag extends SharedTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.
@@ -52,9 +52,9 @@ public class TextTag extends SharedTag {
 
     String name = getParameter("name", true);
     String currValue = (String) request.getContextAttribute("settings." + name);
-    
+
     response.print("<input type=\"text\" size=\"" + size + "\" name=\"" +
         name + "\" value=\"" + currValue + "\"/>");
   }
-  
+
 }

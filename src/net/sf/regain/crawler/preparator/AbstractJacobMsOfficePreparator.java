@@ -33,14 +33,14 @@ import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
 
 /**
- * 
+ *
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
 public abstract class AbstractJacobMsOfficePreparator extends AbstractPreparator {
-  
+
   /** The properties that should be extracted. */
   private String[] mWantedPropertiesArr;
-  
+
   /**
    * Holds the document properties that may be extracted from a word document.
    * (key: The property name (String), value: The property constant (Variant))
@@ -50,7 +50,7 @@ public abstract class AbstractJacobMsOfficePreparator extends AbstractPreparator
 
   /**
    * Creates a new instance of JacobMsWordPreparator.
-   * 
+   *
    * @param extensionArr The file extensions a URL must have one to be accepted
    *        by this preparator.
    * @throws RegainException If creating the preparator failed.
@@ -59,7 +59,7 @@ public abstract class AbstractJacobMsOfficePreparator extends AbstractPreparator
     throws RegainException
   {
     super(extensionArr);
-    
+
     // NOTE: See: http://mypage.bluewin.ch/reprobst/WordFAQ/DokEigen.htm#DokEigen04
     mPropertyMap = new HashMap<String, Variant>();
     mPropertyMap.put("propTitle",       new Variant(1));  // german: Titel
@@ -97,7 +97,7 @@ public abstract class AbstractJacobMsOfficePreparator extends AbstractPreparator
 
   /**
    * Initializes the preparator.
-   * 
+   *
    * @param config The configuration.
    * @throws RegainException If the configuration has an error.
    */
@@ -107,7 +107,7 @@ public abstract class AbstractJacobMsOfficePreparator extends AbstractPreparator
       String properties = main.get("properties");
       if (properties != null) {
         mWantedPropertiesArr = RegainToolkit.splitString(properties, ";", true);
-        
+
         // Check the properties
         for (int i = 0; i < mWantedPropertiesArr.length; i++) {
           if (mPropertyMap.get(mWantedPropertiesArr[i]) == null) {
@@ -122,7 +122,7 @@ public abstract class AbstractJacobMsOfficePreparator extends AbstractPreparator
               }
               possProp.append(property);
             }
-            
+
             throw new RegainException("MS Word property '"
                 + mWantedPropertiesArr[i] + "' does not exist. Possible "
                 + "properties are: " + possProp.toString());
@@ -132,10 +132,10 @@ public abstract class AbstractJacobMsOfficePreparator extends AbstractPreparator
     }
   }
 
-  
+
   /**
    * Reads the configured document properties from a MS Office document.
-   * 
+   *
    * @param document The document to read the properties from.
    */
   protected void readProperties(Dispatch document) {
@@ -149,10 +149,10 @@ public abstract class AbstractJacobMsOfficePreparator extends AbstractPreparator
         Variant propertyConstant = mPropertyMap.get(propertyName);
         Object property = Dispatch.call(document, "BuiltInDocumentProperties", propertyConstant).getDispatch();
         String value = Dispatch.get(property, "Value").toString();
-        
+
         addAdditionalField(propertyName, value);
       }
     }
   }
-  
+
 }

@@ -29,7 +29,7 @@ public interface SearchConstants {
 
   /** The default maximum number of results to show on one page. */
   public static final int DEFAULT_MAX_RESULTS = 10;
-  
+
   /**
    * The name of the attribute containing the current hit Document within the
    * list tag.

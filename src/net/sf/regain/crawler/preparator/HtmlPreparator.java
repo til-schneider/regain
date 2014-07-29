@@ -81,7 +81,7 @@ public class HtmlPreparator extends AbstractPreparator {
 
   /**
    * Creates a regex that matches a URL that contains HTML.
-   * 
+   *
    * @return The regex.
    * @throws RegainException If the regex couldn't be created.
    */
@@ -96,7 +96,7 @@ public class HtmlPreparator extends AbstractPreparator {
 
   /**
    * Initializes the preparator.
-   * 
+   *
    * @param config The configuration.
    * @throws RegainException If the configuration has an error.
    */
@@ -135,7 +135,7 @@ public class HtmlPreparator extends AbstractPreparator {
 
   /**
    * Gets an int parameter from a configuration section
-   * 
+   *
    * @param configSection The configuration section to get the int param from.
    * @param paramName The name of the parameter
    * @return The value of the parameter.
@@ -344,8 +344,8 @@ public class HtmlPreparator extends AbstractPreparator {
   }
 
   /**
-   * Checks whether an expected substring is at a certain position. 
-   * 
+   * Checks whether an expected substring is at a certain position.
+   *
    * @param content The String to check the excepted substring.
    * @param expected The expected substring.
    * @param pos The position where the substring is expected.

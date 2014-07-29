@@ -40,11 +40,11 @@ public class ListTag extends SharedTagWrapperTag {
 
   /**
    * Sets the message to generate if the were no results.
-   * 
+   *
    * @param msgNoResults The message to generate if the were no results.
    */
   public void setMsgNoResults(String msgNoResults) {
     getNestedTag().setParameter("msgNoResults", msgNoResults);
   }
-  
+
 }

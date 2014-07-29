@@ -41,22 +41,22 @@ import net.sf.regain.util.sharedtag.PageRequest;
  * @author Til Schneider, www.murfman.de
  */
 public class JspPageRequest extends PageRequest {
-  
+
   /** The JSP page context to adapt. */
   private PageContext mPageContext;
-  
+
   /** The base URL where the JSP files and resources are located. */
   private static URL mBaseUrl;
-  
+
   /** The working directory of the web server. */
   private static File mWorkingDir;
-  
+
   /** The logger for this class. */
   private static Logger mLog = Logger.getLogger(JspPageRequest.class);
-  
+
   /**
    * Creates a new instance of JspPageRequest.
-   * 
+   *
    * @param pageContext The JSP page context to adapt.
    */
   public JspPageRequest(PageContext pageContext) {
@@ -71,7 +71,7 @@ public class JspPageRequest extends PageRequest {
 
   /**
    * Gets a request parameter that was given to page via GET or POST.
-   * 
+   *
    * @param name The name of the parameter.
    * @return The given parameter or <code>null</code> if no such parameter was
    *         given.
@@ -84,7 +84,7 @@ public class JspPageRequest extends PageRequest {
   /**
    * Gets all request parameters with the given name that were given to the page
    * via GET or POST.
-   * 
+   *
    * @param name The name of the parameter.
    * @return The parameters or <code>null</code> if no such parameter was
    *         given.
@@ -97,17 +97,17 @@ public class JspPageRequest extends PageRequest {
 
   /**
    * Gets the names of the given parameters.
-   * 
+   *
    * @return The names of the given parameters.
    */
   public Enumeration getParameterNames() {
     return mPageContext.getRequest().getParameterNames();
   }
 
-  
+
   /**
    * Gets the header with the given name.
-   * 
+   *
    * @param name The name of the header.
    * @return The header or <code>null</code> if no such header exists.
    * @throws RegainException If getting the header failed.
@@ -117,10 +117,10 @@ public class JspPageRequest extends PageRequest {
     return request.getHeader(name);
   }
 
-  
+
   /**
    * Gets the header with the given name as date.
-   * 
+   *
    * @param name The name of the header.
    * @return The date header or <code>-1</code> if no such header exists.
    * @throws RegainException If getting the header failed.
@@ -130,10 +130,10 @@ public class JspPageRequest extends PageRequest {
     return request.getDateHeader(name);
   }
 
-  
+
   /**
    * Gets the locale of the client.
-   * 
+   *
    * @return The locale.
    * @throws RegainException If getting the locale failed.
    */
@@ -141,11 +141,11 @@ public class JspPageRequest extends PageRequest {
     HttpServletRequest request = (HttpServletRequest) mPageContext.getRequest();
     return request.getLocale();
   }
-  
+
 
   /**
    * Sets an attribute at the page context.
-   * 
+   *
    * @param name The name of the attribute to set.
    * @param value The value of the attribute to set.
    */
@@ -156,7 +156,7 @@ public class JspPageRequest extends PageRequest {
 
   /**
    * Gets an attribute from the page context.
-   * 
+   *
    * @param name The name of the attribute to get.
    * @return The attribute's value or <code>null</code> if there is no such
    *         attribute.
@@ -168,7 +168,7 @@ public class JspPageRequest extends PageRequest {
 
   /**
    * Sets an attribute at the session.
-   * 
+   *
    * @param name The name of the attribute to set.
    * @param value The value of the attribute to set.
    */
@@ -179,7 +179,7 @@ public class JspPageRequest extends PageRequest {
 
   /**
    * Gets an attribute from the session.
-   * 
+   *
    * @param name The name of the attribute to get.
    * @return The attribute's value or <code>null</code> if there is no such
    *         attribute.
@@ -191,7 +191,7 @@ public class JspPageRequest extends PageRequest {
 
   /**
    * Gets an init parameter.
-   * 
+   *
    * @param name The name of the init parameter.
    * @return The value of the init parameter.
    */
@@ -202,7 +202,7 @@ public class JspPageRequest extends PageRequest {
 
   /**
    * Gets the base URL where the JSP files and resources are located.
-   * 
+   *
    * @return The base URL where the JSP files and resources are located.
    * @throws RegainException If getting the base URL failed.
    */
@@ -222,7 +222,7 @@ public class JspPageRequest extends PageRequest {
 
   /**
    * Gets the working directory of the web server.
-   * 
+   *
    * @return The working directory of the web server.
    * @throws RegainException If getting the working directory failed.
    */

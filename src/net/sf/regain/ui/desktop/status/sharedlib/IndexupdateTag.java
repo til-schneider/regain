@@ -46,7 +46,7 @@ public class IndexupdateTag extends SharedTag {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.
@@ -73,7 +73,7 @@ public class IndexupdateTag extends SharedTag {
       long size = RegainToolkit.getDirectorySize(indexUpdateDir);
       String sizeAsString = RegainToolkit.bytesToString(size, request.getLocale());
       String currentJobUrl = crawler.getCurrentJobUrl();
-      
+
       Object[] args = new Object[] {
         crawler.getFinishedJobCount(),
         sizeAsString,
@@ -89,5 +89,5 @@ public class IndexupdateTag extends SharedTag {
             "Current job: {5} (since {6})", args));
     }
   }
-  
+
 }

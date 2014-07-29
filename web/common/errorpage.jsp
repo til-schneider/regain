@@ -4,7 +4,7 @@
 <html>
 <head>
   <title><search:msg key="errorSearchingFor"/> <search:stats_query/></title>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">  
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <link href="regain.css" rel="stylesheet" type="text/css">
   <status:autoupdate_meta/>
 </head>
@@ -26,7 +26,7 @@
       <p>
       <search:msg key="errorMessage"/>: <code><search:error_message/></code>
 	  <%-- Add the stack trace as hidden text --%>
-	  <div style="display:none; color:grey; " id="stacktrace">  
+	  <div style="display:none; color:grey; " id="stacktrace">
 	  Stacktrace:
 	  <pre><search:msg key="errorMessage"/>:<search:error_stacktrace/></pre>
 	  </div>
@@ -37,7 +37,7 @@
       </p>
 
       <%@include file="search_form.jsp" %>
-      
+
       <br/>
     </td></tr>
   </table>

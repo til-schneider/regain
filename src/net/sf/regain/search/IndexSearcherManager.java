@@ -65,7 +65,7 @@ public class IndexSearcherManager implements Closeable {
    * IndexWriterManager (value).
    */
   private static HashMap<String, IndexSearcherManager> mIndexManagerHash;
-  
+
   static {
     mIndexManagerHash = new HashMap<String, IndexSearcherManager>();
   }
@@ -80,10 +80,10 @@ public class IndexSearcherManager implements Closeable {
   private File mWorkingIndexDir;
   /** Das Verzeichnis, in das der letzte Index gesichert werden soll. */
   private File mBackupIndexDir;
-  
+
   /** Der Analyzer, der für Suchen verwendet werden soll. */
   private Analyzer mAnalyzer;
-  
+
   /** Der Thread, der alle 10 Sekunden Prüft, ob ein neuer Suchindex vorhanden ist. */
   private IndexUpdateThread mIndexUpdateThread;
   /**
@@ -91,7 +91,7 @@ public class IndexSearcherManager implements Closeable {
    * field (String[]).
    */
   private HashMap<String,String[]> mFieldTermHash;
-  
+
   /**
    * Keeps reference of the current IndexSearcher.
    */
@@ -110,7 +110,7 @@ public class IndexSearcherManager implements Closeable {
 
     if (!(new File(indexDir).exists()))
       throw new RegainException("No index folder found at " + indexDir);
-    
+
     checkForIndexUpdate();
 
     try
@@ -121,7 +121,7 @@ public class IndexSearcherManager implements Closeable {
     {
       throw new RegainException("Could not open index folder found at " + indexDir, e);
     }
-    
+
     mIndexUpdateThread = new IndexUpdateThread();
     mIndexUpdateThread.setPriority(Thread.MIN_PRIORITY);
     mIndexUpdateThread.start();
@@ -145,7 +145,7 @@ public class IndexSearcherManager implements Closeable {
         manager = new IndexSearcherManager(indexDir);
         mIndexManagerHash.put(indexDir, manager);
       }
-  
+
       return manager;
     }
   }
@@ -176,7 +176,7 @@ public class IndexSearcherManager implements Closeable {
   /**
    * Read files from index cache file
    * (synchronised, as this requires an searchindex/index directory)
-   * 
+   *
    * @param field The field to get the values for.
    * @return All distinct values the index has for the field.
    * @throws RegainException If reading the values failed.
@@ -184,7 +184,7 @@ public class IndexSearcherManager implements Closeable {
   protected synchronized String[] readFieldValues(String field) throws RegainException
   {
     String[] valueArr;
-    
+
     IndexSearcher searcher = null;
     try {
        searcher = getIndexSearcher();
@@ -232,7 +232,7 @@ public class IndexSearcherManager implements Closeable {
   {
     if (mAnalyzer != null)
       return;
-    
+
     ensureIndexDirExists();
 
     // Read the stopWordList and the exclusionList
@@ -290,13 +290,13 @@ public class IndexSearcherManager implements Closeable {
         if (mNewIndexDir.exists())
         {
           System.out.println("New index found on " + new java.util.Date());
-          
+
           // Recreate analyzer and field term cache on next use
           mAnalyzer = null;
           mFieldTermHash = null;
-          
+
           // ---- Okay, now we can move the directories
-          
+
           // Remove the old backup if it should still exist
           if (mBackupIndexDir.exists()) {
             RegainToolkit.deleteDirectory(mBackupIndexDir);
@@ -315,7 +315,7 @@ public class IndexSearcherManager implements Closeable {
             throw new RegainException("Renaming " + mNewIndexDir + " to "
                     + mWorkingIndexDir + " failed!");
           }
-          
+
           try
           {
             if (mSearcherManager != null)
@@ -325,8 +325,8 @@ public class IndexSearcherManager implements Closeable {
           {
             throw new RegainException("Refresh of lucene index failed.");
           }
-          
-          System.out.println("Finished loading new index.");          
+
+          System.out.println("Finished loading new index.");
         }
       }
     }
@@ -336,11 +336,11 @@ public class IndexSearcherManager implements Closeable {
    * Returns the IndexSearcher.
    *
    * Must be released after use:
-   * 
+   *
    * try
    * {
    *  indexSearcher = getIndexSearcher();
-   *  
+   *
    *  ...
    * }
    * finally
@@ -355,18 +355,18 @@ public class IndexSearcherManager implements Closeable {
     ensureIndexDirExists();
     return mSearcherManager.acquire();
   }
-  
+
   /**
    * Release an indexSearcher that was acquired by getIndexSearcher()
    * NOTE: It musn't be used afterwards!
-   * 
+   *
    * @param searcher  Reference to the index searcher. (Null is silently ignored.)
    * @throws RegainException
    */
   public void releaseIndexSearcher(IndexSearcher searcher) throws RegainException {
     if (searcher == null)
         return;
-    
+
     try {
       mSearcherManager.release(searcher);
     } catch (IOException e) {
@@ -380,7 +380,7 @@ public class IndexSearcherManager implements Closeable {
     if (mIndexUpdateThread != null)
       mIndexUpdateThread.close();
     mIndexUpdateThread = null;
-    
+
     mSearcherManager.close();
     mSearcherManager = null;
   }
@@ -392,7 +392,7 @@ public class IndexSearcherManager implements Closeable {
       indexManager.close();
     }
     mIndexManagerHash.clear();
-    
+
     try
     {
       // Give the threads some time to shut down before returning
@@ -400,7 +400,7 @@ public class IndexSearcherManager implements Closeable {
     }
     catch (InterruptedException e) { }
   }
-  
+
   /**
    * WARNING: Thread Programming ahead.
    * Every single line may have its importance.
@@ -412,9 +412,9 @@ public class IndexSearcherManager implements Closeable {
      * Nb of milliseconds between a check if a new index is available.
      */
     private static final int INDEX_UPDATE_THREAD_SLEEPTIME = 10000;
-    
+
     private volatile boolean quit = false;
-    
+
     @Override
     public void run() {
       // Do while no termination is requested
@@ -435,7 +435,7 @@ public class IndexSearcherManager implements Closeable {
         }
       }
     }
-    
+
     /**
      * Request termination of thread.
      * Will terminate as soon as possible.

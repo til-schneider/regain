@@ -104,13 +104,13 @@ public class DocumentFactory {
 
   /**
    * Creates a new instance of DocumentFactory.
-   * 
+   *
    * @param config The crawler configuration.
    * @param analysisDir The directory where to store the analysis files. Is
    *        <code>null</code> if no analysis files should be created.
    *
    * @throws RegainException If a preparator could not be created or if a regex
-   *         has a syntax error. 
+   *         has a syntax error.
    */
   public DocumentFactory(CrawlerConfig config, File analysisDir)
           throws RegainException {
@@ -185,7 +185,7 @@ public class DocumentFactory {
    */
   public Document createDocument(RawDocument rawDocument, ErrorLogger errorLogger) {
 
-    // Determine the mime-type 
+    // Determine the mime-type
     String mimeType;
     FileInputStream fis = null;
     try {
@@ -231,7 +231,7 @@ public class DocumentFactory {
     for (int i = 0; i < mPreparatorArr.length; i++) {
       if (mPreparatorArr[i].accepts(rawDocument)) {
         // This preparator can prepare this URL
-        
+
         matchingPreparators.add(new PreparatorProfilerPair(mPreparatorArr[i], mPreparatorProfilerArr[i]));
         if (mLog.isDebugEnabled()) {
           mLog.debug("Found: " + mPreparatorArr[i].getClass().getSimpleName()
@@ -255,16 +255,16 @@ public class DocumentFactory {
                   + " with preparator " + preparatorProfiler.getPreparator().getClass().getName()
                   + " failed", exc, false);
         }
-        
+
         /* For backwards compability reasons we could introduce this parameter with default true:
         if (mConfig.getUseOnlyOnePreparator())
           break;
-        */  
+        */
       }
 
     if (!preparatorFound) {
       mLog.info("No preparator feels responsible for " + rawDocument.getUrl());
-      
+
     } else if (doc == null) {
       // There were preparators that felt responsible for the document, but they
       // weren't able to process it
@@ -286,7 +286,7 @@ public class DocumentFactory {
   /**
    * Creates a lucene {@link Document} from a {@link RawDocument} using a
    * certain Preparator.
-   * 
+   *
    * @param preparator The preparator to use.
    * @param preparatorProfiler The profile of the preparator.
    * @param rawDocument The raw document.
@@ -357,11 +357,11 @@ public class DocumentFactory {
    * field. They are added to the index if preparation failed. This way at least
    * the URL may be searched and following spider runs are much faster as a
    * previously failed document is not retried.
-   * 
+   *
    * @param rawDocument The document to create the substitute document for.
    * @return The substitide document.
    * @throws RegainException If the user groups that are allowed to read this
-   *         document couldn't be determined. 
+   *         document couldn't be determined.
    */
   private Document createSubstituteDocument(RawDocument rawDocument)
           throws RegainException {
@@ -370,7 +370,7 @@ public class DocumentFactory {
 
   /**
    * Create a lucene {@link Document}.
-   * 
+   *
    * @param rawDocument The raw document to create the lucene {@link Document}
    *        for.
    * @param cleanedContent The content of the document. (May be null, if the
@@ -383,9 +383,9 @@ public class DocumentFactory {
    * @param path The path to the document. May be null.
    * @param additionalFieldMap The additional fields provided by the preparator.
    * @return The lucene {@link Document}.
-   * 
+   *
    * @throws RegainException If the user groups that are allowed to read this
-   *         document couldn't be determined. 
+   *         document couldn't be determined.
    */
   private Document createDocument(RawDocument rawDocument, String cleanedContent,
           String title, String summary, String metadata, String headlines, PathElement[] path,
@@ -752,7 +752,7 @@ public class DocumentFactory {
 
     // Ensure that no call of createDocument(RawDocument) is possible any more
     mPreparatorArr = null;
-    
+
     // Close CrawlerAccessControl if possible
     if (mCrawlerAccessController != null && mCrawlerAccessController instanceof Closeable)
     {

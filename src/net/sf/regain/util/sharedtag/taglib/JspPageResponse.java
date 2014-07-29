@@ -40,17 +40,17 @@ public class JspPageResponse extends PageResponse {
 
   /** The page context to adapt. */
   private PageContext mPageContext;
-  
+
   /** The ServletResponse to adapt. */
   private HttpServletResponse mServletResponse;
-  
+
   /** The JSP writer. Is <code>null</code> until the first time requested. */
   private JspWriter mJspWriter;
 
 
   /**
    * Creates a new instance of JspPageWriter.
-   * 
+   *
    * @param pageContext The page context to adapt.
    */
   public JspPageResponse(PageContext pageContext) {
@@ -61,7 +61,7 @@ public class JspPageResponse extends PageResponse {
 
   /**
    * Gets the character encoding of the response.
-   * 
+   *
    * @return The character encoding of the response.
    * @throws RegainException If getting th encoding failed.
    */
@@ -73,7 +73,7 @@ public class JspPageResponse extends PageResponse {
 
   /**
    * Sets the header with the given name.
-   * 
+   *
    * @param name The name of the header.
    * @param value The header value to set.
    * @throws RegainException If getting the header failed.
@@ -85,7 +85,7 @@ public class JspPageResponse extends PageResponse {
 
   /**
    * Sets the header with the given name as date.
-   * 
+   *
    * @param name The name of the header.
    * @param value The header value to set.
    * @throws RegainException If getting the header failed.
@@ -93,11 +93,11 @@ public class JspPageResponse extends PageResponse {
   public void setHeaderAsDate(String name, long value) throws RegainException {
     mServletResponse.setDateHeader(name, value);
   }
-  
-  
+
+
   /**
    * Gets the OutputStream to use for sending binary data.
-   * 
+   *
    * @return The OutputStream to use for sending binary data.
    * @throws RegainException If getting the OutputStream failed.
    */
@@ -109,11 +109,11 @@ public class JspPageResponse extends PageResponse {
       throw new RegainException("Getting the response OutputStream failed", exc);
     }
   }
-  
+
 
   /**
    * Prints text to a page.
-   * 
+   *
    * @param text The text to print.
    * @throws RegainException If printing failed.
    */
@@ -133,7 +133,7 @@ public class JspPageResponse extends PageResponse {
 
   /**
    * Redirects the request to another URL.
-   * 
+   *
    * @param url The URL to redirect to.
    * @throws RegainException If redirecting failed.
    */
@@ -149,7 +149,7 @@ public class JspPageResponse extends PageResponse {
 
   /**
    * Sends a HTTP error.
-   * 
+   *
    * @param errorCode The error code to send.
    * @throws RegainException If sending the error failed.
    */

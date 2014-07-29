@@ -28,7 +28,7 @@ public class IntegrationTestCase extends TestCase
   protected static final File runtimeTest = new File(root, "test/build/runtime");
   protected static final long SLEEP_WAIT_MILLIS = 300;
 
-  protected File environment;  
+  protected File environment;
   protected DefaultExecuteResultHandler resultHandler;
   protected ExecuteWatchdog watchdog;
 
@@ -36,18 +36,18 @@ public class IntegrationTestCase extends TestCase
    * Prepare a test environment
    * @throws IOException
    */
-  
+
   protected File prepareTestEnvironment(String destFolder) throws IOException
-  {  
+  {
     // TODO : Test under Windows
     File env = new File(runtimeTest, destFolder);
-    
+
     cleanDirectory(new File(env, "log"));
     cleanDirectory(new File(env, "searchindex"));
-    
+
     return env;
   }
-  
+
   private void cleanDirectory(File dir) throws IOException
   {
     dir.mkdirs();
@@ -76,11 +76,11 @@ public class IntegrationTestCase extends TestCase
     lines.add("log4j.category.net.sf.regain.crawler.Crawler=DEBUG");
     FileUtils.writeLines(debugFile, null, lines, null, true);
   }
-  
+
   protected void enableCrawlerPlugin(File crawlerConfig, String pluginName, boolean enable) throws IOException
   {
     List<String> lines = FileUtils.readLines(crawlerConfig);
-    
+
     int i = 0;
     for (String str : lines)
     {
@@ -104,10 +104,10 @@ public class IntegrationTestCase extends TestCase
     fileURL = "file://" + fileURL.substring(5); // Naughty hack. Java is too strict about RFCs, see http://stackoverflow.com/questions/1131273/java-file-touri-tourl-on-windows-file
 
     String line = "    <start parse=\"true\" index=\"false\">" + fileURL + "</start>";
-    
+
     addLineAfterContains(crawlerConfig, "<startlist>", line);
   }
-  
+
   protected void addExcludePattern(File crawlerConfig, String pattern) throws IOException
   {
     String line = "    <regex>" + pattern + "</regex>";
@@ -118,7 +118,7 @@ public class IntegrationTestCase extends TestCase
   {
     // Get File
     List<String> lines = FileUtils.readLines(crawlerConfig);
-    
+
     // Find the opening xml tag
     int i = 0;
     for (String singleLine : lines)
@@ -130,7 +130,7 @@ public class IntegrationTestCase extends TestCase
 
     // Insert it - doesn't matter if there are several start s
     lines.add(i+1, line);
-    
+
     // Overwrite file
     FileUtils.writeLines(crawlerConfig, lines);
   }
@@ -140,7 +140,7 @@ public class IntegrationTestCase extends TestCase
       URL url = new URL(urlString);
 
       HttpURLConnection huc = (HttpURLConnection) url.openConnection();
-      
+
       if (methodGet)
         huc.setRequestMethod("GET");
       else
@@ -163,7 +163,7 @@ public class IntegrationTestCase extends TestCase
   /**
    * Check if the process is still alive.
    * If not, the unit test has failed.
-   * 
+   *
    * @param resultHandler Result handler that is keeping track of the respective process
    * @param output        Process output until now (is written to stdout if assertion failed)
    * @throws IllegalStateException  Re-Throw Process Exception
@@ -171,16 +171,16 @@ public class IntegrationTestCase extends TestCase
   protected void assertProcessAlive(DefaultExecuteResultHandler resultHandler, String output) throws IllegalStateException
   {
     if (resultHandler.hasResult()) // Process died
-    { 
+    {
       //String lastOutput = lastLines(output, 3);
       System.out.print(output);
-      
+
       Exception ex = resultHandler.getException();
       int exitValue = resultHandler.getExitValue();
-      
+
       if (output.contains("BindException: Address already in use"))
         fail("Process could not start, port (default: 8020) already occupied. Maybe another instance of regain desktop is running?");
-      
+
       if (exitValue == 143)
         fail("Process timed out, was killed by unit test.");
       else if (exitValue == 1)
@@ -194,7 +194,7 @@ public class IntegrationTestCase extends TestCase
 
  /*
   private String lastLines(String output, int nb)
-  {    
+  {
     int pos = output.length();
      for (int i = 0; i < nb && pos > 0; i++)
      {
@@ -206,7 +206,7 @@ public class IntegrationTestCase extends TestCase
      return output.substring(pos);
   }
 */
-  
+
   protected void assertContains(String message, String expected, String actual)
   {
     boolean cond = actual.contains(expected);
@@ -220,7 +220,7 @@ public class IntegrationTestCase extends TestCase
   /**
    * Wrapper function for commons-exec:
    * Execute a Command as a background process.
-   * 
+   *
    * @param cmd         Command to execute
    * @param workingDir  Working directory
    * @return  An outputstream that contains the output of the process into stdout/stderr
@@ -235,7 +235,7 @@ public class IntegrationTestCase extends TestCase
   /**
    * Wrapper function for commons-exec:
    * Execute a Command as a background process.
-   * 
+   *
    * @param cmd         Command to execute
    * @param workingDir  Working directory
    * @param timeout     Kill process after this time (in sec) (0: no timeout)
@@ -245,14 +245,14 @@ public class IntegrationTestCase extends TestCase
    */
   protected ByteArrayOutputStream startUp(String cmd, File workingDir, int timeout) throws ExecuteException, IOException
   {
-    
+
     return startUp(cmd, workingDir, timeout, false);
   }
 
   /**
    * Wrapper function for commons-exec:
    * Execute a Command as a background or blocking process.
-   * 
+   *
    * @param cmd         Command to execute
    * @param workingDir  Working directory
    * @param timeout     Kill process after this time (in sec) (0: no timeout)
@@ -266,25 +266,25 @@ public class IntegrationTestCase extends TestCase
     CommandLine cmdLine = CommandLine.parse(cmd);
     Executor executor = new DefaultExecutor();
     resultHandler = new DefaultExecuteResultHandler();
-    
+
     if (timeout > 0)
     {
       watchdog = new ExecuteWatchdog(1000 * timeout);
       executor.setWatchdog(watchdog);
     }
-    
+
     /* No live-streaming needed
     PipedOutputStream os = new PipedOutputStream();
     InputStream is = new PipedInputStream(os);
     executor.setStreamHandler(new PumpStreamHandler(os));
     */
-    
+
     ByteArrayOutputStream os = new ByteArrayOutputStream(1024);
     executor.setStreamHandler(new PumpStreamHandler(os));
-    
+
     executor.setWorkingDirectory(workingDir);
     executor.execute(cmdLine, resultHandler);
-    
+
     if (blocking)
     {
       while (!resultHandler.hasResult()) {
@@ -293,13 +293,13 @@ public class IntegrationTestCase extends TestCase
         } catch (InterruptedException e) { }
       }
     }
-    
+
     return os;
   }
 
   /**
    * Idle until outputstream contains a magic String.
-   * 
+   *
    * @param os          Outputstream to check periodically.
    * @param waitForStr  Magic string to wait for
    * @param maxMillisWait Abort waiting if we waited longer than this.
@@ -311,31 +311,31 @@ public class IntegrationTestCase extends TestCase
   {
     String str;
     long begin = System.currentTimeMillis();
-    
+
     do
     {
       try {
         Thread.sleep(SLEEP_WAIT_MILLIS);
       } catch (InterruptedException e) { /* ignore */ }
       str = os.toString();
-  
+
       if (maxMillisWait > 0)
       {
         long now = System.currentTimeMillis();
         if (now - begin > maxMillisWait)
           return str;
       }
-      
+
       assertProcessAlive(resultHandler, str);
-    } 
+    }
     while (!str.contains(waitForStr));
-    
+
     return str;
   }
 
   /**
    * Idle until outputstream contains a magic String.
-   * 
+   *
    * @param os          Outputstream to check periodically.
    * @param waitForStr  Magic string to wait for
    * @return  Content of output stream.
@@ -349,7 +349,7 @@ public class IntegrationTestCase extends TestCase
   /**
    * Clean a directoy without deleting it,
    * but don't delete subdirectories and their content.
-   * 
+   *
    * @param directory directory to clean
    * @throws IOException in case cleaning is unsuccessful
    * @see FileUtils.cleanDirectory(File)
@@ -357,12 +357,12 @@ public class IntegrationTestCase extends TestCase
   protected static void cleanDirectoryKeepSubdirectories(File directory) throws IOException
   {
     directory.mkdirs();
-    
+
     File[] files = directory.listFiles();
     if (files == null) {  // null if security restricted
         throw new IOException("Failed to list contents of " + directory);
     }
-  
+
     IOException exception = null;
     for (File file : files) {
       // ADD Check:
@@ -376,7 +376,7 @@ public class IntegrationTestCase extends TestCase
             exception = ioe;
         }
     }
-    
+
     if (null != exception) {
       throw exception;
     }

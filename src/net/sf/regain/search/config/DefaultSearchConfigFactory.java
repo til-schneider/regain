@@ -9,14 +9,14 @@ import net.sf.regain.util.sharedtag.PageRequest;
 /**
  * Loads the search config from a XML file. The location of the XML file is
  * specified by the init parameter "searchConfigFile".
- * 
+ *
  * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
  */
 public class DefaultSearchConfigFactory implements SearchConfigFactory {
 
   /**
    * Creates the configuration of the search mask.
-   * 
+   *
    * @param request The page request. Used to get the "configFile" init
    *        parameter, which holds the name of the configuration file.
    * @return The configuration of the search mask.

@@ -41,7 +41,7 @@ public class LinkTag extends SharedTagWrapperTag {
 
   /**
    * Sets the style sheet class to use for the link tags.
-   * 
+   *
    * @param styleSheetClass The style sheet class to use for the link tags.
    */
   public void setClass(String styleSheetClass) {
@@ -50,11 +50,11 @@ public class LinkTag extends SharedTagWrapperTag {
 
   /**
    * Do not show the entire <a href="url">title</a>, but only url.
-   * 
+   *
    * @param onlyUrl If true, only show url.
    */
   public void setOnlyUrl(String onlyUrl) {
     getNestedTag().setParameter("onlyUrl", onlyUrl);
-  }  
-  
+  }
+
 }

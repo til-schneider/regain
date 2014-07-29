@@ -3,7 +3,7 @@
 
 
 
-  
+
 <response>
 	<query>
    		<lucene_query>test</lucene_query>
@@ -15,7 +15,7 @@
 		<from>1</from>
 		<to>10</to>
 		<queryTime>0.013</queryTime>
-		   
+
 
 		<result>
 			<link_url>file/%24/%24home/.shared/text/uni/0809/java/eclipse-workspace-new/regain-svn/./test/testfiles/test.ppt</link_url>
@@ -45,10 +45,10 @@ Test
 			<title></title>
 			<relevance>17%</relevance>
 			<summary>
-Test 
+Test
 			</summary>
 			<content>
-Test 
+Test
 			</content>
 			<mimetype>application/vnd.oasis.opendocument.presentation</mimetype>
 
@@ -85,10 +85,10 @@ Test
 			<title></title>
 			<relevance>9%</relevance>
 			<summary>
-Test bla very big asdf 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 
+Test bla very big asdf 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 			</summary>
 			<content>
-Test bla very big asdf 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 
+Test bla very big asdf 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 			</content>
 			<mimetype>application/vnd.oasis.opendocument.spreadsheet</mimetype>
 
@@ -107,7 +107,7 @@ Test bla very big asdf 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 Tabelle1
 &amp;A
 Test
-bla 
+bla
 very
 big
 asdf 1.0
@@ -139,7 +139,7 @@ Seite &amp;P
 Tabelle1
 &amp;A
 Test
-bla 
+bla
 very
 big
 asdf 1.0
@@ -183,7 +183,7 @@ Seite &amp;P
 Tabelle1
 &amp;A
 Test
-bla 
+bla
 very
 big
 asdf 1
@@ -214,7 +214,7 @@ Seite &amp;P
 Tabelle1
 &amp;A
 Test
-bla 
+bla
 very
 big
 asdf 1
@@ -257,40 +257,40 @@ Seite &amp;P
 			<relevance>7%</relevance>
 			<summary>
 test
-Das ist ein Testsatz und 
-so weiter. Das ist ein 
-Testsatz und so 
-weiter.Das ist ein 
-Testsatz und so 
-weiter.Das ist ein 
+Das ist ein Testsatz und
+so weiter. Das ist ein
+Testsatz und so
+weiter.Das ist ein
+Testsatz und so
+weiter.Das ist ein
 Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein ...
 			</summary>
 
 			<content>
 test
-Das ist ein Testsatz und 
-so weiter. Das ist ein 
-Testsatz und so 
-weiter.Das ist ein 
-Testsatz und so 
-weiter.Das ist ein 
-Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein 
-Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein 
+Das ist ein Testsatz und
+so weiter. Das ist ein
+Testsatz und so
+weiter.Das ist ein
+Testsatz und so
+weiter.Das ist ein
+Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein
+Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein
 Testsatz und so weiter.Das ist ein Testsatz und so weiter.
-Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein 
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein
 Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
-Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein 
-Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so 
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein
+Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so
 weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
 Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
-Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein 
-Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so 
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein
+Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so
 weiter.
-Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein 
-Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so 
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein
+Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so
 weiter.
-Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein 
-Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so 
+Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein
+Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so
 weiter.Das ist ein Testsatz und so weiter.Das ist ein Testsatz und so weiter.
 
 			</content>

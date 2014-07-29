@@ -37,7 +37,7 @@ public class ToTag extends SharedTag implements SearchConstants {
 
   /**
    * Called when the parser reaches the end tag.
-   *  
+   *
    * @param request The page request.
    * @param response The page response.
    * @throws RegainException If there was an exception.

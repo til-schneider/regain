@@ -161,9 +161,9 @@ public class IfilterPreparator extends AbstractPreparator {
 
   /**
    * Gets the apropriate IfilterWrapper for a file extension.
-   * 
+   *
    * @param extension The file extension to get the IfilterWrapper for,
-   *        e.g.  
+   *        e.g.
    * @return The IfilterWrapper for the extension.
    * @throws RegainException If getting the IfilterWrapper failed.
    */
@@ -192,7 +192,7 @@ public class IfilterPreparator extends AbstractPreparator {
     String regKey = "HKEY_LOCAL_MACHINE\\Software\\Classes\\" + extension
       + "\\PersistentHandler";
     String persistentHandlerGuid = getRegistryKeyValue(regKey);
-  
+
     if (persistentHandlerGuid == null) {
       // # Step 2: Determine the CLSID associated with the file extension. Take the
       //           default value which is associated with the extension, for example
@@ -205,14 +205,14 @@ public class IfilterPreparator extends AbstractPreparator {
       if (extensionClass == null) {
         throw new RegainException("Unknown file extension: " + extension);
       }
-      
+
       regKey = "HKEY_LOCAL_MACHINE\\Software\\Classes\\" + extensionClass + "\\CLSID";
       String extensionClsid = getRegistryKeyValue(regKey);
       if (extensionClsid == null) {
         throw new RegainException("CLSID of extension class " + extensionClass
             + " not found");
       }
-  
+
       // # Step 3: Next search for that CLSID under HKLM\Software\Classes\CLSID. The
       //           default value of the sub key called PersistentHandler gives you
       //           the GUID of the PersistentHandler.
@@ -224,7 +224,7 @@ public class IfilterPreparator extends AbstractPreparator {
             + extensionClass + " not found");
       }
     }
-  
+
     // # Step 4: Search for that GUID under HKLM\Software\Classes\CLSID. Under it
     //           you will find a sub key PersistentAddinsRegistered which always
     //           has a sub key {89BCB740-6119-101A-BCB7-00DD010655AF} (this is the
@@ -238,7 +238,7 @@ public class IfilterPreparator extends AbstractPreparator {
       throw new RegainException("GUIF of PersistentHandler not found for "
             + "extension " + extension);
     }
-  
+
     // Strip the "{" and "}"
     ifilterGuid = "clsid:" + ifilterGuid.substring(1, ifilterGuid.length() - 1);
     if (mLog.isDebugEnabled()) {
@@ -261,7 +261,7 @@ public class IfilterPreparator extends AbstractPreparator {
 
   /**
    * Gets a IfilterWrapper for a GUID.
-   * 
+   *
    * @param ifilterGuid The GUID to get the IfilterWrapper for.
    * @return The IfilterWrapper for the GUID.
    * @throws RegainException If getting the IfilterWrapper failed.
@@ -277,7 +277,7 @@ public class IfilterPreparator extends AbstractPreparator {
 
     return ifilter;
   }
-  
+
 
   // overridden
   public void close() throws RegainException {
@@ -299,7 +299,7 @@ public class IfilterPreparator extends AbstractPreparator {
 
   /**
    * Gets the default value from a Windows registry key.
-   * 
+   *
    * @param regKey The Windows registry key to get the default value for.
    * @return The default value or null if the value couldn't be retreived.
    * @throws RegainException if initializing the value regex failed.
@@ -313,7 +313,7 @@ public class IfilterPreparator extends AbstractPreparator {
 
   /**
    * Gets a value from a Windows registry key.
-   * 
+   *
    * @param regKey The Windows registry key to get the value for.
    * @param valueName The name of the value to get.
    * @return The default value or null if the value couldn't be retreived.
@@ -359,7 +359,7 @@ public class IfilterPreparator extends AbstractPreparator {
           String name = mValueRegex.getParen(1).trim();
           // NOTE: The name of the default value is "<NO NAME>" on Windows NT, 2000 and XP
           //       and "(Stardard)" or "(Default)" or some other localized stuff
-          //       on Windows Server 2003.       
+          //       on Windows Server 2003.
           if (valueName != null ? name.equals(valueName)
                                 : (name.equals("<NO NAME>") || name.startsWith("(")))
           {
@@ -380,7 +380,7 @@ public class IfilterPreparator extends AbstractPreparator {
 
   /**
    * Gets the child key from a Windows registry key.
-   * 
+   *
    * @param regKey The Windows registry key to get the child keys for.
    * @return The child keys or null if the children could not be read.
    */
