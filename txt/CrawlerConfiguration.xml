@@ -373,22 +373,36 @@
   </crawlerPluginList>
 
 <!--
- | The index may be extended with auxiliary fields. These are fields that have
- | been generated from the URL of an document.
+ | The index may be extended with auxiliary fields. These are fields are generated from the URL of an document.
  |
- | Example: If you have a directory with a sub directory for every project,
- | then you may create a field with the project's name.
  |
- | The folling tag will create a field "project" with the value "otto23"
- | from the URL "file://c:/projects/otto23/docs/Spez.doc":
- |   <auxiliaryField name="project" regexGroup="1">
- |     <regex>^file://c:/projects/([^/]*)</regex>
+ | Example 1: If you crawl different servers and you want to restrict your search to a specific server. Then you may
+ | create a field with the server's host name.
+ |
+ | The following tag will create a field "site" with the value "murfman.de"
+ | from the URL "http://murfman.de/some/path/page.html":
+ |   <auxiliaryField name="site" regexGroup="1">
+ |     <regex>http://([^/]*)/</regex>
  |   </auxiliaryField>
  |
- | URLs that doen't match will get no "project" field.
+ | URLs that don't match will get no "site" field.
  |
- | Having done this you may search for "Offer project:otto23" and you will get
- | only hits from this project directory.
+ | Having done this you may search for "stuff site:murfman.de" and you will get only hits from this server.
+ |
+ |
+ | Example 2: If you have a directory with a sub directory for every project. Then you may create a field with the
+ | project's name.
+ |
+ | The following tag will create a field "project" with the value "otto23"
+ | from the file "C:/Projects/Hausbau Nußdorf/docs/Spez.doc":
+ |   <auxiliaryField name="project" sourceField="path" regexGroup="1" tokenize="true">
+ |     <regex>/Projects/([^/]*)/</regex>
+ |   </auxiliaryField>
+ |
+ | Please note: By adding the attribute sourceField="path", the regex is applied to the original file system path
+ | and not to the (encoded) URL.
+ |
+ | Having done this you may search for "stuff project:Nußdorf" and you will get only hits from this project.
  +-->
   <auxiliaryFieldList>
   <!-- Don't change these two fields. But you may add your own. -->

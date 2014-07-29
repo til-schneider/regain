@@ -22,14 +22,16 @@ package net.sf.regain.crawler.document;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.util.Date;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Properties;
-import java.util.Map.Entry;
 
 import net.sf.regain.RegainException;
 import net.sf.regain.RegainToolkit;
@@ -37,24 +39,23 @@ import net.sf.regain.crawler.ErrorLogger;
 import net.sf.regain.crawler.Profiler;
 import net.sf.regain.crawler.access.CrawlerAccessController;
 import net.sf.regain.crawler.config.AuxiliaryField;
+import net.sf.regain.crawler.config.AuxiliaryField.SourceField;
 import net.sf.regain.crawler.config.CrawlerConfig;
 import net.sf.regain.crawler.config.PreparatorSettings;
 import net.sf.regain.crawler.plugin.CrawlerPluginManager;
+import net.sf.regain.util.io.PathFilenamePair;
 
 import org.apache.log4j.Logger;
-import java.io.FileInputStream;
-import java.io.StringReader;
-import net.sf.regain.util.io.PathFilenamePair;
 import org.apache.lucene.analysis.WhitespaceTokenizer;
 import org.apache.lucene.document.CompressionTools;
 import org.apache.lucene.document.DateTools;
-import org.semanticdesktop.aperture.mime.identifier.MimeTypeIdentifier;
-import org.semanticdesktop.aperture.mime.identifier.magic.MagicMimeTypeIdentifierFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
+import org.semanticdesktop.aperture.mime.identifier.MimeTypeIdentifier;
+import org.semanticdesktop.aperture.mime.identifier.magic.MagicMimeTypeIdentifierFactory;
 
 /**
  * Fabrik, die aus der URL und den Rohdaten eines Dokuments ein Lucene-Ducument
@@ -390,8 +391,10 @@ public class DocumentFactory {
   private Document createDocument(RawDocument rawDocument, String cleanedContent,
           String title, String summary, String metadata, String headlines, PathElement[] path,
           Map<String, String> additionalFieldMap)
-          throws RegainException {
+          throws RegainException
+  {
     String url = rawDocument.getUrl();
+    String docPath = null;
 
     // Create a new, empty document
     Document doc = new Document();
@@ -404,29 +407,44 @@ public class DocumentFactory {
     AuxiliaryField[] auxiliaryFieldArr = mConfig.getAuxiliaryFieldList();
     if (auxiliaryFieldArr != null) {
       for (int i = 0; i < auxiliaryFieldArr.length; i++) {
-        RE regex = auxiliaryFieldArr[i].getUrlRegex();
-        if (regex.match(url)) {
-          String fieldName = auxiliaryFieldArr[i].getFieldName();
+        AuxiliaryField auxiliaryField = auxiliaryFieldArr[i];
 
-          String value = auxiliaryFieldArr[i].getValue();
+        RE regex = auxiliaryField.getRegex();
+        String sourceValue = url;
+        if (auxiliaryField.getSourceField() == SourceField.PATH) {
+          if (docPath == null) {
+            if (url.startsWith("file:")) {
+              File file = RegainToolkit.urlToFile(url);
+              docPath = file.getAbsolutePath();
+            } else {
+              docPath = url;
+            }
+          }
+          sourceValue = docPath;
+        }
+
+        if (regex.match(sourceValue)) {
+          String targetFieldName = auxiliaryField.getTargetFieldName();
+
+          String value = auxiliaryField.getValue();
           if (value == null) {
             // We have no value set -> Extract the value from the regex
-            value = regex.getParen(auxiliaryFieldArr[i].getUrlRegexGroup());
+            value = regex.getParen(auxiliaryField.getRegexGroup());
           }
 
           if (value != null) {
-            if (auxiliaryFieldArr[i].getToLowerCase()) {
+            if (auxiliaryField.getToLowerCase()) {
               value = value.toLowerCase();
             }
 
             if (mLog.isDebugEnabled()) {
-              mLog.debug("Adding auxiliary field: " + fieldName + "=" + value);
+              mLog.debug("Adding auxiliary field: " + targetFieldName + "=" + value);
             }
-            boolean store = auxiliaryFieldArr[i].isStored();
-            boolean index = auxiliaryFieldArr[i].isIndexed();
-            boolean token = auxiliaryFieldArr[i].isTokenized();
+            boolean store = auxiliaryField.isStored();
+            boolean index = auxiliaryField.isIndexed();
+            boolean token = auxiliaryField.isTokenized();
 
-            doc.add(new Field(fieldName, value,
+            doc.add(new Field(targetFieldName, value,
                     store ? Field.Store.YES : Field.Store.NO,
                     index ? (token ? Field.Index.ANALYZED : Field.Index.NOT_ANALYZED) : Field.Index.NO));
           }

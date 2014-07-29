@@ -21,11 +21,13 @@
 package net.sf.regain.crawler.config;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
-import java.util.ArrayList;
+
 import net.sf.regain.RegainException;
 import net.sf.regain.XmlToolkit;
+import net.sf.regain.crawler.config.AuxiliaryField.SourceField;
 
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
@@ -569,6 +571,17 @@ public class XmlCrawlerConfig implements CrawlerConfig {
       Node[] nodeArr = XmlToolkit.getChildArr(node, "auxiliaryField");
       mAuxiliaryFieldArr = new AuxiliaryField[nodeArr.length];
       for (int i = 0; i < nodeArr.length; i++) {
+        String sourceFieldName = XmlToolkit.getAttribute(nodeArr[i], "sourceField");
+        SourceField sourceField;
+        if (sourceFieldName == null || sourceFieldName.equalsIgnoreCase("URL")) {
+          sourceField = SourceField.URL;
+        } else if (sourceFieldName.equalsIgnoreCase("path")) {
+          sourceField = SourceField.PATH;
+        } else {
+          throw new RegainException("The attribute 'sourceField' of node 'auxiliaryField' has illegal value: '"
+              + sourceFieldName + "'");
+        }
+
         String fieldName = XmlToolkit.getAttribute(nodeArr[i], "name", true);
         RE urlRegex = readRegexChild(nodeArr[i]);
         String value = XmlToolkit.getAttribute(nodeArr[i], "value");
@@ -584,7 +597,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
         boolean index    = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "index", true);
         boolean tokenize = XmlToolkit.getAttributeAsBoolean(nodeArr[i], "tokenize", false);
 
-        mAuxiliaryFieldArr[i] = new AuxiliaryField(fieldName, value,
+        mAuxiliaryFieldArr[i] = new AuxiliaryField(sourceField, fieldName, value,
             toLowerCase, urlRegex, urlRegexGroup, store, index, tokenize);
       }
     }
@@ -1130,7 +1143,7 @@ public class XmlCrawlerConfig implements CrawlerConfig {
     ArrayList<String> list = new ArrayList<String>();
     for (int i = 0; i < auxFieldArr.length; i++) {
       if (! auxFieldArr[i].isTokenized()) {
-        list.add(auxFieldArr[i].getFieldName());
+        list.add(auxFieldArr[i].getTargetFieldName());
       }
     }
 

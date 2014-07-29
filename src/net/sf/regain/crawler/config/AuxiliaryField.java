@@ -10,21 +10,32 @@ import org.apache.regexp.RE;
  * Example: If you have a directory with a sub directory for every project,
  * then you may create a field with the project's name.
  * <p>
- * The folling rule will create a field "project" with the value "otto23"
+ * The following rule will create a field "project" with the value "otto23"
  * from the URL "file://c:/projects/otto23/docs/Spez.doc":
  * <code>new AuxiliaryField("project", "^file://c:/projects/([^/]*)", 1)</code>
  * <p>
- * URLs that doen't match will get no "project" field.
+ * URLs that doesn't match will get no "project" field.
  * <p>
  * Having done this you may search for "Offer project:otto23" and you will get
  * only hits from this project directory.
  *
- * @author Tilman Schneider, STZ-IDA an der FH Karlsruhe
+ * @author Tilman Schneider, www.murfman.de
  */
 public class AuxiliaryField {
 
-  /** The name of the auxiliary field. */
-  private String mFieldName;
+  /** The source field types */
+  public static enum SourceField {
+    /** The document's URL */
+    URL,
+    /** The document's path. For a file this is the path from the file system. For other documents this equals the URL */
+    PATH
+  }
+
+  /** The source field on which to apply the regex. */
+  private SourceField mSourceField;
+
+  /** The name of the auxiliary field to create. */
+  private String mTargetFieldName;
 
   /**
    * The value of the auxiliary field. If null, the value will be extracted from
@@ -36,10 +47,10 @@ public class AuxiliaryField {
   private boolean mToLowerCase;
 
   /** The regex that extracts the value of the field. */
-  private RE mUrlRegex;
+  private RE mRegex;
 
   /** The group of the regex that contains the value. */
-  private int mUrlRegexGroup;
+  private int mRegexGroup;
 
   /** Specifies whether the field value should be stored in the index. */
   private boolean mStore;
@@ -54,13 +65,14 @@ public class AuxiliaryField {
   /**
    * Creates a new instance of AuxiliaryField.
    *
-   * @param fieldName The name of the auxiliary field.
+   * @param sourceField The source field on which to apply the regex.
+   * @param targetFieldName The name of the auxiliary field.
    * @param value The value of the auxiliary field. If null, the value will be
    *        extracted from the regex using the urlRegexGroup.
    * @param toLowerCase Whether the (extracted) value should be converted to
    *        lower case.
-   * @param urlRegex The regex that extracts the value of the field.
-   * @param urlRegexGroup The group of the regex that contains the value.
+   * @param regex The regex that extracts the value of the field.
+   * @param regexGroup The group of the regex that contains the value.
    * @param store Specifies whether the field value should be stored in the
    *        index.
    * @param index Specifies whether the field value should be indexed.
@@ -68,15 +80,16 @@ public class AuxiliaryField {
    *
    * @throws RegainException If the regex has a syntax error.
    */
-  public AuxiliaryField(String fieldName, String value, boolean toLowerCase,
-    RE urlRegex, int urlRegexGroup, boolean store, boolean index, boolean tokenize)
+  public AuxiliaryField(SourceField sourceField, String targetFieldName, String value, boolean toLowerCase,
+    RE regex, int regexGroup, boolean store, boolean index, boolean tokenize)
     throws RegainException
   {
-    mFieldName = fieldName;
+    mSourceField = sourceField;
+    mTargetFieldName = targetFieldName;
     mValue = value;
     mToLowerCase = toLowerCase;
-    mUrlRegex = urlRegex;
-    mUrlRegexGroup = urlRegexGroup;
+    mRegex = regex;
+    mRegexGroup = regexGroup;
     mStore = store;
     mIndex = index;
     mTokenize = tokenize;
@@ -84,12 +97,22 @@ public class AuxiliaryField {
 
 
   /**
-   * Gets the name of the auxiliary field.
+   * Returns the source field on which to apply the regex.
    *
-   * @return The name of the auxiliary field.
+   * @return The source field on which to apply the regex.
    */
-  public String getFieldName() {
-    return mFieldName;
+  public SourceField getSourceField() {
+    return mSourceField;
+  }
+
+
+  /**
+   * Gets the name of the auxiliary field to create.
+   *
+   * @return The name of the auxiliary field to create.
+   */
+  public String getTargetFieldName() {
+    return mTargetFieldName;
   }
 
 
@@ -120,8 +143,8 @@ public class AuxiliaryField {
    *
    * @return The regex that extracts the value of the field.
    */
-  public RE getUrlRegex() {
-    return mUrlRegex;
+  public RE getRegex() {
+    return mRegex;
   }
 
 
@@ -130,8 +153,8 @@ public class AuxiliaryField {
    *
    * @return The group of the regex that contains the value.
    */
-  public int getUrlRegexGroup() {
-    return mUrlRegexGroup;
+  public int getRegexGroup() {
+    return mRegexGroup;
   }
 
 
