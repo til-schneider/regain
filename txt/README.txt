@@ -1,3 +1,8 @@
+Version 2.1.0 on 2014/Juli/30 STABLE
+-------------------------------------
+NEW
+ * Auxiliary fields can now use the (non-URL-encoded) file system path instead of the URL.
+
 Version 2.0.5 on 2013/XX/XX STABLE
 -------------------------------------
 UPDATE

@@ -1,3 +1,8 @@
+Version 2.1.0 am 30.07.2014 STABLE
+----------------------------------
+NEU
+ * Zusatzfelder können nun anstatt der URL auch den (nicht URL-kodierten) Dateisystempfad verwenden.
+
 Version 2.0.5 am XX.XX.2013 STABLE
 ----------------------------------
 UPDATE
