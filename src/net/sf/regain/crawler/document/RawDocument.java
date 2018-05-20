@@ -580,7 +580,7 @@ public class RawDocument {
         try {
           url = new URL(mUrl);
           path = url.getPath();
-          // Handles urls like http://www.thtesche.com/ an http://www.thtesche.com/blog/
+          // Handles urls like http://www.example.com/ an http://www.example.com/blog/
           if( (path.length()==0
                   && (url.getProtocol().equalsIgnoreCase("http") || url.getProtocol().equalsIgnoreCase("https") ))
                   || path.endsWith("/")) {

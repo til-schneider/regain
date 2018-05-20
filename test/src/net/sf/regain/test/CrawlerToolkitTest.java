@@ -27,7 +27,7 @@ import net.sf.regain.crawler.CrawlerToolkit;
  * A JUnit test for the class {@link net.sf.regain.crawler.CrawlerToolkit}.
  *
  * @author Til Schneider, www.murfman.de
- * @author Thomas Tesche, www.thtesche.com
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class CrawlerToolkitTest extends TestCase {
 
@@ -114,20 +114,20 @@ public class CrawlerToolkitTest extends TestCase {
 
   public void testExtractCredentialsFromUrl() {
     assertEquals("",
-            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://www.thtesche.com/"));
+            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://www.example.com/"));
 
     assertEquals("username:password",
-            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://username:password@www.thtesche.com/"));
+            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://username:password@www.example.com/"));
     assertEquals("u:p",
-            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://u:p@www.thtesche.com/"));
+            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://u:p@www.example.com/"));
     assertEquals("",
-            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://username:@www.thtesche.com/"));
+            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://username:@www.example.com/"));
     assertEquals("",
-            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://username:www.thtesche.com/"));
+            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://username:www.example.com/"));
     assertEquals("",
-            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://username:@www.thtesche.com/"));
+            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://username:@www.example.com/"));
     assertEquals("",
-            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://:dfdf@www.thtesche.com/"));
+            CrawlerToolkit.extractCredentialsFromProtocolHostFragment("http://:dfdf@www.example.com/"));
 
 
   }

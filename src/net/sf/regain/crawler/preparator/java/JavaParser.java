@@ -33,8 +33,7 @@ import org.eclipse.jdt.core.dom.*;
  * extracted: class name, member names, comments (javadoc)
  *
  * @author Renuka Sindhgatta, http://www.oreillynet.com/pub/au/2554
- *
- * @author Thomas Tesche <thomas.tesche@clustersystems.de>
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class JavaParser {
 

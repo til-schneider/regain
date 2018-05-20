@@ -1,6 +1,6 @@
 /*
  * regain - A file search engine providing plenty of formats
- * Copyright (C) 2004-2010 Thomas Tesche, Til Schneider
+ * Copyright (C) 2004 Thomas Tesche, Til Schneider
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Contact: Thomas Tesche: www.thtesche.com, Til Schneider: info@murfman.de
+ * Contact: Til Schneider <info@murfman.de>, Thomas Tesche <thtesche@gmail.com>
  */
 package net.sf.regain.search.results;
 
@@ -68,7 +68,7 @@ import org.apache.regexp.RESyntaxException;
  * Holds the results of a search on a single or multiple indexes. The class
  * uses the new Lucene API (2.9 and later).
  *
- * @author Thomas Tesche: www.thtesche.com
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class SearchResultsImpl implements SearchResults {
 

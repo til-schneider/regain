@@ -16,10 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Author: Thomas Tesche, cluster:Consult, Gletscherstr.13, 16341 Panketal
- *         +49 30 946 300 34, thomas.tesche@thtesche.com
- *
- *
+ * Contact: Til Schneider <info@murfman.de>, Thomas Tesche <thtesche@gmail.com>
  */
 package net.sf.regain.crawler.config;
 
@@ -27,7 +24,7 @@ package net.sf.regain.crawler.config;
  * An UrlMatcherResult that implements the UrlMatcher interface.
  * This URLMatcher holds only the result of another URLMatcher.
  *
- * @author Thomas Tesche, cluster:Consult, http://www.thtesche.com/
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class UrlMatcherResult implements UrlMatcher {
 

@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Contact: Til Schneider, info@murfman.de, Thomas Tesche (www.thtesche.com)
+ * Contact: Til Schneider <info@murfman.de>, Thomas Tesche <thtesche@gmail.com>
  */
 package net.sf.regain.crawler.preparator;
 
@@ -43,7 +43,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
  * The preparator use the generic extractor possibilities of POI.
  * Contributions from Jorge Corona.
  *
- * @author Thomas Tesche, www.thtesche.com
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class PoiMsOfficePreparator extends AbstractPreparator {
 

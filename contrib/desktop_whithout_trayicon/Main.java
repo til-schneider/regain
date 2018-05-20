@@ -36,7 +36,7 @@ import org.apache.log4j.PropertyConfigurator;
  * Starts the desktop search.
  *
  * @author Til Schneider, www.murfman.de
- * @author Thomas Tesche, www.clustersystems.de
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class Main implements DesktopConstants {
 

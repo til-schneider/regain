@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Contact: Til Schneider, info@murfman.de, Thomas Tesche, regain@thtesche.com
+ * Contact: Til Schneider <info@murfman.de>, Thomas Tesche <thtesche@gmail.com>
  */
 package net.sf.regain.search.sharedlib.hit;
 
@@ -29,7 +29,7 @@ import org.apache.lucene.document.Document;
 /**
  * Generates the index number on of the current hit.
  *
- * @author Thomas Tesche, www.thtesche.de
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class CachedTag extends AbstractHitTag {
 

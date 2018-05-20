@@ -24,10 +24,9 @@ import java.util.ArrayList;
 
 /**
  * Represents methods of a Java class
- * <p>
- * @author  Renuka Sindhgatta, http://www.oreillynet.com/pub/au/2554
  *
- * Modifications by Thomas Tesche, http://clusterconsult.thtesche.com/
+ * @author  Renuka Sindhgatta, http://www.oreillynet.com/pub/au/2554
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class JMethod {
 

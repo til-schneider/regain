@@ -45,7 +45,7 @@ import org.jaudiotagger.tag.TagException;
  * The following information from the audio tag will be extracted:
  * artist, album, title, year, length, bitrate
  *
- * @author Thomas Tesche, cluster:Consult, http://www.thtesche.com/
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class GenericAudioPreparator extends AbstractPreparator {
 

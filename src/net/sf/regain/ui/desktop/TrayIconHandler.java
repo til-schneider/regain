@@ -36,7 +36,7 @@ import net.sf.regain.util.io.Localizer;
 /**
  * Manages the tray icon.
  *
- * @author Thomas Tesche, www.clustersystems.de
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class TrayIconHandler {
 

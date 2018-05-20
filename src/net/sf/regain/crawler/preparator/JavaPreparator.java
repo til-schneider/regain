@@ -32,7 +32,7 @@ import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
  * Prepares Java source code for indexing <p> The following information will be
  * extracted: class name, member names, return types , code blocks
  *
- * @author Thomas Tesche, cluster:Consult, http://www.thtesche.com/
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class JavaPreparator extends AbstractPreparator {
 

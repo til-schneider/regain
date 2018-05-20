@@ -42,7 +42,7 @@ import net.sf.regain.util.io.HtmlEntities;
  *
  * @author Til Schneider, www.murfman.de
  * @author Gerhard Olsson
- * @author Thomas Tesche
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class CrawlerToolkit {
 

@@ -1,6 +1,6 @@
 /*
  * regain - A file search engine providing plenty of formats
- * Copyright (C) 2004-2010  Til Schneider, Thomas Tesche
+ * Copyright (C) 2004  Til Schneider, Thomas Tesche
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,7 +27,7 @@ import net.sf.regain.util.sharedtag.taglib.SharedTagWrapperTag;
  *
  * @see net.sf.regain.search.sharedlib.hit.LastModifiedTag
  *
- * @author Thomas Tesche, www.thtesche.com
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class LastModifiedTag extends SharedTagWrapperTag {
 

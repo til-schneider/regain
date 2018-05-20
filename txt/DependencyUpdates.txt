@@ -152,7 +152,7 @@ Thomas Tesche (thtesche), cluster:Consult
 
 27.04.2011
 ==========
-Thomas Tesche (thtesche), cluster:Systems CSG GmbH
+Thomas Tesche (thtesche), https://github.com/thtesche
   PDFBox 1.2.1 --> 1.5
   * pdfbox, jempbox, fontbox
   Lucene 3.0.2 --> 3.1.0
@@ -162,7 +162,7 @@ Thomas Tesche (thtesche), cluster:Systems CSG GmbH
 
 29.07.2011
 ==========
-Thomas Tesche (thtesche), cluster:Systems CSG GmbH
+Thomas Tesche (thtesche), https://github.com/thtesche
   PDFBox 1.5 --> 1.6
   * pdfbox, jempbox, fontbox
 Benjamin Pick

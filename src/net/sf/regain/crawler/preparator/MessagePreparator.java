@@ -1,6 +1,6 @@
 /*
  * regain - A file search engine providing plenty of formats
- * Copyright (C) 2004-2010  Til Schneider, Thomas Tesche
+ * Copyright (C) 2004  Til Schneider, Thomas Tesche
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Contact: Til Schneider, info@murfman.de, Thomas Tesche, regain@thtesche.com
+ * Contact: Til Schneider <info@murfman.de>, Thomas Tesche <thtesche@gmail.com>
  */
 package net.sf.regain.crawler.preparator;
 
@@ -57,7 +57,7 @@ import org.apache.log4j.Logger;
  * <p>
  * The document contains the message text and the file names of the attachments.
  *
- * @author Thomas Tesche, www.thtesche.com, Kevin Black (KJB)
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  * @see MessagePreparator
  */
 public class MessagePreparator extends AbstractPreparator {

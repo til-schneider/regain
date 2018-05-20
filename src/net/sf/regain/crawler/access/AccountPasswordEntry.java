@@ -16,14 +16,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Contact: Thomas Tesche, regain@thtesche.com
+ * Contact: Til Schneider <info@murfman.de>, Thomas Tesche <thtesche@gmail.com>
  */
 package net.sf.regain.crawler.access;
 
 /**
  * This class represents a account-password entitiy for authentication purposes.
  *
- * @author Thomas Tesche (thtesche), http://www.thtesche.com/
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class AccountPasswordEntry {
 

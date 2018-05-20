@@ -44,7 +44,7 @@ import org.jaudiotagger.tag.id3.ID3v24Tag;
  * The following information from the audio tag (ID3v2 or ID3v1) will be extracted:
  * artist, album, title, year, length, bitrate
  *
- * @author Thomas Tesche, cluster:Consult, http://www.thtesche.com/
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class MP3Preparator extends AbstractPreparator {
 

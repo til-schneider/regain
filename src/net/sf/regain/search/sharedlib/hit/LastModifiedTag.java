@@ -1,6 +1,6 @@
 /*
  * regain - A file search engine providing plenty of formats
- * Copyright (C) 2004-2010  Til Schneider, Thomas Tesche
+ * Copyright (C) 2004  Til Schneider, Thomas Tesche
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Contact: Til Schneider, info@murfman.de, Thomas Tesche, www.thtesche.com
+ * Contact: Til Schneider <info@murfman.de>, Thomas Tesche <thtesche@gmail.com>
  */
 package net.sf.regain.search.sharedlib.hit;
 
@@ -32,7 +32,7 @@ import org.apache.lucene.document.Document;
 /**
  * Generates the last modified date of the current hit's document.
  *
- * @author Thomas Tesche, www.thtesche.com
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class LastModifiedTag extends AbstractHitTag {
 

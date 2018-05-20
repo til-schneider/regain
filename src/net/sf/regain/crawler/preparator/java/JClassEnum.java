@@ -26,8 +26,7 @@ import java.util.ArrayList;
  * Represents a Java class or an Enum <p>
  *
  * @author Renuka Sindhgatta, http://www.oreillynet.com/pub/au/2554
- *
- * @author Thomas Tesche <thomas.tesche@clustersystems.de>
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public class JClassEnum {
 

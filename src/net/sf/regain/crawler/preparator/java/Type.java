@@ -5,8 +5,7 @@
 package net.sf.regain.crawler.preparator.java;
 
 /**
- *
- * @author Thomas Tesche <thomas.tesche@clustersystems.de>
+ * @author Thomas Tesche (thtesche), https://github.com/thtesche
  */
 public enum Type{
 
