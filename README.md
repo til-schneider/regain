@@ -39,13 +39,13 @@ More details about the differences of the two variants can be found in the [comp
 
 If you are not sure, which download is the best for you, then take the first one (Desktop Search for Windows).
 
-Download [Regain Desktop Search 2.1.0 Stable for Windows (Installer)](http://sourceforge.net/projects/regain/files/regain/2.1.0%20Stable/regain_v2.1.0-STABLE_desktop_win.exe/download)
+Download [Regain Desktop Search 2.1.0 for Windows (Installer)](https://github.com/til-schneider/regain/releases/download/2.1.0/regain_v2.1.0_desktop_win.exe)
 
-Download [Regain Desktop Search 2.1.0 Stable for Windows (ZIP file)](http://sourceforge.net/projects/regain/files/regain/2.1.0%20Stable/regain_v2.1.0-STABLE_desktop_win.zip/download)
+Download [Regain Desktop Search 2.1.0 for Windows (ZIP file)](https://github.com/til-schneider/regain/releases/download/2.1.0/regain_v2.1.0_desktop_win.zip)
 
-Download [Regain Desktop Search 2.1.0 Stable for Linux (ZIP file)](http://sourceforge.net/projects/regain/files/regain/2.1.0%20Stable/regain_v2.1.0-STABLE_desktop_linux.zip/download)
+Download [Regain Desktop Search 2.1.0 for Linux (ZIP file)](https://github.com/til-schneider/regain/releases/download/2.1.0/regain_v2.1.0_desktop_linux.zip)
 
-Download [Regain Server Search 2.1.0 Stable for all platforms (ZIP file)](http://sourceforge.net/projects/regain/files/regain/2.1.0%20Stable/regain_v2.1.0-STABLE_server.zip/download)
+Download [Regain Server Search 2.1.0 for all platforms (ZIP file)](https://github.com/til-schneider/regain/releases/download/2.1.0/regain_v2.1.0_server.zip)
 
 
 Documentation
@@ -62,9 +62,9 @@ The regain help contains information about the installation, configuration and u
 
 The documentation of the Java classes and the tag library. It's interesting for those who want to develop regain.
 
-Download [Javadoc documentation for regain 2.1.0 Stable](http://sourceforge.net/projects/regain/files/regain/2.1.0%20Stable/regain_v2.1.0-STABLE_doc.zip/download)
+Download [Javadoc documentation for regain 2.1.0](https://github.com/til-schneider/regain/releases/download/2.1.0/regain_v2.1.0_doc.zip)
 
-You may also read the documentation online: [Javadoc documentation for regain 2.1.0 Stable](http://regain.sourceforge.net/doc/v2.1.0-STABLE/javadoc/index.html) resp. [Tag library documentation for regain 2.1.0 Stable](http://regain.sourceforge.net/doc/v2.1.0-STABLE/tlddoc/index.html).
+You may also read the documentation online: [Javadoc documentation for regain 2.1.0](http://regain.sourceforge.net/doc/v2.1.0-STABLE/javadoc/index.html) resp. [Tag library documentation for regain 2.1.0](http://regain.sourceforge.net/doc/v2.1.0-STABLE/tlddoc/index.html).
 
 
 ### User's manual for regain 1.1

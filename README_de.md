@@ -39,13 +39,13 @@ Mehr Details zu den Unterschieden der beiden Varianten erfahren Sie im [Vergleic
 
 Wenn Sie nicht genau wissen, welcher Download für Sie der beste ist, dann nehmen Sie den obersten (Desktop-Suche für Windows).
 
-Download [Regain Desktop-Suche 2.1.0 Stable für Windows (Installer)](http://sourceforge.net/projects/regain/files/regain/2.1.0%20Stable/regain_v2.1.0-STABLE_desktop_win.exe/download)
+Download [Regain Desktop-Suche 2.1.0 für Windows (Installer)](https://github.com/til-schneider/regain/releases/download/2.1.0/regain_v2.1.0_desktop_win.exe)
 
-Download [Regain Desktop-Suche 2.1.0 Stable für Windows (ZIP-Datei)](http://sourceforge.net/projects/regain/files/regain/2.1.0%20Stable/regain_v2.1.0-STABLE_desktop_win.zip/download)
+Download [Regain Desktop-Suche 2.1.0 für Windows (ZIP-Datei)](https://github.com/til-schneider/regain/releases/download/2.1.0/regain_v2.1.0_desktop_win.zip)
 
-Download [Regain Desktop-Suche 2.1.0 Stable für Linux (ZIP-Datei)](http://sourceforge.net/projects/regain/files/regain/2.1.0%20Stable/regain_v2.1.0-STABLE_desktop_linux.zip/download)
+Download [Regain Desktop-Suche 2.1.0 für Linux (ZIP-Datei)](https://github.com/til-schneider/regain/releases/download/2.1.0/regain_v2.1.0_desktop_linux.zip)
 
-Download [Regain Server-Suche 2.1.0 Stable für alle Plattformen (ZIP-Datei)](http://sourceforge.net/projects/regain/files/regain/2.1.0%20Stable/regain_v2.1.0-STABLE_server.zip/download)
+Download [Regain Server-Suche 2.1.0 für alle Plattformen (ZIP-Datei)](https://github.com/til-schneider/regain/releases/download/2.1.0/regain_v2.1.0_server.zip)
 
 
 Dokumentation
@@ -62,9 +62,9 @@ In der regain Hilfe finden Sie Informationen über die Installation, Konfigurati
 
 Die Dokumentation der Java-Klassen und der Tag-Library. Sie ist für alle interessant, die regain weiterentwickeln wollen.
 
-Download [Javadoc- und Tag-Library-Dokumentation für regain 2.1.0 Stable](http://sourceforge.net/projects/regain/files/regain/2.1.0%20Stable/regain_v2.1.0-STABLE_doc.zip/download)
+Download [Javadoc- und Tag-Library-Dokumentation für regain 2.1.0](https://github.com/til-schneider/regain/releases/download/2.1.0/regain_v2.1.0_doc.zip)
 
-Sie können die Dokumentation auch online lesen: [Javadoc-Dokumentation zu regain 2.1.0 Stable](http://regain.sourceforge.net/doc/v2.1.0-STABLE/javadoc/index.html) bzw. [Tag-Library-Dokumentation zu regain 2.1.0 Stable](http://regain.sourceforge.net/doc/v2.1.0-STABLE/tlddoc/index.html).
+Sie können die Dokumentation auch online lesen: [Javadoc-Dokumentation zu regain 2.1.0](http://regain.sourceforge.net/doc/v2.1.0-STABLE/javadoc/index.html) bzw. [Tag-Library-Dokumentation zu regain 2.1.0](http://regain.sourceforge.net/doc/v2.1.0-STABLE/tlddoc/index.html).
 
 
 ### Handbuch zu regain 1.1
